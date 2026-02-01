@@ -9,7 +9,6 @@ import 'dart:typed_data';
 import 'dart:io' show File; // only used on non-web
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:farmfederate_advisor/services/api_service.dart';
@@ -133,37 +132,30 @@ class _ChatScreenState extends State<ChatScreen> {
         clientId: "flutter_client",
       );
 
-      if (resp == null) {
-        _setStatus("no response");
-        setState(() {
-          _advice = "No response from server.";
-        });
-      } else {
-        final result = resp['result'] ?? resp['data'] ?? resp;
-        final allScores = result['all_scores'] as List<dynamic>? ?? result['scores'] as List<dynamic>?;
+      final result = resp['result'] ?? resp['data'] ?? resp;
+      final allScores = result['all_scores'] as List<dynamic>? ?? result['scores'] as List<dynamic>?;
 
-        final parsedScores = (allScores ?? []).map<Map<String, dynamic>>((e) {
-          final label = (e['label'] ?? e['name'] ?? "unknown").toString();
-          double prob = 0.0;
-          if (e['prob'] is num) {
-            prob = (e['prob'] as num).toDouble();
-          } else {
-            prob = double.tryParse("${e['prob']}") ?? 0.0;
-          }
-          // convert 0..100 -> 0..1 if needed
-          if (prob > 1.0) prob = prob / 100.0;
-          return {"label": label, "prob": prob.clamp(0.0, 1.0)};
-        }).toList();
+      final parsedScores = (allScores ?? []).map<Map<String, dynamic>>((e) {
+        final label = (e['label'] ?? e['name'] ?? "unknown").toString();
+        double prob = 0.0;
+        if (e['prob'] is num) {
+          prob = (e['prob'] as num).toDouble();
+        } else {
+          prob = double.tryParse("${e['prob']}") ?? 0.0;
+        }
+        // convert 0..100 -> 0..1 if needed
+        if (prob > 1.0) prob = prob / 100.0;
+        return {"label": label, "prob": prob.clamp(0.0, 1.0)};
+      }).toList();
 
-        setState(() {
-          _scores = parsedScores;
-          // Defensive advice parsing
-          _advice = (resp['advice'] ?? result['advice'] ?? resp['advice_text'] ?? "")?.toString() ?? "";
-          _debug = resp['debug'] ?? {};
-          _setStatus("ok");
-        });
-      }
-    } catch (e, st) {
+      setState(() {
+        _scores = parsedScores;
+        // Defensive advice parsing
+        _advice = (resp['advice'] ?? result['advice'] ?? resp['advice_text'] ?? "")?.toString() ?? "";
+        _debug = resp['debug'] ?? {};
+        _setStatus("ok");
+      });
+        } catch (e, st) {
       _setStatus("error");
       debugPrint("predict error: $e\n$st");
       setState(() {
@@ -202,34 +194,27 @@ class _ChatScreenState extends State<ChatScreen> {
         clientId: "flutter_client",
       );
 
-      if (resp == null) {
-        _setStatus("no response");
-        setState(() {
-          _advice = "No response from server.";
-        });
-      } else {
-        final res = resp['result'] ?? resp;
-        final retrieved = res['retrieved'] as List<dynamic>? ?? [];
-        final prompt = res['prompt']?.toString() ?? '';
-        final treatment = res['treatment'];
+      final res = resp['result'] ?? resp;
+      final retrieved = res['retrieved'] as List<dynamic>? ?? [];
+      final prompt = res['prompt']?.toString() ?? '';
+      final treatment = res['treatment'];
 
-        setState(() {
-          // If treatment is a string (mock LLM), show as advice; if dict, show prompt in debug
-          if (treatment is String) {
-            _advice = treatment;
-          } else if (treatment is Map) {
-            _debug['llm'] = treatment;
-            _advice = treatment['text']?.toString() ?? prompt;
-          } else {
-            _debug['prompt'] = prompt;
-            _advice = prompt;
-          }
+      setState(() {
+        // If treatment is a string (mock LLM), show as advice; if dict, show prompt in debug
+        if (treatment is String) {
+          _advice = treatment;
+        } else if (treatment is Map) {
+          _debug['llm'] = treatment;
+          _advice = treatment['text']?.toString() ?? prompt;
+        } else {
+          _debug['prompt'] = prompt;
+          _advice = prompt;
+        }
 
-          _debug['retrieved'] = retrieved;
-          _setStatus("ok");
-        });
-      }
-    } catch (e, st) {
+        _debug['retrieved'] = retrieved;
+        _setStatus("ok");
+      });
+        } catch (e, st) {
       _setStatus("error");
       debugPrint("rag error: $e\n$st");
       setState(() {
