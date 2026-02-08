@@ -20,14 +20,17 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.farmfederate_advisor"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        // Application ID for FarmFederate
+        applicationId = "com.farmfederate.app"
+        // Minimum SDK 21 (Android 5.0) for broad device support
+        // Required for camera, file picker, and modern HTTP features
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        // Enable multidex for large apps
+        multiDexEnabled = true
     }
 
     buildTypes {

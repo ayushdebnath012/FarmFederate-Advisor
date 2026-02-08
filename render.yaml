@@ -1,0 +1,20 @@
+# Render deployment configuration for FarmFederate
+# Deploy at: https://dashboard.render.com
+
+services:
+  - type: web
+    name: farmfederate-api
+    runtime: python
+    region: oregon  # or singapore, frankfurt
+    plan: free  # Change to 'starter' ($7/mo) for production with ML models
+    buildCommand: pip install -r requirements-deploy.txt
+    startCommand: cd backend && uvicorn server:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11"
+      - key: PYTORCH_ENABLE_MPS_FALLBACK
+        value: "1"
+      - key: DEMO_MODE
+        value: "true"  # Set to "false" if you upload models
+    healthCheckPath: /health
+    autoDeploy: true

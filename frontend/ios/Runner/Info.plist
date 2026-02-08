@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Farmfederate Advisor</string>
+	<string>FarmFederate</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -45,5 +45,14 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- Camera permission for taking crop photos -->
+	<key>NSCameraUsageDescription</key>
+	<string>FarmFederate needs camera access to take photos of your crops for health analysis</string>
+	<!-- Photo library permission for selecting crop images -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>FarmFederate needs photo library access to select existing crop images for analysis</string>
+	<!-- Microphone permission (if needed for future features) -->
+	<key>NSMicrophoneUsageDescription</key>
+	<string>FarmFederate may use the microphone for voice input</string>
 </dict>
 </plist>

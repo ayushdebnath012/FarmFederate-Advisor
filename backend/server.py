@@ -55,6 +55,21 @@ except Exception as e:
         traceback.print_exc()
         raise
 
+# --- import ModelManager for model selection ---
+try:
+    from model_manager import ModelManager
+    print("[server] Imported ModelManager for model management")
+    HAVE_MODEL_MANAGER = True
+except ImportError:
+    try:
+        from .model_manager import ModelManager
+        print("[server] Imported ModelManager (relative)")
+        HAVE_MODEL_MANAGER = True
+    except ImportError:
+        print("[server][WARN] ModelManager not available - dynamic model switching disabled")
+        HAVE_MODEL_MANAGER = False
+        ModelManager = None
+
 # ---------------- Configuration ----------------
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 CHECKPOINT_PATH = os.environ.get("CHECKPOINT_PATH", os.path.join("checkpoints", "global_central.pt"))
@@ -62,7 +77,7 @@ TEXT_MODEL_NAME = os.environ.get("TEXT_MODEL_NAME", "roberta-base")
 IMAGE_MODEL_NAME = os.environ.get("IMAGE_MODEL_NAME", "google/vit-base-patch16-224-in21k")
 MAX_LEN = int(os.environ.get("MAX_LEN", 160))
 IMG_SIZE = int(os.environ.get("IMG_SIZE", 224))
-# Demo mode: when set, server returns canned lightweight responses (no heavy models/Qdrant needed)
+# Demo mode: when set, server returns canned lightweight responses (no heavy models needed)
 DEMO_MODE = str(os.environ.get("DEMO_MODE", "")).lower() in ("1", "true", "yes")
 print(f"[server] DEMO_MODE={DEMO_MODE}")
 
@@ -95,46 +110,69 @@ TOKENIZER = None
 IMAGE_PROCESSOR = None
 MODEL: Optional[nn.Module] = None
 THRESHOLDS = np.array([0.3]*NUM_LABELS, dtype=np.float32)
+MODEL_MANAGER: Optional[Any] = None  # ModelManager instance
+CURRENT_MODEL_INFO: Optional[Dict[str, Any]] = None  # Current loaded model metadata
 
-# Qdrant optional integration
-try:
-    from qdrant_client import QdrantClient
-    try:
-        from .qdrant_rag import init_qdrant_collections, agentic_diagnose, Embedders
-    except ImportError:
-        from backend.qdrant_rag import init_qdrant_collections, agentic_diagnose, Embedders
-    HAVE_QDRANT = True
-    QDRANT_CLIENT: Optional[QdrantClient] = None
-except Exception as e:
-    print(f"[server][WARN] Qdrant integration not available: {e}")
-    HAVE_QDRANT = False
-    QDRANT_CLIENT = None
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: load model
+    # Startup: initialize ModelManager and load model
+    global MODEL_MANAGER, CURRENT_MODEL_INFO
+    
     try:
-        load_model_and_tokenizer(CHECKPOINT_PATH)
+        # Initialize ModelManager if available
+        if HAVE_MODEL_MANAGER and ModelManager is not None:
+            MODEL_MANAGER = ModelManager(models_dir="../models")
+            print(f"[server] ModelManager initialized with {len(MODEL_MANAGER.models)} models")
+            
+            # Export model catalog for frontend
+            try:
+                MODEL_MANAGER.export_model_catalog("model_catalog.json")
+            except Exception as e:
+                print(f"[server][WARN] Failed to export model catalog: {e}")
+            
+            # Determine which model to load
+            model_id = os.environ.get("MODEL_ID")
+            if model_id:
+                # Load specific model from environment variable
+                model_info = MODEL_MANAGER.get_model_info(model_id)
+                if model_info:
+                    print(f"[server] Loading model from MODEL_ID env: {model_id}")
+                    checkpoint_path = model_info.path
+                    CURRENT_MODEL_INFO = model_info.to_dict()
+                else:
+                    print(f"[server][WARN] MODEL_ID '{model_id}' not found, using default")
+                    checkpoint_path = CHECKPOINT_PATH
+            elif CHECKPOINT_PATH and os.path.exists(CHECKPOINT_PATH):
+                # Use CHECKPOINT_PATH if it exists
+                print(f"[server] Using CHECKPOINT_PATH: {CHECKPOINT_PATH}")
+                checkpoint_path = CHECKPOINT_PATH
+            else:
+                # Use recommended federated VLM (privacy + performance balance)
+                rec_model = MODEL_MANAGER.get_recommended_model("privacy")
+                if rec_model:
+                    print(f"[server] Loading recommended model: {rec_model.name}")
+                    checkpoint_path = rec_model.path
+                    CURRENT_MODEL_INFO = rec_model.to_dict()
+                else:
+                    print(f"[server][ERROR] No models available and no CHECKPOINT_PATH specified")
+                    checkpoint_path = None
+        else:
+            # Fallback to CHECKPOINT_PATH when ModelManager not available
+            checkpoint_path = CHECKPOINT_PATH
+            print(f"[server] ModelManager not available, using CHECKPOINT_PATH: {checkpoint_path}")
+        
+        if checkpoint_path:
+            load_model_and_tokenizer(checkpoint_path)
+        else:
+            print("[server][WARN] No model loaded - server running without inference capability")
+            
     except Exception as e:
         print("[server][ERROR] Failed startup model load:", e)
         traceback.print_exc()
 
-    # Initialize Qdrant client if configured via QDRANT_URL and qdrant-client is available
-    qdrant_url = os.environ.get("QDRANT_URL")
-    if qdrant_url and HAVE_QDRANT:
-        try:
-            global QDRANT_CLIENT
-            # Handle in-memory mode vs remote URL
-            if qdrant_url == ":memory:":
-                QDRANT_CLIENT = QdrantClient(":memory:")
-            else:
-                QDRANT_CLIENT = QdrantClient(url=qdrant_url)
-            init_qdrant_collections(QDRANT_CLIENT)
-            app.state.qdrant_client = QDRANT_CLIENT
-            print(f"[server] Qdrant initialized at {qdrant_url}")
-        except Exception as e:
-            print("[server][WARN] Failed to initialize Qdrant:", e)
-            traceback.print_exc()
+
 
     yield
     # Shutdown: cleanup if needed
@@ -308,7 +346,13 @@ def logits_to_response(text: str, logits: torch.Tensor, thresholds: np.ndarray):
 @app.get("/health")
 async def health():
     model_loaded = MODEL is not None
-    return {"status": "ok", "device": DEVICE, "model_loaded": bool(model_loaded), "labels": ISSUE_LABELS}
+    return {
+        "status": "ok",
+        "device": DEVICE,
+        "model_loaded": bool(model_loaded),
+        "labels": ISSUE_LABELS,
+        "demo_mode": DEMO_MODE,
+    }
 
 @app.get("/sensors/latest")
 async def get_latest_sensors():
@@ -363,6 +407,44 @@ async def predict(request: Request):
       text: str, sensors: str (optional), image: file (optional)
     """
     global MODEL, TOKENIZER, THRESHOLDS
+
+    # Demo mode: return simulated predictions without loading ML models
+    if DEMO_MODE:
+        content_type = request.headers.get("content-type", "").lower()
+        text = ""
+        if "application/json" in content_type:
+            data = await request.json()
+            text = str(data.get("text", "") or "")
+        elif "multipart/form-data" in content_type:
+            form = await request.form()
+            text = str(form.get("text", "") or "")
+
+        # Simple keyword-based demo predictions
+        text_lower = text.lower()
+        probs = [0.1, 0.1, 0.1, 0.1, 0.1]
+        if "water" in text_lower or "dry" in text_lower or "wilt" in text_lower:
+            probs[0] = 0.85  # water_stress
+        elif "yellow" in text_lower or "nutrient" in text_lower or "fertilizer" in text_lower:
+            probs[1] = 0.82  # nutrient_def
+        elif "bug" in text_lower or "insect" in text_lower or "pest" in text_lower or "hole" in text_lower:
+            probs[2] = 0.78  # pest_risk
+        elif "spot" in text_lower or "disease" in text_lower or "fungus" in text_lower or "rot" in text_lower:
+            probs[3] = 0.88  # disease_risk
+        elif "heat" in text_lower or "hot" in text_lower or "burn" in text_lower:
+            probs[4] = 0.75  # heat_stress
+        else:
+            # Default to healthy-ish with slight water stress
+            probs = [0.3, 0.15, 0.1, 0.1, 0.05]
+
+        mask = [1 if p > 0.3 else 0 for p in probs]
+        return JSONResponse({
+            "labels": ISSUE_LABELS,
+            "probs": probs,
+            "mask": mask,
+            "advice": advisor_from_mask(mask),
+            "demo_mode": True,
+        })
+
     if MODEL is None or TOKENIZER is None:
         # Attempt to reload if startup failed earlier
         try:
@@ -466,120 +548,116 @@ async def predict(request: Request):
     }
     return JSONResponse(out, status_code=200)
 
-# ---------------- RAG endpoint ----------------
-@app.post("/rag")
-async def rag_endpoint(request: Request):
+# ---------------- Model Management Endpoints ----------------
+@app.get("/models")
+async def list_models():
     """
-    RAG diagnose endpoint. Accepts multipart/form-data with optional 'image' file and 'description' form field, or JSON with 'description'.
-    Returns retrieved records and a grounding prompt (LLM call not performed by default).
+    List all available trained models with metadata
     """
-    if DEMO_MODE:
-        return JSONResponse({"result": {"retrieved": [], "prompt": "DEMO_MODE: no RAG available", "treatment": "DEMO: run /demo_populate then /demo_search to see Qdrant results"}}, status_code=200)
-
-    if not HAVE_QDRANT or QDRANT_CLIENT is None:
-        return JSONResponse({"error": "Qdrant not configured. Set QDRANT_URL and ensure qdrant-client is installed."}, status_code=400)
-
+    if not HAVE_MODEL_MANAGER or MODEL_MANAGER is None:
+        return JSONResponse({
+            "error": "ModelManager not available",
+            "current_model": CHECKPOINT_PATH if CHECKPOINT_PATH else None
+        }, status_code=200)
+    
     try:
-        content_type = request.headers.get("content-type", "").lower()
-        description = ""
-        image = None
-
-        if "multipart/form-data" in content_type or "form-data" in content_type:
-            form = await request.form()
-            description = str(form.get("description", "") or "")
-            upload = form.get("image", None)
-            if upload is not None:
-                content = upload.file.read()
-                upload.file.seek(0)
-                image = Image.open(io.BytesIO(content)).convert("RGB")
-        elif "application/json" in content_type:
-            data = await request.json()
-            description = str(data.get("description", "") or "")
-        else:
-            return JSONResponse({"error": f"Unsupported Content-Type: {content_type}"}, status_code=415)
-
-        emb = Embedders(device=DEVICE)
-        res = agentic_diagnose(QDRANT_CLIENT, image=image, user_description=description or "", emb=emb, llm_func=None)
-        return JSONResponse({"result": res}, status_code=200)
-    except Exception as e:
-        traceback.print_exc()
-        return JSONResponse({"error": "rag failed", "detail": str(e)}, status_code=500)
-
-
-# ---------------- Demo Qdrant helpers ----------------
-@app.post("/demo_populate")
-async def demo_populate(n: int = 3, collection_name: str = None):
-    """
-    Populate Qdrant with `n` demo points (random vectors + payloads).
-    Returns the list of point ids created.
-    """
-    if DEMO_MODE:
-        return JSONResponse({"error": "DEMO_MODE is enabled; demo endpoints disabled."}, status_code=400)
-    if not HAVE_QDRANT or QDRANT_CLIENT is None:
-        return JSONResponse({"error": "Qdrant not configured."}, status_code=400)
-
-    coll = collection_name or 'crop_health_knowledge'
-    try:
-        # ensure collections exist
-        init_qdrant_collections(QDRANT_CLIENT)
-    except Exception:
-        pass
-
-    ids = []
-    import numpy as _np
-    for i in range(n):
-        pid = int(time.time() * 1000) + i
-        # random but normalized vectors
-        vis = _np.random.rand(512).astype(float)
-        vis = (vis / _np.linalg.norm(vis)).tolist()
-        sem = _np.random.rand(384).astype(float)
-        sem = (sem / _np.linalg.norm(sem)).tolist()
-        payload = {
-            'stress_type': f'demo_type_{i}',
-            'crop_name': 'demo_crop',
-            'severity': float(i),
-            'source': 'demo',
-            'filename': f'demo_{i}.jpg',
-            'agronomist_notes': 'demo entry',
-            'text_description': f'demo {i}',
+        models = MODEL_MANAGER.list_models()
+        recommendations = {
+            "production": MODEL_MANAGER.get_recommended_model("production").name if MODEL_MANAGER.get_recommended_model("production") else None,
+            "privacy": MODEL_MANAGER.get_recommended_model("privacy").name if MODEL_MANAGER.get_recommended_model("privacy") else None,
+            "fast": MODEL_MANAGER.get_recommended_model("fast").name if MODEL_MANAGER.get_recommended_model("fast") else None,
+            "vision": MODEL_MANAGER.get_recommended_model("vision").name if MODEL_MANAGER.get_recommended_model("vision") else None,
+            "text": MODEL_MANAGER.get_recommended_model("text").name if MODEL_MANAGER.get_recommended_model("text") else None,
         }
-        from qdrant_client.http import models as rest
-        p = rest.PointStruct(id=pid, vector={'visual': vis, 'semantic': sem}, payload=payload)
-        QDRANT_CLIENT.upsert(collection_name=coll, points=[p])
-        ids.append(pid)
-
-    # store last demo query vector for /demo_search
-    app.state.demo_query_vector = vis
-    app.state.demo_collection = coll
-    return JSONResponse({"ids": ids, "collection": coll}, status_code=200)
-
-
-@app.post("/demo_search")
-async def demo_search(top_k: int = 3, vector_type: str = 'visual', collection_name: str = None):
-    """
-    Search Qdrant using the last demo vector (populated by /demo_populate) and return hits.
-    """
-    if DEMO_MODE:
-        return JSONResponse({"error": "DEMO_MODE is enabled; demo endpoints disabled."}, status_code=400)
-    if not HAVE_QDRANT or QDRANT_CLIENT is None:
-        return JSONResponse({"error": "Qdrant not configured."}, status_code=400)
-    coll = collection_name or getattr(app.state, 'demo_collection', 'crop_health_knowledge')
-    vec = getattr(app.state, 'demo_query_vector', None)
-    if vec is None:
-        return JSONResponse({"error": "No demo vector available. Run /demo_populate first."}, status_code=400)
-    try:
-        try:
-            res = QDRANT_CLIENT.query_points(collection_name=coll, query=vec, limit=top_k, using=vector_type, with_payload=True).points
-        except Exception:
-            res = QDRANT_CLIENT.search(collection_name=coll, query_vector=vec, limit=top_k, with_payload=True)
-        out = []
-        for hit in res:
-            out.append({'id': hit.id, 'score': getattr(hit, 'score', None), 'payload': hit.payload})
-        return JSONResponse({"hits": out}, status_code=200)
+        
+        return JSONResponse({
+            "models": models,
+            "recommendations": recommendations,
+            "current_model": CURRENT_MODEL_INFO
+        }, status_code=200)
     except Exception as e:
         traceback.print_exc()
         return JSONResponse({"error": str(e)}, status_code=500)
 
+@app.get("/models/{model_id}")
+async def get_model_info(model_id: str):
+    """
+    Get detailed information about a specific model
+    """
+    if not HAVE_MODEL_MANAGER or MODEL_MANAGER is None:
+        return JSONResponse({"error": "ModelManager not available"}, status_code=400)
+    
+    try:
+        model_info = MODEL_MANAGER.get_model_info(model_id)
+        if model_info:
+            return JSONResponse({
+                "model": model_info.to_dict(),
+                "is_current": CURRENT_MODEL_INFO and CURRENT_MODEL_INFO.get("name") == model_id
+            }, status_code=200)
+        else:
+            return JSONResponse({"error": f"Model '{model_id}' not found"}, status_code=404)
+    except Exception as e:
+        traceback.print_exc()
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+@app.post("/models/switch/{model_id}")
+async def switch_model(model_id: str):
+    """
+    Switch to a different trained model
+    """
+    global CURRENT_MODEL_INFO
+    
+    if not HAVE_MODEL_MANAGER or MODEL_MANAGER is None:
+        return JSONResponse({"error": "ModelManager not available - model switching disabled"}, status_code=400)
+    
+    try:
+        model_info = MODEL_MANAGER.get_model_info(model_id)
+        if not model_info:
+            return JSONResponse({"error": f"Model '{model_id}' not found"}, status_code=404)
+        
+        # Check if model file exists
+        if not os.path.exists(model_info.path):
+            return JSONResponse({
+                "error": f"Model file not found: {model_info.path}"
+            }, status_code=404)
+        
+        # Load the new model
+        print(f"[server] Switching to model: {model_id}")
+        try:
+            load_model_and_tokenizer(model_info.path)
+            CURRENT_MODEL_INFO = model_info.to_dict()
+            return JSONResponse({
+                "success": True,
+                "message": f"Successfully switched to model: {model_id}",
+                "model": CURRENT_MODEL_INFO
+            }, status_code=200)
+        except Exception as load_error:
+            traceback.print_exc()
+            return JSONResponse({
+                "error": f"Failed to load model: {str(load_error)}",
+                "detail": traceback.format_exc()
+            }, status_code=500)
+            
+    except Exception as e:
+        traceback.print_exc()
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+@app.get("/models/current")
+async def get_current_model():
+    """
+    Get information about the currently loaded model
+    """
+    if CURRENT_MODEL_INFO:
+        return JSONResponse({
+            "model": CURRENT_MODEL_INFO,
+            "checkpoint_path": CHECKPOINT_PATH
+        }, status_code=200)
+    else:
+        return JSONResponse({
+            "model": None,
+            "checkpoint_path": CHECKPOINT_PATH,
+            "message": "No model metadata available (loaded from CHECKPOINT_PATH)"
+        }, status_code=200)
 
 # ---------------- Control endpoint for IoT devices ----------------
 @app.post("/control/{device}")
