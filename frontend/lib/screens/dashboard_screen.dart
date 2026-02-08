@@ -7,7 +7,7 @@ import '../services/auth_service.dart';
 import 'ai_chat_screen.dart';
 import 'analytics_screen.dart';
 import 'federated_learning_screen.dart';
-import 'qdrant_demo_screen.dart';
+import 'multimodal_diagnosis_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   final String apiBase;
@@ -187,7 +187,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
             Tab(icon: Icon(Icons.dashboard), text: 'Overview'),
             Tab(icon: Icon(Icons.terrain), text: 'Soil Analytics'),
             Tab(icon: Icon(Icons.smart_toy), text: 'AI Assistant'),
-            Tab(icon: Icon(Icons.storage), text: 'Qdrant Demo'),
+            Tab(icon: Icon(Icons.local_florist), text: 'Crop Check'),
             Tab(icon: Icon(Icons.trending_up), text: 'Analytics'),
             Tab(icon: Icon(Icons.group), text: 'Farm Network'),
             Tab(icon: Icon(Icons.settings), text: 'Controls'),
@@ -200,7 +200,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
           _buildOverviewTab(),
           _buildSoilAnalyticsTab(),
           _buildAIChatTab(),
-          _buildQdrantDemoTab(),
+          _buildCropCheckTab(),
           _buildHistoricalAnalyticsTab(),
           _buildFederatedLearningTab(),
           _buildControlsTab(),
@@ -291,8 +291,8 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
     return AIChatScreen(apiBase: widget.apiBase);
   }
 
-  Widget _buildQdrantDemoTab() {
-    return QdrantDemoScreen(apiBase: widget.apiBase);
+  Widget _buildCropCheckTab() {
+    return MultimodalDiagnosisScreen(apiBase: widget.apiBase);
   }
 
   Widget _buildHistoricalAnalyticsTab() {
