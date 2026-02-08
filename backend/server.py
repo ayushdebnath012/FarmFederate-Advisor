@@ -22,12 +22,19 @@ from fastapi.responses import JSONResponse
 
 # --- try to import training helpers (priors, labels) if available ---
 try:
-    # your training helpers (farm_advisor.py) — used for priors & labels if present
     from farm_advisor import ISSUE_LABELS as TRAIN_ISSUE_LABELS, apply_priors_to_logits
     HAVE_TRAIN_HELPERS = True
     ISSUE_LABELS = list(TRAIN_ISSUE_LABELS)
-    print("[server] Found farm_advisor helpers: using its ISSUE_LABELS and apply_priors_to_logits()")
-except Exception as e:
+    print("[server] Found farm_advisor helpers (absolute)")
+except ImportError:
+    try:
+        from .farm_advisor import ISSUE_LABELS as TRAIN_ISSUE_LABELS, apply_priors_to_logits
+        HAVE_TRAIN_HELPERS = True
+        ISSUE_LABELS = list(TRAIN_ISSUE_LABELS)
+        print("[server] Found farm_advisor helpers (relative)")
+    except ImportError:
+        pass
+if not globals().get('HAVE_TRAIN_HELPERS'):
     HAVE_TRAIN_HELPERS = False
     ISSUE_LABELS = ["water_stress", "nutrient_def", "pest_risk", "disease_risk", "heat_stress"]
     def apply_priors_to_logits(logits: torch.Tensor, texts: Optional[List[str]]):
@@ -40,20 +47,41 @@ NUM_LABELS = len(ISSUE_LABELS)
 # --- import your multimodal model & tokenizer builders ---
 # This file expects multimodal_model.py to define MultimodalClassifier,
 # build_tokenizer() and (optionally) build_image_processor().
+# Supports both relative imports (uvicorn backend.server:app) and
+# absolute imports (cd backend && uvicorn server:app).
+_DEMO_MODE_EARLY = str(os.environ.get("DEMO_MODE", "")).lower() in ("1", "true", "yes")
+HAVE_MODEL_CLASSES = False
 try:
-    # Use package-relative import so `python -m uvicorn backend.server` works
     from .multimodal_model import MultimodalClassifier, build_tokenizer, build_image_processor
-    print("[server] Imported MultimodalClassifier and tokenizer builders from multimodal_model.py")
-except Exception as e:
-    # try alternate names used earlier (relative)
+    HAVE_MODEL_CLASSES = True
+    print("[server] Imported MultimodalClassifier (relative import)")
+except ImportError:
     try:
-        from .multimodal_model import MultimodalModel as MultimodalClassifier
-        from .multimodal_model import build_tokenizer, build_image_processor
-        print("[server] Imported MultimodalModel (alias) from multimodal_model.py")
-    except Exception as ex:
-        print("[server][ERROR] Could not import multimodal_model definitions.")
-        traceback.print_exc()
-        raise
+        from multimodal_model import MultimodalClassifier, build_tokenizer, build_image_processor
+        HAVE_MODEL_CLASSES = True
+        print("[server] Imported MultimodalClassifier (absolute import)")
+    except ImportError:
+        try:
+            from .multimodal_model import MultimodalModel as MultimodalClassifier
+            from .multimodal_model import build_tokenizer, build_image_processor
+            HAVE_MODEL_CLASSES = True
+            print("[server] Imported MultimodalModel alias (relative)")
+        except ImportError:
+            try:
+                from multimodal_model import MultimodalModel as MultimodalClassifier
+                from multimodal_model import build_tokenizer, build_image_processor
+                HAVE_MODEL_CLASSES = True
+                print("[server] Imported MultimodalModel alias (absolute)")
+            except ImportError:
+                if _DEMO_MODE_EARLY:
+                    print("[server][WARN] multimodal_model not available — DEMO_MODE active, continuing without model")
+                    MultimodalClassifier = None
+                    def build_tokenizer(*a, **kw): return None
+                    def build_image_processor(*a, **kw): return None
+                else:
+                    print("[server][ERROR] Could not import multimodal_model definitions.")
+                    traceback.print_exc()
+                    raise
 
 # --- import ModelManager for model selection ---
 try:
@@ -119,7 +147,14 @@ CURRENT_MODEL_INFO: Optional[Dict[str, Any]] = None  # Current loaded model meta
 async def lifespan(app: FastAPI):
     # Startup: initialize ModelManager and load model
     global MODEL_MANAGER, CURRENT_MODEL_INFO
-    
+
+    # In DEMO_MODE without model classes, skip model loading entirely
+    if DEMO_MODE and not HAVE_MODEL_CLASSES:
+        print("[server] DEMO_MODE active, no model classes — skipping model loading")
+        yield
+        print("[server] Shutting down...")
+        return
+
     try:
         # Initialize ModelManager if available
         if HAVE_MODEL_MANAGER and ModelManager is not None:
