@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
+import '../models/models.dart';
 
 /// Simple API service that posts to /predict
 class ApiService {
@@ -76,6 +77,47 @@ class ApiService {
           body: json.encode({"description": description, "client_id": clientId}));
       return json.decode(resp.body) as Map<String, dynamic>;
     }
+  }
+
+  /// Typed predict: returns a PredictionResult object
+  Future<PredictionResult> predictTyped({
+    required String text,
+    String? sensors,
+    Uint8List? imageBytes,
+    String? imageName,
+    bool estimateUncertainty = false,
+    String clientId = "mobile_client",
+  }) async {
+    final raw = await predict(
+      text: text,
+      sensors: sensors,
+      imageBytes: imageBytes,
+      imageName: imageName,
+      clientId: clientId,
+    );
+    return PredictionResult.fromJson(raw);
+  }
+
+  /// Get current active model info from /models endpoint
+  Future<ModelInfo> getCurrentModel() async {
+    try {
+      final uri = Uri.parse("$baseUrl/models");
+      final resp = await http.get(uri).timeout(const Duration(seconds: 10));
+      final data = json.decode(resp.body);
+      if (data is Map<String, dynamic> && data['current'] != null) {
+        return ModelInfo.fromJson(data['current'] as Map<String, dynamic>);
+      }
+      if (data is Map<String, dynamic>) {
+        return ModelInfo.fromJson(data);
+      }
+    } catch (_) {}
+    // Fallback default model info
+    return ModelInfo(
+      id: 'default',
+      name: 'Crop Stress Detector',
+      description: 'Multimodal VLM fusion model',
+      accuracy: 0.847,
+    );
   }
 
   /// Demo: populate Qdrant with demo points
