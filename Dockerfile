@@ -41,15 +41,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-# Create non-root user for security
-RUN useradd --create-home --shell /bin/bash farmfederate
+# Create non-root user and directories (as root, before USER switch)
+RUN useradd --create-home --shell /bin/bash farmfederate && \
+    mkdir -p /app/models /app/data /app/results && \
+    chown -R farmfederate:farmfederate /app
+
 USER farmfederate
 
 # Copy application code
 COPY --chown=farmfederate:farmfederate . .
-
-# Create directories for models and data
-RUN mkdir -p /app/models /app/data /app/results
 
 # Environment variables
 ENV PYTHONUNBUFFERED=1 \
