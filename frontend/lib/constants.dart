@@ -10,7 +10,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 
 /// Production backend URL - UPDATE THIS for deployment
 /// Set this to your deployed backend URL (e.g., https://api.farmfederate.com)
-const String PRODUCTION_BACKEND = "https://your-backend-url.com";
+const String PRODUCTION_BACKEND = "https://farmfederate-advisor.onrender.com";
 
 /// Local development backend URLs
 const String _LOCALHOST = "http://localhost:8001";
@@ -21,7 +21,7 @@ const String _IOS_SIMULATOR = "http://localhost:8001";
 const String _LAN_BACKEND = "http://192.168.1.100:8001";
 
 /// Set to true when deploying to production
-const bool IS_PRODUCTION = false;
+const bool IS_PRODUCTION = true;
 
 /// Get the appropriate backend URL based on platform
 String getBackendUrl() {
