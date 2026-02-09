@@ -10,6 +10,7 @@ import 'firebase_options.dart';
 import 'services/auth_service.dart';
 import 'constants.dart';
 import 'routes.dart';
+import 'theme/app_theme.dart';
 
 // Conditional import - only import dart:html on web platform
 
@@ -36,14 +37,7 @@ class FarmFederateApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'FarmFederate Advisor',
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-        useMaterial3: true,
-        inputDecorationTheme: InputDecorationTheme(
-          filled: true,
-          fillColor: Colors.grey.shade50,
-        ),
-      ),
+      theme: AppTheme.darkTheme,
       routes: routes,
       initialRoute: '/',
       debugShowCheckedModeBanner: true,

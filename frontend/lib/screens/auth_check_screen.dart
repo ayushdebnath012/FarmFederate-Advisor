@@ -88,17 +88,13 @@ class _AuthCheckScreenState extends State<AuthCheckScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // FarmFederate logo/icon
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: const BoxDecoration(
-                gradient: AppTheme.primaryGradient,
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.agriculture,
-                size: 64,
-                color: Colors.white,
+            // FarmFederate logo
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.asset(
+                'assets/logo.png',
+                width: 112,
+                height: 112,
               ),
             ),
             const SizedBox(height: 32),
