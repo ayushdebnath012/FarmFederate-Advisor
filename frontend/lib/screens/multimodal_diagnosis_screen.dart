@@ -428,10 +428,29 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
           TextField(
             controller: _symptomController,
             maxLines: 4,
-            style: const TextStyle(color: Colors.white),
-            decoration: const InputDecoration(
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              height: 1.4,
+            ),
+            decoration: InputDecoration(
               hintText: 'Tell us what you notice...\n(yellow leaves, drooping, spots, bugs, etc.)',
-              prefixIcon: Icon(Icons.description),
+              hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.4)),
+              prefixIcon: const Icon(Icons.description),
+              filled: true,
+              fillColor: const Color(0xFF1A1A2E),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: Colors.white24),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: Colors.white24),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: AppTheme.primaryGreen),
+              ),
             ),
           ),
           const SizedBox(height: 12),
@@ -511,11 +530,29 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
                 children: [
                   TextField(
                     controller: _sensorController,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: const InputDecoration(
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                    ),
+                    decoration: InputDecoration(
                       labelText: 'Weather & Soil Info (optional)',
                       hintText: 'e.g., hot weather, dry soil, rainy week',
-                      prefixIcon: Icon(Icons.wb_sunny),
+                      hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.4)),
+                      prefixIcon: const Icon(Icons.wb_sunny),
+                      filled: true,
+                      fillColor: const Color(0xFF1A1A2E),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: Colors.white24),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: Colors.white24),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: AppTheme.primaryGreen),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16),
