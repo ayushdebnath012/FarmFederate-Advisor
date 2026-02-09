@@ -7,8 +7,8 @@ services:
     runtime: python
     region: oregon  # or singapore, frankfurt
     plan: free  # Change to 'starter' ($7/mo) for production with ML models
-    buildCommand: pip install -r backend/requirements-deploy.txt
-    startCommand: cd backend && uvicorn server:app --host 0.0.0.0 --port $PORT
+    buildCommand: pip install -r backend/requirements-render.txt
+    startCommand: cd backend && uvicorn demo_server:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
         value: "3.11"
