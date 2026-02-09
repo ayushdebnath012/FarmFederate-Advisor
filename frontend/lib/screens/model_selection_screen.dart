@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../constants.dart';
 
-/// Model Selection Screen
-/// Shows the 200 model configurations (5 LLM x 5 ViT x 8 VLM)
+/// Analysis Settings Screen
+/// Lets farmers choose how their crops are analyzed using simple descriptions
 class ModelSelectionScreen extends StatefulWidget {
   final String apiBase;
 
@@ -18,12 +18,33 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
   String _selectedVit = BEST_VIT;
   String _selectedFusion = BEST_FUSION;
 
+  /// Get the friendly name for any model key
+  String _getFriendlyName(String key) {
+    return LLM_FRIENDLY_NAMES[key] ??
+        VIT_FRIENDLY_NAMES[key] ??
+        FUSION_FRIENDLY_NAMES[key] ??
+        key;
+  }
+
+  /// Get the friendly description for any model key
+  String _getFriendlyDescription(String key) {
+    return LLM_FRIENDLY_DESCRIPTIONS[key] ??
+        VIT_FRIENDLY_DESCRIPTIONS[key] ??
+        FUSION_FRIENDLY_DESCRIPTIONS[key] ??
+        '';
+  }
+
+  /// Check if this option is the recommended one
+  bool _isBest(String key) {
+    return key == BEST_LLM || key == BEST_VIT || key == BEST_FUSION;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundDark,
       appBar: AppBar(
-        title: const Text('Analysis Type'),
+        title: const Text('Analysis Settings'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -32,21 +53,21 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
           children: [
             _buildInfoCard(),
             const SizedBox(height: 16),
-            _buildSectionTitle('Text Analysis Engine', Icons.text_fields),
+            _buildSectionTitle('How We Read Your Description', Icons.text_fields),
             const SizedBox(height: 8),
-            _buildChipSelector(LLM_ENCODERS, _selectedLlm, (v) {
+            _buildFriendlyChipSelector(LLM_ENCODERS, _selectedLlm, (v) {
               setState(() => _selectedLlm = v);
             }),
             const SizedBox(height: 16),
-            _buildSectionTitle('Image Analysis Engine', Icons.image),
+            _buildSectionTitle('How We Check Your Photo', Icons.image),
             const SizedBox(height: 8),
-            _buildChipSelector(VIT_ENCODERS, _selectedVit, (v) {
+            _buildFriendlyChipSelector(VIT_ENCODERS, _selectedVit, (v) {
               setState(() => _selectedVit = v);
             }),
             const SizedBox(height: 16),
-            _buildSectionTitle('Fusion Strategy', Icons.merge_type),
+            _buildSectionTitle('How We Combine Everything', Icons.merge_type),
             const SizedBox(height: 8),
-            _buildChipSelector(VLM_FUSIONS, _selectedFusion, (v) {
+            _buildFriendlyChipSelector(VLM_FUSIONS, _selectedFusion, (v) {
               setState(() => _selectedFusion = v);
             }),
             const SizedBox(height: 24),
@@ -97,34 +118,41 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
     );
   }
 
-  Widget _buildChipSelector(
+  Widget _buildFriendlyChipSelector(
       List<String> options, String selected, ValueChanged<String> onSelected) {
     return Wrap(
       spacing: 8,
       runSpacing: 8,
       children: options.map((option) {
         final isSelected = option == selected;
-        final isBest = option == BEST_LLM ||
-            option == BEST_VIT ||
-            option == BEST_FUSION;
-        return ChoiceChip(
-          label: Text(
-            isBest ? '$option (Best)' : option,
-            style: TextStyle(
-              color: isSelected ? Colors.white : Colors.white70,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+        final isBest = _isBest(option);
+        final friendlyName = _getFriendlyName(option);
+        final label = isBest ? '$friendlyName (Best)' : friendlyName;
+        return Tooltip(
+          message: _getFriendlyDescription(option),
+          child: ChoiceChip(
+            label: Text(
+              label,
+              style: TextStyle(
+                color: isSelected ? Colors.white : Colors.white70,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
             ),
+            selected: isSelected,
+            selectedColor: AppTheme.primaryGreen,
+            backgroundColor: AppTheme.cardDark,
+            onSelected: (_) => onSelected(option),
           ),
-          selected: isSelected,
-          selectedColor: AppTheme.primaryGreen,
-          backgroundColor: AppTheme.cardDark,
-          onSelected: (_) => onSelected(option),
         );
       }).toList(),
     );
   }
 
   Widget _buildCurrentSelection() {
+    final isRecommended = _selectedLlm == BEST_LLM &&
+        _selectedVit == BEST_VIT &&
+        _selectedFusion == BEST_FUSION;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -135,7 +163,7 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
       child: Column(
         children: [
           const Text(
-            'Current Configuration',
+            'Your Settings',
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -143,14 +171,34 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
             ),
           ),
           const SizedBox(height: 12),
-          _buildConfigRow('Text Engine', _selectedLlm),
-          _buildConfigRow('Image Engine', _selectedVit),
-          _buildConfigRow('Fusion', _selectedFusion),
+          _buildConfigRow('Description Reader', _getFriendlyName(_selectedLlm)),
+          _buildConfigRow('Photo Scanner', _getFriendlyName(_selectedVit)),
+          _buildConfigRow('Combination Method', _getFriendlyName(_selectedFusion)),
           const SizedBox(height: 12),
-          Text(
-            'Best: $BEST_LLM + $BEST_VIT + $BEST_FUSION (${(BEST_MACRO_F1_CENTRALIZED * 100).toStringAsFixed(1)}% F1)',
-            style: const TextStyle(color: AppTheme.primaryGreen, fontSize: 12),
-          ),
+          if (isRecommended)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppTheme.primaryGreen.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.check_circle, color: AppTheme.primaryGreen, size: 16),
+                  SizedBox(width: 6),
+                  Text(
+                    'Recommended settings - 85% accuracy',
+                    style: TextStyle(color: AppTheme.primaryGreen, fontSize: 12),
+                  ),
+                ],
+              ),
+            )
+          else
+            const Text(
+              'Tip: The "Best" options give the most accurate results',
+              style: TextStyle(color: Colors.white54, fontSize: 12),
+            ),
         ],
       ),
     );

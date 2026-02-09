@@ -740,16 +740,18 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: const Color(0xFF0A0E21),
                     borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: const Color(0xFF1D976C).withValues(alpha: 0.5)),
                   ),
                   child: TextField(
                     controller: _controller,
-                    style: const TextStyle(color: Colors.black87),
+                    style: const TextStyle(color: Colors.white, fontSize: 15),
                     decoration: InputDecoration(
                       hintText: 'Ask about your crops...',
-                      hintStyle: TextStyle(color: Colors.black.withOpacity(0.4)),
+                      hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.5)),
                       border: InputBorder.none,
+                      filled: false,
                     ),
                     textInputAction: TextInputAction.send,
                     onSubmitted: (_) => _sendMessage(),

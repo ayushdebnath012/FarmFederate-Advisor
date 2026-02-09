@@ -203,6 +203,67 @@ const Map<String, String> STRESS_ADVICE = {
 };
 
 // ============================================================
+// FARMER-FRIENDLY MODEL NAMES
+// ============================================================
+
+/// Friendly names for text analysis options (LLM encoders)
+const Map<String, String> LLM_FRIENDLY_NAMES = {
+  'bert': 'Standard',
+  'roberta': 'Most Accurate',
+  'distilbert': 'Fastest',
+  'albert': 'Lightweight',
+  'xlnet': 'Advanced',
+};
+
+const Map<String, String> LLM_FRIENDLY_DESCRIPTIONS = {
+  'bert': 'Good balance of speed and accuracy',
+  'roberta': 'Best at understanding crop descriptions',
+  'distilbert': 'Quick results, uses less data',
+  'albert': 'Works well on slower phones',
+  'xlnet': 'Good with long, detailed descriptions',
+};
+
+/// Friendly names for image analysis options (ViT encoders)
+const Map<String, String> VIT_FRIENDLY_NAMES = {
+  'vit_base': 'Standard',
+  'deit': 'Quick Scan',
+  'swin': 'Most Accurate',
+  'beit': 'Detailed',
+  'convnext': 'Enhanced',
+};
+
+const Map<String, String> VIT_FRIENDLY_DESCRIPTIONS = {
+  'vit_base': 'Good for most crop photos',
+  'deit': 'Faster photo analysis',
+  'swin': 'Best at spotting crop issues in photos',
+  'beit': 'Good for close-up photos',
+  'convnext': 'Strong all-around performance',
+};
+
+/// Friendly names for fusion strategies
+const Map<String, String> FUSION_FRIENDLY_NAMES = {
+  'concat': 'Simple',
+  'cross_attention': 'Thorough',
+  'gated': 'Balanced',
+  'clip': 'Reliable',
+  'flamingo': 'Advanced',
+  'blip2': 'Most Accurate',
+  'coca': 'Smart',
+  'unified_io': 'Universal',
+};
+
+const Map<String, String> FUSION_FRIENDLY_DESCRIPTIONS = {
+  'concat': 'Quick and straightforward',
+  'cross_attention': 'Looks carefully at both photo and description',
+  'gated': 'Focuses on what matters most',
+  'clip': 'Trusted combination method',
+  'flamingo': 'Sophisticated analysis',
+  'blip2': 'Best overall results',
+  'coca': 'Learns connections between photo and text',
+  'unified_io': 'Handles any type of input well',
+};
+
+// ============================================================
 // UI CONSTANTS
 // ============================================================
 

@@ -114,8 +114,8 @@ class ApiService {
     // Fallback default model info
     return ModelInfo(
       id: 'default',
-      name: 'Crop Stress Detector',
-      description: 'Multimodal VLM fusion model',
+      name: 'Smart Crop Analysis',
+      description: 'Checks your crops using photos and descriptions',
       accuracy: 0.847,
     );
   }

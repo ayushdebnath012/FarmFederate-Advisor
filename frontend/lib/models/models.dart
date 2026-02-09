@@ -140,13 +140,13 @@ class ModelInfo {
 
   factory ModelInfo.fromJson(Map<String, dynamic> json) {
     return ModelInfo(
-      id: json['id'] as String? ?? '',
-      name: json['name'] as String? ?? 'Unknown Model',
-      description: json['description'] as String? ?? '',
-      accuracy: (json['accuracy'] as num?)?.toDouble() ?? 0.0,
-      llmEncoder: json['llm_encoder'] as String? ?? '',
-      vitEncoder: json['vit_encoder'] as String? ?? '',
-      fusionStrategy: json['fusion_strategy'] as String? ?? '',
+      id: json['id'] as String? ?? 'default',
+      name: json['name'] as String? ?? 'Smart Crop Analysis',
+      description: json['description'] as String? ?? 'Checks your crops using photos and descriptions',
+      accuracy: (json['accuracy'] as num?)?.toDouble() ?? BEST_MACRO_F1_CENTRALIZED,
+      llmEncoder: json['llm_encoder'] as String? ?? BEST_LLM,
+      vitEncoder: json['vit_encoder'] as String? ?? BEST_VIT,
+      fusionStrategy: json['fusion_strategy'] as String? ?? BEST_FUSION,
     );
   }
 }
