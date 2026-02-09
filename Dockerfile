@@ -8,12 +8,12 @@ WORKDIR /app
 COPY backend/requirements-render.txt .
 RUN pip install --no-cache-dir -r requirements-render.txt
 
-# Copy only the demo server
-COPY backend/demo_server.py backend/demo_server.py
+# Copy demo server to app root (avoids package import issues)
+COPY backend/demo_server.py .
 
 ENV DEMO_MODE=true
 
 EXPOSE 8000
 
 # Use shell form so $PORT is expanded (Render sets PORT dynamically)
-CMD uvicorn backend.demo_server:app --host 0.0.0.0 --port ${PORT:-8000}
+CMD uvicorn demo_server:app --host 0.0.0.0 --port ${PORT:-8000}
