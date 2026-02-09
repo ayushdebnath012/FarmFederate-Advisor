@@ -4685,7 +4685,7 @@ def run_stress_dataset_comparison(config: Config, device, fusion_type: str = 'at
         # Train with diversity loss to prevent collapse
         # FIXED: train_model returns 4 values, not 3
         _, history, metrics, _ = train_model(model, train_loader, val_loader, temp_config, device,
-                                          'multimodal', diversity_weight=0.4)
+                                          'multimodal', diversity_weight=1.0)
 
         # Evaluate on held-out test set
         test_metrics = evaluate(model, test_loader, device, 'multimodal')
@@ -4762,7 +4762,7 @@ def run_stress_dataset_comparison(config: Config, device, fusion_type: str = 'at
     # Use diversity loss for combined training
     # FIXED: train_model returns 4 values, not 3
     _, history, metrics, _ = train_model(model, train_loader, val_loader, config, device,
-                                      'multimodal', diversity_weight=0.3)
+                                      'multimodal', diversity_weight=1.0)
 
     # Evaluate on held-out test set
     test_metrics = evaluate(model, test_loader, device, 'multimodal')
@@ -6249,7 +6249,7 @@ def run_training(config: Config, allow_short: bool = False, skip_download: bool 
     for model_name in LLM_MODELS.keys():
         print(f"\n>>> Training {model_name}...")
         model = LightweightTextClassifier(num_labels=config.num_labels).to(device)
-        best_f1, history, final_metrics, best_state = train_model(model, train_loader, val_loader, config, device, 'text', diversity_weight=0.3)
+        best_f1, history, final_metrics, best_state = train_model(model, train_loader, val_loader, config, device, 'text', diversity_weight=1.0)
 
         # Save best model checkpoint
         if best_state is not None:
@@ -6293,7 +6293,7 @@ def run_training(config: Config, allow_short: bool = False, skip_download: bool 
     for model_name in VIT_MODELS.keys():
         print(f"\n>>> Training {model_name}...")
         model = LightweightVisionClassifier(num_labels=config.num_labels).to(device)
-        best_f1, history, final_metrics, best_state = train_model(model, train_loader, val_loader, config, device, 'vision', diversity_weight=0.3)
+        best_f1, history, final_metrics, best_state = train_model(model, train_loader, val_loader, config, device, 'vision', diversity_weight=1.0)
 
         # Save best model checkpoint
         if best_state is not None:
@@ -6337,7 +6337,7 @@ def run_training(config: Config, allow_short: bool = False, skip_download: bool 
     for fusion_type in VLM_FUSION_TYPES:
         print(f"\n>>> Training VLM ({fusion_type})...")
         model = MultiModalClassifier(num_labels=config.num_labels, fusion_type=fusion_type).to(device)
-        best_f1, history, final_metrics, best_state = train_model(model, train_loader, val_loader, config, device, 'multimodal', diversity_weight=0.4)
+        best_f1, history, final_metrics, best_state = train_model(model, train_loader, val_loader, config, device, 'multimodal', diversity_weight=1.0)
 
         # Save best model checkpoint
         if best_state is not None:
@@ -6400,7 +6400,7 @@ def run_training(config: Config, allow_short: bool = False, skip_download: bool 
             dataset, flat_labels_train, batch_size=config.batch_size,
             num_classes=config.num_labels, shuffle=True
         )
-        best_f1, _, cent_metrics, cent_state = train_model(model, train_loader, val_loader, config, device, mtype, diversity_weight=0.3)
+        best_f1, _, cent_metrics, cent_state = train_model(model, train_loader, val_loader, config, device, mtype, diversity_weight=1.0)
 
         # Save centralized model
         if cent_state is not None:
