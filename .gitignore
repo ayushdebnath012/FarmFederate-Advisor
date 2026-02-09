@@ -1,5 +1,11 @@
 # FarmFederate root .gitignore
 
+# Model checkpoints (stored locally, not in git)
+*.pt
+models/
+backend/checkpoints/
+checkpoints/
+
 # Temporary files
 /tmp/
 *.tmp

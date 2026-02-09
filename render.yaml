@@ -12,8 +12,8 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: "3.11"
-      - key: PYTORCH_ENABLE_MPS_FALLBACK
-        value: "1"
+      - key: GIT_LFS_SKIP_SMUDGE
+        value: "1"  # Skip downloading 847MB model checkpoint during clone
       - key: DEMO_MODE
         value: "true"  # Set to "false" if you upload models
     healthCheckPath: /health
