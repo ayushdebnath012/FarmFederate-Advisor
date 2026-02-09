@@ -264,10 +264,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Row(children: [
-          FlutterLogo(size: 32),
-          SizedBox(width: 12),
-          Text('FarmFederate'),
+        title: Row(children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.asset('assets/logo.png', width: 32, height: 32),
+          ),
+          const SizedBox(width: 12),
+          const Text('FarmFederate'),
         ]),
         bottom: TabBar(controller: _tabs, tabs: const [
           Tab(text: 'Chat'),

@@ -91,13 +91,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       title: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              gradient: AppTheme.primaryGradient,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Icon(Icons.agriculture, size: 20, color: Colors.white),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.asset('assets/logo.png', width: 32, height: 32),
           ),
           const SizedBox(width: 10),
           const Text(
@@ -191,17 +187,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: const Icon(
-                      Icons.agriculture,
-                      size: 32,
-                      color: Colors.white,
-                    ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Image.asset('assets/logo.png', width: 56, height: 56),
                   ),
                   const SizedBox(height: 12),
                   const Text(
@@ -394,13 +382,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ],
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: const Icon(Icons.eco, color: Colors.white, size: 32),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.asset('assets/logo.png', width: 56, height: 56),
               ),
             ],
           ),
