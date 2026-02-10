@@ -5,6 +5,13 @@ class SensorData {
   final double humidity;
   final double flowRate;
   final double totalLiters;
+  final double soilPh;
+  final double lightIntensity; // lux
+  final double windSpeed; // m/s
+  final double nitrogen; // mg/kg (ppm)
+  final double phosphorus; // mg/kg (ppm)
+  final double potassium; // mg/kg (ppm)
+  final double leafWetness; // hours/day
   final DateTime timestamp;
 
   SensorData({
@@ -13,6 +20,13 @@ class SensorData {
     required this.humidity,
     required this.flowRate,
     required this.totalLiters,
+    this.soilPh = 6.5,
+    this.lightIntensity = 50000,
+    this.windSpeed = 2.0,
+    this.nitrogen = 35.0,
+    this.phosphorus = 20.0,
+    this.potassium = 150.0,
+    this.leafWetness = 3.0,
     required this.timestamp,
   });
 
@@ -23,6 +37,13 @@ class SensorData {
       humidity: (json['humidity'] ?? 0).toDouble(),
       flowRate: (json['flow_rate'] ?? 0).toDouble(),
       totalLiters: (json['total_liters'] ?? 0).toDouble(),
+      soilPh: (json['soil_ph'] ?? 6.5).toDouble(),
+      lightIntensity: (json['light_intensity'] ?? 50000).toDouble(),
+      windSpeed: (json['wind_speed'] ?? 2.0).toDouble(),
+      nitrogen: (json['nitrogen'] ?? 35.0).toDouble(),
+      phosphorus: (json['phosphorus'] ?? 20.0).toDouble(),
+      potassium: (json['potassium'] ?? 150.0).toDouble(),
+      leafWetness: (json['leaf_wetness'] ?? 3.0).toDouble(),
       timestamp: DateTime.parse(json['timestamp'] ?? DateTime.now().toIso8601String()),
     );
   }

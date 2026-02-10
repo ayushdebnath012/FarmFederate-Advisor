@@ -138,26 +138,26 @@ const Map<String, String> STRESS_DESCRIPTIONS = {
 
 /// 5 LLM Encoder variants (Table 8)
 const List<String> LLM_ENCODERS = [
-  'bert',
-  'roberta',
   'distilbert',
-  'albert',
-  'xlnet',
+  'bert_tiny',
+  'roberta_tiny',
+  'albert_tiny',
+  'mobilebert',
 ];
 
 /// 5 ViT Encoder variants (Table 9)
 const List<String> VIT_ENCODERS = [
   'vit_base',
-  'deit',
-  'swin',
-  'beit',
-  'convnext',
+  'deit_tiny',
+  'swin_tiny',
+  'convnext_tiny',
+  'efficientnet',
 ];
 
 /// 8 VLM Fusion strategies (Table 10)
 const List<String> VLM_FUSIONS = [
   'concat',
-  'cross_attention',
+  'attention',
   'gated',
   'clip',
   'flamingo',
@@ -166,15 +166,22 @@ const List<String> VLM_FUSIONS = [
   'unified_io',
 ];
 
-/// Total configurations: 5 x 5 x 8 = 200
-const int TOTAL_CONFIGURATIONS = 200;
+/// 3 Federated learning modes
+const List<String> FEDERATED_MODES = [
+  'fed_llm',
+  'fed_vit',
+  'fed_vlm',
+];
+
+/// Total configurations: 5 x 5 x 8 + 3 federated = 203
+const int TOTAL_CONFIGURATIONS = 203;
 
 // ============================================================
 // BEST CONFIGURATION (Table 22)
 // ============================================================
 
-const String BEST_LLM = 'roberta';
-const String BEST_VIT = 'swin';
+const String BEST_LLM = 'roberta_tiny';
+const String BEST_VIT = 'swin_tiny';
 const String BEST_FUSION = 'blip2';
 
 const double BEST_MACRO_F1_CENTRALIZED = 0.847;
@@ -203,64 +210,77 @@ const Map<String, String> STRESS_ADVICE = {
 };
 
 // ============================================================
-// FARMER-FRIENDLY MODEL NAMES
+// FARMER-FRIENDLY MODEL NAMES & DESCRIPTIONS
 // ============================================================
 
 /// Friendly names for text analysis options (LLM encoders)
 const Map<String, String> LLM_FRIENDLY_NAMES = {
-  'bert': 'Standard',
-  'roberta': 'Most Accurate',
-  'distilbert': 'Fastest',
-  'albert': 'Lightweight',
-  'xlnet': 'Advanced',
+  'distilbert': 'DistilBERT',
+  'bert_tiny': 'BERT-tiny',
+  'roberta_tiny': 'RoBERTa-tiny',
+  'albert_tiny': 'ALBERT-tiny',
+  'mobilebert': 'MobileBERT',
 };
 
 const Map<String, String> LLM_FRIENDLY_DESCRIPTIONS = {
-  'bert': 'Good balance of speed and accuracy',
-  'roberta': 'Best at understanding crop descriptions',
-  'distilbert': 'Quick results, uses less data',
-  'albert': 'Works well on slower phones',
-  'xlnet': 'Good with long, detailed descriptions',
+  'distilbert': 'Fast & light text reader - great for quick scans of your crop description',
+  'bert_tiny': 'Compact text reader - runs smoothly even on basic phones',
+  'roberta_tiny': 'Accurate text reader - best at understanding what you describe',
+  'albert_tiny': 'Memory-saver text reader - uses very little phone storage',
+  'mobilebert': 'Phone-optimized reader - built for mobile farming use',
 };
 
 /// Friendly names for image analysis options (ViT encoders)
 const Map<String, String> VIT_FRIENDLY_NAMES = {
-  'vit_base': 'Standard',
-  'deit': 'Quick Scan',
-  'swin': 'Most Accurate',
-  'beit': 'Detailed',
-  'convnext': 'Enhanced',
+  'vit_base': 'ViT-Base',
+  'deit_tiny': 'DeiT-tiny',
+  'swin_tiny': 'Swin-tiny',
+  'convnext_tiny': 'ConvNeXT-tiny',
+  'efficientnet': 'EfficientNet',
 };
 
 const Map<String, String> VIT_FRIENDLY_DESCRIPTIONS = {
-  'vit_base': 'Good for most crop photos',
-  'deit': 'Faster photo analysis',
-  'swin': 'Best at spotting crop issues in photos',
-  'beit': 'Good for close-up photos',
-  'convnext': 'Strong all-around performance',
+  'vit_base': 'Standard photo scanner - reliable for most crop photos',
+  'deit_tiny': 'Quick photo scanner - faster results when you are in a hurry',
+  'swin_tiny': 'Sharp-eye scanner - best at spotting small disease spots & pest marks',
+  'convnext_tiny': 'Modern scanner - strong all-around for leaves, fruits & stems',
+  'efficientnet': 'Battery-saver scanner - uses less power on your phone',
 };
 
 /// Friendly names for fusion strategies
 const Map<String, String> FUSION_FRIENDLY_NAMES = {
-  'concat': 'Simple',
-  'cross_attention': 'Thorough',
-  'gated': 'Balanced',
-  'clip': 'Reliable',
-  'flamingo': 'Advanced',
-  'blip2': 'Most Accurate',
-  'coca': 'Smart',
-  'unified_io': 'Universal',
+  'concat': 'Simple Join',
+  'attention': 'Smart Focus',
+  'gated': 'Balanced Mix',
+  'clip': 'CLIP Match',
+  'flamingo': 'Flamingo AI',
+  'blip2': 'BLIP-2 Deep',
+  'coca': 'CoCa Link',
+  'unified_io': 'Unified IO',
 };
 
 const Map<String, String> FUSION_FRIENDLY_DESCRIPTIONS = {
-  'concat': 'Quick and straightforward',
-  'cross_attention': 'Looks carefully at both photo and description',
-  'gated': 'Focuses on what matters most',
-  'clip': 'Trusted combination method',
-  'flamingo': 'Sophisticated analysis',
-  'blip2': 'Best overall results',
-  'coca': 'Learns connections between photo and text',
-  'unified_io': 'Handles any type of input well',
+  'concat': 'Puts your photo and description side by side - quick & simple',
+  'attention': 'Focuses on the most important parts of both photo & text',
+  'gated': 'Smartly balances how much weight to give photo vs text',
+  'clip': 'Matches your words to what it sees in the photo',
+  'flamingo': 'Advanced AI that reads your text while looking at the photo',
+  'blip2': 'Deep analysis - most thorough combination of photo + text',
+  'coca': 'Learns hidden connections between what you say and what it sees',
+  'unified_io': 'Universal method - handles any combination of inputs well',
+};
+
+/// Friendly names for federated learning modes
+const Map<String, String> FEDERATED_FRIENDLY_NAMES = {
+  'fed_llm': 'Community Text AI',
+  'fed_vit': 'Community Photo AI',
+  'fed_vlm': 'Community Full AI',
+};
+
+const Map<String, String> FEDERATED_FRIENDLY_DESCRIPTIONS = {
+  'fed_llm': 'Text model trained across many farms - your data never leaves your phone',
+  'fed_vit': 'Photo model trained across many farms - learns from everyone privately',
+  'fed_vlm': 'Full multimodal AI trained across farms - best community accuracy',
 };
 
 // ============================================================

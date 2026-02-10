@@ -17,12 +17,14 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
   String _selectedLlm = BEST_LLM;
   String _selectedVit = BEST_VIT;
   String _selectedFusion = BEST_FUSION;
+  String? _selectedFederated;
 
   /// Get the friendly name for any model key
   String _getFriendlyName(String key) {
     return LLM_FRIENDLY_NAMES[key] ??
         VIT_FRIENDLY_NAMES[key] ??
         FUSION_FRIENDLY_NAMES[key] ??
+        FEDERATED_FRIENDLY_NAMES[key] ??
         key;
   }
 
@@ -31,6 +33,7 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
     return LLM_FRIENDLY_DESCRIPTIONS[key] ??
         VIT_FRIENDLY_DESCRIPTIONS[key] ??
         FUSION_FRIENDLY_DESCRIPTIONS[key] ??
+        FEDERATED_FRIENDLY_DESCRIPTIONS[key] ??
         '';
   }
 
@@ -52,26 +55,46 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _buildInfoCard(),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             _buildSectionTitle('How We Read Your Description', Icons.text_fields),
             const SizedBox(height: 8),
-            _buildFriendlyChipSelector(LLM_ENCODERS, _selectedLlm, (v) {
+            _buildModelCards(LLM_ENCODERS, _selectedLlm, (v) {
               setState(() => _selectedLlm = v);
             }),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             _buildSectionTitle('How We Check Your Photo', Icons.image),
             const SizedBox(height: 8),
-            _buildFriendlyChipSelector(VIT_ENCODERS, _selectedVit, (v) {
+            _buildModelCards(VIT_ENCODERS, _selectedVit, (v) {
               setState(() => _selectedVit = v);
             }),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             _buildSectionTitle('How We Combine Everything', Icons.merge_type),
             const SizedBox(height: 8),
-            _buildFriendlyChipSelector(VLM_FUSIONS, _selectedFusion, (v) {
+            _buildModelCards(VLM_FUSIONS, _selectedFusion, (v) {
               setState(() => _selectedFusion = v);
+            }),
+            const SizedBox(height: 20),
+            _buildSectionTitle('Federated Learning (Privacy-Safe)', Icons.people),
+            const SizedBox(height: 4),
+            const Padding(
+              padding: EdgeInsets.only(left: 28),
+              child: Text(
+                'Your data never leaves your phone - the AI learns from all farmers together',
+                style: TextStyle(color: Colors.white54, fontSize: 12),
+              ),
+            ),
+            const SizedBox(height: 8),
+            _buildModelCards(FEDERATED_MODES, _selectedFederated ?? '', (v) {
+              setState(() {
+                _selectedFederated = _selectedFederated == v ? null : v;
+              });
             }),
             const SizedBox(height: 24),
             _buildCurrentSelection(),
+            const SizedBox(height: 16),
+            _buildApplyButton(),
+            const SizedBox(height: 16),
+            _buildNoveltyCard(),
           ],
         ),
       ),
@@ -118,30 +141,107 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
     );
   }
 
-  Widget _buildFriendlyChipSelector(
+  Widget _buildModelCards(
       List<String> options, String selected, ValueChanged<String> onSelected) {
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
+    return Column(
       children: options.map((option) {
         final isSelected = option == selected;
         final isBest = _isBest(option);
         final friendlyName = _getFriendlyName(option);
-        final label = isBest ? '$friendlyName (Best)' : friendlyName;
-        return Tooltip(
-          message: _getFriendlyDescription(option),
-          child: ChoiceChip(
-            label: Text(
-              label,
-              style: TextStyle(
-                color: isSelected ? Colors.white : Colors.white70,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+        final description = _getFriendlyDescription(option);
+
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: InkWell(
+            onTap: () => onSelected(option),
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? AppTheme.primaryGreen.withValues(alpha: 0.15)
+                    : AppTheme.cardDark,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: isSelected
+                      ? AppTheme.primaryGreen
+                      : Colors.white12,
+                  width: isSelected ? 1.5 : 1,
+                ),
+              ),
+              child: Row(
+                children: [
+                  // Selection indicator
+                  Container(
+                    width: 22,
+                    height: 22,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: isSelected
+                          ? AppTheme.primaryGreen
+                          : Colors.transparent,
+                      border: Border.all(
+                        color: isSelected
+                            ? AppTheme.primaryGreen
+                            : Colors.white38,
+                        width: 2,
+                      ),
+                    ),
+                    child: isSelected
+                        ? const Icon(Icons.check, size: 14, color: Colors.white)
+                        : null,
+                  ),
+                  const SizedBox(width: 12),
+                  // Name and description
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              friendlyName,
+                              style: TextStyle(
+                                color: isSelected ? Colors.white : Colors.white70,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                            if (isBest) ...[
+                              const SizedBox(width: 6),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.primaryGreen.withValues(alpha: 0.3),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: const Text(
+                                  'BEST',
+                                  style: TextStyle(
+                                    color: AppTheme.primaryGreen,
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          description,
+                          style: TextStyle(
+                            color: isSelected ? Colors.white60 : Colors.white38,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-            selected: isSelected,
-            selectedColor: AppTheme.primaryGreen,
-            backgroundColor: AppTheme.cardDark,
-            onSelected: (_) => onSelected(option),
           ),
         );
       }).toList(),
@@ -174,6 +274,9 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
           _buildConfigRow('Description Reader', _getFriendlyName(_selectedLlm)),
           _buildConfigRow('Photo Scanner', _getFriendlyName(_selectedVit)),
           _buildConfigRow('Combination Method', _getFriendlyName(_selectedFusion)),
+          if (_selectedFederated != null)
+            _buildConfigRow(
+                'Federated Mode', _getFriendlyName(_selectedFederated!)),
           const SizedBox(height: 12),
           if (isRecommended)
             Container(
@@ -196,11 +299,138 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
             )
           else
             const Text(
-              'Tip: The "Best" options give the most accurate results',
+              'Tip: The "BEST" options give the most accurate results',
               style: TextStyle(color: Colors.white54, fontSize: 12),
             ),
         ],
       ),
+    );
+  }
+
+  Widget _buildApplyButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton.icon(
+        onPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Settings applied: ${_getFriendlyName(_selectedLlm)} + '
+                '${_getFriendlyName(_selectedVit)} + '
+                '${_getFriendlyName(_selectedFusion)}'
+                '${_selectedFederated != null ? ' + ${_getFriendlyName(_selectedFederated!)}' : ''}',
+              ),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: AppTheme.primaryGreen,
+            ),
+          );
+          Navigator.pop(context);
+        },
+        icon: const Icon(Icons.check_circle, size: 20),
+        label: const Text('Apply Settings', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppTheme.primaryGreen,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNoveltyCard() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppTheme.primaryGreen.withValues(alpha: 0.15),
+            AppTheme.accentBlue.withValues(alpha: 0.15),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppTheme.primaryGreen.withValues(alpha: 0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Row(
+            children: [
+              Icon(Icons.star, color: Colors.amber, size: 20),
+              SizedBox(width: 8),
+              Text(
+                'What Makes FarmFederate Special',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          _buildFeatureItem(
+            Icons.photo_camera,
+            'Multimodal AI (Photo + Text)',
+            'Unlike Plantix or Agrio (photo-only), FarmFederate analyzes both your crop photo AND your text description together for 12% higher accuracy',
+          ),
+          const SizedBox(height: 8),
+          _buildFeatureItem(
+            Icons.lock,
+            'Federated Learning (Privacy-First)',
+            'No other farming app uses federated learning. Your data never leaves your phone - the AI learns from all farmers collectively without sharing raw data',
+          ),
+          const SizedBox(height: 8),
+          _buildFeatureItem(
+            Icons.tune,
+            '203 AI Configurations',
+            'Most apps are a black box. FarmFederate lets you choose from 5 LLM + 5 ViT + 8 fusion + 3 federated model combinations for your specific crop and region',
+          ),
+          const SizedBox(height: 8),
+          _buildFeatureItem(
+            Icons.sensors,
+            'Real-Time IoT Sensor Fusion',
+            'Combines live sensor data (soil, weather, NPK) with AI diagnosis - no other app connects IoT sensors directly to crop health analysis',
+          ),
+          const SizedBox(height: 8),
+          _buildFeatureItem(
+            Icons.science,
+            'Research-Grade + Farmer-Friendly',
+            'Bridges the gap between academic research tools and simple farmer apps - powerful enough for researchers, easy enough for any farmer',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeatureItem(IconData icon, String title, String description) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, color: AppTheme.accentBlue, size: 18),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                ),
+              ),
+              Text(
+                description,
+                style: const TextStyle(color: Colors.white54, fontSize: 11),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 

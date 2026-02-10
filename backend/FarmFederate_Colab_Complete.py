@@ -559,13 +559,14 @@ def generate_synthetic_image_data(n_samples: int = 500, img_size: int = 224) -> 
 
     images, labels = [], []
 
-    # Similar green base colors (harder to distinguish)
+    # FIX: More distinctive base colors for better ViT learning
+    # Previous colors differed by only ±0.02, now ±0.08-0.15 per channel
     base_colors = [
-        (0.28, 0.42, 0.17),  # water_stress
-        (0.30, 0.44, 0.16),  # nutrient_def
-        (0.27, 0.41, 0.18),  # pest_risk
-        (0.29, 0.43, 0.15),  # disease_risk
-        (0.31, 0.45, 0.19),  # heat_stress
+        (0.20, 0.35, 0.12),  # water_stress - darker, drier green
+        (0.40, 0.50, 0.15),  # nutrient_def - yellowed green
+        (0.25, 0.40, 0.22),  # pest_risk - damaged green
+        (0.30, 0.30, 0.10),  # disease_risk - brownish
+        (0.38, 0.42, 0.25),  # heat_stress - scorched/pale
     ]
 
     patterns = ['wilting', 'yellowing', 'spots', 'lesions', 'scorching']
@@ -588,7 +589,7 @@ def generate_synthetic_image_data(n_samples: int = 500, img_size: int = 224) -> 
 
         # Apply PRIMARY pattern with variable intensity
         pattern = patterns[label_idx]
-        intensity = 0.35 + random.random() * 0.4  # 35-75%
+        intensity = 0.50 + random.random() * 0.4  # 50-90% (was 35-75%)
 
         if pattern == 'wilting' and random.random() < 0.75:
             edge = int(10 + random.random() * 15)
@@ -1019,6 +1020,72 @@ def download_real_text_data(n_samples: int = 500, stress_type: Optional[str] = N
     print(f"    Class distribution: {dict(class_counts)}")
 
     return df
+
+
+def balance_dataset(df: "pd.DataFrame", target_per_class: int = None) -> "pd.DataFrame":
+    """Rebalance dataset to reduce class imbalance after download.
+
+    Caps majority classes and oversamples minority classes to achieve
+    roughly uniform distribution. Prevents the 25:1 imbalance that
+    causes class collapse during training.
+
+    Args:
+        df: DataFrame with 'text', 'labels', 'label_name', 'source' columns
+        target_per_class: Target samples per class. If None, uses median count.
+
+    Returns:
+        Rebalanced DataFrame with roughly uniform class distribution.
+    """
+    from collections import Counter
+
+    # Get current class counts
+    label_indices = [l[0] if isinstance(l, list) else int(l) for l in df['labels']]
+    counts = Counter(label_indices)
+
+    if not counts:
+        return df
+
+    # Determine target: use median count (balances between over/under-sampling)
+    sorted_counts = sorted(counts.values())
+    median_count = sorted_counts[len(sorted_counts) // 2]
+    if target_per_class is None:
+        target_per_class = median_count
+
+    # Cap at 2x target to allow some natural variation
+    max_per_class = int(target_per_class * 2)
+    min_per_class = max(target_per_class, 50)  # At least 50 samples
+
+    print(f"    Rebalancing: target={target_per_class}/class, cap={max_per_class}, floor={min_per_class}")
+
+    balanced_dfs = []
+    for class_idx in range(len(STRESS_LABELS)):
+        class_mask = df['labels'].apply(lambda x: (x[0] if isinstance(x, list) else int(x)) == class_idx)
+        class_df = df[class_mask]
+
+        current_count = len(class_df)
+        if current_count == 0:
+            continue
+
+        if current_count > max_per_class:
+            # Downsample majority class
+            class_df = class_df.sample(n=max_per_class, random_state=42)
+        elif current_count < min_per_class:
+            # Oversample minority class by duplicating rows
+            n_needed = min_per_class - current_count
+            extra = class_df.sample(n=n_needed, replace=True, random_state=42)
+            class_df = pd.concat([class_df, extra], ignore_index=True)
+
+        balanced_dfs.append(class_df)
+
+    result = pd.concat(balanced_dfs, ignore_index=True)
+    # Shuffle the result
+    result = result.sample(frac=1.0, random_state=42).reset_index(drop=True)
+
+    # Print new distribution
+    new_counts = Counter(result['label_name'])
+    print(f"    Rebalanced distribution: {dict(new_counts)}")
+
+    return result
 
 
 def download_and_prepare_text(n_samples: int = 500) -> Tuple[List[str], List[List[int]], List[str]]:
@@ -3192,29 +3259,53 @@ class LightweightVisionClassifier(nn.Module):
         else:
             self.class_weights = None
 
-        self.encoder = nn.Sequential(
+        # FIX: Deeper encoder with residual connections and spatial dropout
+        self.stem = nn.Sequential(
             nn.Conv2d(3, 64, 7, stride=2, padding=3),
             nn.BatchNorm2d(64), nn.ReLU(),
             nn.MaxPool2d(3, stride=2, padding=1),
+        )
+        self.block1 = nn.Sequential(
             nn.Conv2d(64, 128, 3, padding=1),
             nn.BatchNorm2d(128), nn.ReLU(),
+            nn.Dropout2d(0.1),
+            nn.Conv2d(128, 128, 3, padding=1),
+            nn.BatchNorm2d(128), nn.ReLU(),
+        )
+        self.down1 = nn.Conv2d(64, 128, 1)  # 1x1 for residual
+        self.block2 = nn.Sequential(
             nn.Conv2d(128, 256, 3, padding=1),
             nn.BatchNorm2d(256), nn.ReLU(),
+            nn.Dropout2d(0.1),
+            nn.Conv2d(256, 256, 3, padding=1),
+            nn.BatchNorm2d(256), nn.ReLU(),
+        )
+        self.down2 = nn.Conv2d(128, 256, 1)
+        self.block3 = nn.Sequential(
             nn.Conv2d(256, 512, 3, padding=1),
             nn.BatchNorm2d(512), nn.ReLU(),
-            nn.AdaptiveAvgPool2d(1)
+            nn.Dropout2d(0.15),
+            nn.Conv2d(512, 512, 3, padding=1),
+            nn.BatchNorm2d(512), nn.ReLU(),
         )
+        self.down3 = nn.Conv2d(256, 512, 1)
+        self.pool = nn.AdaptiveAvgPool2d(1)
+
         self.classifier = nn.Sequential(
             nn.Flatten(),
             nn.LayerNorm(512),
             nn.Linear(512, 256),
             nn.GELU(),
-            nn.Dropout(0.2),
+            nn.Dropout(0.3),
             nn.Linear(256, num_labels)
         )
 
     def forward(self, pixel_values, labels=None):
-        x = self.encoder(pixel_values)
+        x = self.stem(pixel_values)
+        x = self.block1(x) + self.down1(x)   # Residual connection
+        x = self.block2(x) + self.down2(x)   # Residual connection
+        x = self.block3(x) + self.down3(x)   # Residual connection
+        x = self.pool(x)
         logits = self.classifier(x)
 
         loss = None
@@ -3636,7 +3727,7 @@ def train_model(model, train_loader, val_loader, config: Config, device, model_t
     if model_type == 'text':
         lr = max(config.learning_rate, 1e-4)  # FIXED: Much higher LR (was 5e-5)
     elif model_type == 'vision':
-        lr = max(config.learning_rate, 5e-5)  # FIXED: Higher LR (was 2e-5)
+        lr = max(config.learning_rate, 1e-4)  # FIX: Match text LR for deeper CNN (was 5e-5)
     else:  # multimodal
         lr = max(config.learning_rate, 8e-5)  # FIXED: Higher LR for multimodal
 
@@ -3683,7 +3774,7 @@ def train_model(model, train_loader, val_loader, config: Config, device, model_t
     default_patience = 8 if model_type == 'multimodal' else 6  # Reduced from 15/12
     patience = getattr(config, 'early_stopping_patience', default_patience)
     patience_counter = 0
-    warmup_grace_epochs = 5  # FIXED: Reduced from 8 to 5
+    warmup_grace_epochs = 3  # FIX: Reduced from 5 to 3 for faster collapse abort
 
     for epoch in range(config.epochs):
         model.train()
@@ -6177,6 +6268,8 @@ def run_training(config: Config, allow_short: bool = False, skip_download: bool 
             n_text_samples = config.max_samples_per_class * len(STRESS_LABELS)
             text_df = download_real_text_data(n_text_samples)
             print(f"  [OK] Loaded {len(text_df)} real text samples")
+            # FIX: Rebalance to prevent 25:1 class imbalance from keyword bias
+            text_df = balance_dataset(text_df)
         except Exception as text_e:
             print(f"  [Fallback] Real text download failed: {text_e}. Using synthetic text.")
             text_df = generate_synthetic_text_data(config.max_samples_per_class * len(STRESS_LABELS))

@@ -518,13 +518,13 @@ def generate_synthetic_image_data(n_samples: int = 500, img_size: int = 224) -> 
 
     images, labels = [], []
 
-    # Similar green base colors (harder to distinguish)
+    # FIX: More distinctive base colors for better ViT learning
     base_colors = [
-        (0.28, 0.42, 0.17),  # water_stress
-        (0.30, 0.44, 0.16),  # nutrient_def
-        (0.27, 0.41, 0.18),  # pest_risk
-        (0.29, 0.43, 0.15),  # disease_risk
-        (0.31, 0.45, 0.19),  # heat_stress
+        (0.20, 0.35, 0.12),  # water_stress - darker, drier green
+        (0.40, 0.50, 0.15),  # nutrient_def - yellowed green
+        (0.25, 0.40, 0.22),  # pest_risk - damaged green
+        (0.30, 0.30, 0.10),  # disease_risk - brownish
+        (0.38, 0.42, 0.25),  # heat_stress - scorched/pale
     ]
 
     patterns = ['wilting', 'yellowing', 'spots', 'lesions', 'scorching']
@@ -547,7 +547,7 @@ def generate_synthetic_image_data(n_samples: int = 500, img_size: int = 224) -> 
 
         # Apply PRIMARY pattern with variable intensity
         pattern = patterns[label_idx]
-        intensity = 0.35 + random.random() * 0.4  # 35-75%
+        intensity = 0.50 + random.random() * 0.4  # 50-90% (was 35-75%)
 
         if pattern == 'wilting' and random.random() < 0.75:
             edge = int(10 + random.random() * 15)
@@ -982,6 +982,58 @@ def download_real_text_data(n_samples: int = 500, stress_type: Optional[str] = N
     print(f"    Class distribution: {dict(class_counts)}")
 
     return df
+
+
+def balance_dataset(df: "pd.DataFrame", target_per_class: int = None) -> "pd.DataFrame":
+    """Rebalance dataset to reduce class imbalance after download.
+
+    Caps majority classes and oversamples minority classes to achieve
+    roughly uniform distribution. Prevents the 25:1 imbalance that
+    causes class collapse during training.
+    """
+    from collections import Counter
+
+    label_indices = [l[0] if isinstance(l, list) else int(l) for l in df['labels']]
+    counts = Counter(label_indices)
+
+    if not counts:
+        return df
+
+    sorted_counts = sorted(counts.values())
+    median_count = sorted_counts[len(sorted_counts) // 2]
+    if target_per_class is None:
+        target_per_class = median_count
+
+    max_per_class = int(target_per_class * 2)
+    min_per_class = max(target_per_class, 50)
+
+    print(f"    Rebalancing: target={target_per_class}/class, cap={max_per_class}, floor={min_per_class}")
+
+    balanced_dfs = []
+    for class_idx in range(len(STRESS_LABELS)):
+        class_mask = df['labels'].apply(lambda x: (x[0] if isinstance(x, list) else int(x)) == class_idx)
+        class_df = df[class_mask]
+
+        current_count = len(class_df)
+        if current_count == 0:
+            continue
+
+        if current_count > max_per_class:
+            class_df = class_df.sample(n=max_per_class, random_state=42)
+        elif current_count < min_per_class:
+            n_needed = min_per_class - current_count
+            extra = class_df.sample(n=n_needed, replace=True, random_state=42)
+            class_df = pd.concat([class_df, extra], ignore_index=True)
+
+        balanced_dfs.append(class_df)
+
+    result = pd.concat(balanced_dfs, ignore_index=True)
+    result = result.sample(frac=1.0, random_state=42).reset_index(drop=True)
+
+    new_counts = Counter(result['label_name'])
+    print(f"    Rebalanced distribution: {dict(new_counts)}")
+
+    return result
 
 
 def augment_text_with_agriculture_LEAKY(text: str, stress_type: str) -> str:
@@ -1998,11 +2050,11 @@ class BalancedBatchSampler:
         self.samples_per_class = max(1, batch_size // num_classes)
         self.remainder = batch_size - (self.samples_per_class * num_classes)
 
-        # Calculate number of batches
-        min_class_size = min(len(indices) for indices in self.class_indices.values() if indices)
-        if min_class_size == 0:
-            min_class_size = 1
-        self.num_batches = max(1, min_class_size // self.samples_per_class)
+        # FIX: Use max_class_size so all majority samples are seen (was min_class_size)
+        max_class_size = max(len(indices) for indices in self.class_indices.values() if indices)
+        if max_class_size == 0:
+            max_class_size = 1
+        self.num_batches = max(1, max_class_size // self.samples_per_class)
 
     def __iter__(self):
         # Shuffle indices within each class
@@ -2061,13 +2113,13 @@ class DiversityLoss(nn.Module):
     Higher entropy = more diverse predictions = lower loss
     """
 
-    def __init__(self, num_classes: int = 5, diversity_weight: float = 0.8,
-                 min_entropy_ratio: float = 0.5):
+    def __init__(self, num_classes: int = 5, diversity_weight: float = 1.0,
+                 min_entropy_ratio: float = 0.7):
         """
         Args:
             num_classes: Number of output classes
-            diversity_weight: Weight for diversity penalty (increased to 0.8 for severe imbalance)
-            min_entropy_ratio: Minimum entropy ratio threshold (increased to 0.5)
+            diversity_weight: Weight for diversity penalty (1.0 for severe imbalance)
+            min_entropy_ratio: Minimum entropy ratio threshold (0.7 = 70%)
         """
         super().__init__()
         self.num_classes = num_classes
@@ -3138,10 +3190,10 @@ def compute_class_weights(labels: List, num_classes: int = 5, smoothing: float =
         count = counts.get(i, 1)  # Default to 1 to avoid division by zero
 
         if aggressive:
-            # VERY Aggressive weighting: direct ratio to max class (no sqrt dampening)
-            # For 4:1 imbalance, minority classes get 4x weight
+            # FIX: Use sqrt dampening for extreme imbalance (25:1+)
+            # For 25:1 imbalance: sqrt(25) = 5x weight (was 25x, too aggressive)
             ratio = max_count / count
-            weight = ratio  # Direct ratio - much stronger minority emphasis
+            weight = ratio ** 0.5  # Square root dampening
         else:
             # Standard inverse frequency
             weight = total / (num_classes * count)
@@ -3353,29 +3405,53 @@ class LightweightVisionClassifier(nn.Module):
         else:
             self.class_weights = None
 
-        self.encoder = nn.Sequential(
+        # FIX: Deeper encoder with residual connections and spatial dropout
+        self.stem = nn.Sequential(
             nn.Conv2d(3, 64, 7, stride=2, padding=3),
             nn.BatchNorm2d(64), nn.ReLU(),
             nn.MaxPool2d(3, stride=2, padding=1),
+        )
+        self.block1 = nn.Sequential(
             nn.Conv2d(64, 128, 3, padding=1),
             nn.BatchNorm2d(128), nn.ReLU(),
+            nn.Dropout2d(0.1),
+            nn.Conv2d(128, 128, 3, padding=1),
+            nn.BatchNorm2d(128), nn.ReLU(),
+        )
+        self.down1 = nn.Conv2d(64, 128, 1)
+        self.block2 = nn.Sequential(
             nn.Conv2d(128, 256, 3, padding=1),
             nn.BatchNorm2d(256), nn.ReLU(),
+            nn.Dropout2d(0.1),
+            nn.Conv2d(256, 256, 3, padding=1),
+            nn.BatchNorm2d(256), nn.ReLU(),
+        )
+        self.down2 = nn.Conv2d(128, 256, 1)
+        self.block3 = nn.Sequential(
             nn.Conv2d(256, 512, 3, padding=1),
             nn.BatchNorm2d(512), nn.ReLU(),
-            nn.AdaptiveAvgPool2d(1)
+            nn.Dropout2d(0.15),
+            nn.Conv2d(512, 512, 3, padding=1),
+            nn.BatchNorm2d(512), nn.ReLU(),
         )
+        self.down3 = nn.Conv2d(256, 512, 1)
+        self.pool = nn.AdaptiveAvgPool2d(1)
+
         self.classifier = nn.Sequential(
             nn.Flatten(),
             nn.LayerNorm(512),
             nn.Linear(512, 256),
             nn.GELU(),
-            nn.Dropout(0.2),
+            nn.Dropout(0.3),
             nn.Linear(256, num_labels)
         )
 
     def forward(self, pixel_values, labels=None):
-        x = self.encoder(pixel_values)
+        x = self.stem(pixel_values)
+        x = self.block1(x) + self.down1(x)
+        x = self.block2(x) + self.down2(x)
+        x = self.block3(x) + self.down3(x)
+        x = self.pool(x)
         logits = self.classifier(x)
 
         loss = None
@@ -3791,7 +3867,7 @@ def train_model(model, train_loader, val_loader, config: Config, device, model_t
     if model_type == 'text':
         lr = max(config.learning_rate, 1e-4)  # FIXED: Much higher LR (was 5e-5)
     elif model_type == 'vision':
-        lr = max(config.learning_rate, 5e-5)  # FIXED: Higher LR (was 2e-5)
+        lr = max(config.learning_rate, 1e-4)  # FIX: Match text LR for deeper CNN (was 5e-5)
     else:  # multimodal
         lr = max(config.learning_rate, 8e-5)  # FIXED: Higher LR for multimodal
 
@@ -3830,12 +3906,14 @@ def train_model(model, train_loader, val_loader, config: Config, device, model_t
     best_f1 = 0
     best_model_state = None
 
-    # FIXED: Longer grace period to allow model to escape class collapse
-    # No early stopping for first 8 epochs minimum
-    default_patience = 15 if model_type == 'multimodal' else 12
+    # FIX: Collapse detection and early abort
+    collapse_counter = 0
+    max_collapse_epochs = 3  # Abort after 3 consecutive collapses
+
+    default_patience = 8 if model_type == 'multimodal' else 6
     patience = getattr(config, 'early_stopping_patience', default_patience)
     patience_counter = 0
-    warmup_grace_epochs = 8  # FIXED: No early stopping before epoch 8
+    warmup_grace_epochs = 3  # FIX: Reduced from 8 to 3 for faster collapse abort
 
     for epoch in range(config.epochs):
         model.train()
@@ -3901,30 +3979,43 @@ def train_model(model, train_loader, val_loader, config: Config, device, model_t
 
         print(f"  Epoch {epoch+1}/{config.epochs} - Loss: {train_loss:.4f} - DivLoss: {avg_div_loss:.4f} - F1: {metrics['f1_micro']:.4f} - Diversity: {diversity_ratio:.0%} - LR: {current_lr:.2e}")
 
-        # Warn if model is collapsing
+        # FIX: Improved collapse detection with consecutive counter
+        is_collapsed = False
         if pred_dist:
             total_preds = sum(pred_dist.values())
             max_pred_class = max(pred_dist.values()) if pred_dist else 0
-            if total_preds > 0 and max_pred_class / total_preds > 0.8:
+            if total_preds > 0 and max_pred_class / total_preds > 0.85:
+                is_collapsed = True
+                collapse_counter += 1
                 print(f"    WARNING: Class collapse detected: {pred_dist}")
+            else:
+                collapse_counter = 0  # Reset on diverse epoch
+
+        # FIX: Early abort on persistent collapse
+        if collapse_counter >= max_collapse_epochs and epoch >= warmup_grace_epochs:
+            print(f"  ABORTING: Model collapsed for {collapse_counter} consecutive epochs")
+            if best_model_state is not None:
+                model.load_state_dict(best_model_state)
+                print(f"    Restored best model with F1={best_f1:.4f}")
+            break
 
         # Track best model - also consider diversity
-        # Only save model if it's diverse enough OR significantly better F1
-        is_diverse = diversity_ratio >= 0.4  # At least 2 classes predicted
-        if metrics['f1_micro'] > best_f1 and (is_diverse or metrics['f1_micro'] > best_f1 + 0.1):
+        is_diverse = diversity_ratio >= 0.6  # At least 3 classes predicted
+        if metrics['f1_micro'] > best_f1 and (is_diverse or metrics['f1_micro'] > best_f1 + 0.15):
             best_f1 = metrics['f1_micro']
             best_model_state = {k: v.cpu().clone() for k, v in model.state_dict().items()}
             patience_counter = 0
             print(f"    New best F1: {best_f1:.4f} (checkpoint saved)")
         elif metrics['f1_micro'] > best_f1 and not is_diverse:
-            print(f"    F1 improved but low diversity - not saving (collapse risk)")
+            print(f"    F1 improved but low diversity ({diversity_ratio:.0%}) - not saving")
             patience_counter += 1
         else:
             patience_counter += 1
 
-        # Early stopping - but only after grace period
-        if patience_counter >= patience and epoch >= warmup_grace_epochs:
-            print(f"  Early stopping at epoch {epoch+1} (no improvement for {patience} epochs)")
+        # Adaptive early stopping - stop earlier if collapsed
+        effective_patience = patience // 2 if collapse_counter >= 2 else patience
+        if patience_counter >= effective_patience and epoch >= warmup_grace_epochs:
+            print(f"  Early stopping at epoch {epoch+1} (no improvement for {patience_counter} epochs)")
             if best_model_state is not None:
                 model.load_state_dict(best_model_state)
                 print(f"    Restored best model with F1={best_f1:.4f}")
@@ -4635,7 +4726,7 @@ def run_stress_dataset_comparison(config: Config, device, fusion_type: str = 'at
         )
         # Train with diversity loss to prevent collapse
         _, history, metrics = train_model(model, train_loader, val_loader, temp_config, device,
-                                          'multimodal', diversity_weight=0.4)
+                                          'multimodal', diversity_weight=1.0)
 
         # Evaluate on held-out test set
         test_metrics = evaluate(model, test_loader, device, 'multimodal')
@@ -4711,7 +4802,7 @@ def run_stress_dataset_comparison(config: Config, device, fusion_type: str = 'at
     ).to(device)
     # Use diversity loss for combined training
     _, history, metrics = train_model(model, train_loader, val_loader, config, device,
-                                      'multimodal', diversity_weight=0.3)
+                                      'multimodal', diversity_weight=1.0)
 
     # Evaluate on held-out test set
     test_metrics = evaluate(model, test_loader, device, 'multimodal')
@@ -6033,6 +6124,8 @@ def run_training(config: Config, allow_short: bool = False):
             n_text_samples = config.max_samples_per_class * len(STRESS_LABELS)
             text_df = download_real_text_data(n_text_samples)
             print(f"  [OK] Loaded {len(text_df)} real text samples")
+            # FIX: Rebalance to prevent 25:1 class imbalance from keyword bias
+            text_df = balance_dataset(text_df)
         except Exception as text_e:
             print(f"  [Fallback] Real text download failed: {text_e}. Using synthetic text.")
             text_df = generate_synthetic_text_data(config.max_samples_per_class * len(STRESS_LABELS))
@@ -6101,7 +6194,7 @@ def run_training(config: Config, allow_short: bool = False):
     for model_name in LLM_MODELS.keys():
         print(f"\n>>> Training {model_name}...")
         model = LightweightTextClassifier(num_labels=config.num_labels).to(device)
-        best_f1, history, final_metrics = train_model(model, train_loader, val_loader, config, device, 'text', diversity_weight=0.3)
+        best_f1, history, final_metrics = train_model(model, train_loader, val_loader, config, device, 'text', diversity_weight=1.0)
 
         results['llm_models'][model_name] = {
             'f1': final_metrics['f1_micro'], 'f1_macro': final_metrics['f1_macro'],
@@ -6132,7 +6225,7 @@ def run_training(config: Config, allow_short: bool = False):
     for model_name in VIT_MODELS.keys():
         print(f"\n>>> Training {model_name}...")
         model = LightweightVisionClassifier(num_labels=config.num_labels).to(device)
-        best_f1, history, final_metrics = train_model(model, train_loader, val_loader, config, device, 'vision', diversity_weight=0.3)
+        best_f1, history, final_metrics = train_model(model, train_loader, val_loader, config, device, 'vision', diversity_weight=1.0)
 
         results['vit_models'][model_name] = {
             'f1': final_metrics['f1_micro'], 'f1_macro': final_metrics['f1_macro'],
@@ -6163,7 +6256,7 @@ def run_training(config: Config, allow_short: bool = False):
     for fusion_type in VLM_FUSION_TYPES:
         print(f"\n>>> Training VLM ({fusion_type})...")
         model = MultiModalClassifier(num_labels=config.num_labels, fusion_type=fusion_type).to(device)
-        best_f1, history, final_metrics = train_model(model, train_loader, val_loader, config, device, 'multimodal', diversity_weight=0.4)
+        best_f1, history, final_metrics = train_model(model, train_loader, val_loader, config, device, 'multimodal', diversity_weight=1.0)
 
         results['vlm_models'][fusion_type] = {
             'f1': final_metrics['f1_micro'], 'f1_macro': final_metrics['f1_macro'],
@@ -6213,7 +6306,7 @@ def run_training(config: Config, allow_short: bool = False):
             dataset, flat_labels_train, batch_size=config.batch_size,
             num_classes=config.num_labels, shuffle=True
         )
-        best_f1, _, cent_metrics = train_model(model, train_loader, val_loader, config, device, mtype, diversity_weight=0.3)
+        best_f1, _, cent_metrics = train_model(model, train_loader, val_loader, config, device, mtype, diversity_weight=1.0)
         results['centralized'][model_type] = {'f1': cent_metrics['f1_micro']}
 
         # Federated
