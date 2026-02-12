@@ -32,7 +32,6 @@
 \definecolor{vitcolor}{RGB}{34,139,34}
 \definecolor{vlmcolor}{RGB}{178,34,34}
 \definecolor{fedcolor}{RGB}{255,140,0}
-\definecolor{qdrantcolor}{RGB}{128,0,128}
 \definecolor{inputcolor}{RGB}{70,130,180}
 \definecolor{outputcolor}{RGB}{60,179,113}
 \definecolor{lightblue}{RGB}{173,216,230}
@@ -111,6 +110,8 @@ $E$ & Number of local epochs \\
 $\eta$ & Learning rate \\
 $R_{max}$ & Maximum model size constraint \\
 $D_{th}$ & Delay threshold for inference \\
+$\mathbf{x}_s$ & Sensor input (IoT telemetry vector) \\
+$S$ & Number of sensor parameters (12) \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -222,7 +223,7 @@ In Table \ref{tab:related_comparison}, we compare our work to other methods. Far
 
 \subsection{Architecture Overview}
 
-Figure \ref{fig:system_architecture} shows a schematic perspective of the FarmFederate architecture, which includes the multimodal encoder pipeline, the VLM fusion module, and the federated learning infrastructure. We believe that the agricultural environment is made up of several types of data sources that are spread out throughout many farms. For example, crop photographs from drones or smartphones and written symptom descriptions from farmers. Figure \ref{fig:system_architecture} shows how the farms talk to a central server using the federated learning protocol.
+Figure \ref{fig:system_architecture} shows a schematic perspective of the FarmFederate architecture, which includes the multimodal encoder pipeline, the VLM fusion module, and the federated learning infrastructure. We believe that the agricultural environment is made up of several types of data sources that are spread out throughout many farms. For example, crop photographs from drones or smartphones, written symptom descriptions from farmers, and IoT sensor telemetry (temperature, soil moisture, humidity, NPK levels) from field-deployed devices. Figure \ref{fig:system_architecture} shows how the farms talk to a central server using the federated learning protocol.
 
 % TikZ Architecture Diagram
 \begin{figure*}[!t]
@@ -273,7 +274,6 @@ Figure \ref{fig:system_architecture} shows a schematic perspective of the FarmFe
 
 % Side modules
 \node[fedbox, minimum height=1.5cm] (fed) at (10, 0) {Federated\\Learning\\{\scriptsize FedAvg}\\{\scriptsize K clients}};
-\node[box, fill=qdrantcolor!20] (qdrant) at (10, -4) {Qdrant\\{\scriptsize Vector DB}};
 
 % Arrows - main flow
 \draw[arrow] (text_in) -- (tokenizer);
@@ -289,7 +289,6 @@ Figure \ref{fig:system_architecture} shows a schematic perspective of the FarmFe
 
 % Arrows - side modules
 \draw[dasharrow] (fed) -- (fusion);
-\draw[dasharrow] (qdrant) -- (fusion);
 
 % Loss
 \node[smallbox, fill=yellow!30] (loss) at (3, -8.5) {$\mathcal{L} = \mathcal{L}_{focal} + \lambda\mathcal{L}_{div}$};
@@ -437,6 +436,33 @@ Pest & ``Small holes in leaves that show where bugs have been eating. There is a
 \bottomrule
 \end{tabular}
 \end{table}
+
+\subsubsection{IoT Sensor Data}
+
+The FarmFederate mobile application incorporates a simulated IoT sensor engine that generates realistic agricultural telemetry. Rather than relying on a single dataset, the sensor parameters are calibrated from multiple authoritative sources to produce physically plausible readings. Table \ref{tab:iot_sources} summarizes the data sources and their corresponding sensor parameters.
+
+\begin{table}[!t]
+\centering
+\caption{IoT Sensor Data Sources and Calibration Ranges}
+\label{tab:iot_sources}
+\small
+\begin{tabular}{p{2cm}p{2.2cm}p{3.3cm}}
+\toprule
+\textbf{Parameter} & \textbf{Source} & \textbf{Calibrated Range} \\
+\midrule
+Temperature & IMD, NOAA GSOD & 10--45\textdegree{}C (seasonal) \\
+Humidity & NOAA, IMD & 15--95\% RH (climate zone) \\
+Soil Moisture & USDA NRCS, FAO & 5--58\% VWC (soil type) \\
+Soil pH & USDA NRCS, ICAR & 4.5--8.5 (regional) \\
+NPK (N, P, K) & ICAR/TNAU, Oregon State & N: 10--65, P: 5--45, K: 80--350 mg/kg \\
+Light Intensity & NASA POWER & 0--100,000 lux (diurnal) \\
+Wind Speed & NOAA & 0--15 m/s \\
+Leaf Wetness & PMC studies & 0--18 hrs \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The sensor engine models three key physical phenomena: (1) \textit{diurnal cycles} following sinusoidal temperature and irradiance patterns derived from NOAA hourly station data, with peak temperature at 14:00 and minimum at 05:00; (2) \textit{seasonal baselines} aligned to the Indian agricultural calendar (Kharif: Jun--Sep, Rabi: Oct--Mar, Zaid: Mar--Jun) using IMD records; and (3) \textit{irrigation patterns} with soil moisture spikes at 06:00 and 18:00 following FAO depletion curves. Sensor noise of $\pm$1--2 units is added to match real IoT deployment accuracy. Crop-specific optimal ranges for rice, wheat, tomato, cotton, and maize are derived from FAO crop water requirements \cite{fao_cropwater} and ICAR/TNAU nutrient guidelines \cite{icar_soil}.
 
 \subsection{Text Encoder (LLM) Variants}
 
@@ -623,20 +649,15 @@ Figure \ref{fig:framework} shows the proposed framework, which has two key parts
 % Federated Aggregator Component
 \node[component, minimum width=3.5cm, fill=fedcolor!20] (aggregator) at (0, 0) {Federated Aggregator\\{\tiny FedAvg}};
 
-% Database
-\node[component, minimum width=2cm, fill=qdrantcolor!20] (db) at (4, 1.5) {Qdrant\\{\tiny Vector DB}};
-
 % Flow Table (inspired by MobiFlow)
 \node[component, minimum width=2.5cm, fill=gray!20] (flowtable) at (-4, 1.5) {Model\\Registry};
 
 % Connections
 \draw[arrow] (encoder) -- (aggregator);
-\draw[arrow, dashed] (db) -- (encoder);
 \draw[arrow, dashed] (flowtable) -- (aggregator);
 
 % Labels
 \node[font=\tiny] at (0, 1.5) {Gradients};
-\node[font=\tiny] at (2.2, 2.2) {Embeddings};
 \node[font=\tiny] at (-2, 2.2) {Checkpoints};
 
 \end{tikzpicture}
@@ -1592,8 +1613,8 @@ Government extension services can use FarmFederate to make mobile apps that let 
 Integration with precision agricultural platforms makes it possible to:
 \begin{itemize}
     \item Analyze drone images automatically
-    \item Correlate IoT sensor data
-    \item Create prescription maps for targeted treatment
+    \item Correlate IoT sensor telemetry---including temperature, soil moisture, humidity, soil pH, NPK levels, light intensity, wind speed, and leaf wetness---calibrated from NASA POWER, FAO, USDA NRCS, IMD, and NOAA GSOD data sources
+    \item Create prescription maps for targeted treatment based on crop-specific optimal ranges (e.g., rice: 20--32\textdegree{}C, soil moisture 35--55\% VWC; wheat: 14--25\textdegree{}C, soil moisture 20--40\% VWC)
 \end{itemize}
 
 Table \ref{tab:usecases} shows some examples of how this might be used.
@@ -1613,7 +1634,7 @@ Crop Insurance & Automated damage assessment combining imagery with adjuster rep
 \midrule
 Extension Services & Mobile apps for farmers with real-time stress classification \\
 \midrule
-Precision Platforms & Integration with drone imagery and sensor descriptions \\
+Precision Platforms & Integration with drone imagery and IoT sensor telemetry calibrated from NASA POWER, FAO, USDA NRCS, IMD, and NOAA GSOD \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1715,6 +1736,21 @@ H. Bao \textit{et al.}, ``BEiT: BERT pre-training of image transformers,'' \text
 
 \bibitem{liu2022convnet}
 Z. Liu \textit{et al.}, ``A ConvNet for the 2020s,'' \textit{CVPR}, 2022.
+
+\bibitem{fao_cropwater}
+R.G. Allen \textit{et al.}, ``Crop evapotranspiration: Guidelines for computing crop water requirements,'' \textit{FAO Irrigation and Drainage Paper 56}, Food and Agriculture Organization, 1998.
+
+\bibitem{icar_soil}
+Indian Council of Agricultural Research (ICAR), ``Soil test based fertilizer recommendations under IPNM for various crops,'' \textit{ICAR-TNAU Soil Fertility Classification}, 2020.
+
+\bibitem{nasa_power}
+NASA Langley Research Center, ``POWER---Prediction of Worldwide Energy Resources,'' \textit{NASA POWER Data Access Viewer}, 2023. [Online]. Available: \url{https://power.larc.nasa.gov/}
+
+\bibitem{noaa_gsod}
+National Oceanic and Atmospheric Administration, ``Global Surface Summary of the Day (GSOD),'' \textit{NOAA National Centers for Environmental Information}, 2023.
+
+\bibitem{usda_nrcs}
+USDA Natural Resources Conservation Service, ``Web Soil Survey,'' \textit{USDA NRCS Soil Data}, 2023. [Online]. Available: \url{https://websoilsurvey.nrcs.usda.gov/}
 
 \end{thebibliography}
 
