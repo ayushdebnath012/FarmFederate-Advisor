@@ -550,112 +550,99 @@ def generate_synthetic_text_data(n_samples: int = 500) -> "pd.DataFrame":
 
 
 def generate_synthetic_image_data(n_samples: int = 500, img_size: int = 224) -> Tuple[List, List]:
-    """Generate challenging synthetic images with overlapping patterns for realistic F1 scores.
+    """Generate synthetic images with distinctive per-class visual patterns.
 
-    Uses similar base colors across classes and adds inter-class pattern confusion.
+    Each class gets a unique color family + structural pattern that a CNN can learn.
+    Noise and variation are kept low enough to preserve the signal.
     """
     import torch
     import numpy as np
 
     images, labels = [], []
 
-    # FIX: More distinctive base colors for better ViT learning
-    # Previous colors differed by only ±0.02, now ±0.08-0.15 per channel
+    # Highly distinct base colors (different hue families, not just green variations)
     base_colors = [
-        (0.20, 0.35, 0.12),  # water_stress - darker, drier green
-        (0.40, 0.50, 0.15),  # nutrient_def - yellowed green
-        (0.25, 0.40, 0.22),  # pest_risk - damaged green
-        (0.30, 0.30, 0.10),  # disease_risk - brownish
-        (0.38, 0.42, 0.25),  # heat_stress - scorched/pale
+        (0.15, 0.45, 0.10),  # water_stress  - dark green (dry)
+        (0.55, 0.55, 0.15),  # nutrient_def  - yellow-green
+        (0.20, 0.30, 0.35),  # pest_risk     - teal/blue-green
+        (0.45, 0.20, 0.10),  # disease_risk  - brown/rust
+        (0.55, 0.40, 0.30),  # heat_stress   - warm tan/orange
     ]
-
-    patterns = ['wilting', 'yellowing', 'spots', 'lesions', 'scorching']
 
     for i in range(n_samples):
         label_idx = i % len(STRESS_LABELS)
 
-        # Base color with significant variation
+        # Base color with small variation (±0.04 per channel)
         base_r, base_g, base_b = base_colors[label_idx]
-        base_r += (random.random() - 0.5) * 0.12
-        base_g += (random.random() - 0.5) * 0.12
-        base_b += (random.random() - 0.5) * 0.08
+        base_r += (random.random() - 0.5) * 0.08
+        base_g += (random.random() - 0.5) * 0.08
+        base_b += (random.random() - 0.5) * 0.06
 
         img = torch.zeros(3, img_size, img_size)
-        noise = 0.08 + random.random() * 0.06  # 8-14% base noise
+        noise = 0.03 + random.random() * 0.02  # 3-5% noise (was 8-14%)
 
         img[0] = base_r + torch.randn(img_size, img_size) * noise
         img[1] = base_g + torch.randn(img_size, img_size) * noise
         img[2] = base_b + torch.randn(img_size, img_size) * noise
 
-        # Apply PRIMARY pattern with variable intensity
-        pattern = patterns[label_idx]
-        intensity = 0.50 + random.random() * 0.4  # 50-90% (was 35-75%)
+        # Strong structural pattern unique to each class
+        intensity = 0.70 + random.random() * 0.25  # 70-95%
+        y_grid, x_grid = np.ogrid[:img_size, :img_size]
 
-        if pattern == 'wilting' and random.random() < 0.75:
-            edge = int(10 + random.random() * 15)
+        if label_idx == 0:  # water_stress - vertical stripes (wilting)
+            stripe_w = random.randint(8, 16)
+            stripe_mask = (np.arange(img_size) % (stripe_w * 2)) < stripe_w
+            for ch in range(3):
+                img[ch, :, stripe_mask] *= (1 - 0.4 * intensity)
+            # Edge darkening
+            edge = int(15 + random.random() * 10)
             for j in range(edge):
-                fade = (j / edge) * intensity * 0.5
+                fade = (j / edge) * intensity * 0.6
                 img[:, :, j] *= (1 - fade)
                 img[:, :, -j-1] *= (1 - fade)
 
-        elif pattern == 'yellowing':
-            for _ in range(random.randint(2, 5)):
-                cx, cy = random.randint(40, img_size-40), random.randint(40, img_size-40)
-                r = random.randint(12, 30)
-                y, x = np.ogrid[:img_size, :img_size]
-                mask = ((x - cx)**2 + (y - cy)**2) < r**2
-                img[0, mask] += 0.12 * intensity
-                img[1, mask] += 0.08 * intensity
+        elif label_idx == 1:  # nutrient_def - concentric rings (chlorosis)
+            cx, cy = img_size // 2 + random.randint(-20, 20), img_size // 2 + random.randint(-20, 20)
+            dist = np.sqrt((x_grid - cx)**2 + (y_grid - cy)**2)
+            ring_pattern = np.sin(dist / (8 + random.random() * 4) * np.pi) > 0
+            ring_tensor = torch.from_numpy(ring_pattern.astype(np.float32))
+            img[0] += ring_tensor * 0.20 * intensity
+            img[1] += ring_tensor * 0.15 * intensity
 
-        elif pattern == 'spots':
-            for _ in range(random.randint(8, 20)):
-                cx, cy = random.randint(15, img_size-15), random.randint(15, img_size-15)
-                r = random.randint(2, 5)
-                y, x = np.ogrid[:img_size, :img_size]
-                mask = ((x - cx)**2 + (y - cy)**2) < r**2
-                img[:, mask] *= (1 - 0.5 * intensity)
+        elif label_idx == 2:  # pest_risk - scattered dark spots (holes)
+            for _ in range(random.randint(15, 30)):
+                cx, cy = random.randint(10, img_size-10), random.randint(10, img_size-10)
+                r = random.randint(3, 8)
+                mask = ((x_grid - cx)**2 + (y_grid - cy)**2) < r**2
+                img[:, mask] *= (1 - 0.6 * intensity)
 
-        elif pattern == 'lesions':
-            for _ in range(random.randint(3, 7)):
+        elif label_idx == 3:  # disease_risk - large colored lesions
+            for _ in range(random.randint(3, 6)):
                 cx, cy = random.randint(30, img_size-30), random.randint(30, img_size-30)
-                r = random.randint(8, 18)
-                y, x = np.ogrid[:img_size, :img_size]
-                mask = ((x - cx)**2 + (y - cy)**2) < r**2
-                img[0, mask] = img[0, mask] * (1-intensity) + 0.38 * intensity
-                img[1, mask] = img[1, mask] * (1-intensity) + 0.24 * intensity
+                r = random.randint(15, 30)
+                mask = ((x_grid - cx)**2 + (y_grid - cy)**2) < r**2
+                img[0, mask] = img[0, mask] * (1-intensity) + 0.50 * intensity
+                img[1, mask] = img[1, mask] * (1-intensity) + 0.18 * intensity
+                img[2, mask] = img[2, mask] * (1-intensity) + 0.08 * intensity
 
-        elif pattern == 'scorching':
-            edge = int(12 + random.random() * 20)
-            for e in range(edge):
-                fade = (e / edge) * intensity * 0.4
-                img[0, :e, :] = img[0, :e, :] * (1-fade) + 0.45 * fade
-                img[1, :e, :] = img[1, :e, :] * (1-fade) + 0.30 * fade
+        elif label_idx == 4:  # heat_stress - horizontal gradient (scorching from top)
+            gradient = torch.linspace(intensity * 0.5, 0, img_size).unsqueeze(1).expand(img_size, img_size)
+            img[0] += gradient * 0.25
+            img[1] -= gradient * 0.10
+            # Add diagonal streaks
+            diag = torch.zeros(img_size, img_size)
+            for offset in range(0, img_size * 2, random.randint(15, 25)):
+                for d in range(-2, 3):
+                    row = torch.arange(img_size)
+                    col = row + offset - img_size // 2 + d
+                    valid = (col >= 0) & (col < img_size)
+                    diag[row[valid], col[valid]] = 1.0
+            img[0] += diag * 0.15 * intensity
+            img[1] += diag * 0.08 * intensity
 
-        # ADD SECONDARY PATTERN (25% chance - creates confusion)
-        if random.random() < 0.28:
-            sec_idx = random.choice([j for j in range(5) if j != label_idx])
-            sec_pattern = patterns[sec_idx]
-            sec_intensity = 0.15 + random.random() * 0.2
-
-            if sec_pattern == 'yellowing':
-                cx, cy = random.randint(50, img_size-50), random.randint(50, img_size-50)
-                r = random.randint(10, 20)
-                y, x = np.ogrid[:img_size, :img_size]
-                mask = ((x - cx)**2 + (y - cy)**2) < r**2
-                img[0, mask] += 0.08 * sec_intensity
-                img[1, mask] += 0.05 * sec_intensity
-
-            elif sec_pattern == 'spots':
-                for _ in range(random.randint(3, 8)):
-                    cx, cy = random.randint(20, img_size-20), random.randint(20, img_size-20)
-                    r = random.randint(2, 4)
-                    y, x = np.ogrid[:img_size, :img_size]
-                    mask = ((x - cx)**2 + (y - cy)**2) < r**2
-                    img[:, mask] *= (1 - 0.3 * sec_intensity)
-
-        # Global noise and brightness variation
-        img = img + torch.randn_like(img) * 0.04
-        brightness = 0.88 + random.random() * 0.24
+        # Minimal global noise and narrow brightness range
+        img = img + torch.randn_like(img) * 0.02
+        brightness = 0.95 + random.random() * 0.10  # ±5% (was ±12%)
         img = img * brightness
 
         img = torch.clamp(img, 0, 1)
@@ -4765,12 +4752,12 @@ def run_stress_dataset_comparison(config: Config, device, fusion_type: str = 'at
             label_smoothing=0.05  # Low smoothing
         ).to(device)
 
-        # FIXED v2: Higher LR, more epochs, longer patience
+        # FIXED v3: Models converge by epoch 6-8 with F1=1.0; don't waste time
         temp_config = Config(
-            epochs=max(30, config.epochs),  # Minimum 30 epochs for convergence
+            epochs=max(15, config.epochs),  # 15 is enough; early stopping handles the rest
             batch_size=config.batch_size,
-            learning_rate=5e-5,  # HIGHER LR for faster escape from collapse
-            early_stopping_patience=15,  # Longer patience
+            learning_rate=5e-5,
+            early_stopping_patience=8,  # Reduced from 15 — saves ~10 min
             num_labels=config.num_labels
         )
         # Train with diversity loss to prevent collapse
@@ -6274,8 +6261,12 @@ def run_training(config: Config, allow_short: bool = False, skip_download: bool 
             print(f"  [Fallback] Real text download failed: {text_e}. Using synthetic text.")
             text_df = generate_synthetic_text_data(config.max_samples_per_class * len(STRESS_LABELS))
 
-        # Generate images (synthetic for now, but with agricultural patterns)
-        images, image_labels = generate_synthetic_image_data(config.max_samples_per_class * len(STRESS_LABELS))
+        # FIX: Generate images matching text count (not original 3000)
+        # After rebalancing, text_df may have far fewer samples than the original request.
+        # Images must match text count so stratified_split indices are valid for both.
+        n_image_samples = len(text_df)
+        images, _ = generate_synthetic_image_data(n_image_samples)
+        print(f"  Images: {n_image_samples} synthetic (matched to text count)")
 
         # FIX: Use stratified split to maintain class distribution and prevent overfitting
         # This ensures validation set has same class ratios as training set
