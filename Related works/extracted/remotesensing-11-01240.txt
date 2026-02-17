@@ -1,0 +1,229 @@
+remote sensing 
+Review
+Challenges and Future Perspectives of
+Multi-/Hyperspectral Thermal Infrared Remote
+Sensing for Crop Water-Stress Detection: A Review
+Max Gerhards 1,2,*
+, Martin Schlerf 2, Kaniska Mallick 2
+and Thomas Udelhoven 1
+1
+University of Trier, Faculty of Geography and Geosciences, Department of Environmental Remote Sensing &
+Geoinformatics, Behringstrasse, D-54296 Trier, Germany; udelhoven@uni-trier.de
+2
+Luxembourg Institute of Science and Technology (LIST), Environmental Research and Innovation (ERIN)
+Department, 41 Rue du Brill, L-4422 Belvaux, Luxembourg; martin.schlerf@list.lu (M.S.);
+kaniska.mallick@list.lu (K.M.)
+*
+Correspondence: gerhardsm@uni-trier.de or max.gerhards@yahoo.de
+Received: 16 April 2019; Accepted: 17 May 2019; Published: 24 May 2019
+
+
+Abstract: Thermal infrared (TIR) multi-/hyperspectral and sun-induced ﬂuorescence (SIF) approaches
+together with classic solar-reﬂective (visible, near-, and shortwave infrared reﬂectance (VNIR)/SWIR)
+hyperspectral remote sensing form the latest state-of-the-art techniques for the detection of crop
+water stress. Each of these three domains requires dedicated sensor technology currently in place
+for ground and airborne applications and either have satellite concepts under development (e.g.,
+HySPIRI/SBG (Surface Biology and Geology), Sentinel-8, HiTeSEM in the TIR) or are subject to
+satellite missions recently launched or scheduled within the next years (i.e., EnMAP and PRISMA
+(PRecursore IperSpettrale della Missione Applicativa, launched on March 2019) in the VNIR/SWIR,
+Fluorescence Explorer (FLEX) in the SIF). Identiﬁcation of plant water stress or drought is of utmost
+importance to guarantee global water and food supply. Therefore, knowledge of crop water status
+over large farmland areas bears large potential for optimizing agricultural water use. As plant
+responses to water stress are numerous and complex, their physiological consequences aﬀect the
+electromagnetic signal in diﬀerent spectral domains. This review paper summarizes the importance of
+water stress-related applications and the plant responses to water stress, followed by a concise review
+of water-stress detection through remote sensing, focusing on TIR without neglecting the comparison
+to other spectral domains (i.e., VNIR/SWIR and SIF) and multi-sensor approaches. Current and
+planned sensors at ground, airborne, and satellite level for the TIR as well as a selection of commonly
+used indices and approaches for water-stress detection using the main multi-/hyperspectral remote
+sensing imaging techniques are reviewed. Several important challenges are discussed that occur
+when using spectral emissivity, temperature-based indices, and physically-based approaches for
+water-stress detection in the TIR spectral domain. Furthermore, challenges with data processing
+and the perspectives for future satellite missions in the TIR are critically examined. In conclusion,
+information from multi-/hyperspectral TIR together with those from VNIR/SWIR and SIF sensors
+within a multi-sensor approach can provide profound insights to actual plant (water) status and the
+rationale of physiological and biochemical changes. Synergistic sensor use will open new avenues
+for scientists to study plant functioning and the response to environmental stress in a wide range
+of ecosystems.
+Keywords: remote sensing; thermal infrared (TIR); water stress; crop stress; evapotranspiration (ET)
+modeling; emissivity; temperature; drought; water use
+Remote Sens. 2019, 11, 1240; doi:10.3390/rs11101240
+www.mdpi.com/journal/remotesensing
+Remote Sens. 2019, 11, 1240
+2 of 24
+1. Importance of Water-Stress Detection
+Water-deﬁcit stress, usually shortened to water or drought stress, describes the plant physiological
+responses induced by a lack of available water due to either soil water deﬁcit or high evaporative
+demand of the atmosphere. Water stress induces dehydration in the plant and prevents plant cells
+from keeping water concentrations at an acceptable and healthy level [1,2]. Therefore, water stress is
+one of the most critical abiotic stressors limiting plant growth, crop yield and quality concerning food
+production [3,4].
+Since the global population is projected to grow by about 2.3 billion people between 2015 and 2050
+and societies are changing from low to medium per capita income, global food demand is expected
+to double within the same time [5–7]. Therefore, one of the most challenging tasks of our generation
+is to meet the second Sustainable Development Goal as deﬁned in the 2030 agenda for sustainable
+development by the United Nations: “End hunger, achieve food security and improved nutrition and
+promote sustainable agriculture” [8]. In this respect, agricultural processes need to be optimized and
+innovative farming methods must be developed to guarantee global food supply, as arable land and
+environmental resources have almost reached the limits of sustainability.
+Water is the most valuable resource of our planet. Presently, agriculture consumes 80–90% of the
+freshwater used by humans worldwide and about two thirds of this freshwater is required for crop
+irrigation [9]. Therefore, the ultimate goal must be a reduction in the amount of water used per unit
+yield [10].
+In addition, anthropogenic climate change is predicted to cause an increase of 1.0–2.5 ◦C in the
+annual mean global temperature over the next 50 years with a tremendous impact on agriculture [11].
+Consequently, evapotranspiration (ET) rates will increase and thus, the demand of water for crop
+irrigation will further rise. At the same time, extreme weather events such as droughts will appear
+more frequently and be more severe. These facts add some extra pressure to increasing global water
+scarcity and the need for saving water.
+Hence, it is desired to reduce the amount of water used per unit yield by reducing yield loss
+and by reducing the amount of water used for irrigation. To achieve this goal, early detection and
+monitoring of plant responses to water stress in agricultural crops are mandatory. Remote sensing
+oﬀers the opportunity to acquire high spatial, spectral and temporal resolution data as input for
+precision agriculture [12]. Precision agriculture promises great potential to close the yield gap by
+optimizing food production using the right management practice at the right place and the right time
+while keeping the consumption of resources at an environmentally sustainable level [13].
+2. Plant Responses to Water Stress
+Plant responses to water stress are numerous and complex (see [4,14–16] for comprehensive
+reviews). They appear synergistically or antagonistically and are modiﬁed by co-occurring plant
+stresses under ﬁeld conditions (Figure 1) [4,17,18].
+Therefore, it remains diﬃcult to detect and
+monitor plant water deﬁcit based on a single plant response [19]. In general, water deﬁcit causes
+physiological and biochemical changes which induce a reduction in photosynthesis and thus plant
+growth [16]. However, the timing, intensity, and duration of water stress are crucial to determine the
+plant physiological responses and their impact on plant metabolism [20]. For example, under mild
+water-stress conditions, plant regulation of water loss and uptake still allows the plant to maintain
+relative leaf water content with no or only little change in photosynthetic capacity. In contrast, severe
+water deﬁcit induces serious physiological and biochemical changes, which lead to eﬀects ranging
+from inhibition of photosynthesis and growth to leaf wilting and the loss of key pigments such as
+chlorophyll and thus to irreversible damages to the photosynthetic machinery [15–17]. Hence, plants
+have developed multiple mechanisms to prevent severe damage through water stress [21].
+Remote Sens. 2019, 11, 1240
+3 of 24
+Figure 1. Most important relationships between primary plant stresses, the induced plant responses,
+and the multi-/hyperspectral remote sensing techniques for the detection of environmental stresses
+(modiﬁed after Jones and Vaughan [19]).
+The ﬁrst plant response to water stress is stomatal closure, which prevents transpirational water
+loss (e.g., [4,15,17]). In particular, stomatal closure is the response to either a deﬁcit in soil water
+supply or to low-humidity atmosphere with high evaporative demand. It is commonly assumed that
+stomatal response is rather linked to soil water content than to leaf water content. This suggests that
+stomata are most likely triggered by chemical signals, such as the accumulation of abscisic acid (ABA)
+in dehydrated roots rather than by a reduced cell turgor [4]. However, under severe and/or prolonged
+water stress, cell turgor, and leaf water content is also reduced [15]. As a consequence, the exchange of
+water vapor between plants and atmosphere is reduced by stomatal closure and thus, the evaporative
+cooling eﬀect is decreased resulting in an overall increase of plant surface temperature compared to a
+plant which does not suﬀer from water stress [14,18,22].
+However, the stomata not only control plant transpiration but also plant respiration which inhibits
+CO2 uptake and ﬁxation. As a result of stomatal closure, the photosynthetic rate is reduced, which
+causes a reduction in cell division and thus slows down leaf growth and reduces the rate of leaf
+surface area expansion. A persistent water deﬁcit will further damage the photosynthetic machinery
+through loss of chlorophyll, which ﬁnally introduces changes in leaf color and wilting [15,16,20].
+Another plant response to water stress is the change in sun-induced ﬂuorescence (SIF). While the
+photosynthetic rate is reduced by a decreased CO2 uptake due to stomatal closure, irradiance and
+absorbed photosynthetically active radiation (fAPAR) remain constant. In general, energy absorbed by
+plant pigments (i.e., the chlorophylls and carotenoids) is dissipated by three competitive processes (i.e.,
+photosynthesis, SIF, and heat emission). Consequently, a reduced photochemistry as induced by water
+stress results in several physiological mechanisms to protect the plant against photoinhibition. These
+mechanisms foster non-photochemical quenching (NPQ) and reduce SIF [23,24].
+Besides these plant responses to water stress, osmotic adjustment is a further strategy to prevent
+irreversible damage. Osmotic adjustment describes the process of the accumulation of solutes such as
+carbohydrates and proteins to maintain the cell turgor at osmotic equilibrium [25].
+Remote Sens. 2019, 11, 1240
+4 of 24
+In summary, plant responses to water stress can be recognized as a sequence of physiological
+and biochemical changes depending on the severity and duration of plant water deﬁcit. Hence, the
+detection of water-stress symptoms is a function of time and depends on the plant responses to water
+deﬁcit and their corresponding physiological changes, which may be sensitive to diﬀerent remote
+sensing techniques.
+3. Remote Sensing of Water Stress
+Remote sensing is one of the key technologies in precision agriculture, which has an enormous
+demand for geospatial information [12,13]. Besides the information needs for soil properties, crop
+nutrients, crop biomass, and diseases, farmers and decision makers have a major interest in the
+detection of plant responses to environmental and water stresses [26–30]. In general, remote sensing
+provides a fast, cost-eﬃcient, non-destructive, and spatio-temporal measure of numerous physiological,
+biochemical and structural crop characteristics at diﬀerent scales (ground, airborne, and satellite).
+Plants can be irreversibly aﬀected before visible symptoms of water stress appear [15–17]. Therefore, a
+pre-symptomatic or pre-visual detection of plant physiological changes can essentially contribute to
+avoiding severe crop damages [31]. Hyperspectral imagery, with its continuous spectral data, has the
+potential to provide further insights into the relationship between the spectral features and associated
+plant conditions [32]. Focusing on the detection of plant responses to environmental stresses, the main
+multi-/hyperspectral remote sensing techniques are thermal imaging (TIR; 8–14 µm), visible, near- and
+shortwave infrared reﬂectance (VNIR/SWIR; 0.4–2.5 µm), and sun-induced ﬂuorescence (SIF 0.685 and
+0.74 µm).
+3.1. Thermal Infrared Domain
+Since the 1970s TIR remote sensing (8–14 µm) has been recognized as a potential tool for early
+plant water-stress detection. In general, emitted radiance in the TIR contains two intrinsic kinds of
+information: (i) surface temperature (i.e., “directional radiometric surface temperature” as deﬁned
+by [33]) of the object of interest and (ii) its spectral emissivity.
+3.1.1. Temperature and Emissivity Separation (TES)
+To derive both accurate surfaces temperatures and emissivity spectra, from hyperspectral TIR
+data, two fundamental problems have to be solved (e.g., [34–36]). First, atmospheric correction is
+needed, hence, the spectral radiance measured at sensor consists not only of the radiance emitted by the
+object of interest itself but also includes thermal radiation emitted by surroundings and reﬂected from
+the surface of the object (down-welling radiance (DWR)). It is further inﬂuenced by the intervening
+atmosphere in terms of absorption, emission, and scattering (upwelling radiance and transmittance
+(τ) of the atmosphere). In the past, upwelling path and τ were mostly neglected for short distance
+ﬁeld measurements. However, it has been shown by MIDAC (Model M4401-F; MIDAC Corporation,
+CA, USA) measurements over agricultural site’s in Barrax (Spain) that atmospheric correction is
+required (and possible) for such short distance measurements [37]. For airborne or satellite imagery
+the correction of atmospheric distortions is essential. Second, a solution to the so-called TES-problem
+is required. The measured spectral radiance is, regarding Planck’s law, a function of the absolute
+temperature and the spectral emissivity of the observed object. Thus, if the radiance is measured in n
+bands, there will be n + 1 unknowns, n emissivities values, plus the surface temperature. Therefore, to
+retrieve accurate surface temperatures, the spectral emissivity must be known and vice versa.
+While in theory, the TES represents an ill-posed problem, hyperspectral data in comparison
+to multispectral data allows a good ﬁt to Planck’s radiance curve for a speciﬁc temperature [38].
+Presently, a variety of algorithms exist which diﬀer in the underlying assumptions and the data
+basis.
+A comprehensive review is given by Li et al. [39].
+In general, it must be distinguished
+between short (indoor and outdoor measurement with 1–3 m) and large (ﬁeld or air- and spaceborne
+measurements) sensor–target distances. For short distance ﬁeld measurements, the new approach
+Remote Sens. 2019, 11, 1240
+5 of 24
+by Timmermans et al. [37] oﬀers an auto-correction for atmospheric eﬀects in TIR by: (i) calculating
+transmissivity from hot and cold blackbody measurements, (ii) using a simple atmospheric radiative
+transfer model based on MODTRAN for the retrieval of the atmospheric gas-constituents (i.e., H2O
+and CO2). Besides, the Spectral Smoothness method introduced by Horton et al. [40] is a widely used
+and accurate TES-approach for short distance ﬁeld measurements. This is because the smoothness
+approach requires no a priori knowledge, neither the maximum value of the emissivity nor the
+corresponding wavenumber. The atmospheric emission lines (i.e., H2O) are negatively oriented if
+the sample temperature is overestimated and vice versa. Using this atmospheric characteristic, the
+target emissivity spectrum can be accurately retrieved by iteratively changing the target temperature.
+However, this approach is only suitable for outside measurements in the presence of atmospheric
+water vapor lines. Because atmospheric features are not present or much lower in closed rooms, the
+Reference Channel or the Blackbody Fit should be used alternatively for indoor measurements [41].
+Concerning measurements from a greater distance (ﬁeld, airborne or satellite), atmospheric upwelling
+path and τ cannot be neglected. The Automatic Retrieval of Temperature and Emissivity using Spectral
+Smoothness (ARTEMISS) by Borel [42] is a hybrid approach, combining atmospheric correction and
+TES. First, the required atmospheric parameters (DWR, upwelling radiance, τ) are determined using a
+MODTRAN (MODerate resolution atmospheric TRANsmission) look-up-table (LUT). To this end, a
+pre-selection of potential atmospheric parameters is completed by using the In-Scene Atmospheric
+Compensation (ISAC) approach by Young et al. [43]. Finally, spectral emissivity is retrieved using a
+spectral smoothness approach called ISSTES (Iterative Spectrally Smooth Temperature and Emissivity
+Separation, [44]). In comparison to other in-scene atmospheric correction approaches, such as ISAC
+or AAC (Autonomous Atmospheric Compensation, [45]), ARTEMISS does not require any a priori
+knowledge and considers DWR. Therefore, ARTEMISS can be considered the state-of-the-art algorithm
+for hyperspectral TIR airborne data.
+3.1.2. Temperature-Based Approach
+Measuring leaf or canopy temperature for the detection of plant responses to water-deﬁcit stress
+is based on the idea of Tanner [46]. It is well established from the leaf energy balance equation that leaf
+temperature varies with (evapo-) transpiration rates of the leaves and hence is a function of stomatal
+conductance [46–48]. The transpiration rate is inversely correlated with leaf temperature [49]. The
+underlying principle is that if plant water status decreases, leaf transpiration is reduced as a result
+of active regulation of stomatal aperture [31]. Consequently, the inhibited evaporative cooling eﬀect
+leads to higher leaf and canopy temperatures in comparison to a well-watered plant (see Section 2
+of this review). Normally, the leaf temperature of a fully transpiring plant is about 2–5 K below the
+ambient air temperature [50]. Thus, leaf or canopy temperature depends substantially on the stomatal
+conductance [22]. Accordingly, as stomatal closure is the initial plant response to water deﬁcit, TIR
+remote sensing of leaf and/or canopy temperature has become an established technique to detect
+pre-visual water stress (e.g., [22,51–55]).
+The major limitation of the temperature-based approach is that the use of leaf or canopy temperature
+values alone cannot directly estimate the physiological status of crop plants [49]. This is because
+leaf temperatures measured under natural ﬁeld conditions are very sensitive to highly ﬂuctuating
+environmental factors such as air temperature, humidity, vapor pressure deﬁcit (VPD), wind speed,
+and incident radiation. Therefore, a variety of crop water-stress index approaches have been developed
+in the past with the aim of estimating plant water stress more quantitatively by normalizing radiatively
+measured leaf temperatures to actual environmental conditions. Following, a concise overview of
+the most important approaches of TIR sensing for water-stress detection is given (see [22,51,55] for
+comprehensive reviews).

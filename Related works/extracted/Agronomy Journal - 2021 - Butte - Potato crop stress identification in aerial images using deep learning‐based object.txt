@@ -1,0 +1,419 @@
+Received: 14 June 2021
+Accepted: 1 August 2021
+Published online: 24 September 2021
+DOI: 10.1002/agj2.20841
+A R T I C L E
+B i o m e t r y, M o d e l i n g , a n d S t a t i s t i c s
+Potato crop stress identification in aerial images using deep
+learning-based object detection
+Sujata Butte1
+Aleksandar Vakanski2
+Kasia Duellman3
+Haotian Wang1
+Amin Mirkouei2
+1 Dep. of Computer Science, Univ. of Idaho,
+Idaho Falls, ID 83402, USA
+2 Dep. of Nuclear Engineering and
+Industrial Management, Univ. of Idaho,
+Idaho Falls, ID 83402, USA
+3 College of Agricultural and Life Sciences,
+Univ. of Idaho, Idaho Falls, ID 83402, USA
+Correspondence
+Aleksandar Vakanski,Dep.of Nuclear Engi-
+neering and Industrial Management,Univ.of
+Idaho,Idaho Falls,ID83402,USA.
+Email: vakanski@uidaho.edu
+Assigned to AssociateEditor Kabindra
+Adhikari.
+Abstract
+Recent research on the application of remote sensing and deep learning-based analy-
+sis in precision agriculture demonstrated a potential for improved crop management
+and reduced environmental impacts of agricultural production. Despite the promis-
+ing results, the practical relevance of these technologies for field deployment requires
+novel algorithms that are customized for analysis of agricultural images and robust
+to implementation on natural field imagery. The paper presents an approach for ana-
+lyzing aerial images of a potato (Solanum tuberosum L.) crop using deep neural net-
+works. The main objective is to demonstrate automated spatial recognition of healthy
+vs. stressed crop at a plant level. Specifically, we examine premature plant senes-
+cence resulting in drought stress on ‘Russet Burbank’ potato plants. We propose a
+novel deep learning (DL) model for detecting crop stress, named Retina-UNet-Ag.
+The proposed architecture is a variant of Retina-UNet and includes connections from
+low-level semantic representation maps to the feature pyramid network. The paper
+also introduces a dataset of aerial field images acquired with a Parrot Sequoia cam-
+era. The dataset includes manually annotated bounding boxes of healthy and stressed
+plant regions. Experimental validation demonstrated the ability for distinguishing
+healthy and stressed plants in field images, achieving an average dice score coeffi-
+cient (DSC) of 0.74. A comparison to related state-of-the-art DL models for object
+detection revealed that the presented approach is effective for this task. The proposed
+method is conducive toward the assessment and recognition of potato crop stress in
+aerial field images collected under natural conditions.
+Abbreviations: CNN, convolutional neural network; DL, deep learning;
+DSC, Dice score coefficient; FPN, Feature Pyramid Network; IoU,
+Intersection over Union; NDVI, normalized difference vegetation index;
+NIR, near-infrared; NNs, neural networks; PA, precision agriculture; RE,
+red-edge; RGB, red–green–blue; UAV, unmanned aerial vehicle.
+© 2021 The Authors. Agronomy Journal © 2021 American Society of Agronomy
+1
+INTRODUCTION
+Precision agriculture (PA) is a concept for site-specific crop
+management based on observation and measurement of crop
+variability in a field (Pierce & Nowak, 1999; Stafford, 2000).
+The aim in PA is to improve crop yield and reduce the environ-
+mental impacts of agricultural production by decreased use
+of agrochemical substances. Despite the confirmed economic
+Agronomy Journal. 2021;113:3991–4002.
+wileyonlinelibrary.com/journal/agj2
+3991
+3992
+BUTTE ET AL.
+and environmental benefits of PA, professional reports and
+scientific surveys point to low rates of technology adoption
+(Pathak et al., 2019; Pierpaoli et al., 2013). Barriers towards
+increased adoption include the development of advanced data
+processing methods and platforms for automated seeding,
+weeding, and harvesting (Castle et al., 2016; Nahry et al.,
+2011). For instance, the use of cost-effective remote sens-
+ing systems in PA, such as unmanned aerial vehicles (UAVs),
+equipped with multispectral or hyperspectral sensors, pro-
+vides an appealing means for quick observation of large fields
+(Maes et al., 2017; Martinelli et al., 2015; Pádua et al., 2017;
+Walsh et al., 2018). Intervention based on gathered sensor data
+and follow-up data analysis is beneficial toward reducing or
+avoiding economic losses (Behmann et al., 2015; Berdugo
+et al., 2014; Bravo et al., 2003). Similarly, the implemen-
+tation of advanced machine learning algorithms for image
+analysis offers new insights for crop management in PA and
+contributes to extracting subtle patterns in acquired field
+imagery (Barth et al., 2018; Chen et al., 2014; Nagaraju &
+Chawla, 2020; Singh et al., 2018).
+In the published literature, a large body of work employed
+image analysis via conventional machine learning approaches
+for crop health assessment (Barbedo, 2013; Hamuda et al.,
+2016). These approaches often involve an initial step of
+image segmentation into plant and soil pixels, typically from
+extracted color-index information, such as normalized differ-
+ence vegetation index (NDVI), excess green index (ExG), and
+excess green minus excess red index (ExGR) (Bégué et al.,
+2018; Candiago et al., 2015; Kyratzis et al., 2017; Xue & Su,
+2017). Frequently applied image analysis methods encompass
+support vector machines (Camargo & Smith, 2009; Rumpf
+et al., 2010), k-nearest neighbors, random forests (Lottes et al.,
+2017), and multivariate Gaussian classifiers (Hamuda et al.,
+2016). However, conventional machine learning approaches
+rely on manually fine-tuning a set of parameters for a given
+collection of images, which may lead to decreased perfor-
+mance on images taken under different environmental con-
+ditions (e.g., illumination, weather), growing stages, or soil
+types (Abade et al., 2020; Milioto et al., 2017).
+A recent line of research emphasized the advantages of
+deep learning (DL)-based methods for image analysis in
+PA (Abade et al., 2020; Ghosal et al., 2018; Nagaraju &
+Chawla, 2020; Ramcharan et al., 2017; Taghavi Namin et al.,
+2018; Yamamoto et al., 2017). Contrary to the conventional
+methods that typically employ steps of segmentation, fea-
+ture extraction, and classification, DL models comprise multi-
+layer architectures that integrate all processing steps into one
+single framework for automated feature extraction and map-
+ping the inputs to an output function (Goodfellow et al., 2016;
+LeCun et al., 2015; Zhang et al., 2018). The capacity to learn
+rich hierarchical features at multiple levels of abstraction by
+DL models has been conducive to improved performance and
+generalization abilities, in comparison to vegetation indices
+Core Ideas
+∙New deep learning method for identification of
+drought stress in potato plants.
+∙Implemented on images collected under natural
+field conditions by a low-flying unmanned aerial
+vehicle.
+∙The approach modifies the feature pyramid net-
+work used in object detection models.
+∙Connections to low-level semantical information
+from the encoding path introduced.
+∙The generated dataset of potato field images has
+been posted for open public access.
+and manually crafted features (Kamilaris & Prenafeta-Boldú,
+2018). Several early studies for DL-based crop health assess-
+ment used convolutional neural networks (CNN) models
+for classification of healthy and diseased leaves of bananas
+(Musa X paradisiaca L.) (Amara et al., 2017), apples (Malus
+sylvestris Mill.) (Liu et al., 2018), cassava (Manihot escu-
+lenta Crantz) (Ramcharan et al., 2017), tomato (Lycopersi-
+con esculentum Mill.) (Yamamoto et al., 2017), and soy-
+bean [Glycine max (L.) Merr.] (Ghosal et al., 2018). Sim-
+ilarly, Mohanty et al. (2016) applied a CNN for classifica-
+tion of 14 crop species and 26 diseases using a dataset of
+healthy and diseased plant leaves images (Hughes & Salathe,
+2015).
+Although DL-based classification models have proven ben-
+eficial for analysis of close-up images of leaves or crop
+(e.g., taken using a cellphone camera) (Mohanty et al., 2016;
+Sladojevic et al., 2016), recent studies shifted the emphasis
+toward more advanced image analysis tasks, such as image
+segmentation and object detection. The major advantages and
+practical relevance of such tasks in comparison to image clas-
+sification originate from the capability to identify and local-
+ize objects (e.g., stressed areas) in agricultural field images.
+Image segmentation is the process of partitioning an image
+into multiple segments, by delineating the edges of the objects
+of interest and separating them from the background. In the
+context of PA, DL-based approaches were implemented for
+segmentation of crop and weed (Champ et al., 2020; Dyr-
+mann et al., 2016; Gao et al., 2020; Mortensen et al., 2016;
+Sa et al., 2017), fruits (Zhang et al., 2020), and seeds (Toda
+et al., 2020). Object detection is a related image analysis task,
+where the goal is to determine whether particular objects
+of interest (e.g., diseased or otherwise stressed plants) are
+present in an image, identify the locations of all present
+objects of interest in the image, and determine the category
+(i.e., healthy vs. stressed, or specific stress type) for all found
+objects. In previous PA studies, a body of work employed
+DL for object detection with application to fruit counting
+ 14350645, 2021, 5, Downloaded from https://acsess.onlinelibrary.wiley.com/doi/10.1002/agj2.20841 by Indian Institute Of Technology, Kharagpur Central Library, Wiley Online Library on [16/02/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+BUTTE ET AL.
+3993
+(Apolo-Apolo et al., 2020; Bargoti & Underwood, 2017; Rah-
+nemoonfar et al., 2017; Sa et al., 2016) and fruit load estima-
+tion (Koirala et al., 2019; Villacrés & Auat Cheein, 2020),
+disease detection (Fuentes et al., 2017; Rançon et al., 2019),
+and crop damage assessment (HamidiSepehr et al., 2019).
+The choice of applied algorithms for image segmentation vs.
+object detection in agriculture has been primarily task driven.
+Still, preparing ground truth labels for image segmentation
+requires demarcating all objects in images, which is substan-
+tially more time-consuming in comparison to defining the
+location of a set of bounding boxes in object detection. Sub-
+sequently, object detection methods have been the preferred
+choice in many related tasks (Abade et al., 2020; HamidiS-
+epehr et al., 2019) where the approximate locations of the
+bounding boxes for the objects of interest provide a satisfac-
+tory level of accuracy.
+Despite the impressive progress in recent years and the
+surging number of related papers and applications, there are
+still numerous challenges for the actual deployment of DL
+methods in the field. Specifically, the major obstacles involve:
+(a) difficulty in processing natural crop images, characterized
+with large crop variability across regions and growing stages,
+changing environmental conditions, overlapping and moving
+crop/plants/leaves, and cluttered background; (b) scarcity of
+crop datasets with corresponding labels and annotations; and
+(c) advanced and robust algorithms designed and optimized
+for processing specific crop images.
+In this work, we attempt to partially address all of the above
+challenges. Specifically, we introduce a novel DL architec-
+ture for drought stress assessment of potato (Solanum tubero-
+sum L.) crop in natural aerial images, as well as we introduce
+a dataset of agricultural images. A Parrot Sequoia camera
+mounted on a Solo UAV flying at a low altitude of 3 m above
+the ground was used for acquiring images of a potato field.
+We manually annotated the regions of healthy and stressed
+potato plants with rectangular bounding boxes, and posted the
+dataset on a dedicated website for open public access. The pro-
+posed DL architecture is a variant of the Retina-UNet (Jaeger
+et al., 2018) model for object detection, which employs a Fea-
+ture Pyramid Network (FPN) for generating high-level fea-
+ture representations for object prediction at multiple levels of
+abstraction. We refer to the proposed model as Retina-UNet-
+Ag, due to the application in agriculture. The connections
+between the layers in Retina-UNet-Ag are designed for detect-
+ing regions with moderate size. The experimental validation
+indicates ability for spatial recognition of crop stress in aerial
+field imagery. We conducted a performance comparison to
+four state-of-the-art architectures for object detection, includ-
+ing: Mask Region-based Convolutional NN (Mask R-CNN)
+(He et al., 2017), RetinaNet (Lin et al., 2020), Faster Region-
+based Convolutional NN (Faster R-CNN) (Ren et al., 2015),
+and You Only Look Once (YOLO) v3 (Redmon & Farhadi,
+2017). In the comparative analysis, our proposed network pro-
+duced more accurate predictions in comparison to these object
+detection models for the considered task.
+In the published literature, a number of other studies
+reported research on DL-based identification of biotic crop
+stresses, such as water stress (An et al., 2019; King & Shellie,
+2016; Ramos-Giraldo et al., 2020) and cold damage (Yang
+et al., 2019), as well as abiotic crop stress, such as nutrient
+deficiencies (Anami et al., 2020; Tran et al., 2019; Watcha-
+reeruetai et al., 2018). Several studies have also addressed the
+problem of DL-based crop stress localization in aerial images
+of natural fields taken under real conditions (Chiu et al., 2020;
+Zhang et al., 2019). The significance of our approach is in the
+design of a DL-based object detection model for potato crop
+stress identification in natural aerial images. Prior related DL
+research for potato crop assessment either focused on clas-
+sification tasks using basic CNN architectures (Polder et al.,
+2019), tuber disease identification (Oppenheim et al., 2019),
+or single-leaf image classification (Pardede et al., 2018). The
+most similar work to ours was reported by Huang et al. (2020),
+which employs RetinaNet for detection of rice (Oryza sativa
+L.) plants in a paddy field. However, the authors collected
+field images with a tractor-carried camera. Also, the com-
+parison provided in the Results section in this paper indicates
+that our proposed Retina-UNet-Ag model outperformed Reti-
+naNet (and the four other DL-models for object detection) on
+the potato stress detection task.
+The main contributions of this paper are: (a) a novel DL
+model for detection of drought-stressed potato crop in natural
+aerial images at a plant level and (b) an open dataset of 360
+UAV images (and an augmented training dataset of 15,000
+images) of potato crop with labeled regions of healthy and
+stressed/diseased plants.
+2
+MATERIALS AND METHODS
+2.1
+Field and induction of stress
+The potato field used in this study was established at the Uni-
+versity of Idaho - Aberdeen Research and Extension Center
+(Bingham County, Idaho). The geographical coordinates of
+latitude and longitude for the Aberdeen Research Center are
+42.953 ˚N and 112.827 ˚W, respectively. The overall area of
+the used potato field is 1.74 ha (4.3 acres) and was planted to
+potato cultivar Russet Burbank on 14 May 2018; potato plants
+were vine-killed on 10 September and harvested on 5 Octo-
+ber. Plots were overhead irrigated with 1/8-in (3.175 mm) noz-
+zle sprinklers spaced approximately 12.2 m (40 ft.) apart, fer-
+tilized, and otherwise maintained according to recommended
+timing and amounts for southeastern Idaho. However, plants
+along the first five rows along the western edge of the field
+experienced up to a 50% reduction in water inputs compared
+to the rest of the field, due to lack of additional irrigation
+ 14350645, 2021, 5, Downloaded from https://acsess.onlinelibrary.wiley.com/doi/10.1002/agj2.20841 by Indian Institute Of Technology, Kharagpur Central Library, Wiley Online Library on [16/02/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+3994
+BUTTE ET AL.
+F I G U R E 1
+A Solo unmanned aerial vehicle (UAV) and a
+Sequoia camera used for collecting aerial images of the field
+sprinklers along the western field edge. The field was assessed
+for diseases and nutrient levels to ensure the stress observed
+was due to drought rather than other stress factors. Plants were
+assessed on 13 Aug. 2018, when stressed plants due to insuf-
+ficient water inputs were beginning to senesce prematurely.
+2.2
+Aerial images collection
+For collecting aerial images of the field, we employed a small
+UAV Solo by 3DR, shown in Figure
+1. Mounted to the
+drone is a multispectral camera Sequoia by Parrot (“Parrot
+SEQUOIA+,”, 2017). The Sequoia camera weighs 72 g, and
+it is specifically designed for use with small UAVs. It has
+four monochrome sensors with 1.2 MPx resolution (960 ×
+1,280 pixels) that acquire images at four wavelength bands
+of the electromagnetic spectrum: visible green (550 nanome-
+ters), visible red (660 nanometers), red-edge (735 nanome-
+ters), and near-infrared (790 nanometers). The sensors cap-
+ture and log the reflectance within an interval of 40 nanome-
+ters around the above-listed wavelengths. The device also has
+an integrated red–green–blue (RGB) camera with 16 MPx
+resolution (3,456 × 4,608 pixels). Sequoia includes a down-
+welling irradiance sensor (also referred to as sunshine sensor)
+that is shown attached to the top of the drone in Figure 1. The
+sensor measures the level of irradiance for each of the four
+wavelength bands. The measurements are used for radiometric
+correction of reflectance images taken under different illumi-
+nation conditions. The camera has an integrated inertial mea-
+surement unit (IMU) and a magnetometer, as well as a global
+positioning system (GPS) unit, IMU, and magnetometer built
+into the irradiance sensor.
+The images were acquired by flying the drone at an altitude
+of 3 m (9.8 ft.) above the ground at a slow speed of .5 m/s.
+This altitude allows capturing high-resolution images of crop
+plants, and subsequently, recognition of crop stress in the field
+at a plant level. The ground resolution of the images is .08 cm
+for the RGB sensor, and 0.28 cm for the monochrome sensors.
+The footprint per image is 3.6 × 2.7 m for the RGB sensor, and
+3.8 × 2.8 m for the monochrome sensors. A time-lapse mode
+was used for capturing the images with a time interval set to
+1.21 s.
+2.3
+Dataset
+The dataset consists of labeled images containing a mix of
+healthy and stressed potato plants. The RGB sensor in Sequoia
+captured high-resolution images with 3,456 × 4,608 pixels
+size. Examples of the images are shown in Figure 2. From
+the collected set of high-resolution full-size RGB images, we
+extracted smaller image patches with 1,500 × 1,500 pixels size
+from different spatial locations by cropping and applying rota-
+tions of 45, 90, and 135 degrees. This step resulted in a set of
+360 image patches, each containing several rows of healthy
+and stressed potato plants. The full-size images acquired with
+the four narrow-band multispectral sensors of Sequoia have
+a resolution of 960 × 1,280 pixels. The images taken by the
+monochrome sensors were first undistorted and aligned in a
+pre-processing step, to account for the different locations of
+the sensors on the device. Next, image patches with a size of
+416 × 416 pixels were extracted for each of the four spec-
+tral bands.
+Besides applying translation and rotation for the extraction
+of image patches, we explored additional techniques to fur-
+ther increase the size of the training dataset, generally referred
+to as data augmentation. To this end, we applied the follow-
+ing four common methods for data augmentation: rescaling
+the pixels’ intensity in original images (minimum percentile
+value = .2, and maximum percentile value = 99.8), adjust-
+ing the gamma value of image brightness (gamma value = .8,
+and gain value = .8), adjusting the sigmoid value of image
+contrast (cutoff value = .5, gain value = 10), and applying
+a small amount of random noise (Gaussian distribution with
+mean = 0 and standard distribution = .1). Data augmentation
+was applied to 300 images, resulting in an augmented training
+set of 1,500 images. The remaining 60 images were used for
+testing. Data augmentation was not applied to the test images,
+as well as the image patches in the test set were independent
+from the training set (i.e., they were extracted from differ-
+ent images).
+Training object detection models requires labels with
+regions demarcating the objects of interest in images. For
+the potato crop dataset, the objects of interest are areas with
+healthy and stressed plants in images. Healthy and stressed
+plants were differentiated visually by color, with stressed
+plants exhibiting a yellower color compared to the healthy
+green plants. We used the open-source graphical annotation
+software LabelImg (Tzutalin, 2019) to manually annotate the
+ 14350645, 2021, 5, Downloaded from https://acsess.onlinelibrary.wiley.com/doi/10.1002/agj2.20841 by Indian Institute Of Technology, Kharagpur Central Library, Wiley Online Library on [16/02/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+BUTTE ET AL.
+3995
+F I G U R E 2
+High-resolution field images with healthy and stressed plants. The stressed plants are located in the upper-half segment in the left
+image, and right-half segment in the right image
+F I G U R E 3
+Retina-UNet-Ag architecture. C2–C5 blocks output feature maps from stages 2–5 of the base model ResNet-50. P2–P6 are the
+decoding block layers of the feature pyramid network, whose outputs are used for classification and bounding box regression
+regions containing healthy and unhealthy crop with rectangu-
+lar bounding boxes. The output coordinates of the bounding
+boxes and the class labels were saved as XML files, and were
+used for generating the ground truth for model training.
+The dataset is posted for open public access on the fol-
+lowing website https://www.webpages.uidaho.edu/vakanski/
+Multispectral_Images_Dataset.html
+2.4
+Deep learning method for object
+detection
+The proposed Retina-UNet-Ag model is a variant of the
+Retina-UNet architecture, which was initially proposed for
+object detection in medical images (Jaeger et al., 2018),
+and it integrates features that are characteristical for U-Net
+(Ronneberger et al., 2015) into the RetinaNet (Lin et al., 2020)
+model for object objection.
+U-Net is a frequently used network for image segmentation.
+It employs an encoder–a contracting sequence of hidden lay-
+ers (e.g., blue blocks in Figure 3) for learning semantic feature
+representations that gradually reduce the resolution of the
+feature maps, and a decoder–an expanding sequence of hid-
+den layers (e.g., orange blocks in Figure 3) for reconstructing
+the feature maps to the initial size of images. A distinguish-
+ing design aspect of U-Net is the skip connections (e.g., the
+arrows between the blue and orange blocks in Figure 3) which
+enable transferring spatial information between the hidden
+layers in the expanding and contracting paths of the model.
+RetinaNet is a well-known network for object detection,
+where the output consists of a set of rectangular bounding
+boxes for the detected objects in the images (rather than
+an accurate delineation of object edges, as in segmentation
+tasks). RetinaNet belongs to the group of one-stage object
+detectors, and employs a convolutional FPN (Lin et al., 2017)
+for generating high-level feature representations that are suit-
+able for detecting objects at multiple levels of abstraction.
+While object prediction based on high-level representations
+is advantageous in terms of positional invariance of objects
+(i.e., an object can be successfully detected regardless of
+being at different positions across the set of images), it results
+in loss of important low-level semantic information, which
+ 14350645, 2021, 5, Downloaded from https://acsess.onlinelibrary.wiley.com/doi/10.1002/agj2.20841 by Indian Institute Of Technology, Kharagpur Central Library, Wiley Online Library on [16/02/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License

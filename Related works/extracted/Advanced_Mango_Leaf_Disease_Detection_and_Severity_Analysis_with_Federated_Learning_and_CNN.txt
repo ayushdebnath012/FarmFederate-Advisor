@@ -1,0 +1,706 @@
+Advanced Mango Leaf Disease Detection and 
+Severity Analysis with Federated Learning and 
+CNN
+Shiva Mehta 
+Chitkara University Institute of 
+Engineering and Technology, 
+Chitkara University, 
+Punjab, India 
+shiva.2387@chitkara.edu.in 
+Vinay Kukreja 
+Chitkara University Institute of 
+Engineering and Technology, 
+Chitkara University, 
+Punjab, India 
+vinay.kukreja@chitkara.edu.in 
+Rishika Yadav 
+Computer Science and Engineering,  
+Graphic Era Hill University, 
+Dehradun, Uttarakhand, India 
+ryadav@gehu.ac.in 
+Abstract— Worldwide mango production is threatened by 
+mango leaf diseases, resulting in considerable financial losses. 
+Effective illness management and reduction depend on early 
+identification and severity level categorization. This research 
+provides a brand-new FL-CNN model for categorizing mango 
+leaf diseases into four severity categories. The FL-CNN model 
+allows training to be distributed across several clients without 
+compromising data privacy. The suggested model consistently 
+outperforms all clients in identifying the four severity levels of 
+mango leaf diseases. The model's efficiency across customers 
+with various data distributions is shown using macro, 
+weighted, and micro-averaging techniques. Client 4 had the 
+greatest macro average (96.11), weighted average (96.09), and
+micro average (96.08) values, while Client 1 had the lowest 
+macro average (93.92), weighted average (93.96), and micro 
+average (93.96) values. These findings show that the FL-CNN
+model successfully recognizes and categorizes various degrees 
+of mango leaf disease severity, making it an invaluable tool for 
+practical agricultural applications. Utilizing federated learning 
+provides data privacy while offering a scalable and safe 
+method for managing plant diseases. Additionally, federated 
+learning preserves data privacy and lessens the need for data 
+centralization, offering a solid foundation for cooperation 
+between many stakeholders. Future studies should focus on 
+enhancing the model's effectiveness and accuracy and 
+investigating whether it can predict additional plant diseases 
+and agricultural situations. 
+Keywords: Mango leaf diseases, Convolutional neural 
+networks (CNNs), Federated learning, Disease classification, 
+Severity levels. 
+I.
+INTRODUCTION
+A tropical fruit tree with high economic and nutritional 
+value, the mango (Mangifera indica L.) is extensively grown 
+around the globe. However, several diseases, especially those 
+that damage the leaves, may substantially impact the 
+production and quality of mango harvests. These illnesses, 
+which are brought on by pathogens like fungus, bacteria, and 
+viruses, may significantly reduce crop yields and jeopardize 
+the trees' health. To enact efficient control measures and 
+maintain a sustainable agricultural system, timely diagnosis 
+and precise categorization of mango leaf diseases and their 
+severity levels are crucial. Four separate phases of mango 
+leaf disease severity may be identified: (1) beginning, (2) 
+mild, (3) moderate, and (4) severe. Each stage shows the 
+disease's development and the severity of the leaf damage. It 
+is essential to accurately classify these severity levels to 
+choose the best management practices and lessen the effect 
+on the mango crop. Convolutional Neural Networks (CNNs) 
+have been developed due to recent developments in 
+computer vision and deep learning for various picture 
+categorization applications, including plant disease detection. 
+CNNs are a potential method for identifying illnesses in 
+mango leaves because of their excellent accuracy and 
+efficiency in detecting plant diseases. To train these models, 
+a considerable quantity of data must be gathered and stored 
+in a centralized repository, which might generate privacy and 
+security issues, particularly when the data is sensitive or 
+belongs to several parties. Federated learning is a distributed 
+machine learning method that permits the localization of data 
+while allowing the training of common models across several 
+devices. CNN models [1] may be taught without needing a 
+central repository for data storage by using federated 
+learning, protecting data privacy and lowering data 
+transmission costs. There are four key goals for this study. 
+To further future research on mango leaf disease detection 
+and classification, our first goal is to create a complete 
+collection of annotated photos of mango leaves with disease 
+kind and severity level. A unique Federated Learning-based 
+Convolutional Neural Network (FL-CNN) [2] architecture 
+will be created to categorize mango leaf diseases into four 
+severity levels. Third, we will assess the suggested FL-CNN 
+model's performance in contrast to conventional CNNs and 
+other cutting-edge techniques, proving its potency in 
+categorizing mango leaf illnesses and their severity levels. 
+We will finally address possible difficulties, constraints, and 
+future research prospects to further increase the precision and 
+effectiveness of mango leaf disease classification using 
+federated learning-based CNNs. This study suggests an FL-
+CNN—a convolutional neural network based on federated 
+learning—to categorize mango leaf illnesses into four 
+severity categories. The following are the primary 
+contributions of this study paper:
+Creation of a comprehensive collection of photos of 
+mango leaves tagged with information about the disease's 
+kind and severity level. 
+Design and implement a unique FL-CNN architecture 
+emphasizing protecting data privacy and minimizing 
+communication 
+overhead, 
+specially 
+customized 
+for 
+classifying mango leaf disease. 
+A thorough analysis of the suggested FL-CNN model's 
+performance compared to conventional CNNs and other 
+cutting-edge techniques shows how well it can categorize 
+mango leaf diseases and their severity levels. 
+To further increase the precision and effectiveness of 
+mango leaf disease classification using federated learning-
+2023 3rd International Conference on Intelligent Technologies (CONIT) 
+Karnataka, India. June 23-25, 2023
+979-8-3503-3860-7/23/$31.00 ©2023 IEEE
+1
+2023 3rd International Conference on Intelligent Technologies (CONIT) | 979-8-3503-3860-7/23/$31.00 ©2023 IEEE | DOI: 10.1109/CONIT59222.2023.10205922
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 15:52:40 UTC from IEEE Xplore.  Restrictions apply. 
+based CNNs, it is possible to identify potential difficulties 
+and limits of the proposed technique and provide ideas for
+future research paths. 
+A thorough description of the many ailments that harm 
+mango leaves One of the most prevalent diseases that 
+damage 
+mango 
+trees 
+is 
+anthracnose, 
+a 
+fungus. 
+Colletotrichum gloeosporioides brings it on and usually 
+affects the tree's leaves, blooms, and fruit. Dark patches on 
+the leaves, which may later become yellow or brown and 
+cause leaf loss, are the initial symptoms of the illness. Black 
+patches on infected flowers and fruit may acquire deformed 
+and undesirable characteristics. Anthracnose, which spreads 
+by wind and rain, is treatable and preventable with 
+fungicides. 
+Powdery Mildew: This fungal disease causes the leaves 
+to become deformed, stunted, and fall off the tree. It appears 
+as a white, powdery material on the foliage. The fungus 
+Oidium Mangifera causes it and may spread via wind or 
+insects. Fungicides may be used to manage powdery mildew, 
+which prefers warm, humid conditions. 
+Leaf Spot: This fungus, Cercospora sp., generate brown, 
+circular spots on the leaves that, in extreme situations, may 
+combine and result in defoliation. The disease may be 
+managed using fungicides and is transmitted by water, wind, 
+and insects. 
+Rust: This fungus infects the leaves, leaving orange or 
+yellow patches that may turn them yellow and cause them to 
+fall off the tree. The fungus Puccinia Mangifera is 
+responsible for its cause and may spread via wind or insects. 
+Rust can be managed using fungicides because it prefers 
+warm, humid environments. 
+Mango Malformation: This viral illness results in 
+twisted and deformed leaves, which may impede the 
+development of the tree and diminish fruit output. The 
+Mango Malformation Phytoplasma, spread by an insect 
+vector, causes the illness. Mango malformation has no 
+known treatment. Hence afflicted trees should be cut down to 
+stop the illness from spreading to other trees. Black spots on 
+the leaves are a symptom of the bacterial illness known as 
+"bacterial black spots," which may also hasten the premature 
+fall 
+of 
+the 
+leaves. 
+Xanthomonas 
+campestris 
+pave.
+mangiferaeindicae is the cause, and it may spread by wind or 
+rain. Bacterial black spots are curable with copper-based 
+fungicides and flourish in warm, humid environments. 
+II.
+LITERATURE REVIEW
+The article describes how mango leaf diseases may 
+reduce mango quality and productivity and how it might be 
+challenging to diagnose them using conventional techniques 
+effectively. Mango leaf illnesses have been classified by 
+researchers using computer-aided and machine-learning 
+techniques. However, these methods have certain drawbacks 
+owing to increasing feature dimensionality, overfitting, 
+computational 
+complexity, 
+and 
+a 
+lack 
+of 
+feature 
+characteristics. The authors suggest a new mango leaf 
+disease classification framework with four stages: data 
+preparation, feature selection, learning and classification, and 
+performance assessment. This framework aims to overcome 
+these problems. To avoid overfitting and enhancing 
+generalization, they chose 380 photos from the categories of 
+healthy and ill mango leaves. They used a convolutional 
+neural network with crossover-based levy flight distribution 
+to improve feature selection. For the learning stage, they 
+used a pre-trained MobileNetV2 model. For the classification 
+step, they used a support vector machine. Comparing the 
+experimental findings to other cutting-edge techniques, they 
+showed greater categorization performance [3]. This research 
+compared the efficacy of fuzzy logic and convolutional 
+neural networks (CNN) for diagnosing mango leaf illnesses. 
+The researchers utilised ten photos from the Seed Buzz 
+website as a dataset to train and test the prediction model in 
+MATLAB. The accuracy of the CNN and Fuzzy models 
+were compared statistically using the SPSS programme. The 
+fuzzy mean method had an accuracy of 93.5% and a 
+significance value of 0.038 for accuracy and 0.073 for 
+sensitivity, while the CNN-based system had a high accuracy 
+of 95.2%. According to the study, the CNN-based model is 
+more accurate than the Fuzzy Logic method in spotting 
+mango leaf illnesses [4]. This study proposes a Brightness
+Preserving 
+Bi-Histogram 
+Equalisation 
+(BBHE) 
+and 
+Convolutional Neural Network (CNN)-based automated 
+method for mango plant leaf disease detection. The 
+suggested approach intends to reduce the necessity for 
+human monitoring labour at important farms since early and 
+accurate diagnosis of leaf problems is crucial to improving 
+crop quality and yield. Images of mango leaves were 
+flattened, resized, and translated to their threshold value 
+before feature extraction. Both CNN and BBHE, which are 
+often used in pattern recognition, were utilised by the system. 
+The suggested approach has a maximum accuracy of 99.21% 
+for the early detection of mango leaf diseases. The training 
+data and test data were cross-validated to balance difficulties 
+with over-adjustment and under-adjustment. The study's 
+findings imply that the suggested automated technique would 
+work well in precisely and quickly identifying mango leaf 
+illnesses [5]. This article focuses on discovering and 
+identifying biotic stress factors, such as fungus and bacteria 
+in mango leaves, which may significantly affect the crop's 
+output. The impact of these pressures on the mango crop 
+might be lessened by early diagnosis and treatment of these 
+issues. The suggested method entails two steps: first, the area 
+of interest is separated from the input photos [6]. Then, the 
+segmented image is processed using a Convolutional Neural 
+Network (CNN) to extract characteristics from the image for 
+classification and identification. With an accuracy of 
+98.12%, the suggested method fared better than previous 
+models like VGG16, VGG19, and RestNet. The dataset 
+utilised for the experiment included a variety of stress-related 
+traits of several mango leaf types, including powdery 
+mildew, anthracnose, dieback, phoma blight, bacterial 
+canker, and red rust. Farmers who use the suggested method 
+to assess stress and enhance mango quality and quantity may 
+find it useful [7]. 50% of agricultural losses are related to 
+plant diseases, which substantially influence agricultural 
+productivity by reducing quality and quantity. Plant 
+pathologists utilise a variety of approaches to diagnose 
+diseases, but for farmers, especially in countries with limited 
+resources, these procedures are time- and money-consuming. 
+Researchers have put forward several models for the 
+automated detection and diagnosis of plant diseases based on 
+image processing, machine learning, and deep learning 
+algorithms to solve this problem. The models are separated 
+into two categories: deep learning-based models and those 
+based on traditional machine learning and image processing. 
+Due to its outstanding performance, deep learning combined 
+with transfer learning has emerged as the most popular 
+technique. However, these models' rigorous investigation has 
+2
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 15:52:40 UTC from IEEE Xplore.  Restrictions apply. 
+shown possible automated plant disease detection issues. The 
+study proposes that future research should concentrate on 
+tackling these issues to improve the precision and efficacy of 
+autonomous plant disease diagnostic algorithms [8]. For 
+federated 
+learning 
+of 
+contemporary 
+neural 
+network 
+topologies, including Convolutional Neural Networks 
+(CNNs) and Long Short-Term Memory (LSTM) networks 
+[9], this research suggests the Federated Matched Averaging 
+(FedMA) method. Federated learning dissociates the 
+capacity to do model training from the need to store data in 
+the cloud by allowing edge devices to cooperatively learn a 
+shared model while maintaining the training data on the 
+device [10]. By matching and averaging hidden components 
+with comparable feature extraction signatures, such as 
+channels for convolution layers, hidden states for LSTMs, 
+and neurons for fully connected layers, FedMA builds the 
+shared global model in a layer-by-layer fashion. The results 
+demonstrate that FedMA reduces the total communication 
+load while outperforming well-known cutting-edge federated 
+learning algorithms on deep CNN and LSTM architectures 
+trained on real-world datasets [11]. 
+III.
+METHODOLOGY 
+This section breaks the anticipated work's technique into 
+numerous steps—methods for classifying wheat disease 
+severity. The methodology may be broken down into three 
+main stages: data collection, data pre-processing, data 
+division into training and test series, and deployment of the 
+procedure as the last step in classifying the data for severity 
+affecting wheat diseases as shown in Figure 1. 
+A. Data Collection and Pre-Processing 
+The approach for creating the Federated Learning-based 
+Convolutional 
+Neural 
+Network 
+(FL-CNN)[12]for 
+categorizing mango leaf diseases into four severity levels is 
+described in this part. The three essential phases of the 
+process are federated learning implementation, model 
+architecture design, and dataset preparation. 
+The suggested FL-CNN model must be trained and 
+evaluated using a large dataset of pictures of mango leaves. 
+To construct this dataset, we will gather pictures of mango 
+leaves with various illnesses showing varying degrees of 
+severity. Images will be obtained from various places, 
+including field trips, 
+Fig. 1. Steps in the Methodology Process 
+Internet databases, and agricultural research facilities. To 
+guarantee the variety and representativeness of the dataset, 
+high-resolution photographs will be taken using cellphones 
+and digital cameras under various lighting situations and 
+perspectives. 
+Several preparation processes will be carried out to 
+guarantee the dataset's quality and consistency. These actions 
+comprise: 
+Resizing: To decrease computational complexity and 
+guarantee compliance with the CNN model input size, all 
+photos will be reduced to a uniform resolution, for example, 
+256x256 pixels. 
+Image 
+enhancement: Methods 
+like 
+histogram 
+equalisation and contrast stretching will be used to enhance 
+visual elements and increase image quality. 
+Labelling: Skilled 
+agronomists 
+will 
+label 
+each 
+photograph with the appropriate disease category and 
+severity level (initial, mild, moderate, or severe). 
+The pre-processed photos will be subjected to data 
+augmentation methods to expand the dataset's size and 
+variety. These methods include scaling, rotation, flipping, 
+and noise addition [13]. Enhanced photos will be created to 
+build a more robust dataset and aid the model's ability to 
+generalise while avoiding overfitting. After annotation, 
+check the dataset for quality control to ensure the annotations 
+are accurate and consistent in the four severity levels in
+Table 1.
+TABLE I.
+LEVELS OF SEVERITY IN MANGO LEAF DISEASES
+Severity Level
+Percentage Range
+1 (Initial)
+1-25%
+2 (Mild)
+26-50%
+3 (Moderate)
+51-75%
+4 (Severe)
+76-100%
+Store extra details about each picture in metadata, such as 
+the time and place taken and the camera settings. This 
+information may benefit future analyses or recognize any 
+biases in the dataset. Organize the dataset by building an 
+organized file system or database that makes it simple to 
+manage and retrieve the photographs and the labels that go 
+with them as shown in Figure 2. 
+Fig. 2. Several images of the Mango Leaf diseases
+3
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 15:52:40 UTC from IEEE Xplore.  Restrictions apply. 
+B. Model Aggregation  
+The 
+suggested 
+strategy 
+attempts 
+to 
+reduce 
+communication overhead and preserve data privacy 
+associated with typical centralised deep learning algorithms 
+while developing an accurate and effective FL-CNN model 
+for categorising mango leaf diseases into four severity levels. 
+The model can be trained on a large-scale, heterogeneous 
+dataset using federated learning without data owners 
+disclosing their raw data. This makes it a safer and more 
+privacy-preserving method for classifying plant diseases. The 
+suggested FL-CNN model [14] will include several layers to
+extract characteristics from the input photos and categorise 
+them into four severity levels. A softmax activation function 
+and Rectified Linear Units (ReLU) as the activation function 
+for additional layers are also included in the model 
+architecture, including 3 convolutional layers and 2 max-
+pooling 2 dense layers, and 2 fully linked convolutional 
+layers. The resolution of the supplied photos will always be 
+234x234 pixels in Figure 3.
+Fig. 3. Model Evaluation 
+C. Federated Learning CNN Model 
+Convolutional, pooling and fully connected layers will all 
+be included in the proposed FL-CNN model. Convolutional 
+layers will be in charge of removing features from the input 
+photos, pooling layers will be in charge of shrinking the 
+spatial dimensions, and fully connected layers will be in 
+charge of categorizing the data. Dropout layers and batch 
+normalization will also be used to enhance the model's 
+functionality and avoid overfitting. An appropriate loss 
+function, such as categorical cross-entropy, often used for 
+multi-class classification problems, will be utilized to train 
+the model. The optimizer will be selected to reduce the loss 
+function and update the model weights during training. 
+Examples of optimizers are Adam or RMSprop. The learning 
+rate and other hyperparameters will be adjusted using a 
+validation set to get the best model performance [15]. Data
+owners (clients) using federated learning may participate in 
+training without disclosing their information to a central 
+server. A subset of clients will be randomly chosen 
+throughout each training cycle to ensure privacy and 
+guarantee a varied representation of the full dataset. Selected
+customers will use their data to train the FL-CNN model 
+locally on their smartphones. Each client will complete many 
+training epochs to update the model weights, and the locally 
+changed weights will be relayed back to the central server. 
+The central server gets the updated model weights from the 
+chosen clients who have finished their local training during 
+the model aggregation stage. Afterwards, the server 
+integrates these updates using strategies like Federated 
+Averaging (FedAvg). The quantity of data samples that each 
+client supplied during local training is considered by FedAvg 
+when calculating the weighted average of the updated model 
+weights. Using a weighted average ensures that customers 
+with more data will have a greater impact on the overall 
+model. All participating clients can access the updated global 
+model for the subsequent training session when the central 
+server has combined the model changes. In the next cycle, 
+clients will begin local training using this revised model as a 
+guide. After numerous rounds of this iterative client selection 
+process, local model training, and model aggregation, the 
+global model converges and performs well on a validation 
+dataset in Figure 4.
+Fig. 4. Results of Mango leaf diseases. 
+IV.
+RESULTS 
+The performance metrics of the FL-CNN model for 
+categorising mango leaf diseases into four severity categories 
+across four clients are shown in the above table. The metrics 
+for each severity level include Precision, Recall, F1-Score, 
+and Accuracy, demonstrating the model's efficiency in 
+determining the severity levels across various customers. 
+Client 1: The model performs admirably on Client 1's 
+data for all severity levels, with an accuracy range of 0.96 to 
+0.98. Class 4 (Severe) has the highest F1-Score (94.41), 
+while Class 2 (Mild) gets the lowest (93.49). This shows that 
+the model can discriminate between the various severity 
+levels for this customer. 
+Client 2: Similar to Client 1, Client 2's data shows that 
+the model performs well, with an accuracy of 0.96 to 0.98. 
+Class 4 (Severe) has the highest F1-Score (95.03), while 
+Class 2 (Mild) gets the lowest (93.54). For this customer, the 
+model consistently classifies the severity levels accurately 
+for each class. 
+Client 3: Based on data from Client 3, the model obtains 
+its highest F1-Score (95.12) for both Class 3 (Moderate) and 
+Class 4 (Severe). The accuracy across all classes is in the 
+0.97–0.98 range, showing that the model does a good job 
+detecting this client's various severity levels. 
+Client 4: With accuracy values of 0.98 for Classes 2-4
+and 0.99 for Class 1 (Initial), Client 4's data has the best 
+model performance of any client. Class 1 (Initial) has the 
+highest F1-Score (96.55), while Class 3 (Moderate) receives 
+the lowest (95.76). For this customer, the model regularly 
+performs well at all severity levels. 
+4
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 15:52:40 UTC from IEEE Xplore.  Restrictions apply. 
+With accuracy values ranging from 0.96 to 0.99, the FL-
+CNN model, in conclusion, consistently outperforms other 
+models across all clients and severity levels.  
+The F1-Scores show that the model successfully 
+recognises and categorises the degrees of severity of mango 
+leaf diseases. This highlights the potential of the proposed 
+FL-CNN model to identify mango leaf diseases in practical 
+applications while protecting data privacy using federated 
+learning is shown in Table 2.
+TABLE II.
+LOCALLY TRAINING THE MODELS ON THE CLIENT'S DATA. 
+Precision
+Recall
+F1-
+Score
+Accuracy
+Client
+1
+Class 1
+95.51
+92.73
+94.10
+0.98
+Class 2
+93.90
+93.08
+93.49
+0.97
+Class 3
+93.80
+93.52
+93.66
+0.97
+Class 4
+93.20
+95.65
+94.41
+0.96
+Client
+2
+Class 1
+95.28
+92.37
+93.80
+0.98
+Class 2
+93.95
+93.13
+93.54
+0.97
+Class 3
+93.89
+93.62
+93.75
+0.97
+Class 4
+93.95
+96.14
+95.03
+0.96
+Client
+3
+Class 1
+95.91
+93.37
+94.62
+0.98
+Class 2
+94.95
+94.26
+94.61
+0.98
+Class 3
+95.23
+95.01
+95.12
+0.97
+Class 4
+94.06
+96.21
+95.12
+0.97
+Client
+4
+Class 1
+97.72
+95.40
+96.55
+0.99
+Class 2
+96.21
+96.15
+96.18
+0.98
+Class 3
+95.85
+95.66
+95.76
+0.98
+Class 4
+95.05
+96.85
+95.94
+0.98
+The Federated Learning CNN (FL-CNN) model's post-
+training global average values are shown below for each 
+client. These numbers reflect the performance measures' 
+averages over each client's four severity levels [16] 
+(Precision, Recall, F1-Score, and Accuracy). These metrics 
+aid in assessing the FL-CNN model's overall performance in 
+categorising mango leaf diseases into four severity categories 
+is shown in Table 3.
+TABLE III.
+GLOBALLY AGGREGATING THE LOCALLY TRAINED 
+MODELS
+Precision
+Recall
+F1-Score
+Accuracy
+Client 1
+94.10
+93.74
+93.91
+0.97
+Client 2
+94.27
+93.81
+94.03
+0.97
+Client 3
+95.04
+94.71
+94.87
+0.97
+Client 4
+96.21
+96.02
+96.11
+0.98
+Client 1: The model has an F1-Score of 93.91 and an 
+accuracy of 0.97 on average when applied to Client 1's data. 
+These results show that the model can correctly recognise 
+and categorise the various mango leaf disease severity levels 
+for this customer. 
+Client 2: The model's average F1-Score for Client 2 is 
+94.03, and its accuracy is 0.97. This shows that the model 
+performs well overall in identifying and categorising this 
+customer's various mango leaf disease severity levels. 
+Client 3: Based on Client 3's data, the FL-CNN model 
+exhibits an average F1-Score of 94.87 and an accuracy of 
+0.97. These results show that the model can reliably and 
+successfully determine this customer's degrees of mango leaf 
+disease severity. 
+Customer 4: With an average F1-Score of 96.11 and an 
+accuracy of 0.98, Client 4's data provided the model with the 
+greatest performance of any customer. These results indicate 
+that the model is quite good at categorising this customer's 
+degrees of mango leaf disease severity. 
+The global average data show that the FL-CNN model 
+continuously outperforms all clients in categorising mango 
+leaf illnesses into four severity categories, which is the 
+conclusion of the analysis. This highlights the potential of 
+the proposed FL-CNN model to identify mango leaf diseases 
+in practical applications while protecting data privacy using 
+federated learning. 
+The macro, weighted, and micro averages for the local 
+values of the four clients are shown in the table below, along 
+with their global averaging values. These numbers represent 
+the four customers' performance indicators, which provide 
+insight into the FL-CNN model's overall success in 
+categorising mango leaf illnesses into four severity 
+categories as shown in Table 4. 
+TABLE IV.
+GLOBALLY AVERAGES
+Client 1
+Client 2
+Client 3
+Client 4
+Macro 
+average
+93.92
+94.04
+94.87
+96.11
+Weighted 
+average
+93.96
+94.18
+94.92
+96.09
+Micro 
+average
+93.96
+94.17
+94.91
+96.08
+The performance metrics for each customer severity level 
+are averaged to provide the macro average values. The 
+average macro results demonstrate that the model 
+continuously outperforms all customers, with Client 4 having 
+the greatest value at 96.11 and Client 1 having the lowest 
+value at 93.92. This shows that the model successfully 
+locates and categorises various mango leaf disease severity 
+levels among all customers. When the class distribution is 
+unbalanced, the weighted average values, which account for 
+the number of samples for each severity level, are a more 
+useful metric. The weighted average results show that the 
+model performs admirably for each customer, with Customer 
+4 receiving the greatest value of 96.09 and Client 1 receiving 
+the lowest value of 93.96. These findings support the model's 
+capability to classify mango leaf illnesses in customers with 
+various 
+data 
+distributions. Before 
+calculating 
+the 
+performance metrics, the individual contributions of each 
+client are combined to provide the micro average values. The 
+5
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 15:52:40 UTC from IEEE Xplore.  Restrictions apply. 

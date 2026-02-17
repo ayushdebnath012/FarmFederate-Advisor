@@ -1,0 +1,496 @@
+FedReplay: A Feature Replay Assisted Federated Transfer Learning
+Framework for Efficient and Privacy-Preserving Smart Agriculture
+Long Li∗,Jiajia Li†, Dong Chen‡, Lina Pu§, Haibo Yao¶, *Yanbo Huang¶
+∗Department of Electrical and Computer Engineering, The University of Alabama
+† Electrical and Computer Engineering, Michigan State University
+‡ Agricultural and Biological Engineering, Mississippi State University
+§ Department of Computer Science, University of Alabama
+¶ USDA-ARS Genetics and Sustainbale Agriculture
+Abstract—Accurate classification plays a pivotal role in smart
+agriculture, enabling applications such as crop monitoring, fruit
+recognition, and pest detection. However, conventional centralized
+training often requires large-scale data collection, which raises
+privacy concerns, while standard federated learning struggles
+with non-independent and identically distributed (non-IID) data
+and incurs high communication costs. To address these chal-
+lenges, we propose a federated learning framework that inte-
+grates a frozen Contrastive Language–Image Pre-training (CLIP)
+vision transformer (ViT) with a lightweight transformer classifier.
+By leveraging the strong feature extraction capability of the pre-
+trained CLIP ViT, the framework avoids training large-scale
+models from scratch and restricts federated updates to a compact
+classifier, thereby reducing transmission overhead significantly.
+Furthermore, to mitigate performance degradation caused by
+non-IID data distribution, a small subset (1%) of CLIP-extracted
+feature representations from all classes is shared across clients.
+These shared features are non-reversible to raw images, ensuring
+privacy preservation while aligning class representation across
+participants. Experimental results on agricultural classification
+tasks show that the proposed method achieve 86.6% accuracy,
+which is more than 4 times higher compared to baseline federated
+learning approaches. This demonstrates the effectiveness and
+efficiency of combining vision-language model features with fed-
+erated learning for privacy-preserving and scalable agricultural
+intelligence.
+Index Terms—Federated Learning, Vision Language Model,
+Smart Agriculture, Deep Learning
+I. INTRODUCTION
+Smart agriculture has emerged as a transformative approach
+to addressing the challenges of sustainable food production,
+resource efficiency, and labor reduction [1, 2]. With the
+integration of advanced sensing and computing technologies,
+smart agriculture enables applications such as crop growth
+monitoring, fruit detection and classification, weed and pest
+identification, and yield estimation [3, 4, 5]. These tasks often
+rely on accurate classification and object detection models [6,
+7, 8]. By leveraging artificial intelligence (AI), particularly
+computer vision and machine learning techniques, agricultural
+systems can achieve enhanced productivity, timely disease
+control, and optimized resource allocation, thus contributing
+to food security and environmental sustainability [9].
+Despite these advantages, training effective machine learn-
+ing models typically requires centralized access to large-
+* Corresponding author : yanbo.huang@usda.gov
+scale datasets [10]. Centralized training, however, often raises
+significant privacy concerns, as it requires the collection and
+storage of raw data, such as farm images or operational logs, at
+a central server [11]. In many cases, agricultural data sharing
+is restricted by policies, regulations, or farmers’ reluctance
+due to ownership and privacy issues [12]. To mitigate these
+challenges, federated learning (FL) has been proposed as
+a promising paradigm that enables multiple participants to
+collaboratively learn a global model without sharing raw data,
+thereby ensuring data privacy while promoting collaborative
+intelligence [13].
+Fig. 1. Illustration of knowledge conflict cause by non-IID dataset distribution
+in an FL framework
+Nevertheless, conventional FL continues to confront several
+fundamental challenges. Fig. 1 presents a representative FL
+application framework within the agricultural domain. The
+first issue limitation lies in the substantial communication
+overhead, which results from the iterative exchange of large-
+scale model parameters between distributed clients and the
+central server during the training process [14]. This not only
+consumes substantial bandwidth but also leads to long train-
+ing times, especially when deep neural networks are trained
+from scratch, as shown in Fig. 1. The second issue arises
+from the non-independent and identically distributed (non-IID)
+arXiv:2511.00269v1  [cs.CV]  31 Oct 2025
+nature of client data [15]. In agriculture, the heterogeneity
+of environments, crop types, and imaging conditions results
+in imbalanced and divergent local datasets [1]. Training on
+non-IID data often slows convergence and may degrade the
+performance of the global model, as conflicting gradient
+updates across clients compromise the overall learning process
+[16], as illustrated in Fig. 1.
+To address these limitations, prior research has explored
+multiple strategies. Communication-efficient FL approaches
+reduce overhead by compressing gradients, quantizing pa-
+rameters, or implement transfer learning technique [17, 18].
+Other works have attempted to alleviate the non-IID issue by
+employing data augmentation, knowledge distillation, or client
+clustering strategies to align distributions across participants
+[19]. While these methods provide partial relief, they either
+compromise model performance, require complex coordina-
+tion, or fail to fundamentally reduce the training burden of
+deep models. Hence, a novel framework that simultaneously
+addresses both the communication efficiency and the non-IID
+distribution problem is highly desirable.
+In this study, we propose a new framework, feature replay
+assisted federated transfer learning framework (FedReplay),
+which leverages transfer learning with a pre-trained vision-
+language model (VLM) to enhance federated learning for
+agricultural classification. Instead of training deep models
+from scratch, our framework employs a frozen CLIP vision
+transformer (ViT) to extract robust feature representations with
+rich semantic knowledge learned from large-scale datasets. A
+lightweight transformer classifier is then trained on top of
+these frozen features in the FL setting, greatly reducing the
+size of model updates exchanged across clients. To further
+mitigate the non-IID problem, FedReplay shares a very small
+subset (1%) of feature embeddings, rather than raw images,
+across clients. These shared features act as reference points
+that align class representations globally, while ensuring privacy
+preservation since they are non-reversible to original images.
+Extensive experiments on agricultural classification bench-
+marks demonstrate that FedReplay achieves 86.6% accuracy,
+representing more than a four-fold improvement compared
+with standard FL baselines. Moreover, the framework reduces
+communication overhead by approximately 98% relative to
+conventional FL approaches, highlighting its efficiency and
+scalability. These results confirm the effectiveness of com-
+bining vision-language pre-training with federated learning
+for privacy-preserving, communication-efficient, and high-
+performance smart agriculture. The contribution of this paper
+are as below:
+1) We propose a novel federated learning framework that
+integrates a pretrained vision–language model (CLIP)
+with a lightweight Transformer-based classifier through
+transfer learning. The framework enhances visual classi-
+fication performance while significantly reducing com-
+munication overhead, enabling scalable and privacy-
+preserving deployment in smart agriculture applications.
+2) We design several strategies to mitigate data heterogene-
+ity across clients, including a feature replay mechanism
+and a row-gated aggregation policy. A systematic pro-
+cedure is also developed for seamless late-joining client
+integration without retraining the entire federation.
+3) We conduct extensive experiments to validate the effec-
+tiveness and efficiency of the proposed framework under
+realistic agricultural scenarios. The results demonstrate
+that our method achieves 86.6% classification accuracy,
+representing over a 4 times improvement compared with
+baseline approach, while maintaining low communica-
+tion cost and strong convergence stability.
+This paper is organized as follow: Section. II provide a
+background introduction of related topic. Section. III provide
+a preliminary test result to show the impact of Non-IID issue
+and discussion of feature replay. Section. IV provide detailed
+design of the proposed FL framework. In Section. V, we
+conduct a comprehensive evaluation and present the result.
+Section. VI concludes the paper.
+II. BACKGROUND
+This section reviews the key technical foundations of our
+work. We introduce vision–language models, principles of
+federated learning and the challenges it faces, and discuss
+transfer learning as an effective strategy to adapt pretrained
+models for agricultural-specific applications while reducing
+training and communication costs.
+A. Vision Language Model
+Vision-Language Models (VLMs) represent a significant
+breakthrough in artificial intelligence, bridging the gap be-
+tween visual perception and natural language comprehension
+[20]. These models are pre-trained on vast internet-scale
+datasets of image-text pairs, allowing them to learn a shared
+semantic space where visual concepts are aligned with textual
+descriptions. The primary advantage of this approach is its
+powerful zero-shot generalization capability, which allows
+VLMs to understand and execute tasks on new, unseen data
+categories without any task-specific training or fine-tuning
+[21]. This ability to perform open-vocabulary recognition
+has dramatically accelerated the development of versatile AI
+applications. In recent years, the field has evolved rapidly,
+moving from basic image-text matching to more sophisticated
+models capable of complex visual reasoning, dialogue, and
+instruction following [22].
+The landscape of VLMs includes several foundational and
+state-of-the-art models that have driven progress in the field.
+CLIP was a pioneering model that demonstrated the effec-
+tiveness of contrastive learning for aligning images and text,
+setting a new standard for zero-shot image classification [23].
+Building on this, subsequent models have integrated vision
+encoders with powerful Large Language Models (LLMs) to
+enhance their reasoning and interactive capabilities. For exam-
+ple, LLaVA (Large Language and Vision Assistant) combines
+the CLIP vision encoder with the Vicuna LLM, enabling it
+to engage in complex visual dialogue and follow instruc-
+tions related to an image [24]. More specialized models like
+Grounding DINO have pushed the boundaries of open-set
+object detection, allowing users to locate any object in an
+image using free-form text queries [25].
+The powerful capabilities of VLMs are increasingly be-
+ing adapted for specialized domains, most notably in smart
+agriculture. Several recent studies have demonstrated their
+potential to revolutionize agricultural practices. In the work
+[26], they leverages a comprehensive multi-fruit dataset to
+benchmark and advance the development of foundation models
+specifically for agriculture. In [27], the authors propose E-
+CLIP, an enhanced CLIP-based model designed to achieve
+more accurate and robust fruit detection and recognition in
+complex orchard environments. To address crop health, a vi-
+sual large language model was developed for in-the-wild wheat
+disease diagnosis [28], enabling farmers to identify issues
+directly from images. Furthermore, FSVLM [29] presents a
+vision-language model tailored for segmenting farmland from
+remote sensing imagery, showcasing the utility of VLMs in
+large-scale land management.
+Despite their promise, integrating VLMs into real-world
+agricultural applications faces significant challenges. A major
+drawback of the current paradigm is the necessity of cen-
+tralized data collection, training or fine-tuning these models
+often requires amassing huge datasets from various farms,
+which is logistically challenging and introduces serious pri-
+vacy concerns [30]. Agricultural data is often proprietary and
+sensitive, and its sharing may be restricted by data privacy
+regulations or competitive business interests [12]. This creates
+a critical need for methods that can leverage data from multiple
+sources without compromising privacy. To address this gap,
+our proposed federated learning method is built upon the
+CLIP model. We use CLIP as an example to demonstrate
+our approach because it is a foundational, powerful, and
+widely-understood VLM whose robust vision encoder serves
+as an excellent and representative baseline for developing and
+evaluating new techniques.
+B. Federated learning
+Federated Learning (FL) is a decentralized machine learning
+paradigm that enables collaborative model training without
+requiring access to raw, private data [31]. Unlike conven-
+tional centralized training, where data from various sources
+is aggregated in a single server for processing, FL operates
+by keeping data localized on client devices [32]. The train-
+ing process involves distributing a global model to multiple
+clients, training it locally on their private data, and then
+sending only the resulting model updates—such as weights
+or gradients—back to a central server for aggregation. The
+primary advantage of this approach is its inherent privacy
+preservation, making it ideal for applications where data is
+sensitive, proprietary, or subject to strict regulations [32].
+Consequently, FL is particularly suitable for industries like
+healthcare, finance, and mobile services, where collaboration
+is beneficial but data sharing is not feasible.
+1) Federated Learning in Smart Agriculture: The principles
+of Federated Learning are especially appropriate for agricul-
+tural applications, where farm data is often geographically
+dispersed, proprietary, and highly sensitive. This alignment
+has spurred significant research into applying FL to solve
+various agricultural challenges. For instance, RuralAI [33]
+introduced a hierarchical FL system for real-time tomato
+crop health monitoring. Researchers have also applied FL
+with Convolutional Neural Networks (CNNs) for soybean leaf
+disease detection [34] and for assessing wheat disease severity
+[35], enabling multiple farms to build robust models without
+sharing private imagery. Beyond crop health, FL is being used
+to create sustainable solutions, such as the FLAG framework
+for optimizing irrigation practices [36]. Furthermore, FL has
+been employed for agricultural risk management through col-
+laborative crop yield prediction [37] and to enhance security
+in agricultural IoT networks with systems like FELIDS [38].
+More recently, research has begun to explore the power-
+ful combination of Federated Learning and Vision-Language
+Models (VLMs) to bring advanced multimodal understanding
+to decentralized environments. The VLLFL framework [14],
+for example, proposes a lightweight federated system using a
+VLM specifically for smart agriculture, aiming to balance per-
+formance with efficiency. To address the challenge of training
+large models, methods like FLoRA [39] have been developed
+to enhance VLMs using parameter-efficient federated learning
+techniques, which drastically reduce the amount of data that
+needs to be communicated. In the context of large-scale
+environmental monitoring, FedRSCLIP [40] demonstrates a
+federated approach for remote sensing scene classification,
+effectively leveraging the zero-shot capabilities of VLMs in
+a privacy-preserving manner.
+2) Challenge for Federatea Learning: Despite its advan-
+tages, general Federated Learning suffers from critical issues
+that can hinder its practical deployment. First is the heavy
+communication overhead, the repeated exchange of model
+parameters between the server and numerous clients can be
+incredibly resource-intensive [14]. This problem is magnified
+when using VLMs, whose parameter counts can number in
+the hundreds of millions, making the transmission of full
+model updates prohibitively expensive. Second, FL systems
+often experience a significant performance loss due to non-
+IID data [16]. In any real-world federated application, the data
+distribution on each client will inevitably be unique, which
+causes client models to diverge and their updates to conflict
+during server-side aggregation, ultimately degrading the global
+model’s accuracy [1].
+To address these challenges, existing research has proposed
+various solutions. To reduce communication overhead, tech-
+niques like gradient compression have been introduced, which
+apply methods like sparsification and quantization to shrink the
+size of model updates before transmission [41],[42]. Another
+approach involves optimizing the training process itself; for in-
+stance, the original FedAvg algorithm proposed only updating
+and averaging a fraction of clients in each round to reduce the
+total communication load [43]. To mitigate the non-IID issue,
+researchers have explored personalized federated learning,
+where techniques like model-agnostic meta-learning are used
+to train a global model that can be rapidly adapted to each
+client’s local data distribution [44]. Another effective strategy
+is federated transfer learning, which leverages knowledge from
+pre-trained models to create more robust and generalizable
+client models, as demonstrated in the FedHealth framework
+for wearable healthcare data [45].
+However, there is currently no single, unified solution that
+effectively resolves both communication overhead and the
+non-IID data problem, particularly for the enormous scale of
+modern VLMs. Conventional model pruning and compression
+techniques are often insufficient to make the federated training
+of massive VLMs practical. As a motivation to solve these
+challenges, especially in FL applications built upon VLMs, our
+proposed method takes both communication overhead and the
+non-IID issue into consideration. It is designed to solve these
+problems in tandem and boost performance, thereby benefiting
+the capability of advanced AI in agricultural applications.
+C. Transfer Learning
+Transfer learning enables a model to reuse knowledge
+acquired during large-scale pretraining and adapt it to a target
+task with modest data and compute [46]. Its primary benefit
+is a significant reduction in training time and the ability
+to achieve high performance even with limited task-specific
+data [47]. In vision–language models (VLMs) such as CLIP,
+encoders trained on massive image–text pairs produce rich,
+transferable visual representations [23]. Freezing the CLIP
+vision encoder and fine-tuning a small classifer or detection
+head to exploits this knowledge without incurring the cost and
+instability of full-model retraining.
+A growing literature combines transfer learning with FL
+to reduce communication overhead, especially for deploy-
+ing large models like VLM. For example, the FedHealth
+framework demonstrated how leveraging knowledge from pre-
+trained models in an FL setting could build effective person-
+alized healthcare models on wearable device data [45]. In the
+context of VLMs, where full model fine-tuning is often in-
+feasible due to communication constraints, parameter-efficient
+transfer learning methods are critical. Techniques like prompt
+tuning [48] or federated text-driven prompt generation [49]
+allow clients to collaboratively learn optimal text prompts to
+steer the VLM’s behavior without altering its core parameters.
+Similarly, adding small, trainable adapter modules [39] allows
+for model specialization by only training and transmitting a
+tiny fraction of the total parameters, making federated training
+of these massive models practical.
+Motivated by these findings and the need to curb com-
+munication costs, this study adopts a transfer-learning design
+that freezes a pretrained VLM (CLIP ViT) encoder and trains
+only a compact classifier within the FL loop for agricultural
+tasks. Restricting updates to the small classifier reduces the
+number of trainable and transmitted parameters, which in turn
+shortens each communication round and lowers total rounds to
+reach target accuracy due to faster, more stable convergence
+on pretrained features. This architecture aligns with privacy
+and scalability requirements in smart agriculture while directly
+addressing both per-round overhead and end-to-end training
+time.
+III. PRELIMINARY RESULT AND FINDING
+In this section, we will demonstrate a preliminary test to
+confirm the existence and evaluate the impact of Non-IID
+issue in traditional federated learning. And we will discuss
+the potential solution that can be applied to metigate the Non-
+IID issue.
+A. Non-IID Challenge in Federated Learning
+A fundamental challenge in FL is non-IID issue as discussed
+in Section. II-B. In real-world agricultural applications, differ-
+ent clients may collect data from distinct environments, crop
+types, or imaging conditions, leading to heterogeneous and
+imbalanced local datasets. This discrepancy often results in
+slower convergence, unstable optimization, and reduced final
+accuracy.
+Fig. 2.
+Illustration of how non-IID data distribution degrades federated
+training performance.
+To illustrate this effect, we conducted an experiment to
+demonstrate how non-IID issue impact the performance of
+FL. In this experiment, each client owned a unique subset
+of data, containing classes not present in other clients. In
+parallel, we assumed the server maintained access to the full
+dataset. We train the transformer classifier in conventional
+federated learning setting on a test dataset. But for every
+ten communication episodes, the global model was fine-
+tuned on the full dataset and redistributed to all clients. In
+theory, the global fine-tune should provide optimal update
+and boost the performance and federated learning performance
+should continuously improve on top of that if knowledge
+aggregation is also optimal. However, the result in Fig. 2
+tells a different story. Each pulse in the accuracy curve
+corresponds to the boost gained from global fine-tuning, which
+indicates the potential performance achievable with balanced
+data. However, subsequent federated aggregation consistently
+led to sharp drops in accuracy, demonstrating that conflicting
+updates from non-IID clients directly counteract the optimal
+gradient direction provided by the full-dataset fine-tuning.
+This validates that non-IID distributions significantly degrade
+the performance of FL and prevent the global model from
+sustaining the accuracy achieved during fine-tuning.
+The detrimental effect of non-IID data has also been
+highlighted in prior studies. For example, [31] demonstrated
+that sharing just 5% of the global dataset among all clients
+can improve accuracy by 30% on CIFAR-10, confirming the
+severity of performance degradation caused by non-IID data
+distribution. However, Sharing raw data across clients, even
+in small proportions, compromises the privacy guarantees that
+FL aims to uphold.
+To address this issue, our work introduces feature replay
+to mitigate the non-IID problem while maintain the privacy-
+preserving advantage of FL. Instead of sharing raw images,
+each client contributes a small subset of non-reversible features
+extracted by a frozen VLM encoder. These features provide a
+shared global reference that aligns class-level representations
+across clients, reducing the divergence between local updates.
+In this way, our method achieves the accuracy benefits of
+data sharing while maintaining the privacy protection that is
+fundamental to federated learning.
+B. Feature Replay for Mitigating Non-IID Distributions
+In the previous experiments, we demonstrated that the non-
+IID issue leads to significant performance degradation and
+slower convergence in FL. And this challenge has also been
+supported in [31], it demonstrates that sharing even a small
+portion of the dataset across clients can dramatically improve
+the global model performance by reducing gradient conflicts.
+However, while data sharing effectively mitigates non-IID
+effects, it comes at the cost of violating one of the fundamental
+principles of FL: privacy preservation. Directly exchanging
+raw images compromises data ownership and exposes sensitive
+information, making such approaches impractical for privacy-
+sensitive domains like agriculture.
+In our framework, we take advantage of transfer learning
+to avoid these privacy risks. Specifically, we freeze the vi-
+sion encoder of a pretrained CLIP model and only train a
+lightweight classifier over all clients. Since all clients share
+the same frozen encoder, the training input is not raw im-
+ages but rather vision embeddings extracted from the CLIP
+encoder. This design provides a unique advantage: the encoder
+effectively acts as an encryption mechanism that transforms
+high-dimensional images into compact feature representations.
+Instead of considering direct image sharing, our method lever-
+ages these embeddings as the foundation for communication
+and collaboration among clients.
+Importantly, these extracted features are non-reversible to
+raw images and thus do not compromise data privacy. In
+other words, while they are sufficient for classification tasks,
+they do not allow adversaries to recover the original images.
+This ensures that feature sharing aligns with the privacy
+requirements of FL, maintaining the integrity of sensitive
+agricultural data while still enabling cross-client collaboration.
+To address the non-IID problem, our framework introduces a
+feature replay pool, formed by sharing a very small portion of
+extracted embeddings from all clients. During training, each
+client replays these shared embeddings alongside its private
+dataset, gaining exposure to representations of classes that may
+not exist locally. This mechanism helps align gradient updates
+toward the global optimum and reduces conflicts during ag-
+gregation. We will provide more detail about this technique
+in next section and the effectiveness of this approach will be
+evaluated in detail in the Results section. We will demonstrate
+that feature replay mitigates the negative impact of non-IID
+distributions while preserving the privacy guarantees of FL.
+The feature replay offering an efficient and secure solution
+for collaborative agricultural intelligence.
+IV. METHODS
+In this section, we will provide details about the proposed
+FL framework. We will introduce the transfer learning clas-
+sification model we select, and then introduce the workflow,
+at the end we will also discuss how our framework handle
+late-joining new client during training process.
+A. Transformer-based classification model with transfer learn-
+ing
+Fig. 3. Structure of the proposed transformer-based classification model with
+transfer learning
+To achieve efficient and high adaptability visual recogni-
+tion under federated constraints, the classification model we
+designed adopts a transfer-learning strategy that leverages a
+frozen CLIP Vision Transformer (ViT-B/32) backbone as a
+universal feature extractor, and a lightweight Transformer-
+based classifier head for local adaptation. The structure of
+the proposed classification model with transfer learning is
+presented in Fig. 3. The CLIP ViT, pretrained on large-scale
+image–text pairs, provides robust and semantically aligned
+visual representations that generalize across diverse scenes.
+During the training, the framework avoids high communica-
+tion overhead by freezing CLIP ViT parameters. This design
+enables each client to perform task-specific fine-tuning solely
+on a compact, trainable head, drastically reducing the number
+of synchronized parameters.
+The Transformer classifier head is designed to refine the
+CLIP embeddings and capture lightweight contextual depen-
+dencies before classification. The lightweight classifier include
+two major components, a transformer encoder comprised by
+two transformer encoder layers used for feature embedding
+understanding and a linear layer used as classifier that produce
+classification output. The trainable parameters in this compact
+classifier constitute roughly 2% of the total parameters in the
+entire model include the CLIP ViT. Which means, training
+such classifier in a FL can reduce 98% of the communication
+overhead compared to training entire model from stratch. This
+modular design allows the model to adaptively transfer CLIP’s

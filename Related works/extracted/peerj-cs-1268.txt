@@ -1,0 +1,235 @@
+Drought stress detection technique for
+wheat crop using machine learning
+Ankita Gupta1, Lakhwinder Kaur1 and Gurmeet Kaur2
+1 Computer Science and Engineering, Punjabi University, Patiala, Punjab, India
+2 Electronics and Communication Engineering, Punjabi University, Patiala, Punjab, India
+ABSTRACT
+The workﬂow of this research is based on numerous hypotheses involving the usage
+of pre-processing methods, wheat canopy segmentation methods, and whether the
+existing models from the past research can be adapted to classify wheat crop water
+stress. Hence, to construct an automation model for water stress detection, it was
+found that pre-processing operations known as total variation with L1 data ﬁdelity
+term (TV-L1) denoising with a Primal-Dual algorithm and min-max contrast
+stretching are most useful. For wheat canopy segmentation curve ﬁt based K-means
+algorithm (Cﬁt-kmeans) was also validated for the most accurate segmentation using
+intersection over union metric. For automated water stress detection, rapid
+prototyping of machine learning models revealed that there is a need only to explore
+nine models. After extensive grid search-based hyper-parameter tuning of machine
+learning algorithms and 10 K fold cross validation it was found that out of nine
+different machine algorithms tested, the random forest algorithm has the highest
+global diagnostic accuracy of 91.164% and is the most suitable for constructing water
+stress detection models.
+Subjects Bioinformatics, Artiﬁcial Intelligence, Computer Vision, Data Science, Multimedia
+Keywords Wheat, Image processing, Machine learning, Chlorophyll ﬂuoroscence, Drought,
+Texture analysis, PSII efﬁciency analysis, PlantCV, Image enhancement, Demonising
+INTRODUCTION
+Wheat is one of the world’s most extensively consumed staple foods, accounting for
+roughly a quarter of total consumption. India is referred to as the “powerhouse of
+agriculture” worldwide because it has risen to the top of the worldwide milk, spice, and
+pulse production rankings. Furthermore, it is the world’s second-largest wheat producer
+after China (Dey, Dinesh & Rashmi, 2020). According to statistics released by the
+Population Reference Bureau, the world’s population is expected to have expanded by
+approximately 10 billion people by the end of 2050 (Population Reference Bureau, 2021),
+boosting the demand for agricultural products. Food security and sovereignty are the
+biggest challenges for many countries, especially in the wake of the circumstances
+emerging from the Russia-Ukraine conﬂict and climate change (Ben Hassen & El Bilali,
+2022). Advancements in the ﬁeld of high-throughput plant phenotyping and machine
+learning can help to overcome many of the challenges and streamline the process of
+identifying and classifying various biotic and abiotic stresses (Komyshev et al., 2018).
+Abiotic stress, such as drought, which is caused by a shortage of water, has been discovered
+to cause a considerable drop in wheat production by interfering with wheat crops’
+How to cite this article Gupta A, Kaur L, Kaur G. 2023. Drought stress detection technique for wheat crop using machine learning. PeerJ
+Comput. Sci. 9:e1268 DOI 10.7717/peerj-cs.1268
+Submitted 12 May 2022
+Accepted 10 February 2023
+Published 19 May 2023
+Corresponding author
+Ankita Gupta,
+gupta89ankita@gmail.com
+Academic editor
+Vimal Shanmuganathan
+Additional Information and
+Declarations can be found on
+page 19
+DOI 10.7717/peerj-cs.1268
+Copyright
+2023 Gupta et al.
+Distributed under
+Creative Commons CC-BY 4.0
+metabolism, growth, and yield. Due to below-average precipitation, droughts cause water
+shortages. El Niño occurrences and water abuse can produce droughts. Precipitation, soil
+moisture, and streamﬂow indicate drought. Crop growth simulation, water balance, and
+crop water stress index models (Landsat Soil Adjusted Vegetation Index (SAVI),
+Normalized Difference Vegetation Index (NDVI), and Landsat Enhanced Vegetation
+Index (EVI)) can identify wheat drought stress (DROUGHT IN NUMBERS 2022—
+restoration for readiness & resilience, 2022). Precipitation, temperature, solar radiation, soil
+moisture, evapotranspiration, and crop growth can be utilised to create and validate wheat
+drought models. A drought detection model should have accuracy, sensitivity, speciﬁcity,
+and missing data handling. Drought stress onset, duration, and severity vary by geography
+and climate. Certain factors can help a model detect drought in wheat images, for example
+leaf rolling, leaf senescence, leaf water potential, stomatal conductance and chlorophyll
+content can distinguish stressed from non-stressed crops. However, using meteorological,
+remote sensing, and soil moisture data can help to determine the crop’s water stress status.
+Machine learning methods like Random Forest and Neural Networks can help ﬁnd key
+traits and classify crops as stressed or unstressed.
+Rainfed crops, such as wheat, are particularly vulnerable to unpredictable variations in
+the climate. Immediate efforts are required to address this issue before it worsens,
+preferably through the development of appropriate early stress detection systems. The
+timely detection of water stress in plants has become a matter of concern to avoid short-
+term income and yield losses as well as long-term consequences for rainfed farmers, which
+could lead to their abandonment of the agricultural profession. According to data from
+DEWS (drought early warning systems), around 42 percent of Indian land has been
+affected by drought as of January 1, 2019 (van Ginkel & Biradar, 2021; Sharaﬁet al., 2021).
+The Drought in Numbers, 2022 report, which was presented on May 11 at the UNCCD’s
+15th Conference of Parties (CoP15) (DROUGHT IN NUMBERS 2022—restoration for
+readiness & resilience, 2022), provides some signiﬁcant information about the current
+drought situation and its effects on the Indian economy. Ever since the beginning of the
+twenty-ﬁrst century, the frequency and extent of droughts are growing at an alarming rate
+all across the world. India comes under one of the severely drought-impacted countries, as
+contains a large portion of the world’s drought-vulnerable regions. Drought affected nearly
+two-thirds of the nation from 2020 to 2022. Due to frequent droughts, India’s Gross
+Domestic Product (GDP) declined by 2% to 5% between 1998 and 2017 (DROUGHT IN
+NUMBERS 2022—restoration for readiness & resilience, 2022). It is crucial to monitor and
+analyse drought’s effects on wheat production because climate change is predicted to
+worsen drought stress in many locations. To reduce drought stress on wheat production,
+there is a need to breed drought-tolerant cultivars, use of precision irrigation, and improve
+water management. Drought stress affects 20–30% of the global wheat acreage, limiting
+productivity. Semi-arid and arid regions including the mediterranean, Middle East,
+Central Asia, and parts of Africa and Australia experience drought stress. Wheat has the
+largest water consumption throughout reproductive and grain-ﬁlling stages, making
+drought stress more likely. Drought stress can reduce wheat yield by 10–50%, depending
+Gupta et al. (2023), PeerJ Comput. Sci., DOI 10.7717/peerj-cs.1268
+2/24
+on severity, timing, and cultivar (DROUGHT IN NUMBERS 2022—restoration for
+readiness & resilience, 2022).
+Plants can respond to drought stress in a variety of ways, and the major goal of our
+research is to understand each part of the wheat plant (Komatsu & Hossain, 2013)
+concerning water stress to ﬁnd the responses and changes in different phenomena of the
+plant occurring due to stress using high throughput imaging technologies (Abhinandan
+et al., 2018; Tounsi, Feki & Brini, 2019). A deeper understanding of this can be
+accomplished by familiarising yourself with the full set of biological parameters that can be
+monitored with the help of computer algorithms (Gupta, Kaur & Kaur, 2021; Schoppach
+et al., 2016). Incorporating the latest phenomics and chlorophyll ﬂuorescence
+technological advances into plant research can aid in the understanding and modelling of
+the various pressures that plants may encounter during their entire growth cycle. Both
+biotic and abiotic stress can be quantiﬁed and monitored using these advancements (Sun
+et al., 2020; Tucci et al., 2018). The study of re-emitted light emitted by a plant’s body is one
+of the most efﬁcient and straightforward methods of determining stress in plants. Light
+energy falling on a plant is diffused in three ways that are all equally important: ﬁrst,
+photosynthesis, which is powered by light energy; second heat, which is released as a result
+of the dissipation of light energy, and third is chlorophyll ﬂuorescence, which is a re-
+emission of light energy, all of which are equally vital (Sánchez-Moreiras et al., 2020).
+Wheat crop images are irradiated with photosynthetically active radiation (PAR) between
+400 and 700 nm before performing remittance analysis of PSII (Oxborough, 2004; Zhao
+et al., 2012). The result of this process leads to the computation of chlorophyll
+ﬂuorescence, which is a non-intrusive indicator of photosynthetic activity within the plant.
+Fluorescence analysis is one of the simplest methods to determine stress as it accounts
+for 1–2 percent of total light energy and offers useful information on photosynthetic
+activity and energy loss in the form of heat within the plant body. The digital examination
+of the PSII photosystem can be performed using the ﬂuorescence feature analysis of three-
+set images (fdark: null image, fmin: image with minimum ﬂuorescence, and fmax: image
+with maximum ﬂuorescence). The quantum efﬁciency of photosystem II can be calculated
+using the formula fv (variable ﬂuorescence)/fmin, where fv equals the difference between
+fmax and fmin ﬂuorescence values (Kalaji et al., 2017; Sid’ko et al., 2017). It refers to the
+plant’s ability to adapt to stressful situations. Analysis of the fv/fm distribution patterns in
+the plant can quickly reveal the primary stress sources in the plant (Gehan et al., 2017). The
+development of machine learning models based on the properties extracted from plant
+images for detecting stress is a difﬁcult task. This is due to the fact that identifying the most
+appropriate feature to map the ground truth requires a lot of domain knowledge, and at the
+same time, mapping concepts of the agricultural processes into the imaging process is hard
+(Mantovani, Brito & Mantuano, 2018; Moya et al., 2019). The next section explains the
+various options that contemporary researchers are applying to overcome such challenges.
+Survey methodology
+A discussion on the latest research work done in the context of identifying water stress
+using image processing methods is given in this section. Contemporary literature gives
+Gupta et al. (2023), PeerJ Comput. Sci., DOI 10.7717/peerj-cs.1268
+3/24
+copious evidence that image-based analysis, which includes high throughput imaging
+feature analysis of plants, can be accomplished by applying a variety of functions to the
+pixels of the plant (Vadakkenveettil, 2012; Löfstedt et al., 2019). However, the image
+processing domain is not without bottlenecks. To overcome the challenge of the
+segmentation of plant body parts in plant images, Kienbaum et al. (2021) have used
+multiple preprocessing operations. For example, a linear or polynomial thresholding
+function may be applied to plant images to correctly identify shoot area, canopy
+temperature, and vegetation indices, among other things. The non-linear function analysis
+for extracting features from the images has been used in two ways: ﬁrst, through the use of
+geometric statistics. Geometric statistics help estimate the height, convex hull, and centre
+of mass of the plant body parts. The geometric feature values of the plant that is suffering
+from some stress will be different from the healthy body part of the plant. The second is, of
+course, through the use of non-geometric descriptors, which can be used to perform biotic
+and abiotic stress analysis (Dolferus et al., 2019; Oinam & Mehta, 2020). For example, plant
+growth rate prediction, maturity, and yield prediction of wheat are the best indicators of
+some stress. These metrics have been used to make the detection of stress more precise, as
+it is quite challenging to have high precision agriculture equipment due to the role of
+multiple environmental factors. The attempt of many researchers to solve the key
+problems of stress detection is by conducting organ-level (leaf, stem, root, and canopy, etc.)
+analysis (Chen et al., 2021). However, from contemporary literature, it can be observed that
+there is not much agreement given on the kind of imaging features that suit best for the
+machine learning models, for the detection of various kinds of stress.
+Although the algorithms for segmentation and machine learning are able to directly
+handle the input images, it has been noticed that the majority of image processing projects
+require some form of pre-processing operation. This is the reason that image
+preprocessing activities have an effect on the accuracy of subsequent algorithmic processes,
+including machine learning and segmentation. Therefore, the preprocessing algorithms are
+a necessary evil in the pipeline and scheme of things to design some kind of image
+processing system. This is because they improve the reliability of the image processing
+system in terms of their performance. The processes that make up preprocessing are
+designed to eliminate difﬁculties associated with low saturation, uneven aspect ratio,
+uneven brightness, and various sorts of noises (Li & Xu, 2019; Jin et al., 2018). It also helps
+to overcome problems that may occur due to incorrect camera calibrations and the
+presence of unwanted objects or artefacts in the image. These problems can be overcome
+with the help of this technique. At the same time, it is possible to ﬁnd that resize functions
+that use interpolation techniques are used to improve and correct the aspect ratio of the
+images (Zhang et al., 2022). Current research in this ﬁeld provides abundant evidence of
+the usage of several denoising methods such as median ﬁlter, non-local means ﬁlters (Wu
+et al., 2018), gaussian ﬁlter, total variation ﬁlter (Caselles, Chambolle & Novaga, 2015;
+Gupta, Kaur & Kaur, 2021; Bose et al., 2016; Fernandez-Gallego et al., 2020; Gupta, Kaur &
+Kaur, 2022a; Hasan et al., 2018; Image Completion using Spiking Neural Networks, 2019;
+Pineda et al., 2017; Lazarević et al., 2021; Osroosh, Khot & Peters, 2018; Trivedi, Shukla &
+Pandey, 2022; Zeng & U, 2020; Zhi, Shi & Sun, 2016), and bilateral ﬁlters to remove the
+Gupta et al. (2023), PeerJ Comput. Sci., DOI 10.7717/peerj-cs.1268
+4/24
+noise. In order to get rid of the shadows in the images, low-saturation areas, contrast
+enhancement techniques like Min-max and contrast stretching are usually utilised as pre-
+processing processes (Trivedi, Shukla & Pandey, 2022). Researchers have developed a
+number of different auto correction algorithms in order to improve the images’ colour
+balance and achieve uniformity in the illumination and brightness. This will allow for
+greater control over how images are displayed.
+Further, it can be observed from the current literature that Zeng & U (2020) have
+improved linear and non-linear contrast enhancement methods to obtain better
+segmentation results. Linear image improvement techniques including min-max
+stretching, thresholding function, and percentile stretching use contrast stretching. And
+nonlinear approaches like histogram equalisation, and gaussian stretch by analysing
+various pipelines in combination with denoising and enhancement gave the best pre-
+processing combination for wheat canopy images, which can greatly improve
+segmentation accuracy. This can be done using TV L1 denoising with a primal dual
+algorithms in combination with max contrast stretching enhancement procedures (Gupta,
+Kaur & Kaur, 2022a). By comparing wheat canopy and ear temperatures, wheat ear
+detection systems have been developed. Gupta, Kaur & Kaur (2021), Bose et al. (2016),
+Hasan et al. (2018), Image Completion using Spiking Neural Networks (2019), Pineda et al.
+(2017), Lazarević et al. (2021), Osroosh, Khot & Peters (2018) used the CLAHE method to
+improve image local contrast isolate neighbouring ears. Colour threshold segmentation
+was employed in HSV colour space to segregate canopy and ear high temperature
+disparities. To enrich images, sliding windows and CLAHE contrast adjustment
+techniques are used. Wheat ear counting images will have some noise due to the reﬂection
+of wheat leaves in sunlight, camera instability, and the natural surroundings. The wheat ear
+images needed to be enhanced and denoised using adaptive histogram equalisation and
+median ﬁltering.
+The colour and vigour of the plant deteriorate as a result of wilting. This can be seen
+visually and through the use of computer vision techniques (Gupta, Kaur & Kaur, 2021;
+Osroosh, Khot & Peters, 2018). In order to well distinguish between healthy and stressed
+plants classiﬁers such as support vector machine, artiﬁcial neural network has been trained
+with a speciﬁc set of characteristics that can characterise the histograms generated at the
+frequency of F520/F680, results of the analysis demonstrate the utility of multicolour
+ﬂuorescence for plant phenotyping (Pineda et al., 2017). Absolute reﬂectance
+characteristics such as reﬂectance in red (RRed), green (RGreen), blue (RBlue), near-
+infrared (RNIR), and far-red (RFarRed) have also been utilised. Lazarević et al. (2021) have
+also employed hue (HUE), saturation (SAT), and value (VAL) as an alternative to visible
+reﬂectance for colour analysis. HUE takes into account the red, green, and blue colours,
+although it is displayed as a single channel with values ranging from 0 to 360 degrees. For
+every colour the saturation (SAT) indicates its intensity (pale or intense colour), while the
+value (VAL) indicates whether the colour is bright or dark. According to the results of
+colour analysis, reﬂectance in red, green, and blue dramatically increased if there is an
+extreme drought. Hence, drought signiﬁcantly affect the colour reﬂectance by boosting the
+Gupta et al. (2023), PeerJ Comput. Sci., DOI 10.7717/peerj-cs.1268
+5/24

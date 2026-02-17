@@ -1,0 +1,293 @@
+Citation: Cho, S.B.; Soleh, H.M.; Choi,
+J.W.; Hwang, W.-H.; Lee, H.; Cho,
+Y.-S.; Cho, B.-K.; Kim, M.S.; Baek, I.;
+Kim, G. Recent Methods for
+Evaluating Crop Water Stress Using
+AI Techniques: A Review. Sensors
+2024, 24, 6313. https://doi.org/
+10.3390/s24196313
+Academic Editor: Nicolas Baghdadi
+Received: 16 August 2024
+Revised: 26 September 2024
+Accepted: 26 September 2024
+Published: 29 September 2024
+Copyright: © 2024 by the authors.
+Licensee MDPI, Basel, Switzerland.
+This article is an open access article
+distributed under the terms and
+conditions of the Creative Commons
+Attribution (CC BY) license (https://
+creativecommons.org/licenses/by/
+4.0/).
+sensors
+Review
+Recent Methods for Evaluating Crop Water Stress Using AI
+Techniques: A Review
+Soo Been Cho 1, Hidayat Mohamad Soleh 1, Ji Won Choi 1, Woon-Ha Hwang 2, Hoonsoo Lee 3,*
+, Young-Son Cho 4,
+Byoung-Kwan Cho 5
+, Moon S. Kim 6, Insuck Baek 6
+and Geonwoo Kim 1,7,*
+1
+Department of Biosystems Engineering, College of Agricultural and Life Sciences, Gyeongsang National
+University, 501, Jinju-daero, Jinju-si 52828, Gyeongsangnam-do, Republic of Korea;
+bpagoe@gmail.com (S.B.C.); hdytsoleh@gmail.com (H.M.S.); jiwonbb626@gnu.ac.kr (J.W.C.)
+2
+Division of Crop Production and Physiology, National Institute of Crop Science, Rural Development
+Administration, 100, Nongsaengmyeong-ro, Iseo-myeon, Wanju-gun 55365, Jeonbuk-do, Republic of Korea;
+hwangwh@korea.kr
+3
+Department of Biosystems Engineering, College of Agriculture, Life and Environment Sciences, Chungbuk
+National University, 1 Chungdae-ro, Seowon-gu, Cheongju-si 28644, Chungbuk-do, Republic of Korea
+4
+Department of Smart Agro-Industry, College of Life Science, Gyeongsang National University, Dongjin-ro 33,
+Jinju-si 52725, Gyeongsangnam-do, Republic of Korea; protaetiacho@gnu.ac.kr
+5
+Department of Biosystems Machinery Engineering, Chungnam National University,
+Daejeon 34134, Republic of Korea; chobk@cnu.ac.kr
+6
+Environmental Microbial and Food Safety Laboratory, Agricultural Research Service,
+Department of Agriculture, Powder Mill Road, BARC-East, Bldg 303, Beltsville, MD 20705, USA;
+moon.kim@usda.gov (M.S.K.); insuck.baek@usda.gov (I.B.)
+7
+Institute of Agriculture and Life Sciences, Gyeongsang National University, 501, Jinju-daero,
+Jinju-si 52828, Gyeongsangnam-do, Republic of Korea
+*
+Correspondence: hslee202@chungbuk.ac.kr (H.L.); geonwookim@gnu.ac.kr (G.K.);
+Tel.: +82-55-772-1893 (G.K.)
+Abstract: This study systematically reviews the integration of artificial intelligence (AI) and remote
+sensing technologies to address the issue of crop water stress caused by rising global temperatures
+and climate change; in particular, it evaluates the effectiveness of various non-destructive remote
+sensing platforms (RGB, thermal imaging, and hyperspectral imaging) and AI techniques (machine
+learning, deep learning, ensemble methods, GAN, and XAI) in monitoring and predicting crop
+water stress. The analysis focuses on variability in precipitation due to climate change and explores
+how these technologies can be strategically combined under data-limited conditions to enhance
+agricultural productivity. Furthermore, this study is expected to contribute to improving sustainable
+agricultural practices and mitigating the negative impacts of climate change on crop yield and quality.
+Keywords: crops; water stress; machine learning; deep learning; artificial intelligence (AI)
+1. Introduction
+Despite international efforts to reduce greenhouse gas emissions over the past several
+decades, the global surface temperature has increased by approximately 2.45 ◦C compared
+to the 19th century. This global warming has triggered sudden natural disasters worldwide,
+including heat waves, cold waves, heavy rain, droughts, and floods [1]. Additionally, these
+conditions can significantly affect agricultural ecosystems, especially climate conditions [2].
+Consequently, the impact of climate change has contributed to declines in the yield and
+quality of agricultural products [3]. Crop damage caused by climate change has been
+reported in several countries, including Thailand, India, China, and the United States.
+Hence, various studies have been conducted in an effort to reduce the impacts of climate
+change over recent years [4,5]. These impacts have been highlighted not only in popular
+media, such as the news, but also in a lot of relevant research [5–8].
+Sensors 2024, 24, 6313. https://doi.org/10.3390/s24196313
+https://www.mdpi.com/journal/sensors
+Sensors 2024, 24, 6313
+2 of 39
+Currently, the agricultural industry consumes 80–90% of the world’s freshwater re-
+sources [9], and the intensity and frequency of precipitation caused by climate change are
+expected to increase the demand for irrigation water. Under these circumstances, one of
+the key elements of sustainable agricultural applications is to monitor the crop water stress
+levels [10,11]. Water stress evaluation can help to control the amount of water used and
+prevent excessive water consumption, which significantly impacts crops’ yield and quality.
+Traditional methods for evaluating crop water stress involve measuring the soil mois-
+ture content and analyzing meteorological variables and various physiological parameters,
+such as water potential and stomatal conductivity [12,13]. Although these methods can
+provide direct information about the crop water stress level, the traditional methods are
+time-consuming, laborious, and destructive [14]. These are significant drawbacks for the
+evaluation of water stress levels in field crops. Moreover, using traditional methods would
+make it difficult to cover large areas [15,16].
+Non-destructive and rapid crop water stress monitoring technologies have been devel-
+oped to overcome these limitations. Remote sensing coupled with various optical sensors
+(RGB, thermal, multispectral, and hyperspectral imagery) is used, and these platforms are
+also applied to satellites, aircraft, drones, and handheld devices for the rapid collection of
+digital data. These digital data can be analyzed using artificial intelligence (AI) techniques
+to assess the chemical and physical properties of crops [17–19]. Remote sensing tech-
+nologies have been applied for crop classification [20], yield prediction [21], the detection
+and management of diseases and pests [22], and crop water stress detection [23]. These
+technologies generate large datasets, including open-source satellite data from platforms
+such as Google Earth Engine [24,25]. To transform the collected data into meaningful
+information, various preprocessing steps are required. However, manually analyzing such
+vast amounts of data is time-consuming. Hence, AI technology is employed to address
+this challenge.
+The use of artificial intelligence (AI) for crop water stress analysis began in earnest in
+the mid-1970s. For instance, Millard et al. [26] conducted a study in April 1976, measuring
+crop temperatures using infrared scanners and IR photography from both aircraft and
+ground platforms in wheat fields subjected to various water stress levels. Since then,
+AI technologies have played important roles in predicting optimal irrigation timing and
+quantity, reducing water waste, and increasing crop yields [27]. These technologies have
+improved the efficiency of irrigation systems and water management. In particular, AI-
+based drones and satellite systems enable precise irrigation monitoring for crop health, soil
+moisture levels, and water usage across large areas [28].
+To date, AI has been widely used in crop identification [16,29], disease detection [30],
+and yield prediction [31]. Specifically, for crop water stress assessment, machine learning
+and deep learning algorithms are primarily employed. Several techniques, such as Random
+Forest (RF), Support Vector Machine (SVM), and Convolutional Neural Network (CNN) ar-
+chitectures, are intensively used, and generative AI models such as Generative Adversarial
+Network (GAN) models have recently been applied [32].
+Accordingly, this study comprehensively reviewed the trends of various sensing
+platforms utilizing machine learning and deep learning techniques for crop water stress
+analysis over the past decade. The primary objective of this study was to present the AI
+techniques used in crop water stress analysis and to evaluate the related technical methods
+used. Specifically, we focused on collecting and analyzing AI techniques utilized in remote
+sensing technologies. While most previous studies have concentrated on thermal imaging,
+multispectral/hyperspectral sensors [13,33], or water stress studies on specific crops [34–36], ex-
+cluding RGB, this study analyzed not only these sensing technologies but also AI techniques
+for evaluating water stress in a variety of field crops.
+This study provides an in-depth analysis of how AI technologies can contribute to
+managing crop water stress and promoting efficient water resource utilization; it also aims
+to offer solutions for agricultural challenges caused by extreme climate conditions. In
+addition, optimal approaches to maximize the applicability and effectiveness of AI-based
+Sensors 2024, 24, 6313
+3 of 39
+technologies in agriculture are suggested. The findings from this analysis are expected
+to contribute to strategies ensuring the sustainability of agriculture in the future and to
+further advance the application of AI technologies in the agricultural sector.
+2. Materials and Methods
+To investigate the latest trends in remote sensing and artificial intelligence techniques
+for evaluating crop water stress in the context of climate change, a systematic process of
+literature collection and screening was conducted. The primary databases selected for this
+purpose were Google Scholar, Scopus, Web of Science, and ScienceDirect. Google Scholar
+provides a broad range of resources across various academic fields, while Scopus offers
+citation analysis, allowing for the evaluation of research’s impact and quality. Web of Sci-
+ence is particularly strong in citation counts and impact factor analysis, while ScienceDirect
+offers access to the latest research in science, technology, and medicine. These databases are
+well-suited for a comprehensive review of studies related to agriculture, remote sensing,
+and artificial intelligence.
+For the literature search, keywords such as “Machine learning”, “Deep learning”,
+“Water stress”, “Crop”, “Remote sensing”, and “Climate change” were used to target
+journal and conference papers published over the past decade (2013–2024). The search
+terms were restricted to appear in the “title”, “abstract”, or “keywords” sections of the
+papers. The search scope was limited to “journals”, and the document types included
+“research articles”, “reviews”, and “articles in press”. Additionally, the search was restricted
+to papers published in English.
+Through this process, approximately 130 papers were collected, and additional liter-
+ature was gathered using supplementary keywords such as “RGB”, “Thermal imaging”,
+“CWSI”, and “Hyperspectral”. Given the practicality of hyperspectral techniques in evalu-
+ating crop water stress, multispectral technology was also investigated. Table 1 provides a
+summary of the search strings used for each database.
+Table 1. Search term strings per database. A comprehensive review of the literature was conducted to
+analyze the application of machine learning and deep learning techniques in evaluating crop water
+stress using different data modalities. The total number of collected research papers for each modality
+was as follows: for Crop Water Stress Index (CWSI), 21 papers were identified; for RGB images,
+11 papers were collected; for thermal images, 32 papers were gathered; and for hyperspectral images,
+31 papers were found.
+Keyword
+Search Terms and Criteria
+Number of Papers
+CWSI
+Machine learning, Deep learning,
+Water stress, Crop, CWSI
+21
+RGB
+Machine learning, Deep learning,
+Water stress, Crop, RGB
+11
+Thermal
+Machine learning, Deep learning,
+Water stress, Crop, Thermal
+32
+Hyperspectral imagery
+Machine learning, Deep learning,
+Water stress, Crop, Hyperspectral
+31
+During the literature collection process, basic keywords such as “Machine learning”,
+“Deep learning”, “Water stress”, “Crop”, “Remote sensing”, and “Climate change” were
+initially used. However, many irrelevant materials were retrieved, and some necessary
+studies were omitted. To address this issue, the search was refined in over 20 iterations
+by adding or removing keywords to identify the optimal search terms. Additional key
+terms, including “RGB”, “Thermal”, and “Hyperspectral”, were also employed. As a result,
+approximately 95 papers were collected, and the literature was categorized according to
+remote sensing techniques in order to avoid duplication and clarify the application cases of
+each technology.
+Sensors 2024, 24, 6313
+4 of 39
+•
+Examples of crop water stress assessment using RGB imaging;
+•
+Examples of crop water stress assessment using thermal imaging;
+•
+Examples of crop water stress assessment using CWSI;
+•
+Examples of crop water stress assessment using hyperspectral imaging.
+The selected articles were re-filtered based on their relevance to crop water stress
+assessment, using the following exclusion criteria to strengthen the focus and relevance
+of the research: First, review papers were excluded. Although review papers provide
+comprehensive analyses of existing studies, they do not present specific experimental data,
+which were necessary for this research. Second, studies employing destructive methods
+were also excluded. Destructive methods are not suitable for maintaining crops in actual
+agricultural environments, making non-destructive techniques more favorable. Third,
+studies that did not utilize AI-based approaches were excluded. AI methods are critical
+for enhancing the precision of crop water stress assessments, and they reflect the latest
+advancements in technology. Lastly, studies that focused on crops that were not subjected
+to water stress were excluded, as the primary goal of this research was to evaluate crop
+water stress, placing such studies outside our scope.
+•
+Review articles;
+•
+Assessment of crop water stress with destructive methods;
+•
+No AI learning;
+•
+Crops not under water stress.
+In the end, 46 articles were selected. The selected articles were published by Elsevier,
+Springer, MDPI, IEEE, etc., and were selected based on the publishers that are commonly
+selected for literature reviews. The keywords and additional filtering choices for the
+literature selection are shown in Figure 1. The flow of the paper is shown in Figure 2.
+ 
+Figure 1. Paper selection criteria.
+Figure 2. Paper flowchart.
+Sensors 2024, 24, 6313
+5 of 39
+3. Remote Sensing
+Methods for measuring water stress in crops are based on the interaction between the
+crop and soil. In general, measuring crops’ water status and soil moisture content directly in
+the field is laborious, time-consuming, and destructive [37–39], so there is a need for a time-
+saving, accurate, easy, and non-destructive method to detect crops’ water status in order to
+curb yield and economic losses early [40]. Recent research to assess crop water stress has
+been conducted by using remote sensing data as an alternative to traditional measurement
+methods. The advantage of using remote sensing is the provision of information on the
+spatial and temporal variability of crops, allowing for more comprehensive analysis and
+forecasting [41–47]. A brief description of the remote sensing techniques used to assess
+water stress in crops is provided below (Figure 3).
+ 
+Figure 3. RGB, thermal, and multispectral remote sensing. RGB images capture the color and growth
+status of crops through visible light, while thermal imaging sensors detect temperature changes in
+crops to identify water stress or diseases. Multispectral imaging utilizes multiple wavelengths of
+light to analyze the physiological responses and health conditions of crops in greater detail.
+3.1. RGB Imaging
+Using the literature review methodology described above, a total of five papers were
+selected in which RGB imaging technology was used for crop water stress assessment. RGB
+imaging is the simplest remote sensing technique for crop detection, based on silicon sensors
+that are sensitive to the visible-light band (400–750 nm) and capable of two-dimensional
+imaging. Typically, the raw data of an image are represented as a matrix of intensity values
+corresponding to photon fluxes in the red (~600 nm), green (~550 nm), and blue (~450 nm)
+spectral bands of visible light. RGB images are widely used in crop science because of their
+low cost and ease of operation and maintenance [48]. Therefore, a variety of deep learning
+and machine learning techniques have been used to assess crop water stress [49–51]. The
+following Table 2 summarizes the use of RGB imaging to assess moisture stress in crops; it
+is organized by crop type, best-performing model, methodologies used, paper objectives,
+author, publisher, country, and year.
+Table 2. RGB imaging for crop water stress evaluation.
+Crop
+Best Model
+Methodologies
+Objective
+Authors
+Publisher
+Nation
+Year
+Chickpea
+SVM
+SVM,
+K-Nearest Neighbors,
+DT,
+Naive Bayes (NB),
+Discriminant Analysis
+(DA)
+Using images of
+chickpea shoots to
+identify crop water
+stress due to low soil
+moisture
+[52]
+IEEE
+India
+2020

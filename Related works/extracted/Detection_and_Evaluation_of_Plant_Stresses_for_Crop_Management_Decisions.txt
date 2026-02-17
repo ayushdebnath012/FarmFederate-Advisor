@@ -1,0 +1,656 @@
+IEEE TRANSACTIONS ON GEOSCIENCE AND REMOTE SENSING, VOL. GE-24, NO.
+1, JANUARY 1986
+Detection and Evaluation of Plant Stresses for Crop
+Management Decisions
+RAY D. JACKSON, PAUL J. PINTER, JR., ROBERT
+J. REGINATO, AND SHERWOOD B. IDSO
+Abstract-The ability to quantitatively assess crop conditions using
+remotely sensed data would not only improve yield forecasts but would
+also provide information that would be useful to farm managers in
+making day-to-day management decisions. Experiments were con-
+ducted using ground-based radiometers to relate spectral response to
+crop canopy characteristics. It was found that radiometrically mea-
+sured crop temperature, when compared with a reference tempera-
+ture, was related to the degree of plant stress and could indicate the
+onset of stress. Reflectance based vegetation indices, on the other hand,
+were not sensitive to the onset of stress but were useful in evaluating
+the consequences of stress as expressed in changing quantities of green
+phytomass. Anatomical and physiological changes occur within plant
+cells when plants are stressed and increase the amount of reflected ra-
+diation. However, canopy geometrical changes may alter the amount of
+radiation that reaches a radiometer, complicating the interpretation of
+spectral response to stress. Timeliness, frequency of coverage, and res-
+olution are three factors that must be considered when satellite-based
+sensors are used to evaluate crop conditions for farm management ap-
+plications.
+I. INTRODUCTION
+T HE POTENTIAL yield of any crop can be realized
+.
+only when water, nutrient, and environmental condi-
+tions are optimum, and if disease and insect problems are
+minimized or prevented. Whenever plant growth is re-
+tarded by less than optimum conditions, the plants are said
+to be stressed. The word "stress", although difficult to
+define from a physiological point of view, is commonly
+used to signify any effect on plant growth that is detri-
+mental. The term "crop condition" implies an evaluation
+of the degree of stress. Visual assessment of crop stress
+is qualitative at best, with the terms "good" or "poor"
+frequently used to describe crop condition.
+The quantification of plant stress using remotely sensed
+data was a major objective of several research projects
+conducted under the AgRISTARS program. Although the
+research goal was to quantify crop stress using satellite
+data, it was necessary to conduct a number of experiments
+using ground-based radiometers. These instruments were
+used over controlled plots with known stress conditions
+and with known plant and soil parameters to obtain the
+data base required to relate the remotely sensed measure-
+ment to a degree of crop stress.
+During the course of the experiments it became appar-
+Manuscript received May 25, 1985; revised August 10, 1985.
+The authors are with the U.S. Department of Agriculture, Agricultural
+Research Service,
+U.S. Water Conservation Laboratory, Phoenix, AZ
+85040.
+IEEE Log Number 8406220.
+ent that a number of factors can complicate the assessment
+of stress when interpreting remotely sensed data. Ob-
+viously, some frame of reference is required if a numerical
+value is to be assigned to a stress condition. Furthermore,
+the spectral response of plant canopies is related to geo-
+metrical as well as physiological factors. In some cases,
+differences in spectral response of two plant canopies may
+be due to leaf orientation, not to different stress condi-
+tions. When plants are stressed leaves may droop and curl,
+causing geometrical as well as physiological changes that
+affect the radiation received by a remote sensor.
+The results obtained using ground-based instruments
+should prove useful for improving stress assessment tech-
+niques using satellite data. A quantitative measure of stress
+from space platforms would not only improve our ability
+to forecast yields, but would also provide information
+which would aid farm managers in making day-to-day
+management decisions.
+This report discusses some research results concerning
+the detection and quantification of plant stresses by re-
+mote means, examines some complicating factors in the
+interpretation of data, and assesses progress made in
+adapting remote sensing technology to provide day-by-day
+information on soil and crop conditions for use by farm
+operators in making farm management decisions.
+II. DETECTION AND QUANTIFICATION OF PLANT STRESS
+Thermal-IR techniques can be used to detect and, in
+some cases, quantify plant stress. Although plant temper-
+atures can indicate the occurrence of stress, they cannot
+identify its cause. If transpiration is restricted because of
+a deficit of water (water stress) [1], or by the reduction of
+the number of conducting vessels by disease or insects (bi-
+ological stress) [2], or by high salinity in the soil water
+(salinity stress) [3], the net result is an increase in plant
+temperature.
+When plants are stressed, physiological changes that
+take place within leaves may alter their light absorption
+and transmittance properties. This, along with plant ge-
+ometry changes such as wilting and leaf curl, can affect
+the amount of reflected and emitted radiation that reaches
+a remote sensor. Often, by the time stress can be ascer-
+tained by measurements of reflected solar radiation, visual
+signs are evident, and yield reducing damage has already
+occurred. Thus, plant temperatures indicate the onset and
+degree of stress at a particular time, whereas reflected so-
+lar measurements integrate the effects of stress over time.
+U.S. Government work not protected by U.S. copyright
+99
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 16:06:43 UTC from IEEE Xplore.  Restrictions apply. 
+IEEE TRANSACTIONS ON GEOSCIENCE AND REMOTE SENSING, VOL. GE-24, NO.
+1, JANUARY
+1986
+A.
+Water Stress
+The potential of using infrared thermometers to mea-
+sure canopy temperatures was demonstrated over two de-
+cades ago [1], [4]. Since then, four indices, based on in-
+frared temperature measurements, have been proposed for
+the quantification of plant water stress. They are: stress-
+degree-day (SDD) [5], [6], which is the canopy-air tem-
+perature difference measured post-noon near the time of
+maximum heating;
+the canopy temperature variability
+(CTV) [7], [8], which is the variability of temperatures
+encountered in a field during a particular measurement pe-
+riod; the temperature-stress-day (TSD) [9], which is the
+difference in canopy temperature between a stressed crop
+and a nonstressed reference crop; and the crop water stress
+index (CWSI) [10], [11], which includes the vapor pres-
+sure deficit of the air in relating the canopy and air tem-
+perature difference to water stress. Although these indices
+were developed to quantify water stress, they are useful
+for evaluating any type of stress that causes a rise of plant
+temperature.
+In the development of the stress-degree-day, it was as-
+sumed that effects of environmental factors (such as vapor
+pressure, net radiation, and wind) would be largely man-
+ifested in the canopy temperature, and that the difference
+between the canopy temperature (T7.) and the air temper-
+ature (Ta) would be a relatively useful indicator of plant
+water stress. It was later demonstrated that the SDD was
+insufficient to assess water stress in corn [7]. Gardner et
+al.
+[7] showed that stressed corn plants were below air
+temperature much of the time, and suggested that corn
+may be more sensitive to water stress than wheat. They
+also suggested that canopy-air temperature differences
+may be soil, crop, and climate specific.
+The basis for the canopy temperature variability (CTV)
+index is that soils are inherently nonhomogeneous, caus-
+ing some areas within a field to become stressed before
+others. Consequently, canopy temperatures would show a
+greater variability as water becomes limiting than they
+would under well watered conditions. This variability can
+be used to signal the onset of water deficits [7], [12].
+Gardner et al. [7] found standard deviations of 0.3°C in
+fully irrigated plots of corn. In nonirrigated plots, the
+standard deviation was as great as 4.2°C. They concluded
+that plots which exhibited a standard deviation above 0.3°C
+were in need of irrigation.
+The difference in temperature between a stressed plot
+and a well watered plot (called the temperature stress day
+(TSD) by Gardner et al. [8]) can also be used as a water
+stress indicator. Clawson and Blad [9] tested this concept
+as to its usefulness for scheduling irrigations. Their corn
+plots were irrigated when the average of all canopy tem-
+peratures measured in the stressed plot during a particular
+time period were 1°C warmer than the average canopy
+temperatures of the well watered plot. These experiments
+indicated that both methods, the CTV and the TSD, could
+be used to evaluate water stress.
+The crop water stress index (CWSI) is based on the fact
+z
+500
+-0
+U-i
+-20
+0
+2
+3
+4
+6
+VAPOR PRESSURE DEFI C IT
+CKPA)
+Fig.
+1. Theoretical relationship, between the canopy-air temperature dif-
+ference and air vapor pressure deficit. Numbers at the end of the lines
+indicate the value of the canopy resistance (r,.) used for the calculations.
+that the canopy-air temperature difference is linearly re-
+lated to the air vapor pressure deficit (VPD). This rela-
+tion, derived from energy balance considerations, can be'
+expressed as [41, [ 11 ]
+Tc. - TA = raRn.
+o (1+r/a
+c
+A
+~~~pCp
+A+
+y(I + rc/ra)
+VPD
+A +
+y(I ± re/ra)
+(1)
+where ra and r, are the aerodynamic and canopy resis-
+tances (s
+* m-1), R, is the net radiation (W
+m 2)
+p
+the volumetric heat capacity of air (J
+* m-3
+* C-1), -y is
+the psychrometric constant (Pa
+* C-1), and A is the slope
+of the temperature-saturated vapor pressure relation (Pa
+C-1).
+For well-watered plants the canopy resistance (rc) is low
+but usually not zero [13]. Assuming that 5 s
+- m- 1is rep-
+resentative of rc at potential evapotranspiration, T, - Ta
+was calculated as a function of VPD. Results of these cal-
+culations are given in Fig.
+1. Also shown are lines for rc
+= 50, 500, and oo, which correspond to moderate, severe,
+and infinite stress, respectively. When rc = oo, (1) reduces
+to
+c- TA
+= raR,
+pcp
+(2)
+which shows that the upper limit of plant temperature is
+dependent on the aerodynamic resistance and the net ra-
+diation.
+The point B in Fig. 1 represents a measured value of T,
+- Ta. The points A and C represent the values of Tc - Ta
+that would occur if the plants were under maximum and
+minimum stress, at a particular value of VPD. A crop
+water stress index (CWSI) was defined as the ratio of the
+distances BC/AC [10], [11]. The mathematical equivalent
+100
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 16:06:43 UTC from IEEE Xplore.  Restrictions apply. 
+JACKSON et al.: DETECTION AND EVALUATION OF PLANT STRESS
+LJuz
+L,J
+hJ
+L'i
+U-
+UI-
+_
+CLa:
+LI
+0zG
+2
+3
+4
+VAPOR PRESSURE DEFICIT
+CKPA)
+Fig. 2. Canopy-air temperature difference versus air vapor pressure deficit
+for well-watered plots of alfalfa assumed to be transpiring at the potential
+rate, and one severely water-stressed plot for which all temperature dif-
+ferences were positive.
+y= 1 + r/r0) -y
+A + -y(l + rc/ra)
+can also be written [11]. The term y*
+=
+yy(I + rcp/ra)
+where rcp is the canopy resistance at potential evapotran-
+spiration. Equation (3) and the graphical calculation shown
+in Fig.
+1 have been used by a number of authors to eval-
+uate plant water stress in the field [3], [14]-[16]. Idso et
+al. [17] obtained data for alfalfa at a number of locations
+in the western U.S. (Fig. 2) to demonstrate the basic va-
+lidity of the concept.
+B. Biological, Salinity, and Nutrient Stress
+Insects and disease organisms can affect the tempera-
+ture of plants by disrupting the transpiration stream. Dis-
+rupting transpiration vessels has the effect of increasing
+the canopy resistance, and thus increasing the canopy-air
+temperature difference (Fig.
+1). Pinter et al. [2] used a
+thermal-IR radiometer to measure leaf temperatures of
+sugar beets infected with Pythium aphanidermatum. Leaf
+temperatures
+of
+diseased
+plants
+averaged
+2.6-3.6°C
+warmer than leaf temperatures of healthy plants, yet the
+disease could not be ascertained visually without exam-
+ining the roots. Temperatures of diseased plants remained
+higher than healthy plants even under conditions of water
+stress. Results with cotton infected with Phymatotrichum
+omnivorum were similar. Sunlit leaves of moderately dis-
+eased plants averaged 3.3-5.3 °C hotter that those on plants
+with no sign of fungal infection. The temperature differ-
+ence between diseased and healthy plants was evident
+1
+day after an irrigation. As soil moisture was depleted, the
+diseased plants invariably wilted first.
+In arid areas, increased soil salinity is a frequent con-
+sequence of irrigation. Early detection of saline areas may
+permit preventative measures before the crop is signifi-
+cantly damaged. Myers et al.
+[18] using ground based
+30
+0
+'a:
+C
+C!
+LJ
+l-z
+LLi
+<r:
+z
+lAJz
+25S
+20
+F
+is5
+10
+F
+sF
+0
+-30
+60
+90
+120
+150
+DAY OF YEAR
+Fig. 3. The near-IR/red ratio as a function of time for a dry (circles) and a
+wet (x) wheat plot.
+canopy temperature measurements, determined that the
+canopy-air temperature difference increased about 11C
+with an increase of salinity corresponding to 16 dS
+- m- 1.
+Recently, Howell et al.
+[3] found that canopy tempera-
+tures were as sensitive to osmotic stress as were tradi-
+tional measures, but that temperatures provided a better
+spatial resolution.
+Howell et al. [3] determined the VPD at which cotton
+could maintain "unstressed" transpiration rates as related
+to the soil electrical conductivity in the root zone. They
+showed that cotton could maintain "unstressed" transpi-
+ration only if the VPD was less than 3.5 kPa. For vapor
+pressure deficits greater than 3.5 kPa, the plants showed
+symptoms of stress although soil water was not limiting.
+Laboratory studies of nutrient stress showed that min-
+eral deficiencies increased the reflectance of radiation in
+the visible wavelengths, whereas effects on near and mid-
+dle IR reflectance varied according to the specific mineral
+deficiency [19]. Field measurements of corn canopies that
+received four nitrogen treatment levels showed that visible
+red reflectance increased and the near infrared reflectance
+decreased with decreasing nitrogen [20]. The ratio of near-
+IR to red radiance was related directly to the amount of
+nitrogen applied. Similar results have been reported for
+nitrogen deficient sugarcane [21].
+C. Comparison of Thermal and Reflective Indices
+A number of vegetation indices which are sensitive to
+the amount of green phytomass in the canopy can be
+formed from bands in the reflected portion of the solar
+spectrum [22]. One widely used vegetation index is the
+near-infrared red ratio. Fig. 3 shows this ratio as a func-
+tion of time during the growing season for two plots of
+spring wheat, one of which was kept well watered (wet)
+the other given limited water (dry) [23]. Data for the dry
+plot are indicated by circles and for the wet plot by x. Two
+critical periods, the onset of stress and the maximum al-
+lowable stress, can be inferred from the vegetation index
+shown in Fig. 3. The well watered plot, irrigated on day
+79, maintained a steady growth rate throughout the veg-
+INF
+101
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 16:06:43 UTC from IEEE Xplore.  Restrictions apply. 
+IEEE TRANSACTIONS ON GEOSCIENCE AND REMOTE SENSING, VOL. GE-24, NO.
+1, JANUARY 1986
+i.ol.01
+II.
+0.8 .
+0.6s
+X
+LLJ
+La
+z
+U1)
+U)
+LJ
+U)
+0:-
+LXJ
+<Ca
+CL
+0
+0r
+0.2 .
+O.I.
+0.8
+0.6
+0.2
+Q.0*
+U
+I
+0.8
+0.6
+0.4
+0
+LO
+(/)
+0.2
+D
+cc
+I.-
+0.0
+a
+t.0
+La
+CDm
+0. 8
+<
+x
+LLJ
+0.6
+0.4
+0.2
+0.0
+70
+90
+11o
+130
+150
+DAY OF YEAR
+Fig. 4. The crop water stress index (circles) and the fraction of extractable
+water used (dots) as functions of time for (a) a dry and (b) a wet wheat
+plot. The dashed vertical lines indicate the dates when irrigations were
+given.
+etative stage. Early in the season no differences were ob-
+served between the two plots, but after day 80 the growth
+rate of the dry plot began to decrease, as indicated by the
+inflection point (INF) in Fig. 3. At that time the rate of
+accumulation of green phytomass slowed due to lack of
+water in the dry plot. We interpret this as the first previ-
+sual indication of stress. Without a well watered plot for
+comparison, however,
+it would be difficult to detect the
+onset-of stress from a time sequence of the near-IR/red
+ratio. Note also that the IR/red ratio for the dry plot
+reached a maximum on day 93 (arrow labeled MAX). At
+this point the net accumulation of green phytomass, as seen
+by the radiometer, was zero. Plant architectural changes
+such as wilting may have exposed more soil to the radi-
+ometer, causing a further decrease in the ratio. On day 93,
+visual symptoms of stress were evident, and the rate of
+growth was zero. After day 93, there was a net loss of
+green material. We interpret this point as the maximum
+allowable stress, because the subsequent growth rate is
+negative. After irrigation on day 100 the green phytomass
+again increased, attaining nearly the same value as the
+maximum reached earlier.
+Fig. 4 shows the CWSI and extractable water used
+(EWU) [24] for the same two experimental plots. The
+CWSI data points are shown as circles clustering around
+a line drawn by eye. Smoothed values of the EWU (mea-
+sured with a neutron scattering technique) are shown as
+dots. Irrigations are indicated by the vertical dashed lines.
+Both the CWSI and the EWU increased with time until an
+irrigation was given. At that point the EWU dropped im-
+mediately to a low value, then began to increase. The
+CWSI decreased, but several days were required to reach
+a minimum [25], after which the CWSI continuously in-
+creased signifying a stress induced reduction in transpi-
+ration [11].
+To identify the values of CWSI and EWU which cor-
+responded with a reduction in growth rate, we used the
+dates when the inflection and maximum points (arrows
+Fig. 3) were reached, and read the corresponding values
+of CWSI and EWU from Fig. 4. Combining the two mea-
+surements allowed the stress limits to be determined for
+wheat. The results indicate that, for maximum vegetative
+growth of wheat, the CWSI should not exceed 0.28. If the
+CWSI exceeds 0.52, net green phytomass can be expected
+to decrease. On the other hand, once the CWSI reached a
+minimum after irrigation, it continuously increased with
+time, indicating a continuous increase ih stress. These re-
+sults further illustrate that temperature based indices are
+sensitive to the onset of stress whereas the reflectance
+based indices can evaluate the consequences of stress as
+expressed in changing quantities of green phytomass.
+D. Effect of Canopy Geometry on Stress Assessment
+Reflectance of light from a plant canopy is a complex
+phenomenon which depends not only on the reflectance
+properties of individual leaves and stems, but also on the
+ways in which they are oriented and distributed. Under
+stress, it is likely that both of these factors will change.
+Laboratory measurements of leaf spectra have shown that
+reflectance values in the 0.4-2.5 gm region increased with
+decreasing leaf water content [26]. Gausman [27] dem-
+onstrated this effect using cotton leaves. He found that re-
+flectance increased in all wavelengths as the leaves pro-
+gressively dehydrated. These results can be attributed to
+anatomical and physiological changes within the plant
+cells. Crop stress also causes the geometry of the plant to
+change (e.g., leaf droop and curl), thus exposing different
+fractions of vegetation and soil (both sunlit and shaded)
+to the radiometer. Obviously, these changes will also af-
+fect a reflectance measurement.
+The relative importance of stress induced changes in
+canopy architecture was studied on a cotton crop by Jack-
+son and Ezra [28]. They measured the spectral response
+of a cotton canopy by repetitively traversing a radiometer
+over three adjacent rows of cotton. The instrument was a
+Barnes Multiband Modular Radiometer (MMR)l that has
+seven bands in the reflective solar and one in the thermal
+IR. They are: MMR1, 0.45-0.52; MMR2, 0.52-0.60;
+MMR3, 0.63-0.69; MMR4, 0.76-0.90; MMR5, 1.15-1.30;
+MMR6, 1.55-1.75; MMR7, 2.05-2.30; and MMR8, 10.5-
+12.5 ,tm. MMR bands 1-4 and 7 correspond to the The-
+'Trade names and company names are included for the benefit of the
+reader and imply no preferential treatment or endorsement by the U.S. De-
+partment of Agriculture.
+(a)
+(b)
+.
+'I
+I
+,
+.,
+o0
+I.U,.
+I
+102
+0
+0
+.o
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 16:06:43 UTC from IEEE Xplore.  Restrictions apply. 
+JACKSON et al.: DETECTION AND EVALUATION OF PLANT STRESS
++ MMR 8
+z
+to
+220
+-300900
+0930
+1000
+1030
+1t00
+TIME OF DAY
+Fig. 5. Observed changes in cotton canopy reflectance and temperature as
+a function of time after plants were stressed by severing the main stem
+near the soil. Data are expressed as a percentage of energy reflected or
+emitted at the same time from two adjacent rows of cotton that were not
+stressed
+matic Mapper bands 1-4 and 7, MMR6 to TM5, and
+MMR8 to TM6.
+After an initial sequence of measurements, the stems of
+the center row of cotton were cut at a point just above the
+soil. Care was taken to minimize disturbance of the can-
+opy structure. The cut plants were supported by wooden
+dowels that had been inserted in the soil and to which the
+stems had been tied the previous day. The subsequent des-
+iccation of plants within this row was followed by com-
+paring its reflectance and emittance with a control row.
+Visual signs of wilting were apparent almost immedi-
+ately after cutting. The uppermost leaves began to curl
+and droop first, exposing normal appearing leaves below.
+Then wilting progressed slowly to the lower leaves. At the
+end of the experiment even the lowermost leaves showed
+signs of wilt. As a consequence of wilting, the geometry
+of the canopy rapidly changed. Prior to cutting the leaves
+were predominately horizontal. As wilting progressed the
+leaves became more vertical. The laboratory analysis of
+Gausman [27] had indicated that reflectance increased in
+all wavelengths with increasing water stress due to phys-
+iological changes of the leaves. Field results indicate that
+the reflectance may increase at some wavelengths and de-
+crease at others, depending on the geometry changes that
+accompany stress. The data in Fig. 5 show that, for this
+variety of cotton, geometry changes play a major role in
+determining reflectance properties of canopies. The re-
+flectance of six of the seven reflected solar bands de-
+creased as the cotton leaves dehydrated and the leaf angles
+changed from horizontal to vertical. Our explanation is
+similar to that of Holben et al. [29] in that, due to leaf
+droop, first surface reflections were scattered into the can-
+opy with less radiance reaching the sensor held above the
+canopy. For the six bands, geometric effects overshad-
+owed the increased reflectance that occurred due to phys-
+iological changes.
+0.5
+0.
+CE
+LL
+LJ
+z
+Lli
+LL
+LI
+0. 4
+0o.3
+0.2
+0. iF
+o
+,
+0.4
+0.8
+1.2
+1. 6
+2.0
+2.4
+WAUELENGTH
+Fig. 6. Reflectance factor as a function of wavelength as measured over
+water lily, guayule, and water.
+Reflectance in the red (0.63-0.69 ,tm) showed a net in-
+crease. The same geometrical factors were active, but the
+physiological changes were apparently greater. Radiation
+in this band (known as the chlorophyll absorption band) is
+absorbed by green leaves and provides the energy to com-
+bine carbon dioxide and water in the complex biochemical
+process of photosynthesis. In a recent review, Krieg [30]
+concluded that the first effect of a reduction in water avail-
+ability would be a reduction in this biochemical process
+which would subsequently trigger the closure of stomata
+to reduce the exchange of carbon dioxide and water with
+the atmosphere. Our hypothesis is that the sudden inter-
+ruption of transpiration immediately affected the photo-
+synthesis process causing some of the red radiation that
+was previously absorbed to be reflected back to the envi-
+ronment.
+On a percentage basis, the visible bands reacted as rap-
+idly to a suddenly induced stress as did the temperature
+(Fig. 5). A water absorption band (2.05-2.35 ,um) de-
+creased by 17 percent within 10 min of a suddenly induced
+stress, whereas the red band (0.63-0.67 ,tm) increased by
+about 12 percent within the same time period. The near-
+IR (0.76-0.90 ttm) showed the least percent change. This
+result is contrary to the results of Holben et al. [29] who
+found that the near-IR was the most sensitive to stress. In
+general, our results support the statement of Knipling [26]
+that the visible reflectance region is as sensitive to stress
+as is the near infrared region. However, in the visible re-
+gion the reflectance values are sufficiently small that stress
+caused changes may not be detectable in an operational
+mode.
+Although the reflectance factor for water in all TM
+bands is low (Fig. 6), the mid-IR bands (1.55-1.75 Am and
+2.05-2.35
+.tm) are proportedly sensitive to liquid water in
+plant tissues. On this basis, one could assume that these
+bands would be useful in detecting water stress in plants.
+Yet, even when liquid water is present in a scene, the ge-
+ometry of the scene components can be the dominant fac-
+tor and can cause confusion in interpreting the data. For
+example, the bidirectional reflectance factor was mea-
+sured over a water surface containing water lilies (Nuphar
+luteum Sibth. & Sm.) and over a stand of the drought
+o WATER LILY
+* GURYULE
+A WATER
+103
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 16:06:43 UTC from IEEE Xplore.  Restrictions apply. 

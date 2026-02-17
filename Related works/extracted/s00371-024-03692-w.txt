@@ -1,0 +1,610 @@
+The Visual Computer (2025) 41:4815–4838
+https://doi.org/10.1007/s00371-024-03692-w
+RESEARCH
+Intelligent leaf disease diagnosis: image algorithms using Swin
+Transformer and federated learning
+Huanshuo Zhang1 · Guobiao Ren1
+Accepted: 13 October 2024 / Published online: 7 November 2024
+© The Author(s), under exclusive licence to Springer-Verlag GmbH Germany, part of Springer Nature 2024
+Abstract
+In recent years, the international population has surged which has led to increased pressure on food security. Plant diseases are
+one of the most essential factors affecting food security. Plant diseases often manifest pathological features on plant leaves.
+This paper combines deep learning with continual learning and federated learning, proposing a federated continual learning
+comprehensive model based on the Swin Transformer model (SSPW224-LwF-3). Our datasets come from shared datasets and
+integrate data from other datasets based on a ratio principle of 6:1:3 for the training set, validation set and test set (https://osf.
+io/v4qfr/?view_only=38b53e39988c4e1e82363031a921f799). Experimental results show that the SSPW224 model achieves
+an accuracy, precision, recall and F1-score of 97.20%, 95.25%, 94.85% and 94.71% on the test set. It is evident to ﬁnd out
+that the SSPW224 model outperforms the other network models in the identiﬁcation and classiﬁcation of plant leaf diseases
+from the data and visualization perspectives. The average accuracy of the SSPW224-LwF-3 model strategy combination
+proposed in this study reaches the highest 47.06% among 18 combination strategies, with an accuracy of 49.41% and 33.81%
+for old and new data. The overall performance of this model is optimal. Therefore, the proposed SSPW224-LwF-3 model
+can achieve efﬁcient, sustainable, and distributed recognition and classiﬁcation of plant leaf diseases which provides a tool
+for plant disease identiﬁcation in smart agriculture.
+Keywords Leaf disease · Deep learning · Swin Transformer · Continual learning · Federated learning · t-SNE
+1 Introduction
+With the emergence of academic disciplines such as plant
+pathology and microbiology, research on plant diseases is
+gradually deepening. Leaf disease is one of the most common
+types of plant disease, which is caused by a certain plant dis-
+ease and results in some aberrant leaf traits such as yellowing
+[1], black spots [2] or mosaic patterns [3] on the leaves. The
+etiology of leaf diseases encompasses multifaceted factors,
+such as fungal infection, bacterial infection, viral invasion
+and other causes such as mosquito bites.
+The ﬁrst etiological category is fungal leaf diseases [4],
+which is caused by fungi such as powdery mildew, rust dis-
+ease and anthracnose. Exempliﬁed by Diplocarpon Rosae
+B Guobiao Ren
+rengb@zzu.edu.cn
+Huanshuo Zhang
+hshuozhang@163.com
+1
+School of Mathematics and Statistics, Zhengzhou University,
+Zhengzhou 450001, Henan, People’s Republic of China
+Wolf [5], a fungus that causes black spot disease in plants
+such as roses (the fungi that cause leaf black spot disease in
+different plants are not the same), Diplocarpon Rosae will
+form haustorium after adsorbing on host plants. This enables
+Diplocarpon Rosae to penetrate and intrude into the host
+plant’s surface cells to obtain cellular nutrients for its growth.
+The host cells will gradually die after being invaded. After
+being infected, the host plant leaves progress from minute
+lesions to irregular blotches, and the color of the spots will
+gradually deepen, turning from brown to black–brown.
+The second etiological category is bacterial leaf diseases
+[6], which is caused by bacterial infections such as leaf
+spot disease or bacterial wilt disease, and ultimately lead
+to abnormal symptoms such as wilt and necrosis on plant
+leaves. Illustratively, we take Ralstonia solanacearum [7] as
+an example. Ralstonia solanacearum invades the plant via the
+root system and infects it upwards through the plant’s root
+system. Once it reaches the plant’s vascular system, Ralsto-
+nia solanacearum will secrete a substance which is called
+“protein extracellular polymers (PEL)” to block the plant’s
+vascular system. Accumulation of these polymers within the
+123
+4816
+H. Zhang, G. Ren
+vascular bundles results in blockages that prevent normal
+water and nutrient ascent, ultimately leading to symptoms of
+wilting and necrosis on plant leaves.
+The third etiological category is viral leaf diseases [8],
+which is caused by viral such as potato leafroll virus (PLRV)
+and tobacco mosaic virus (TMV). These viruses can be trans-
+mitted through insects or other diseased plants. We take
+tobacco mosaic virus (TMV) [9] as an example. Illustratively,
+TMV is an RNA virus which has had to use substances in
+host cells to achieve transcription and translation to dupli-
+cate themselves and then produce new viruses. These newly
+synthesized virus particles gather inside the cells and form
+elongated nanotube structures through self-assembly. This
+can disrupt the cell membrane of host plant cells, perturbing
+plant hormone regulation. Eventually, it elicits abnormal leaf
+characteristics such as yellowing, curling and disease spots
+on the leaves.
+Leaf diseases may have a variety of effects on plants
+because leaf disease can hinder the photosynthesis of most
+plants to a certain extent. The ability to carry out photosyn-
+thesis normally is the key to whether plants can grow and
+survive normally. And leaf is the main place for plant photo-
+synthesis. Leaf diseases can lead to a decrease in the number
+of cells which can carry out photosynthesis in plant leaves
+and a decrease in chlorophyll content in plant leaves. So, it
+will lead to some abnormal symptoms such as leaf yellow-
+ing and curling, which reduces the efﬁciency and effective
+areaofplantphotosynthesis.Plantscannotsynthesizeenough
+organic matter without enough photosynthesis, ultimately
+leading to serious consequences such as slowing down plant
+growth and lowering seed quality. If this malignant outcome
+is reﬂected signiﬁcantly in the ﬁeld of grain crops, it will lead
+to a substantial reduction in the yield of grain crops. The yield
+of grain crops is of vital signiﬁcance to human survival and
+development and the harmonious development of society.
+Firstly, enough food is the key to food security and the basis
+for human survival and development. Secondly, food produc-
+tion is the economic pillar of many developing countries. The
+identiﬁcation and classiﬁcation of plant leaf diseases are the
+basis of studying and solving plant leaf diseases. Therefore,
+it is very important to improve the accuracy of identifying
+and classifying plant diseases.
+In the early research of plant leaf diseases, manual fea-
+ture extraction [10, 11] is a common method. Early research
+on plant leaf diseases primarily relied on manual feature
+extraction methods, such as visual observation and manual
+measurement of leaf color, shape and size.
+However, the method of manual feature extraction for
+plant leaves has subjectivity, which is not sensitive enough to
+subtle disease symptoms and has limitations. Additionally,
+this method also has the disadvantages of being time-
+consumingandrequiringalargeamountofwork.Itisdifﬁcult
+for this method to cope with high-capacity datasets. With
+the advancement of science and technology, people began
+to pursue the task of identifying the characteristics of leaves
+with high efﬁciency and high accuracy, so the use of machine
+learning in artiﬁcial intelligence to identify and classify plant
+leaf diseases came into being [12]. Prabhjot Kaur et al. used
+logistic regression techniques to sample collected features
+and employed a hybrid convolutional neural network to iden-
+tify leaf disease, ultimately achieving an accuracy of 98.7%.
+Panuwat Mekha et al. [13] used a random forest classiﬁca-
+tion algorithm to identify and categorize a dataset of rice
+leaf brown spot disease (BSR), ﬁnally achieving an accu-
+racy of 69.44%. Ms. Deepika Chauhan et al. extensively
+employed artiﬁcial intelligence methods, such as naive Bayes
+(NB), decision trees (DT), K-nearest neighbors (K-NN),
+support vector machine (SVM) and random forest (RF), to
+detect crop diseases. Then they proposed a model which is
+the most suitable for efﬁcient disease detection. The accu-
+racy of the random forest model is the highest, at 80.68%
+[14]. Muhammad Alyas Khan [15] proposed using gray-
+level co-occurrence matrix (GLCM) and Color Moments to
+extract color and shape features of leaf segmentation regions.
+Finally, they put these extracted features into a backpropaga-
+tion neural network (BPNN) classiﬁer to detect and classify
+walnut leaf diseases. The experimental result shows that the
+detection accuracy of the proposed method is 95.3%. Mar-
+janul Islam Tarik et al. [16] proposed an automated system
+which is based on image processing and machine learning
+for identifying and classifying potato leaf diseases. They
+analyzed more than 2034 images of unhealthy potatoes and
+healthy leaves from publicly accessible plant datasets. The
+program achieved a prediction accuracy of 99.23% when
+tested with 25% test data and 75% training data. Their result
+indicates that the method of machine learning surpasses all
+existing methods in the potato disease detection ﬁeld. Sunil
+Harakannanavar et al. [17] used algorithms such as support
+vector machine (SVM), convolutional neural network (CNN)
+and K-nearest neighbors (K-NN) to extract tomato features
+and classify them. The accuracy of the proposed model was
+tested on diseased tomato samples by SVM, K-NN and CNN,
+and the accuracy was 88%, 97% and 99.6%, respectively.
+Muhammad Anwarul Azim et al. [18] used an extreme gra-
+dient boosting decision tree ensemble method on UCI’s rice
+leaf disease dataset, resulting in an 86.58% accuracy. Seyed
+Mohamad Javidan et al. [19] achieved automatically sepa-
+rated diseased areas from healthy parts of leaves by using
+K-means clustering and extracted features in RGB, HSV and
+Labcolormodels.HarikumarPallathadkaetal.[20]proposed
+a framework based on machine learning for rice leaf disease
+classiﬁcation and detection. SVM, naive Bayes and CNN are
+used in this framework. PCA algorithm was also used for fea-
+ture extraction. Sambasivam et al. [21] proposed the use of
+category weights, SMOTE (synthetic minority oversampling
+123
+Intelligent leaf disease diagnosis: image algorithms using Swin …
+4817
+technique) and deep convolutional neural networks to com-
+bat high category imbalance with an accuracy of over 93%.
+These machine learning algorithms and technologies provide
+more possibilities for early diagnosis of plant leaf diseases,
+which are of great signiﬁcance for maintaining food security.
+They also set the stage for the development of deep learning
+in the ﬁeld of plant leaf diseases.
+Deep learning is an end-to-end learning approach that
+allows tasks to be learned directly from raw data through end-
+to-end learning, and weights can be automatically adjusted
+during the training process. So, it can reduce the need for
+manual design processes. Compared to machine learning,
+deep learning models can often achieve better performance
+when dealing with large-scale and complex image data [22].
+In the ﬁeld of plant leaf disease recognition, Ümit Atila et al.
+proposed the framework of EfﬁcientNet deep learning for
+plant leaf disease classiﬁcation, and they trained the model
+on the PlantVillage dataset. The accuracy of EfﬁcientNet-
+B5 and EfﬁcientNet-B4 models in the original and enhanced
+datasets is 99.91% and 99.97%, respectively. Rakesh Chan-
+dra Joshi et al. proposed a method named VirLeafNet based
+on deep learning and achieved automatic virus infection
+detection for Vigna mungo. All proposed models achieved
+over 90% accuracy [6]. Andrew J. et al. [23] ﬁne-tuned
+popular pre-trained models’ hyperparameters. They used the
+PlantVillage dataset in experiments, and the DenseNet-121
+model achieved a higher classiﬁcation accuracy of 99.81%.
+B. Sai Reddy et al. [24] used convolutional neural net-
+works (CNN) to train models with supervised pixel values,
+achieving an accuracy of over 97%. Shivali Amit Wagle [25]
+used some deep learning models such as AlexNet, VGG16,
+GoogLeNet, MobileNetv2 and SqueezeNet to classify and
+judge tomato plant leaves. Among them, the VGG16 model
+has the best performance, with an accuracy of 99.17%. Arun
+Malik et al. [26] proposed a mixed model combining VGG16
+and MobileNet for sunﬂower disease identiﬁcation and clas-
+siﬁcation. On the same dataset, this method outperformed
+other algorithms with an accuracy of 89.2%. Hesham Tarek
+et al. [27] investigated various deep convolutional neural net-
+work (CNN) technologies such as ResNet50, InceptionV3,
+AlexNet and MobileNetV1 to detecting and identifying
+tomato leaf diseases. MobileNetV3 Large got the highest
+accuracy of 99.81% among other deep learning models, with
+a loss value of 0.0088. Yousef Methkal Abd Algani et al. [28]
+proposed a deep learning algorithm called ant colony opti-
+mization with convolutional neural network (ACO-CNN).
+They studied the diagnostic effect of plant leaf diseases by
+using ant colony optimization (ACO) and used a CNN clas-
+siﬁer to extract image information features. Compared to
+existing techniques, the proposed method performs better
+in terms of accuracy. Marriam Nawaz et al. [29] proposed a
+method used for classifying tomato plant leaf diseases which
+is based on ResNet-34 Faster-RCNN. ResNet-34 and con-
+volutional block attention module (CBAM) were introduced
+as the feature extraction module for Faster-RCNN to extract
+deep-level key points. They tested this model on the PlantVil-
+lage Kaggle dataset and achieved an accuracy of 99.97%.
+Waleed Albattah et al. used an improved CenterNet to detect
+and classify various plant leaf diseases. In the experiment,
+they used DenseNet-77 for deep-level key point extraction.
+From this, it is evident that using deep learning methods to
+identify and classify plant leaf diseases has overcome the
+limitations of manually extracting image features compared
+to traditional methods and machine learning methods. And
+deep learning methods do not require manual intervention
+[30]. This makes the models more adaptable and can han-
+dle different types and degrees of diseases, which plays an
+important role in preventing and managing plant diseases.
+However, in the classiﬁcation process, each model has cer-
+tain shortcomings that may not be applicable to some speciﬁc
+datasets. Catastrophic forgetting [31–33] is a serious but nor-
+mal phenomenon that occurs in the process of deep learning
+when we solve practical problems. Catastrophic forgetting
+refers to the phenomenon where a neural network forgets
+previously learned tasks when learning new tasks. When a
+neural network is designed to solve multiple tasks, its weight
+parameters will be adjusted during the learning stage of new
+tasks, causing the loss of previously acquired knowledge.
+This phenomenon occurs because the weight parameters of
+a neural network inevitably change when learning new tasks
+to adapt to new inputs and objectives. The updates of these
+weights may lead to a decline in the network’s performance
+on previous tasks, because the new parameter settings may
+no longer be suitable for the old tasks. Therefore, giving deep
+learning models the ability for continuous learning is the top
+priority in solving practical problems. Our research builds
+upon existing models and incorporate the strategies for fed-
+erated learning and continual learning. The method we built
+gets more accuracy. And it is more efﬁcient and resilient to
+the problem of existing catastrophic forgetting compared to
+other methods. The main contributions of this study are as
+follows:
+• We have established a comprehensive and integrated
+datasets of various plant diseases images for training neu-
+ral networks which is capable of identifying multiple plant
+diseases. We have also appropriately allocated the training
+sets, validation sets and test sets.
+• We have compared several advanced deep learning meth-
+ods on the comprehensive datasets we proposed and
+identiﬁed the model with the best performance on our
+datasets. We have validated the neural network based on
+the Swin Transformer architecture using multiple eval-
+uation metrics for each classiﬁcation. We applied the
+confusion matrix and t-SNE dimensionality reduction
+123
+4818
+H. Zhang, G. Ren
+methods to achieve visualized operation of evaluation met-
+rics. We validate the superiority of the Swin Transformer
+neural network in the ﬁeld of classiﬁcation by data analysis
+and visual aspects.
+• We have proposed a method which combines the Swin
+Transformer architecture with federated learning methods
+and various incremental continual learning methods. We
+integratetheﬁne-tuning,LwFandEWCcontinuallearning
+methodswiththeSwinTransformermodelsothatwemake
+the basic model get the ability of incremental learning.
+We also integrated federated learning methods with the
+Swin Transformer model in order to enhance the original
+model’s ability for distributed learning.
+This paper is organized into six parts. We provide an
+overview of the datasets and the preprocessing operations
+performed on the data in the second part. We describe the
+methods we used in these experiments and introduce the per-
+formancemetricsinthethirdpart.Thefourthpartpresentsthe
+experimental results of our proposed method and other meth-
+ods. The ﬁfth part discusses our proposed method. Finally,
+we provide the conclusion of this paper in the sixth part.
+2 Materials
+2.1 Dataset
+The dataset used in this paper is obtained from the Kag-
+gle website. We chose a dataset named as Leaf Disease
+Dataset (combination) which focuses on plant leaf diseases.
+This dataset is based on many famous datasets such as the
+Plantvillage dataset, Rice Leaf Disease dataset and Planti-
+fyDr dataset. Upon our review, we found errors in the cassava
+dataset in the original data, and the data for the apple cedar
+rust disease category were insufﬁcient. Additionally, it was
+difﬁcult to ﬁnd enough suitable image data online to supple-
+ment this category. Therefore, we deleted the cassava dataset
+and apple cedar rust from this dataset. The basic quantity
+information of the dataset is shown in Table 1. Our dataset is
+divided into training sets, testing sets and validation sets. All
+of the pictures are well organized in the training directory,
+testingdirectoryandvalidationdirectorywithintheirrelevant
+class name folders. We optimized the quantity distribution
+of picture data in the training sets, validation sets and testing
+sets based on the original dataset. The ﬁnal ratio of picture
+data for each disease subclasses (including “healthy”) in the
+training sets, validation sets and testing sets is 6:1:3. Then,
+to avoid overﬁtting of the model, we increased the number of
+image data of the original dataset according to the set ratio.
+We have endeavored to ensure an ample number of samples
+in the test set, with the majority of test set samples exceeding
+200 in quantity. The dataset includes 12 plant classes, fur-
+ther subdivided into 38 plant disease subclasses (including
+“healthy”). They are all standardized to 256 × 256 size and
+RGB color scheme.
+We take the ﬁve leaf diseases of tomatoes as an exam-
+ple. Figure 1 shows the illustrations of healthy tomato leaves
+and other leaves who suffer from these ﬁve diseases: tomato
+mosaic virus, tomato yellow leaf curl virus, bacterial spot,
+early blindness and leaf mold.
+It is not difﬁcult to see that the leaf of healthy tomato is
+uniformly green, with relatively few lobes and no signiﬁ-
+cant differences in size between lobes. The leaf margins are
+smooth. Tomato leaves infected with tomato mosaic virus
+(TMV) will show color differences on the surface. It is
+obvious that there are variations in green color intensity at
+different positions on the leaves. There will be a slight curva-
+ture phenomenon at the leaf margin. Tomato leaves infected
+with tomato yellow leaf curl virus will exhibit severe curva-
+ture of the leaf margins and yellowing of the leaves. Tomato
+leaves infected with bacterial spot will show irregular dark
+brown spots which will continuously spread. Tomato leaves
+infected with early blight will have irregular black–brown
+spots and yellowing around the spots, too. And there will be
+a slight curvature phenomenon at the leaf margin. Tomato
+leaves infected with leaf mold will show a relatively concen-
+trated yellowing phenomenon.
+2.2 Data preprocessing
+In order to enhance the diversity of data, the ability of gen-
+eralization and performance of the model, it is necessary to
+preprocess the experimental data. We uniformly scale the
+images in the dataset to 224 × 224 pixels and apply blur
+processing to them. Then we normalize the image data. We
+also added salt-and-pepper noise and Gaussian noise to the
+images in the dataset to simulate random interference and
+scene changes in our real life. In order to improve the qual-
+ity of the dataset, we perform data augmentation on the
+images in the training set, including random rotation, hor-
+izontal ﬂipping, random cropping and randomly changing
+the brightness, contrast, saturation and hue attributes of the
+images. Taking an image from Apple Scale as an example,
+the following are the images of a plant leaf affected by Apple
+Scale disease that has undergone cropping, rotation, horizon-
+tal ﬂipping, changing image attributes, blurring [34–36] and
+adding salt-and-pepper noise [37] or Gaussian noise [38].
+Blurring is a common method during the process of data
+augmentation (see Fig. 2). It can improve the quality of our
+dataset and enhance the robustness of the model. Taking the
+example of blurring in preprocessing, blurring (or smooth-
+ing) is achieved by taking a weighted average of each pixel
+value with the weights of its surrounding pixels. For example,
+if we want to obtain image B after the blurring processing
+123
+Intelligent leaf disease diagnosis: image algorithms using Swin …
+4819
+Table 1 Original dataset sample
+data
+Category
+Disease
+Train
+Validation
+Test
+Total
+Rice
+Brown spot
+324
+52
+147
+523
+Healthy
+893
+148
+447
+1488
+Hispa
+339
+56
+170
+565
+Leaf blast
+467
+77
+235
+779
+Apple
+Apple scab
+468
+78
+234
+780
+Black rot
+475
+79
+237
+791
+Healthy
+987
+164
+494
+1645
+Cherry
+Healthy
+512
+85
+257
+854
+Powdery mildew
+631
+105
+316
+1052
+Corn
+Leaf spot
+1182
+197
+591
+1970
+Common rust
+715
+119
+358
+1192
+Healthy
+697
+116
+349
+1162
+Northern leaf blight
+591
+98
+296
+985
+Grape
+Black rot
+708
+118
+354
+1180
+Esca
+822
+138
+423
+1383
+Healthy
+2054
+387
+935
+3376
+Leaf blight
+646
+107
+323
+1076
+Orange
+HLB
+3304
+550
+1653
+5507
+Peach
+Bacterial spot
+1378
+229
+690
+2297
+Healthy
+1233
+205
+617
+2055
+Bell pepper
+Bacterial spot
+598
+99
+300
+997
+Healthy
+887
+147
+444
+1478
+Potato
+Early blight
+600
+100
+300
+1000
+Healthy
+1055
+176
+527
+1758
+Late blight
+592
+100
+308
+1000
+Squash
+Powdery mildew
+1101
+183
+551
+1835
+Strawberry
+Healthy
+756
+126
+377
+1259
+Leaf scorch
+665
+110
+334
+1109
+Tomato
+Bacterial spot
+1276
+212
+639
+2127
+Early blight
+600
+100
+300
+1000
+Healthy
+1025
+169
+407
+1691
+Late blight
+1376
+190
+343
+1909
+Leaf mold
+577
+95
+280
+952
+Mosaic virus
+445
+109
+284
+838
+Septoria leaf spot
+1144
+177
+450
+1771
+Spider mites
+1076
+167
+433
+1676
+Target spot
+923
+140
+341
+1404
+TYLCV
+3539
+535
+1283
+5357
+of the original image A, we should ﬁrstly ﬁnd out the image
+A and the blur kernel matrix K. Then, the result of blurring
+processing can be calculated by using formula B  K ∗A,
+where the symbol ∗represents the convolution operation and
+K can be a matrix of various shapes and parameters. Taking
+Gaussian kernel matrix as an example, the Gaussian kernel
+matrix is obtained based on the following two-dimensional
+Gaussian distribution function,
+G(x, y) 
+1
+2πσ 2 e−x2+y2
+2σ2
+(1)
+This function represents the Gaussian distribution on a
+two-dimensional plane, and the Gaussian kernel matrix is
+obtained by sampling this function on discrete coordinates.
+123

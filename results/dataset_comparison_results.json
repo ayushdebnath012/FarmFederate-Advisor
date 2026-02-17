@@ -1,0 +1,146 @@
+{
+  "text_datasets": {
+    "AG News": {
+      "f1_macro": 0.17159090909090907,
+      "f1_micro": 0.7512437810945274,
+      "accuracy": 0.7512437810945274,
+      "samples": 1001,
+      "source": "ag_news_AGNews_agricultural"
+    },
+    "PubMed Agriculture": {
+      "f1_macro": 0.1815217391304348,
+      "f1_micro": 0.8308457711442786,
+      "accuracy": 0.8308457711442786,
+      "samples": 1001,
+      "source": "ccdv/pubmed-summarization_PubMed_agricultural"
+    },
+    "Agriculture QA (SQUAD)": {
+      "f1_macro": 0.1894736842105263,
+      "f1_micro": 0.9,
+      "accuracy": 0.9,
+      "samples": 998,
+      "source": "squad_SQUAD_agricultural"
+    },
+    "Synthetic": {
+      "f1_macro": 0.0,
+      "f1_micro": 0.0,
+      "accuracy": 0.0,
+      "samples": 3000,
+      "source": "synthetic_agricultural"
+    }
+  },
+  "image_datasets": {
+    "PlantVillage (Real)": {
+      "f1_macro": 0.13487179487179485,
+      "accuracy": 0.18,
+      "samples": 500,
+      "source": "real_plantvillage"
+    },
+    "Beans (Real)": {
+      "f1_macro": 0.15649122807017543,
+      "accuracy": 0.2,
+      "samples": 500,
+      "source": "real_beans"
+    },
+    "Synthetic": {
+      "f1_macro": 0.36563503827514404,
+      "accuracy": 0.4033333333333333,
+      "samples": 3000,
+      "source": "synthetic_images"
+    },
+    "PlantVillage-style": {
+      "f1_macro": 0.4169790570492621,
+      "accuracy": 0.45555555555555555,
+      "samples": 4500,
+      "source": "plantvillage_style"
+    },
+    "PlantDoc-style": {
+      "f1_macro": 0.3906973610604673,
+      "accuracy": 0.42333333333333334,
+      "samples": 1500,
+      "source": "plantdoc_style"
+    },
+    "IP102-style": {
+      "f1_macro": 0.3905847540140429,
+      "accuracy": 0.405,
+      "samples": 3000,
+      "source": "ip102_style"
+    }
+  },
+  "multimodal_datasets": {},
+  "intra_comparison": {
+    "text_analysis": {
+      "best_dataset": "Agriculture QA (SQUAD)",
+      "best_f1": 0.1894736842105263,
+      "mean_f1": 0.13564658310796754,
+      "std_f1": 0.0785714274282094,
+      "range": 0.1894736842105263,
+      "num_datasets": 4
+    },
+    "image_analysis": {
+      "best_dataset": "PlantVillage-style",
+      "best_f1": 0.4169790570492621,
+      "mean_f1": 0.3092098722234811,
+      "std_f1": 0.11674532701002319,
+      "range": 0.28210726217746723,
+      "num_datasets": 6
+    }
+  },
+  "inter_comparison": {
+    "cross_modal_combinations": {
+      "Agriculture QA (SQUAD) + PlantVillage-style": {
+        "f1_macro": 0.915,
+        "text_dataset": "Agriculture QA (SQUAD)",
+        "image_dataset": "PlantVillage-style",
+        "samples": 3000
+      },
+      "Agriculture QA (SQUAD) + PlantDoc-style": {
+        "f1_macro": 0.41,
+        "text_dataset": "Agriculture QA (SQUAD)",
+        "image_dataset": "PlantDoc-style",
+        "samples": 1500
+      },
+      "PubMed Agriculture + PlantVillage-style": {
+        "f1_macro": 0.8133333333333334,
+        "text_dataset": "PubMed Agriculture",
+        "image_dataset": "PlantVillage-style",
+        "samples": 3000
+      },
+      "PubMed Agriculture + PlantDoc-style": {
+        "f1_macro": 0.38666666666666666,
+        "text_dataset": "PubMed Agriculture",
+        "image_dataset": "PlantDoc-style",
+        "samples": 1500
+      }
+    },
+    "best_combination": {
+      "name": "Agriculture QA (SQUAD) + PlantVillage-style",
+      "text_dataset": "Agriculture QA (SQUAD)",
+      "image_dataset": "PlantVillage-style",
+      "f1_macro": 0.915,
+      "samples": 3000
+    },
+    "modality_impact": {
+      "text_impact": {
+        "Agriculture QA (SQUAD)": {
+          "mean": 0.6625,
+          "std": 0.2525
+        },
+        "PubMed Agriculture": {
+          "mean": 0.6,
+          "std": 0.21333333333333335
+        }
+      },
+      "image_impact": {
+        "PlantVillage-style": {
+          "mean": 0.8641666666666667,
+          "std": 0.05083333333333334
+        },
+        "PlantDoc-style": {
+          "mean": 0.3983333333333333,
+          "std": 0.011666666666666659
+        }
+      }
+    }
+  }
+}

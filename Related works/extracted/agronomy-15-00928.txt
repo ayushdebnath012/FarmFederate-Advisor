@@ -1,0 +1,358 @@
+Academic Editors: Jayme Garcia
+Arnal Barbedo and Chengming Sun
+Received: 6 February 2025
+Revised: 5 April 2025
+Accepted: 7 April 2025
+Published: 10 April 2025
+Citation:
+Aldossary, M.; Almutairi,
+J.; Alzamil, I. Federated
+LeViT-ResUNet for Scalable and
+Privacy-Preserving Agricultural
+Monitoring Using Drone and Internet
+of Things Data. Agronomy 2025, 15,
+928. https://doi.org/10.3390/
+agronomy15040928
+Copyright: © 2025 by the authors.
+Licensee MDPI, Basel, Switzerland.
+This article is an open access article
+distributed under the terms and
+conditions of the Creative Commons
+Attribution (CC BY) license
+(https://creativecommons.org/
+licenses/by/4.0/).
+Article
+Federated LeViT-ResUNet for Scalable and Privacy-Preserving
+Agricultural Monitoring Using Drone and Internet of
+Things Data
+Mohammad Aldossary 1,*
+, Jaber Almutairi 2 and Ibrahim Alzamil 3
+1
+Department of Computer Engineering and Information, College of Engineering, Prince Sattam Bin Abdulaziz
+University, Wadi Al-Dawasir 11991, Saudi Arabia
+2
+Department of Computer Science, College of Computer Science and Engineering, Taibah University,
+Al-Madinah 42353, Saudi Arabia
+3
+Department of Information Technology, College of Computer and Information Sciences, Majmaah University,
+Majmaah 11952, Saudi Arabia
+*
+Correspondence: mm.aldossary@psau.edu.sa
+Abstract: Precision agriculture is necessary for dealing with problems like pest outbreaks, a
+lack of water, and declining crop health. Manual inspections and broad-spectrum pesticide
+application are inefficient, time-consuming, and dangerous. New drone photography and
+IoT sensors offer quick, high-resolution, multimodal agricultural data collecting. Regional
+diversity, data heterogeneity, and privacy problems make it hard to conclude these data.
+This study proposes a lightweight, hybrid deep learning architecture called federated
+LeViT-ResUNet that combines the spatial efficiency of LeViT transformers with ResUNet’s
+exact pixel-level segmentation to address these issues. The system uses multispectral
+drone footage and IoT sensor data to identify real-time insect hotspots, crop health, and
+yield prediction. The dynamic relevance and sparsity-based feature selector (DRS-FS) im-
+proves feature ranking and reduces redundancy. Spectral normalization, spatial–temporal
+alignment, and dimensionality reduction provide reliable input representation. Unlike
+centralized models, our platform trains over-dispersed client datasets using federated
+learning to preserve privacy and capture regional trends. A huge, open-access agricultural
+dataset from varied environmental circumstances was used for simulation experiments.
+The suggested approach improves on conventional models like ResNet, DenseNet, and
+the vision transformer with a 98.9% classification accuracy and 99.3% AUC. The LeViT-
+ResUNet system is scalable and sustainable for privacy-preserving precision agriculture
+because of its high generalization, low latency, and communication efficiency. This study
+lays the groundwork for real-time, intelligent agricultural monitoring systems in diverse,
+resource-constrained farming situations.
+Keywords: precision agriculture; drone-based monitoring; LeViT-ResUNet; federated
+learning; crop health assessment; sustainable farming
+1. Introduction
+Agriculture has long served as the foundation of societal development and human
+progress. Over time, it has evolved dramatically, from using rudimentary tools by early
+farmers to adopting sophisticated digital technologies in today’s smart farming. One of the
+most impactful developments in recent years is precision agriculture, which leverages data to
+understand and respond to variability in soil and crop conditions [1]. This approach helps
+farmers to use resources more efficiently, reduce environmental impact, and boost productivity.
+Agronomy 2025, 15, 928
+https://doi.org/10.3390/agronomy15040928
+Agronomy 2025, 15, 928
+2 of 35
+Traditional agricultural methods like manual pest inspection and widespread pesticide
+spraying are becoming increasingly inadequate [2]. These methods are time-consuming
+and labor-intensive and pose risks to ecosystems and human health. As agriculture faces
+rising challenges such as pest outbreaks, climate variability, soil degradation, and water
+scarcity [3], there is a growing need for intelligent, automated systems to support sustain-
+able and resilient farming. This is where unmanned aerial vehicles (UAVs) are making
+a real difference. Using high-resolution cameras—ranging from RGB to multispectral
+and thermal—UAVs can rapidly scan large fields and capture detailed information that
+ground-level surveys often miss [4,5].
+Alongside UAVs, remote sensing techniques have introduced powerful tools like
+the NDVI and SAVI, which provide early signals of crop stress, disease, and nutrient
+deficiency [6]. When these time-series data are analyzed over time, they can help to
+predict crop growth stages and potential yield. Yet, even with these advancements, many
+challenges persist. Monitoring the interaction of various factors—such as soil moisture,
+temperature, pest density, and plant canopy—is complex [7]. For example, while increased
+soil moisture may benefit plant growth, it might also create favorable conditions for pests
+and diseases. Addressing such interdependencies requires more than just data—it demands
+intelligent models that can understand and adapt to these relationships.
+Detecting pests early remains particularly difficult. Pests often appear in small, local-
+ized patches and are easy to miss. Their behaviors vary by species and region, making early
+classification even more challenging. However, recent progress in imaging and machine
+learning has opened up new possibilities for automating pest detection and classification,
+reducing the need for manual inspection [8]. At the same time, accurately forecasting
+yields has become a key goal in precision agriculture, helping farmers to plan resource
+use, storage, and market logistics. When trained on vegetation indices, soil parameters,
+and climate data, machine learning models can produce yield predictions that are both
+timely and reliable.
+An emerging solution in this evolving landscape is federated learning (FL), which
+enables collaborative model training across multiple decentralized sources while keeping
+the raw data local [9]. This approach eliminates the need to transfer sensitive agricultural
+data to a central server, thereby enhancing both privacy and scalability. This decentralized
+training approach protects sensitive information and adapts well to the natural variability
+found across farms, crops, and climates. When combined with UAV-based systems, FL
+enables the creation of intelligent models that are location-aware and privacy-preserving.
+Recent studies have shown that UAVs can track temperature changes, monitor soil con-
+ditions, and identify pest activity in real time [10]. By integrating machine learning, these
+systems enable precision-driven actions—such as applying pesticides only where needed or
+adjusting irrigation in specific zones—significantly reducing their environmental footprint.
+This convergence of drone technology, sensor networks, artificial intelligence, and federated
+learning marks a transformative shift in agriculture, paving the way for smarter, more
+sustainable practices that enhance productivity while preserving natural resources.
+Motivation and Contributions: While recent research has explored deep learning for
+agricultural monitoring, many existing approaches fall short in terms of scalability, privacy,
+and the ability to handle heterogeneous sensor data in distributed environments. To address
+these gaps, we introduce a novel framework combining efficient deep learning, federated
+training, and adaptive feature selection tailored for UAV-driven agricultural analytics.
+In this work, we propose Federated LeViT-ResUNet, a hybrid model that combines
+LeViT’s lightweight transformer-based feature extractor with the pixel-level segmentation
+power of ResUNet. To enhance interpretability and efficiency, we introduce a dynamic
+relevance and sparsity-based feature selector (DRS-FS) that focuses the model’s attention
+Agronomy 2025, 15, 928
+3 of 35
+on the most meaningful inputs. Our federated framework enables model training directly
+on distributed edge devices—such as drones or on-site farm systems—while ensuring
+that sensitive data remain local and private. We train and evaluate the system using a
+large, open-access agricultural dataset with annotated segmentation masks and bounding
+boxes. Our experimental analysis shows that the proposed model achieves high accuracy,
+robust performance under varying environmental conditions, and better generalization
+than several state-of-the-art hybrid architectures.
+The key contributions of this study are as follows:
+1.
+LeViT-ResUNet Hybrid Architecture: A lightweight, accurate model that blends
+LeViT’s efficient transformer backbone with ResUNet’s detailed segmentation for
+UAV-based agricultural monitoring.
+2.
+Federated Learning Integration: A decentralized training mechanism that sup-
+ports privacy, scalability, and cross-regional adaptability in data-rich agricultural
+environments.
+3.
+Dynamic Feature Selection: A novel DRS-FS module that improves model focus and
+reduces overhead by selecting the most contextually relevant features.
+4.
+Comprehensive Preprocessing Framework: A robust pipeline that includes spectral
+normalization, noise removal, spatial–temporal alignment, and hierarchical feature
+fusion to ensure high-quality inputs.
+5.
+Advancing Sustainable Agriculture: By leveraging thermal and multispectral UAV
+data, the proposed framework enables continuous and precise monitoring of crop
+health, pest presence, and soil dynamics, supporting environmentally responsible
+farming practices in alignment with global sustainability objectives.
+The remainder of this paper is structured as follows. Section 2 provides a compre-
+hensive overview of recent advancements in UAV-assisted agricultural monitoring and
+federated learning approaches. Section 3 introduces the proposed system, detailing the
+model architecture, preprocessing pipeline, and feature engineering strategies. Section 4
+presents the experimental setup, analyzes performance outcomes, and compares the pro-
+posed method with existing solutions. Lastly, Section 5 summarizes the key findings and
+discusses potential directions for future research and real-world deployment.
+2. Related Work
+Precision agriculture has significantly progressed with the integration of unmanned
+aerial vehicles (UAVs), machine learning (ML), and deep learning (DL). These technolo-
+gies have enhanced crop health assessment, pest identification, soil analysis, and yield
+forecasting. This section reviews the latest advances in deep learning architectures, key
+methodologies, and open challenges in the field. A summary of these works, including
+techniques used, objectives, and limitations, is provided in Table 1.
+DL models have been increasingly used in agriculture to analyze crop images, detect
+nutrient deficiencies, and identify diseases. Convolutional neural networks (CNNs) have
+demonstrated high accuracy in detecting pests and diseases in leaf and fruit images [11],
+leveraging their spatial learning capability to infer plant health. Despite their effective-
+ness, CNNs typically require large annotated datasets and exhibit limited adaptability
+to changing field conditions. To address computational efficiency, pre-trained models
+such as ResNet50 have been adopted for feature extraction in agricultural imagery [12].
+ResNet’s residual connections allow for efficient processing with minimal overhead, mak-
+ing it suitable for detecting crop stress and classifying vegetation types. However, its
+generalization across diverse crop types remains challenging, prompting the exploration of
+transfer learning in agricultural research.
+Agronomy 2025, 15, 928
+4 of 35
+Hybrid approaches combining DL and traditional ML methods have also gained trac-
+tion. For instance, ref. [13] fused CNN-based features with classifiers like random forests
+and support vector machines to evaluate crop health based on image features and sensor
+data. While effective, these methods often demand meticulous dataset preparation and
+annotated training samples, limiting their real-world applicability. Innovative techniques
+such as infrared thermal imaging and 3D-3T models were applied to monitor transpiration
+in citrus trees [14], offering insights into water stress and canopy health. Despite the utility
+of thermal imaging as a non-invasive diagnostic tool, its integration with sensor data
+remains critical for holistic plant health assessment.
+The DenseNet model was explored in [15] for nutrient deficiency detection in black
+gram plants, utilizing dense connections to improve feature reuse and accuracy. However,
+the lack of comprehensive soil and nutrient datasets limited its applicability. Transformer
+architectures also show promise in agriculture. In [16], a vision transformer (ViT) was
+used to segment UAV-captured images, effectively distinguishing crop types and pest-
+infected regions through long-range attention. Nevertheless, its computational demands
+make real-time deployment in large-scale fields difficult, suggesting a need for lightweight
+alternatives like MobileViT.
+Models like YOLO have seen considerable use for object detection in aerial imagery.
+In [17], YOLOv4 achieved a 95% mAP in detecting rice ears, though object overlap in dense
+canopies posed a challenge. Similarly, YOLOv2 detected green mangoes with 86.4% mAP
+in [18] but required advanced preprocessing to handle lighting and resolution variations.
+Temporal models such as BiLSTM were employed in [19] for yield prediction based on time-
+series data, excelling in sequential crop growth analysis but facing scalability challenges
+with larger datasets. DenseNet was also used in [20] for tobacco plant classification; while
+feature reuse improved accuracy, dependency on annotated data restricted performance in
+resource-constrained settings.
+Further advancements in segmentation have introduced hybrid and attention-based
+architectures. AM-SegNet [21] achieved fast and accurate segmentation by combining
+lightweight convolution blocks with a novel attention mechanism. Although designed
+for additive manufacturing, its architectural insights are valuable for agricultural image
+segmentation tasks, especially in UAV-based monitoring. Edge-aware transformer hybrids
+have also shown the ability to handle noisy or partially occluded data. Our proposed LeViT-
+ResUNet follows this direction by integrating LeViT’s global attention with ResUNet’s fine-
+grained segmentation, enhanced by DRS-FS for sparse feature optimization and federated
+learning for decentralized training.
+To address centralized data limitations, federated learning (FL) has gained interest in
+agricultural AI research [22,23]. FL facilitates collaborative model training across multi-
+ple devices or farms, preserving data privacy and supporting region-specific adaptations.
+While federated averaging enables parameter sharing for scalable deployment, compu-
+tational complexity remains a concern for real-time field use. DL-based pest detection
+using ResNet was examined in [24], achieving good results in controlled environments
+but suffering from generalization issues due to annotated data dependency. A hybrid
+BiLSTM approach for yield forecasting was presented in [25], capturing temporal trends
+but limited scalability. ResNeXt, evaluated in [26], showed effectiveness in banana plant
+detection, though it lacked generalizability across crop types. Transformer-based ViT anal-
+ysis of olive trees in [27] demonstrated strong performance, yet irregular tree structures
+remained problematic.
+Agronomy 2025, 15, 928
+5 of 35
+Table 1. Summary of deep learning and federated learning techniques in precision agriculture.
+Ref.
+Technique Used
+Objective Achieved
+Limitations
+CNN and Transfer Learning Models
+[11]
+CNNs
+Detected crop pests and diseases through
+spatial image feature analysis.
+Required large datasets; sensitive to
+environmental variability; limited
+scalability in dynamic conditions.
+[12]
+ResNet50
+Extracted high-level features for
+identifying crop stress and classifying
+vegetation.
+Lacked generalization for diverse crop
+types; required domain-specific transfer
+learning.
+[13]
+CNN with SVM
+and RF
+Classified crop health by combining
+CNN-based feature extraction with sensor
+data classifiers.
+Relied on manual preprocessing and
+labeled data; limited practical deployment.
+[15]
+DenseNet
+Identified nutritional deficiencies in black
+gram using feature reuse and dense
+connectivity.
+Limited access to comprehensive soil and
+nutrient datasets constrained analysis.
+[20]
+DenseNet
+Classified tobacco plants with improved
+accuracy using dense feature reuse.
+Dependent on annotated data; limited in
+resource-constrained environments.
+[28]
+DenseNet
+Performed plant identification using dense
+connections for effective feature learning.
+Annotated data requirements limited
+scalability across diverse regions.
+Transformer-Based and Attention Models
+[16]
+Vision Transformer
+(ViT)
+Segmented crops and detected pests from
+UAV imagery using long-range feature
+dependencies.
+High computational complexity; limited
+real-time scalability for large-scale fields.
+[27]
+ViT
+Modeled long-range dependencies in UAV
+imagery of olive trees for structural
+analysis.
+Struggled with irregular tree canopies and
+environmental variability.
+YOLO-Based Detection Models
+[17]
+YOLOv4
+Detected rice ears in aerial imagery with
+high accuracy (mAP 95%).
+Overlapping targets in dense fields
+reduced precision.
+[18]
+YOLOv2
+Detected green mangoes with an mAP of
+86.4% using UAV imagery.
+Sensitive to lighting conditions and
+dependent on high-resolution inputs.
+RNN and Sequential Analysis Models
+[19]
+BiLSTM with
+Spatial Analysis
+Forecasted yield by capturing temporal
+dependencies in crop growth patterns.
+Scalability issues for large time-series
+datasets.
+[25]
+BiLSTM with
+Spatial Analysis
+Predicted crop yield through
+spatio-temporal relationship modeling.
+Limited scalability for broader regional
+applications.
+Federated Learning and Hybrid Architectures
+[22]
+Federated Learning
+(FL)
+Enabled decentralized training with
+enhanced privacy and adaptability.
+Computational overhead limited real-time
+usability.
+[29]
+FL with Federated
+Averaging
+Aggregated models across regions to
+support scalable training.
+High computational demands affected
+deployment feasibility.
+[24]
+ResNet (within FL
+context)
+Identified pest-infected areas in UAV
+imagery with robust accuracy.
+Relied on labeled datasets; generalization
+remained a challenge.
+[26]
+ResNeXt
+Detected banana plants using
+feature-augmented ResNeXt architecture.
+Further validation is required across crop
+types and regions.
+[30]
+ResXceNet-HBA
+Hybrid ResNet–Xception model with
+Adaptive Depthwise Separable
+Convolutions for stress detection.
+Strong performance but high
+computational cost and data annotation
+dependency.

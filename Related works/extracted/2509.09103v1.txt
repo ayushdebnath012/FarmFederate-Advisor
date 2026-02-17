@@ -1,0 +1,250 @@
+AgriSentinel: Privacy-Enhanced Embedded-LLM Crop
+Disease Alerting System
+HONGHUI XU, Department of Information Technology, Kennesaw State University, USA
+CHANTI RAJU MYLAY, Department of Computer Science, Kennesaw State University, USA
+TAEYEONG CHOI, Department of Information Technology, Kennesaw State University, USA
+BOBIN DENG, Department of Computer Science, Kennesaw State University, USA
+ZHIPENG CAI, Department of Computer Science, Georgia State University, USA
+Crop diseases pose significant threats to global food security, agricultural productivity, and sustainable farming
+practices, directly affecting farmers’ livelihoods and economic stability. To address the growing need for
+effective crop disease management, AI-based disease alerting systems have emerged as promising tools by
+providing early detection and actionable insights for timely intervention. However, existing systems often
+overlook critical aspects such as data privacy, market pricing power, and farmer-friendly usability, leaving
+farmers vulnerable to privacy breaches and economic exploitation. To bridge these gaps, we propose AgriSen-
+tinel, the first Privacy-Enhanced Embedded-LLM Crop Disease Alerting System. AgriSentinel incorporates a
+differential privacy mechanism to protect sensitive crop image data while maintaining classification accuracy.
+Its lightweight deep learning-based crop disease classification model is optimized for mobile devices, ensuring
+accessibility and usability for farmers. Additionally, the system includes a fine-tuned, on-device large language
+model (LLM) that leverages a curated knowledge pool to provide farmers with specific, actionable sugges-
+tions for managing crop diseases, going beyond simple alerting. Comprehensive experiments validate the
+effectiveness of AgriSentinel, demonstrating its ability to safeguard data privacy, maintain high classification
+performance, and deliver practical, actionable disease management strategies. AgriSentinel offers a robust,
+farmer-friendly solution for automating crop disease alerting and management, ultimately contributing to
+improved agricultural decision-making and enhanced crop productivity.
+CCS Concepts: • Security and privacy →Privacy protections; • Computing methodologies →Natural
+language processing.
+Additional Key Words and Phrases: Large Language Model, Privacy and Security, Smart Agricultural, Mobile
+Computing
+ACM Reference Format:
+Honghui Xu, Chanti Raju Mylay, Taeyeong Choi, Bobin Deng, and Zhipeng Cai. 2018. AgriSentinel: Privacy-
+Enhanced Embedded-LLM Crop Disease Alerting System. In Proceedings of 13th ACM Workshop on Information
+Hiding and Multimedia Security (ACM IH&MMSec’25). ACM, New York, NY, USA, 16 pages. https://doi.org/
+XXXXXXX.XXXXXXX
+1
+INTRODUCTION
+Crop diseases are emerging as some of the greatest threats to global food security and agricultural
+productivity [35], directly impacting farmers’ livelihoods [25], economic stability [37], and the
+Permission to make digital or hard copies of all or part of this work for personal or classroom use is granted without fee
+provided that copies are not made or distributed for profit or commercial advantage and that copies bear this notice and the
+full citation on the first page. Copyrights for components of this work owned by others than the author(s) must be honored.
+Abstracting with credit is permitted. To copy otherwise, or republish, to post on servers or to redistribute to lists, requires
+prior specific permission and/or a fee. Request permissions from permissions@acm.org.
+ACM IH&MMSec’25, June 18–20, 2025, San Jose, CA, USA
+© 2018 Copyright held by the owner/author(s). Publication rights licensed to ACM.
+ACM ISBN 978-x-xxxx-xxxx-x/YY/MM...$15.00
+https://doi.org/XXXXXXX.XXXXXXX
+1
+arXiv:2509.09103v1  [cs.CR]  11 Sep 2025
+ACM IH&MMSec’25, June 18–20, 2025, San Jose, CA, USA
+Xu, et al.
+broader goal of sustainable agriculture. To achieve crop disease alerting, there are increasing
+approaches to provide reliable tools to enhance farmers’ ability to manage crop health effectively.
+AI-based disease alerting systems offer a promising solution by providing early detection of
+crop diseases and actionable insights for timely intervention. By leveraging advanced AI tech-
+nologies [30, 42], such a system empowers farmers to make informed decisions that minimize
+crop losses, optimize yield, and reduce the reliance on excessive chemical inputs. This proactive
+approach not only improves productivity but also promotes sustainable agricultural practices by
+conserving resources, protecting the environment, and supporting long-term farming viability
+in the face of challenges such as pest outbreaks and changing environmental conditions [22, 26].
+Moreover, with the emergence of large language models (LLMs) [8–11, 45], these models excel at
+extracting structured information from unstructured data sources, including reports, news articles,
+and farmer records, providing actionable insights that enhance various agricultural tasks [4, 43].
+Furthermore, these models facilitate automated decision-making by integrating with other AI
+systems, streamlining the identification and management of crops and pests.
+Unfortunately, these data-driven AI systems are vulnerable to malicious attacks, such as mem-
+bership inference attacks [7, 18], where attackers exploit the model to determine whether specific
+data points were used during training. In the context of agriculture, such attacks can expose sen-
+sitive crop data, including information about crop health, yield patterns, and regional farming
+practices [17]. This stolen data can then be used to predict crop production levels, allowing market
+players to manipulate pricing strategies to their advantage [19, 41]. Such actions can disrupt fair
+market dynamics, leading to profit losses for farmers who are unable to compete effectively or
+secure equitable prices for their produce. Safeguarding crop data privacy is, therefore, essential to
+protect farmers’ economic interests and ensure a fair agricultural marketplace.
+Although existing studies have explored AI-based crop disease alerting, they often lack a com-
+prehensive focus on critical aspects such as privacy preservation to protect market pricing power
+and the development of farmer-friendly tools. This highlights the need for more holistic solutions
+that address both technical challenges and practical usability for farmers. To address this gap, we
+propose AgriSentinel, a Privacy-Enhanced Embedded-LLM Crop Disease Alerting System designed
+to achieve three key objectives: First, it incorporates a robust data privacy protection mechanism
+to safeguard sensitive crop data from potential misuse. Second, it features an on-device LLM-based
+model that not only provides farmers with specific strategic suggestions for managing crop dis-
+eases but also moves beyond simple alerting. Finally, its lightweight deep learning architecture is
+optimized for mobile devices, offering a more farmer-friendly and accessible solution to improve
+agricultural decision-making.
+To sum up, this paper makes several significant contributions:
+• To the best of our knowledge, this is the first work to design a privacy-enhanced embedded-
+LLM crop disease alerting system.
+• We propose the AgriSentinel framework, which offers farmers a secure, user-friendly, LLM-
+based application for crop disease alerting and management.
+• A lightweight, differentially private deep learning-based crop disease classification model is
+developed within AgriSentinel, enabling accurate disease classification while safeguarding
+the privacy of crop image data.
+• In AgriSentinel, an on-device LLM-based model is fine-tuned to provide farmers with specific,
+actionable suggestions for managing crop diseases, utilizing a curated knowledge pool of
+crop disease information.
+• Comprehensive experiments are conducted to validate the effectiveness and practicality of
+the proposed AgriSentinel framework.
+2
+AgriSentinel: Privacy-Enhanced Embedded-LLM Crop Disease Alerting System
+ACM IH&MMSec’25, June 18–20, 2025, San Jose, CA, USA
+The remainder of this paper is organized as follows: Section 2 provides a brief overview of related
+work, while Section 3 presents a detailed description of the proposed AgriSentinel framework.
+In Section 4, we conduct real-world data experiments and analyze the results. Finally, the paper
+concludes with key insights in Section 5.
+2
+RELATED WORK
+This section reviews the related works of crop disease alerting systems, agricultural large language
+models, and privacy-enhanced AI approaches.
+2.1
+Crop Disease Alerting Approaches
+Crop disease alerting approaches can be broadly categorized into context-aware models and data-
+driven models. (1) Context-aware models [22, 26] integrate broader contextual information, such
+as regional agricultural practices and environmental factors. For instance, real-time sensor inputs
+and historical weather data play a crucial role in improving the accuracy of disease forecasting.
+Additionally, social media data can provide insights into local agricultural sentiment, offering a
+holistic understanding of crop health dynamics. (2) Data-driven models [30, 42] leverage diverse
+data sources, applying machine learning and deep learning techniques for disease prediction. CNNs
+have been widely used for classifying crop disease images [12]. Techniques like feature-level fusion
+and ensemble learning enhance predictive accuracy by combining outputs from multiple data-
+driven models [20]. Furthermore, attention mechanisms improve the interpretability of extracted
+features [32], while representation learning aids in identifying critical patterns for precise crop
+disease prediction.
+2.2
+Agricultural Large Language Models
+Modern LLMs like GPT and BERT have revolutionized data processing and generation with their
+exceptional understanding and adaptability [36]. Recently, these models have begun transforming
+the agricultural sector by addressing complex challenges such as disease detection, crop mon-
+itoring, and strategic decision-making [43]. In agriculture, LLMs excel at extracting structured
+information from unstructured data sources, including reports, news articles, and farmer records,
+providing actionable insights that enhance various agricultural tasks [4]. Furthermore, these mod-
+els facilitate automated decision-making by integrating with other AI systems, streamlining the
+identification and management of crops and pests. Their few-shot learning capabilities are par-
+ticularly advantageous in agriculture, where data collection is often time-intensive and costly.
+However, implementing LLMs in agriculture poses significant challenges. These include the need
+for high-quality, diverse datasets and the computational resources required to train and deploy the
+models [2]. Additionally, ethical concerns, such as data privacy and security, add further complexity
+to their practical adoption [38].
+2.3
+Privacy-Enhanced AI Approaches
+Preserving data privacy is critical in the era of big data, enabling meaningful analysis and model
+training while safeguarding sensitive information. Four key methodologies are commonly em-
+ployed for privacy protection in AI. (1) Differential privacy, widely adopted in machine learning
+frameworks, introduces random noise to data or model outputs to prevent the identification of
+individual data points [1]. (2) Federated learning enhances privacy by training models across
+decentralized devices or servers holding local data, eliminating the need for data sharing [34]. (3)
+Homomorphic encryption enables computations on encrypted data, ensuring sensitive information
+remains concealed [14]. (4) Secure multi-party computation (SMPC) facilitates privacy-preserving
+collaborative learning by allowing multiple parties to compute functions over private inputs [16].
+3
+ACM IH&MMSec’25, June 18–20, 2025, San Jose, CA, USA
+Xu, et al.
+As the demand for privacy in data-driven applications grows, the integration of these techniques
+into AI pipelines is becoming increasingly vital to address risks associated with data breaches [3].
+The development of a privacy-enhanced LLM-based crop disease alerting system presents two
+significant technical challenges. First, designing a lightweight and user-friendly system that allows
+farmers to easily adopt and leverage the transformative capabilities of large language models for
+effective crop disease management is inherently complex. Second, ensuring privacy-enhanced
+training for agricultural LLMs is critical, as inadequately protected crop data could be exploited
+to infer production levels, potentially undermining farmers’ market pricing power and causing
+economic losses.
+3
+AGRISENTINEL MODEL
+We propose an AgriSentinel framework, illustrated in Fig. 1, as a privacy-enhanced on-device
+system for comprehensive crop disease alerting that seamlessly integrates differential privacy,
+deep learning, and LLM. The framework begins with a Gaussian noise-based differential privacy
+mechanism to safeguard sensitive crop data, introducing controlled noise to achieve a balance
+between privacy protection and the preservation of critical diagnostic features. The obfuscated data
+is subsequently processed by a lightweight deep learning model designed for efficient and accurate
+disease classification, leveraging advanced architectural components such as convolutional layers
+and ReLU activation to optimize computational efficiency and predictive accuracy. Building upon
+these predictive results, the framework incorporates a fine-tuned on-device LLM, enriched with
+a curated knowledge pool, to generate precise and actionable disease management strategies. To
+sum up, AgriSentinel offers farmers a lightweight and user-friendly tool to enhance crop health
+management while addressing key challenges in usability and data protection.
+Original Datasets
+Disturbed Datasets
+1. Differential Privacy 
+Noise Injection
+2. Deep Learning-based 
+Crop Disease Classification
+Crop Disease 
+Results
+Q1: What is Rice_Blast in rice 
+crops?
+Q3: How can I treat Rice_Blast in 
+rice crops?
+….
+Knowledge Pool
+3. On-Device LLM-
+based Alerting 
+System 
+Fig. 1. AgriSentinel Framework
+3.1
+Differential Privacy Noise Injection Mechanism
+We propose a differential privacy mechanism to protect crop data by employing Gaussian noise
+as an effective obfuscation technique. Gaussian noise introduces controlled random variations to
+the pixel values of an image, masking identifiable features while preserving the image’s utility
+for analysis. This approach strikes a balance between safeguarding data privacy and retaining the
+essential diagnostic information required for accurate disease pattern recognition. The process of
+4
+AgriSentinel: Privacy-Enhanced Embedded-LLM Crop Disease Alerting System
+ACM IH&MMSec’25, June 18–20, 2025, San Jose, CA, USA
+applying Gaussian noise to an input image 𝑥can be mathematically expressed as:
+𝑥obf = 𝑥+ 𝑁(0, 𝜎2),
+(1)
+where 𝐼obf is the resulting obfuscated image and 𝐿𝑎𝑝(0, 𝜎2) represents Gaussian noise with a mean
+of 0 and a tunable variance 𝜎2. The mean value of 0 ensures that the noise is centered around
+the original pixel value, maintaining an unbiased perturbation, while the variance 𝜎2 dictates the
+level of noise introduced. A higher variance results in more pronounced noise, providing stronger
+obfuscation and enhanced privacy protection but potentially impacting image clarity and the
+model’s ability to interpret diagnostic features. Conversely, a lower variance applies subtler noise,
+which maintains more image detail but offers less privacy shielding.
+The proposed differential privacy noise injection mechanism ensures that core diagnostic features
+essential for disease recognition remain intact. The strategic application of Gaussian noise enables
+the system to comply with data privacy standards while allowing the machine learning model to
+access sufficient visual information for accurate disease classification. The obfuscated images are
+suitable for processing by deep learning algorithms, which can learn robust features for pattern
+recognition even when some noise is present. This approach is particularly advantageous for
+applications where image data needs to be shared across different systems or with third parties,
+maintaining data confidentiality and minimizing the risk of privacy breaches. The flexibility in
+tuning the variance 𝜎2 allows for a customizable level of obfuscation that can be adapted based on
+specific privacy requirements or regulations.
+3.2
+Deep Learning-based Crop Disease Classification
+After acquiring the obfuscated crop images dataset, we have developed a lightweight deep learning
+model tailored for crop disease classification. This model is structured as follows: (1) Data Normal-
+ization: An essential preprocessing step, data normalization adjusts each pixel value by dividing by
+255. This scales the image pixel values to a range of [0, 1], ensuring a uniform distribution of input
+values. Such normalization not only stabilizes the learning process but also accelerates convergence
+and improves the accuracy of the model by minimizing the impact of variations in image bright-
+ness and contrast. (2) Convolutional and Pooling Layers: These layers are crucial for extracting
+spatial and local features from the images of rice diseases. The convolutional layers detect these
+features, while the pooling layers reduce the dimensionality of the data, which helps in handling
+overfitting. (3) Dense and Activation Layers: Positioned after the convolutional and pooling layers,
+the dense layer, coupled with a ReLU activation layer in Eq. (2), integrates the extracted features.
+This combination is pivotal for the complex decision-making required to accurately predict disease
+categories. By streamlining the architecture with these elements, our model remains lightweight
+yet powerful enough to effectively classify various crop diseases based on visual cues.
+𝑦= ReLU(𝑊· 𝑥𝑜𝑏𝑓+ 𝑏),
+(2)
+where 𝑥𝑜𝑏𝑓is the input obfuscated crop dataset, 𝑊is the weight matrix learned by convolutional
+layer and pooling layers during training, 𝑏is the bias vector, and ReLU stands for the activation
+function applied to the output.
+This proposed lightweight deep learning model is designed to classify crop images into various
+disease categories. Central to training this neural network for multi-class classification is the cross-
+entropy loss function, which measures the discrepancy between the true labels and the model’s
+predicted probabilities. Categorical cross-entropy effectively gauges how closely the predicted
+probability distribution matches the actual distribution, providing a clear pathway for the model to
+refine its predictions. The mathematical formulation of this loss function is presented in Eq. (3). For
+optimization, the model employs the Adam optimizer, known for its ability to adjust the learning
+5

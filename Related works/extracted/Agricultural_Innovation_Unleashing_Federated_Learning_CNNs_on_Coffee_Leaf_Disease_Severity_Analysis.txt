@@ -1,0 +1,852 @@
+2023 International Conference on Computing, Communication, and Intelligent Systems (ICCCIS) 
+ISBN: 979-8-3503-0611-8/23/$31.00 ©2023 IEEE 
+Agricultural Innovation: Unleashing Federated 
+Learning CNNs on Coffee Leaf Disease Severity 
+Analysis
+Varun Jindal 
+ Chitkara University Institute of 
+Engineering and Technology 
+ Chitkara University 
+ Punjab, India 
+ varun2394.be21@chitkara.edu.in 
+Samir Rana 
+ Computer Science and Engineering, 
+Graphic Era Hill University, 
+Dehradun, Uttarakhand, India 
+srana@gehu.ac.in 
+Vinay Kukreja 
+Chitkara University Institute of 
+Engineering and Technology  
+Chitkara University 
+Punjab, India 
+vinay.kukreja@chitkara.edu.in 
+Shiva Mehta 
+ Chitkara University Institute of 
+Engineering and Technology 
+ Chitkara University 
+ Punjab, India 
+ shiva.2387@chitkara.edu.in 
+Abhishek Bhattacherjee 
+Computer Science and Engineering 
+ Lovely Professional University, 
+ Phagwara, Punjab, India 
+ abhishek.27306@lpu.co.in 
+Abstract— This study adopts a novel strategy using federated 
+learning with a Convolutional Neural Network (CNN) to 
+identify and categorize Cucurbit leaf diseases. The research 
+includes information from six customers, each with access to 
+distinctive, local datasets of Cucurbit leaf illnesses divided into 
+four severity categories, ranging from 1% to 25% to 50% to 
+75% to 100%. The use of federated averaging, which combines 
+local model updates into a global one, is a crucial component of 
+this work. This approach highlights a significant development in 
+machine learning by using dispersed data without data 
+centralization. The findings show that the model performed 
+well, with accuracy, recall, and F1-scores ranging from 85.93% 
+to 94.85% across all customers, illuminating the model's 
+strength and adaptability. The performance of the client model 
+Cltt-3 was outstanding, with measures averaging a startling 
+95%. 
+Additionally, findings from macro, micro, and weighted 
+averages were similarly exceptional, demonstrating the model's 
+adaptability to various class distributions and severity levels. In 
+summary, this work shows the impressive effectiveness of 
+federated learning with CNN in combating Cucurbit leaf 
+diseases and sketches out possible application scenarios. The 
+reliable findings confirm the efficacy of federated learning in a 
+decentralized data environment while opening up fresh 
+opportunities for the global model to be improved using lessons 
+from local datasets. 
+Keywords: Coffee leaf diseases, Convolutional neural 
+networks 
+(CNNs), 
+Federated 
+learning, 
+Disease 
+classification, Severity levels. 
+I.
+INTRODUCTION
+Due to the spread of coffee leaf diseases, one of the most 
+important agricultural industries in the world, particularly in 
+India, confronts significant difficulties. These illnesses can 
+damage economies significantly and upset the balance of 
+coffee-producing ecosystems [1]. In addition to allowing for 
+prompt interventions, categorizing coffee leaf diseases into 
+four identifiable severity categories (1-25%, 26-50%, 51-
+75%, and 76-100%) also enables the implementation of 
+focused treatment techniques. The complexity of the issue 
+space is created by the variability of the illness symptoms, the 
+dynamic nature of the infections, and the local variances 
+across various coffee-growing locations [2]. This necessitates 
+a detection and classification strategy that is similarly 
+nuanced. Convolutional neural networks (CNN) have opened 
+new 
+possibilities 
+for 
+computer 
+vision 
+and 
+image 
+categorization problems [3]. However, there are intrinsic 
+drawbacks to using centralized CNN models for categorizing 
+coffee leaf diseases, including issues with data privacy, higher 
+transmission costs, and the inability to account for regional 
+variances [4]. Due to these limitations, novel learning 
+paradigms that promote cooperation while maintaining the 
+independence and privacy of individual data sources should 
+be investigated. This study describes a cutting-edge strategy 
+that uses federated learning in conjunction with a unique 
+averaging technique inside the CNN architecture [5]. A 
+groundbreaking development in developing decentralized, 
+collaborative, and context-aware machine learning models is 
+the implementation of federated learning among six clients. 
+Each customer contributes to a collective intelligence that 
+goes beyond the limitations of conventional centralized 
+education since they each have unique insights regarding the 
+various severity stages of coffee leaf illnesses [6]. This 
+federated strategy makes it easier to Adapt to Local 
+Variations: The models adapt to the local symptoms of coffee 
+leaf diseases by enabling them to learn from localized data [7]. 
+Data sovereignty and compliance with numerous privacy rules 
+are ensured since the data never leaves the customer. 
+Utilization of Resources is Optimized: By performing 
+learning on the client, it reduces the data transfer cost and 
+makes the best use of nearby computing resources. India, one 
+of the world's top producers of coffee, often struggles with 
+coffee leaf diseases. The adverse effects on coffee 
+production's quantity and quality reverberate across the 
+agricultural sector, rural lives, and global commerce. The 
+creative strategy discussed in this study article aims to answer 
+this ongoing issue adequately. We offer an intelligent, 
+adaptable, and sustainable technique of disease categorization 
+via the lens of federated learning, which has the potential to 
+alter the way coffee estates are maintained in India and all 
+around the globe [8]. We provide two contributions: 
+Technical Innovation: CNN has fostered a cutting-edge 
+decentralized learning paradigm by combining federated 
+782
+2023 International Conference on Computing, Communication, and Intelligent Systems (ICCCIS) | 979-8-3503-0611-8/23/$31.00 ©2023 IEEE | DOI: 10.1109/ICCCIS60361.2023.10425426
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 15:59:05 UTC from IEEE Xplore.  Restrictions apply. 
+2023 International Conference on Computing, Communication, and Intelligent Systems (ICCCIS) 
+learning with a sophisticated averaging technique. It's a brave 
+step toward highly customized, effective, and resilient models 
+that can accommodate complex agricultural settings [9].Real-
+world Impact: Our research has the potential to change the 
+face of coffee cultivation in India and beyond by offering an 
+accurate, timely, and privacy-preserving solution to the 
+classification of coffee leaf diseases. As a result, farmers and 
+stakeholders will be given access to actionable insights and 
+sustainable 
+management 
+techniques. 
+Clarifying 
+these 
+groundbreaking concepts in federated learning and the CNN 
+approach gives a hopeful compass for addressing a global 
+issue [10]. This research study contributes to a future in 
+which agriculture and technology coexist harmoniously, 
+resulting in prosperous, resilient, and sustainable coffee 
+growing by weaving the tapestry of cutting-edge technology, 
+localized insights, and globally applicable solutions. 
+Convolutional Neural Networks (CNNs) have become more 
+effective tools for various tasks in recent years, including soil 
+analysis, yield prediction, and crop disease detection. 
+Innovative applications in identifying plant diseases have 
+been made possible by using CNNs in image classification, 
+which was made possible by groundbreaking work. Detection 
+of Plant Disease Severity Levels: Precision agriculture is 
+crucially dependent on the severity stratification of plant 
+diseases. Numerous research has been conducted in this field. 
+Still, only some have considered the complex four-level 
+classification of 1-25%, 26-50%, 51-75%, and 76-100%, 
+which describes the evolving phases of coffee leaf diseases. 
+A more targeted intervention plan is made possible by such a 
+fine-grained approach, maximizing treatment efficacy and 
+resource allocation. Decentralized Systems with Federated 
+Learning: A cutting-edge method called federated learning 
+has drawn substantial interest from industries other than 
+agriculture. The groundbreaking work demonstrated the 
+effectiveness of federated learning in a multi-client setting, 
+focusing on privacy protection and productivity. However, 
+using 
+federated 
+learning, 
+especially 
+with 
+averaging 
+techniques, in classifying plant diseases offers a rich area for 
+investigation. Difficulties Detecting Coffee Leaf Disease: 
+Coffee leaf diseases provide complex hurdles for diagnosis 
+and control, particularly in densely populated coffee-
+producing regions like India. The severe economic and 
+ecological effects of coffee leaf diseases are documented in 
+the literature. Complex and context-aware treatments are 
+required due to the intricacy of coffee leaf disease symptoms 
+and geographical differences. 
+New Federated Learning with CNN Application: A new age 
+in agricultural technology has begun classifying coffee leaf 
+diseases into the severity mentioned above using CNNs and 
+federated learning. The decentralization of federated 
+education and CNN's skill in picture categorization are 
+combined to create a revolutionary paradigm that goes beyond 
+the limitations of conventional machine learning in 
+agriculture. This strategy represents a harmonic fusion of 
+localized intelligence, global cooperation, and technical 
+innovation, particularly when suited to six client systems. This 
+methodology gains another level of sophistication by using 
+federated averaging techniques, which optimize the learning 
+process across clients without sacrificing data integrity. 
+Implications and Next Steps: These ideas unite to pave the 
+road for a day when technology protects and saves the world's 
+agriculture. The specific application to categorizing coffee 
+leaf diseases provides possibilities for real-world effects, 
+particularly in areas plagued by these diseases [11]. The many 
+advantages of this strategy go beyond simple categorization 
+and include more general issues of Sustainability, flexibility, 
+and international cooperation. This literature review outlines 
+the body of current information, emphasizes the originality of 
+the suggested strategy, and underlines the possible 
+implications for controlling coffee leaf disease. The standard 
+paradigms 
+of 
+machine 
+learning 
+in 
+agriculture 
+are 
+supplemented by federated learning with CNNs employing a 
+thorough four-level severity categorization. This discovery 
+begins a new age when agricultural knowledge meets 
+technology innovation, offering a future full of optimism, 
+resiliency, and prosperity by creatively weaving these threads 
+together. 
+II. LITERATURE REVIEW
+Indonesia is a critical player in the global coffee industry since 
+coffee is a significant export and a substantial source of 
+foreign currency earnings for the nation. Due to humidity, 
+rain, and fungus, coffee leaf rust infections may quickly 
+reduce quality and output. The study addressed this by 
+implementing the Convolutional Neural Network (CNN) 
+technique, especially the VGG-19 architectural model, which 
+has a more intricate structure than earlier approaches like 
+AlexNet. This study uses Python for image data processing to 
+detect coffee leaf illnesses, unlike earlier studies that used 
+MATLAB. The Robusta Coffee Leaf photos Dataset was 
+used; it has three classes and 1560 total photos, albeit only 100 
+images from each category were used. When tested with an 
+80:20 training-to-validation data ratio, the VGG-19 model 
+obtained a phenomenal 90% accuracy level. Some specific 
+experiment settings include a learning rate of 0.0001, a batch 
+size of 15, a momentum of 0.9, 12 training rounds, and the 
+RMSprop optimizer [12]. Using sophisticated deep learning 
+algorithms, this study represents a creative solution to the 
+problems associated with preserving the quality and quantity 
+of coffee production in Indonesia [13]. Deep learning 
+technologies have recently emerged, ushering in novel 
+methods for segmenting and classifying pest- and disease-
+caused leaf lesions. Convolutional neural networks (CNNs), 
+in particular, provide very accurate outcomes. This work 
+introduces a dual-staged method for segmenting and 
+categorizing different leaf lesions. CNNs also estimate the 
+degree of stress biotic agents bring in coffee leaves. Semantic 
+segmentation with severity calculation comes initially, then a 
+stage of symptom lesion categorization. Each step was 
+individually examined, allowing for the identification of both 
+good and bad elements and providing information on how 
+well they performed. The model's capacity to give estimates 
+that closely match the actual severity values is shown by the 
+severity estimation's remarkable findings. Accuracy rates 
+demonstrated the method's efficacy for categorizing more than 
+97% of biotic stressors. Given the positive results, a semantic 
+segmentation, 
+severity 
+assessment, 
+and 
+symptom 
+categorization Android app was created. This programme is a 
+valuable use of deep learning technology in contemporary 
+agriculture by assisting both agricultural professionals and 
+farmers in recognizing and measuring biotic stressors using 
+smartphone-acquired photos of coffee leaves [14]. Plant 
+leaves sustain damage every year from various biotic and 
+783
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 15:59:05 UTC from IEEE Xplore.  Restrictions apply. 
+2023 International Conference on Computing, Communication, and Intelligent Systems (ICCCIS) 
+ 
+abiotic factors. While several other approaches have 
+previously been used to address these issues, Convolutional 
+Neural Networks (CNN) stand out for their effectiveness and 
+accuracy. To increase coffee output, this project aims to use 
+CNN's expertise to quickly detect leaf illnesses in coffee 
+plants. Notably, diseases like Leaf Miner and Phoma, which 
+have distinguishable symptoms and can be categorised, affect 
+coffee foliage. The study offers a model that combines transfer 
+learning with CNN to use CNN's capacity to recognise leaf 
+patterns. Additionally, data augmentation methods were used 
+to broaden the Dataset, which resulted in a fantastic accuracy 
+rate of 98.51% [15]. Deep learning algorithms have recently 
+become indispensable tools in intelligent agriculture, 
+especially for categorizing plant diseases. The timely 
+identification and management of these illnesses is essential 
+for maintaining crop quantity and quality, and deep learning 
+techniques provide potential paths to precise and effective 
+treatments. This study uses two datasets from Mendeley to 
+categorize coffee leaf diseases. The work creates a solid 
+training basis for a model incorporating two-transfer learning 
+with CNN by pooling these datasets covering five different 
+kinds of coffee illnesses. This required adding new 
+classification layers to the pre-trained models MobileNet and 
+ResNet50. The model underwent intensive training and 
+evaluated performance using accuracy and loss error 
+measures. As a result, the model's peak accuracy with 
+ResNet50, MobileNet, and CNN was 100%, 99%, and 98%, 
+respectively. Visualization tools like Grad-CAM and Grad-
+CAM++ to create heat maps highlighting the regions 
+influencing categorization choices helped farmers better 
+comprehend the impacted areas. These findings underline the 
+promise of deep learning for effective plant disease 
+identification, providing a road to automation that may enable 
+farmers to detect and treat illnesses early, improving crop 
+output and quality. The research shows that this approach may 
+be used to develop effective and affordable solutions for plant 
+disease identification [16]. To accurately and quickly 
+diagnose coffee leaf diseases, which harm the quality and 
+production of the crop, the study offers a unique hybrid feature 
+fusion approach. The process involves combining early and 
+late feature fusion techniques. Several hybrid models, 
+including MobileNetV3, Swin Transformer, and Variational 
+Autoencoder (VAE), were developed to extract information 
+from the input photos. Using the inductive bias of locality, 
+MobileNetV3 concentrates on local features. At the same 
+time, the Swin Transformer pulls higher-level features, 
+resulting in a unified feature map that is enhanced with 
+additional data. The early fusion network then combines the 
+retrieved pictures from the models, while the early fusion 
+learner network assimilates the detailed data from the features. 
+The late fusion network refines the fused part before a 
+classification network classifies the coffee leaf illnesses. The 
+Robusta Coffee Leaf (RoCoLe) dataset, which includes many 
+conditions such as red spider mite and leaf rust disease, was 
+used to evaluate the method, and it produced a noteworthy 
+accuracy of 84.29%. In conclusion, the novel hybrid feature 
+fusion 
+method 
+combining 
+MobileNetV3 
+and 
+Swin 
+Transformer provides a practical pathway for coffee leaf 
+disease identification, granting accurate and prompt detection 
+crucial for the efficient management and control of these 
+diseases under experimental conditions [17]. 
+ 
+III. METHODOLOGY 
+The classification of coffee leaf diseases into four severity 
+levels—1-25%, 26-50%, 51-75%, and 76-100%—using 
+federated learning with Convolutional Neural Networks 
+(CNN) and a decision tree dataset is explained in this section. 
+Six different clients were involved during the whole 
+procedure. The following subsections of the approach may be 
+found, as shown in Figure 1  
+ 
+Fig1. Phases in the Process Approach 
+A. 
+Information Compilation and Preliminary 
+Processing 
+Data Gathering and Preparation The Dataset comprised 
+pictures of coffee leaves representing various disease severity 
+stages. According to the degree of infection, the photos were 
+divided into four levels and gathered from six customers. 
+These users represent coffee-growing locations or methods, 
+enabling the model to draw knowledge from various data 
+sources. Data Preprocessing: To ensure that the photographs 
+are in a consistent format, preprocessing includes scaling, 
+normalization, and data augmentation. The decision tree 
+dataset was built using extracted elements such as colour, 
+texture, and form, allowing for a deeper level of analysis, as 
+shown in Table 1. 
+TABLE 1. LEVELS OF SEVERITY IN  COFFEE LEAF DISEASES   
+Severity 
+Level 
+Percentage 
+Range 
+Severity 
+Level 
+Percentage 
+Range 
+(1_V_Low) 
+1to20% 
+(4_High) 
+61-80% 
+(2_Low) 
+21to40% 
+(5_V_High) 
+81-100% 
+(3_Med) 
+41-60% 
+ 
+ 
+A CNN model with convolutional, pooling, and fully linked 
+layers was employed for this job. Six customers took part in 
+the model's training using federated learning, which was used 
+to train the model, as shown in Figure 2. 
+ 
+Fig 2. Pictures of the illnesses that affect Coffee leaves 
+784
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 15:59:05 UTC from IEEE Xplore.  Restrictions apply. 
+2023 International Conference on Computing, Communication, and Intelligent Systems (ICCCIS) 
+ 
+B. 
+Model Aggregation  
+Standard assessment criteria, such as accuracy, precision, 
+recall, and F1-score, were used to evaluate the efficacy of the 
+federated learning model using CNN and the decision tree. A 
+rigorous assessment was made possible via the use of cross-
+validation. This technique offers a thorough, cutting-edge way 
+of grading the severity of coffee leaf diseases. The approach 
+handles job complexity while respecting data privacy and 
+localized variability by combining federated learning with 
+CNN and using a decision tree. Six clients' participation 
+encourages a distributed, cooperative learning process that 
+aligns with current distributed machine learning trends. This 
+convergence of technology is a shining example of how 
+multidisciplinary approaches may be used to address practical 
+issues in agriculture, opening the door to more robust and 
+long-term farming techniques. 
+C. Federated Learning CNN Model 
+Client Configuration: Six clients, each carrying a portion of 
+the data, were set up to participate in the federated learning 
+process. This setup encourages a decentralized learning 
+strategy while protecting data privacy and enabling localized 
+learning. Model Initialization: The parameters of a global 
+CNN model were given to each client once it had been 
+established. Then, clients are trained using their local data. 
+Federated Averaging: Clients send their model parameters to 
+a central server for federated averaging after local training. 
+After the following training cycle, the averaged model was 
+returned to the customers, and so on until convergence. Design 
+of Convolutional Neural Networks (CNNs). Architecture: The 
+CNN has several layers, including pooling layers, fully 
+connected layers, pooling layers, and convolutional layers. 
+These were created to accurately classify the photos of coffee 
+leaves by capturing hierarchical information from the 
+photographs. Model training and optimization: Stochastic 
+gradient descent or comparable optimization methods were 
+used to train the models. To avoid overfitting, regularization 
+methods like dropout were used. Decision Tree Integration: 
+Feature Extraction: Important data on the severity of coffee 
+leaf diseases were retrieved from the CNN using high-level 
+features. 
+Construction 
+of 
+a 
+Decision 
+Tree: 
+These 
+characteristics were utilized to build a decision tree, which 
+offered a simple, understandable categorization method. This 
+integration creates a robust and coherent model that 
+categorizes the severity levels and sheds light on the main 
+factors influencing each category, as shown in Figure 3. 
+ 
+Fig3.  Results of Coffee leaf diseases. 
+Convolutional Neural Network (CNN) technology is used 
+with federated learning in this study's technique to categorize 
+coffee leaf illnesses into four severity categories. The model 
+included Four convolutional layers. Four max-pooling layers. 
+Two fully connected layers to process the pictures across six 
+clients using a dataset of 4585 images with a size of 225x225. 
+The data was processed for classification into 14 different 
+classes via fully connected layers, max pooling, and 
+convolutional layers, which retrieved features indicating 
+illness characteristics. The methodology enabled localized 
+learning while protecting data privacy using federated 
+learning, which used distributed training among six clients. 
+This strategy made it possible to classify coffee leaf diseases 
+into several severity ranges (1-25%, 26-50%, 51-75%, and 76-
+100%), offering a fresh, all-encompassing response to a severe 
+agricultural problem. A novel step in using machine learning 
+for targeted and sustainable disease control in coffee crops is 
+the combination of federated education and a well-designed 
+CNN, as shown in Table 2. 
+TABLE 2. CNN MODEL IN COFFEE LEAF DISEASES 
+Layer Type 
+Size 
+Activation 
+Function 
+Output Dimensions 
+Convolutional 
+3x3, 64 
+filters 
+ReLU 
+223x223x64 
+Max Pooling 
+2x2 
+- 
+111x111x64 
+Convolutional 
+3x3, 128 
+filters 
+ReLU 
+109x109x128 
+Max Pooling 
+2x2 
+- 
+54x54x128 
+Convolutional 
+3x3, 256 
+filters 
+ReLU 
+52x52x256 
+Max Pooling 
+2x2 
+- 
+26x26x256 
+Convolutional 
+3x3, 512 
+filters 
+ReLU 
+24x24x512 
+Max Pooling 
+2x2 
+- 
+12x12x512 
+Fully 
+Connected 
+512 nodes 
+ReLU 
+512 
+Fully 
+Connected 
+256 nodes 
+ReLU 
+256 
+Output 
+14 nodes 
+Softmax 
+14 (number of 
+classes) 
+ 
+IV. 
+RESULTS 
+To categorize coffee leaf illnesses into four severity levels (ty-
+1 to ty-4), CNN was combined with federated learning to 
+analyze the local data from six clients (Zxc-1 to Zxc-6). 
+Precision, recall, F1-score, support, and accuracy are five 
+crucial criteria for systematically evaluating performance. 
+Client Zxc-1: For severity levels ty-1 to ty-4, the findings 
+showed good precision (85.87% to 93.30%), together with 
+high recall rates (81.27% to 93.12%), which led to a solid F1-
+score (83.51% to 93.21%) and remarkable accuracy (0.94 to 
+0.95).Client Zxc-2: This client demonstrated consistency, 
+with recall falling within an 83.33% to 91.96% range and 
+precision falling between an 83.33% to 93.60% range. The 
+accuracy ranges between 0.95 and 0.96, and the F1-scores 
+(83.33% to 91.43%) confirm a balanced harmonic mean 
+between precision and recall. Client Zxc-3: Outstanding recall 
+(87.91% to 94.13%) and accuracy over 90% across all severity 
+levels were recorded. A reliable classification method with an 
+accuracy range of 0.96 was shown by the F1-scores, which 
+ranged from 90.84% to 93.46%.Client Zxc-4: This client 
+demonstrated proficiency in categorization, achieving 
+785
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 15:59:05 UTC from IEEE Xplore.  Restrictions apply. 
+2023 International Conference on Computing, Communication, and Intelligent Systems (ICCCIS) 
+precision levels between 92.13% and 94.41% and reliable 
+recall between 91.31% and 94.69%, resulting in large F1-
+scores between 91.72% and 93.82% and excellent accuracy, 
+with a peak at 0.97.Client Zxc-5: The F1-scores (91.04% to 
+94.27%) agreed, confirming the model's capabilities in 
+differentiating illness severity, supported by an accuracy of 
+0.96 to 0.97. Precision and recall both maintained above the 
+90% mark throughout all severity levels. Client Zxc-6: Recall 
+rates were impressive (87.09% to 95.37%), and precision 
+varied from 89.96% to 93.62%. The client-wise analysis is 
+concluded with a solid performance thanks to the balanced F1-
+scores (88.54% to 93.01%) and constant accuracy (0.95 to 
+0.96). These findings show the effectiveness of the federated 
+learning strategy combined with CNN in identifying coffee 
+leaf diseases. The astounding precision, recall, and F1 scores 
+across the customers demonstrate the model's prowess in 
+identifying the subtle changes within the four severity levels. 
+The support numbers represent the Dataset's evenly 
+distributed distribution across severity levels. Overall, the 
+experimental results of this study highlight a groundbreaking 
+step in using decentralized machine learning for complex 
+agricultural disease diagnosis and control, verifying its 
+promise for practical applications in defending critical 
+economic crops, as shown in Table 2. 
+TABLE II. ATTRIBUTES AND VALUES OF LOCAL CLIENT'S DATA 
+Clients 
+Class 
+Precision 
+Recall 
+F1-
+Score 
+Support 
+Accuracy 
+Zxc-1 
+ty-1 
+85.87 
+81.27 
+83.51 
+299 
+0.94 
+ty-2 
+89.85 
+92.90 
+91.35 
+324 
+0.96 
+ty-3 
+89.44 
+90.61 
+90.02 
+458 
+0.94 
+ty-4 
+93.30 
+93.12 
+93.21 
+538 
+0.95 
+Zxc-2 
+ty-1 
+83.33 
+83.33 
+83.33 
+258 
+0.95 
+ty-2 
+84.40 
+91.27 
+87.70 
+332 
+0.95 
+ty-3 
+92.17 
+91.96 
+92.07 
+448 
+0.96 
+ty-4 
+93.60 
+89.35 
+91.43 
+573 
+0.94 
+Zxc-3 
+ty-1 
+93.96 
+87.91 
+90.84 
+513 
+0.96 
+ty-2 
+90.19 
+91.29 
+90.74 
+574 
+0.96 
+ty-3 
+91.00 
+94.13 
+92.54 
+698 
+0.96 
+ty-4 
+93.33 
+93.58 
+93.46 
+763 
+0.96 
+Zxc-4 
+ty-1 
+92.13 
+91.31 
+91.72 
+564 
+0.97 
+ty-2 
+94.41 
+92.91 
+93.65 
+691 
+0.97 
+ty-3 
+93.70 
+94.69 
+94.20 
+754 
+0.97 
+ty-4 
+93.37 
+94.27 
+93.82 
+837 
+0.96 
+Zxc-5 
+ty-1 
+91.22 
+90.85 
+91.04 
+503 
+0.97 
+ty-2 
+91.24 
+92.73 
+91.98 
+674 
+0.96 
+ty-3 
+93.00 
+92.20 
+92.60 
+821 
+0.96 
+ty-4 
+94.38 
+94.15 
+94.27 
+838 
+0.97 
+Zxc-6 
+ty-1 
+90.05 
+87.09 
+88.54 
+457 
+0.96 
+ty-2 
+89.96 
+88.74 
+89.35 
+515 
+0.95 
+ty-3 
+90.73 
+95.37 
+92.99 
+626 
+0.96 
+ty-4 
+93.62 
+92.42 
+93.01 
+778 
+0.95 
+A federated learning system and a Convolutional Neural 
+Network (CNN) were applied to six clients (Zxc-1 to Zxc-6) 
+to categorize coffee leaf illnesses into four severity levels. The 
+results of this study are summarized. This research examines 
+the federated average of worldwide client data, broadly 
+illuminating the model's effectiveness. Client Zxc-1: This 
+client showed consistent performance across measures, with 
+an accuracy of 89.61%, a recall of 89.48%, and an F1-score of 
+89.52% with a support value of 404.75. The model's accuracy 
+level of 0.95 highlights its capacity to assess the severity of 
+the condition for this customer. Client Zxc-2: With an 
+accuracy of 88.38% and a recall of 88.98%, this client 
+demonstrated a balanced F1-score of 88.63% and a support 
+value of 402.75. An accurate categorization system with a 
+0.95 accuracy rate is reliable and consistent. Client Zxc-3: 
+This client showed exceptional performance, with an accuracy 
+of 92.12%, recall of 91.73%, F1-score of 91.89%, and 
+significant support (637.00). An impressive accuracy of 0.96 
+highlights the model's flexibility and effectiveness. Client 
+Zxc-4: This client showed exceptional classification abilities 
+with remarkable accuracy, recall, and F1-score values of 
+93.40%, 93.30%, and 93.35%, as well as a high support value 
+of 711.50. The precision of the model is further enhanced by 
+the peak accuracy of 0.97.Client Zxc-5: This client displayed 
+harmonic results, which were supported by an accuracy of 
+0.96 and were distinguished by balanced precision (92.46%) 
+and recall (92.49%), which culminated in an F1-score of 
+92.47% and a support level of 709.00.Client Zxc-6: This 
+client's findings are persuasive and reliable, supported by an 
+accuracy of 0.96, with precision of 91.09%, recall of 90.90%, 
+and an F1-score of 90.97% with a support value of 594.00. 
+The combined study clearly shows how well the federated 
+learning CNN model handles localized data from several 
+clients while upholding consistency and synchronization 
+across the measures. The approach offers a synchronized 
+global learning experience by using federated learning, 
+incorporating the unique local features of each client into a 
+general knowledge of coffee leaf diseases, as shown in Table 
+3. 
+TABLE III. CLIENT DATA'S GLOBAL MEAN COMPUTATION FRAMEWORK  
+Client 
+Precision 
+Recall 
+F1-
+Score 
+Support 
+Accuracy 
+Zxc-1 
+89.61 
+89.48 
+89.52 
+404.75 
+0.95 
+Zxc-2 
+88.38 
+88.98 
+88.63 
+402.75 
+0.95 
+Zxc-3 
+92.12 
+91.73 
+91.89 
+637.00 
+0.96 
+Zxc-4 
+93.40 
+93.30 
+93.35 
+711.50 
+0.97 
+Zxc-5 
+92.46 
+92.49 
+92.47 
+709.00 
+0.96 
+Zxc-6 
+91.09 
+90.90 
+90.97 
+594.00 
+0.96 
+The estimated averages provide a consolidated view of the 
+federated learning CNN model's performance when 
+categorizing coffee leaf diseases into four severity levels 
+across the six clients (Zxc 1 to Zxc 6). These averages include 
+three separate assessment methods: macro, weighted, and 
+micro, illuminating various facets of the model's effectiveness 
+in understanding the intricate details of illness severity 
+distribution in the Dataset. Macro Average: This average 
+evaluates the model's overall performance across all 
+customers by treating each client equally. Balanced 
+performance is shown by the observed Macro average 
+accuracy of 89.54%, and the recall scores among customers, 
+which range from 88.66% to 93.35%, are also very stable. The 
+model's capacity to discern the severity levels across various 
+customers is shown in its F1 score of 91.91%, underscoring its 
+seamless 
+fusion of accuracy and 
+recall. 
+Weighted 
+Average: Weighted average provides a more thorough 
+assessment by accounting for each client's support values. The 
+accuracy of 90.16% demonstrates a strong capability in illness 
+categorization, highlighting its importance for real-world 
+uses. The weighted recall values indicate a careful balance 
+between locating genuine positives and reducing false 
+negatives between 89.57% and 93.46%. The F1-score of 
+92.08% strengthens the model's capability to provide a 
+comprehensive categorization answer. Micro Average: The 
+micro average reflects the model's overall influence by 
+considering the model's cumulative performance across all 
+786
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 15:59:05 UTC from IEEE Xplore.  Restrictions apply. 

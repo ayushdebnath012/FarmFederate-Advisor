@@ -1,0 +1,519 @@
+Citation: Safdar, M.; Shahid, M.A.;
+Sarwar, A.; Rasul, F.; Majeed, M.D.;
+Sabir, R.M. Crop Water Stress
+Detection Using Remote Sensing
+Techniques. Environ. Sci. Proc. 2023,
+25, 20. https://doi.org/10.3390/
+ECWS-7-14198
+Academic Editor: Athanasios Loukas
+Published: 14 March 2023
+Copyright:
+© 2023 by the authors.
+Licensee MDPI, Basel, Switzerland.
+This article is an open access article
+distributed
+under
+the
+terms
+and
+conditions of the Creative Commons
+Attribution (CC BY) license (https://
+creativecommons.org/licenses/by/
+4.0/).
+Proceeding Paper
+Crop Water Stress Detection Using Remote Sensing Techniques †
+Muhammad Safdar 1,2,*, Muhammad Adnan Shahid 1,2,*
+, Abid Sarwar 1
+, Fahd Rasul 3,
+Muhammad Danish Majeed 1,2 and Rehan Mehmood Sabir 1,2
+1
+Department of Irrigation & Drainage, University of Agriculture, Faisalabad 38000, Punjab, Pakistan;
+abidsarwar@uaf.edu.pk (A.S.); kambohdanish@gmail.com (M.D.M.); r.m.sabir222@gmail.com (R.M.S.)
+2
+Agricultural Remote Sensing Lab (ARSL), University of Agriculture, Faisalabad 38000, Punjab, Pakistan
+3
+Department of Agronomy, University of Agriculture, Faisalabad 38000, Punjab, Pakistan;
+drfahdrasul@uaf.edu.pk
+*
+Correspondence: safdarsani4340@gmail.com (M.S.); adnan.wmrc@gmail.com (M.A.S.)
+†
+Presented at the 7th International Electronic Conference on Water Sciences, 15–30 March 2023;
+Available online: https://ecws-7.sciforum.net.
+Abstract: To meet the demand for increasing global food production while using limited water
+resources, crop water stress must be improved in agriculture. Remote-sensing-based plant stress
+indicators have the beneﬁts of high spatial resolutions, a cheap cost, and short turnaround times.
+This study discusses the current advancements in agricultural water stress monitoring and irrigation
+scheduling, some of the challenges that have been met, and the upcoming research needs. Remote
+sensing systems are prepared to handle the intricate and technical evaluations of agricultural produc-
+tivity, security, and crop water stress quickly and effectively. We explore the use of remote-sensing
+systems in the evaluation of crop water stress by looking at the existing research, technologies, and
+data. This study examines the connection between relative water content (RWC), equivalent water
+thickness (EWT), and agricultural water stress. Using remote sensing, evapotranspiration, and sun-
+induced chlorophyll content are examined in connection to crop drought. Spectral indices, remote
+sensing satellites, and multi-spectral sensing systems, as well as systems that measure land surface
+temperature, are examined. This critical study focuses on cutting-edge techniques for assessing crop
+water stress.
+Keywords: crop water stress; spectral indices; multi-spectral; remote sensing satellites; thermometric sensing
+1. Introduction
+Arid regions have discovered creative solutions to meet their crop needs, based on
+their growth phases, kinds, and environmental circumstances, which has led to appreciable
+yield improvements. A deﬁciency of irrigation water will cause agricultural water stress
+at various times throughout the crop cycle, under various environmental conditions. Its
+primary impact is felt in the rate of photosynthesis, which further causes a disturbance in
+the rates of transpiration [1,2].
+Remote sensing collects information from crops, soil, and ambient elements without
+direct physical contact [3]. Through the quick identiﬁcation of crop growth changes that are
+frequently missed by conventional approaches, it has improved and optimized agricultural
+production [4]. A highly accurate determination of the crop temperature is made possible by
+remote sensing systems, which also provide particular information that is important in the
+study of irrigation scheduling, quantity, and duration [5]. Remote sensing systems can be
+divided into sensor-based and platform-based systems. In total, two types of sensors may
+record the reﬂectivity inside the electromagnetic (EM) spectrum: active sensors and passive
+sensors. The sensor is mounted onto a variety of remote sensing platforms, including
+ground vehicles, aircraft, satellites, and handheld devices [6].
+Precision irrigation scheduling requires an assessment of crop water stress, which is
+one of the elements that characterize how a crop interacts with its environment [7]. The
+Environ. Sci. Proc. 2023, 25, 20. https://doi.org/10.3390/ECWS-7-14198
+https://www.mdpi.com/journal/environsciproc
+Environ. Sci. Proc. 2023, 25, 20
+2 of 7
+CWS came to be recognized as a common indicator for evaluating this stress on the leaf
+and canopy scales. This was a more accurate technique to examine the water stress at the
+plot, regional, and global stages, as well as evapotranspiration. Implementing effective irri-
+gation scheduling techniques is crucial to increase water savings and improve agricultural
+sustainability [8]. Remote sensing data can reveal information on the geographical and
+temporal variations of crops [9,10]. Precision agriculture uses spectral reﬂectance indices
+from high-resolution hyperspectral sensors on small, unmanned aircraft systems to monitor
+the crop water status and plan irrigation [11].
+An assessment of the crop water deﬁcit using remote sensing devices is the subject
+of this review. The paper supplies an overview of the many remote sensing systems that
+can be used to ﬁnd crop water stress. Optical, thermometric, land-surface temperature,
+multispectral (spaceborne and airborne), hyperspectral, and LiDAR sensing systems are
+examined. A consensus about the use of vegetation indices (VIs) as pre-visual indicators of
+water stress has not yet been reached, due to several confounding factors that affect these
+VIs on the canopy and landscape scales. This research discusses the current developments
+in crop water stress monitoring that may be applied to enhance vegetable crop irrigation
+scheduling and seeks to ﬁgure out the most promising method for widespread implemen-
+tation. To forecast the production conditions and schedule irrigation, the crop water stress
+needs to be detected during the various growing seasons. Distinguishing this agricultural
+water stress has been researched using several methodologies. These techniques rely on
+remote sensing, measurements of the soil water content, and plant responses. The study
+also considers the fact that different approaches are effectively used for different crops.
+2. Comparison of Crop Water Stress Detection Methods
+Table 1 provides an overview of various methods used for soil moisture measurement,
+including the gravimetric method, time domain reﬂectometer (TDR), neutron probe method,
+tensiometer method, vegetation indices method by remote sensing (VIs), water indices
+by remote sensing, water balance indices, remote sensing-based ET estimation by energy
+balance, CWSI by the infrared thermometer, and LST based CWSI. The table includes
+a brief description of each method, its advantages, disadvantages, and references. The
+methods vary in their precision, ease of use, cost, and sensitivity to different soil types and
+environmental conditions. Some methods require direct contact with soil, while others
+utilize remote sensing techniques. The choice of method depends on the speciﬁc research
+or application requirements.
+Table 1. Comparison of crop water stress detection methods.
+Methods
+Description
+Advantages
+Disadvantages
+References
+Gravimetric Method
+A straightforward technique
+that involves weighing a wet
+sample, drying it in an oven,
+reweighing it, and then
+estimating the amount of
+water loss as a percentage of
+the dry soil quantity
+Highly precise and reliable
+technique with hardly any
+room for instrumental error,
+not affected by salinity or
+soil type
+Time-consuming, dependent
+on mass measurements,
+destructive, and labor-intensive
+[12,13]
+Time domain reﬂectometer
+(TDR)
+An electromagnetic method
+based on the idea that water
+and other materials, such as
+soil, have different
+dielectric constants
+Less time-consuming and
+damaging than gravimetric
+techniques, reduced
+labor expenses
+Environmentally sensitive,
+expensive equipment, and
+calibration dependent on
+soil texture
+[12,13]
+Neutron Probe method
+Evaluates the soil’s
+volumetric water content
+High accuracy, permits
+observations at various
+depths, rather simple
+Time-consuming monitoring
+and expensive equipment
+licensing are required.
+[14]
+Tensiometer method
+Soil-water-potential-based
+Cheap, affordable, easy to
+install, accurate, and for
+irrigation scheduling
+Requires contact with soil
+and destructive
+[14]
+Vegetation indices method by
+remote sensing (VIs)
+Indicators of vegetation are
+used to illustrate
+its properties
+The high temporal and
+spectral resolution,
+non-destructive
+Precision decreases from leaf
+scale to canopy scale and
+image analysis is a
+difﬁcult task
+[15,16]
+Environ. Sci. Proc. 2023, 25, 20
+3 of 7
+Table 1. Cont.
+Methods
+Description
+Advantages
+Disadvantages
+References
+Water Indices by
+remote sensing
+Determines the reﬂectance in
+the SWIR and near-infrared
+range, which is used to
+indicate the water content of
+the canopy. Typical indices
+include WI, SRWI, NDWI,
+and MSI
+Leaf water content may be
+measured without causing
+damage. Excellent direct
+signs of water stress
+The difﬁculty of ascending to
+the canopy level
+[17]
+Water balance indices
+Monitors change in the
+chlorophyll ﬂuorescence and
+water content of the leaves
+using the green and SWIR
+spectral bands. The
+calculated indices are WABI,
+WABI-1, and WABI-2
+Exhibited excellent
+performance at the leaf and
+canopy levels
+It is necessary to use an
+expensive single-spectrum
+instrument. The penetrability
+of the SWIR band through
+heavy atmospheric layers is
+a problem
+[17]
+RS-based ET estimation by
+Energy balance
+The surface energy balance
+equation LE = Rn-G-H Latent
+Energy includes ET as a
+residual (LE), Rn = Net Sky
+Radiation, G = Ground to Air,
+H = Heat to Air
+A single thermal band with
+the excellent resolution is
+sufﬁcient and needed
+METRIC and SEBAL have
+good consistency and
+accuracy
+It’s challenging to determine
+whether ET is possible. As ET
+cannot be directly measured,
+high-resolution thermal
+imaging is crucial.
+[18]
+CWSI by infrared
+thermometer
+The canopy temperature and
+its decrease with the ambient
+air temperature are used to
+calculate CWSI
+Depends on the direct
+technique and VPD
+Different baselines must be
+calculated for various crops;
+this takes time. To evaluate
+CWSI, many factors must
+be considered
+[19]
+LST based CWSI
+Utilizing LST and the
+hot-and-cold pixels approach
+to calculate CWSI
+Using only remote sensing
+methods Work and time are
+non-intensive
+Depending on this method to
+calculate LST, LST
+computation is laborious
+and varies
+[20]
+3. Satellite-Based Crop Water Stress Detection
+Table 2 provides information on various satellite applications and their advantages and
+limitations. It includes information on the type of satellite, its applications, the advantages
+of using it, and any limitations associated with it. Some examples of the satellites included in
+the table are AMSR-E, AMSR-2, NISAR, Tandem-L, Sentinel-1, and SMAP. The applications
+of these satellites range from analyzing soil moisture to vegetation status and dynamics
+observation. The advantages of using these satellites include high precision, excellent
+resolution, and data collection in all weather conditions, among others. However, some
+of the limitations include limited frequency ranges, high cost, and limited precision in
+ﬁeld determination.
+Table 2. Satellite-based crop water stress detection.
+Satellite
+Applications
+Advantages
+Limitations
+References
+AMSR-E
+High-efﬁciency passive
+microwave soil moisture
+analysis with drought
+Data collection for daily soil
+moisture measurement with a
+12.5 km precision
+Just two ﬁles every day, one
+for the day and one for
+the night
+[21]
+AMSR-2
+Analysis of soil-water-related
+parameters and global
+observation of soil moisture
+(from the soil surface to a few
+centimeters depth)
+More than 99% correct in
+capturing data both during
+the day and at night/good
+resolution and accuracy of
+data collecting
+Only functions in certain
+frequency ranges, including
+6.925, 7.3, 10.65, 18.7, 23.8,
+36.5, and 89.0 GHz
+[22]
+NISAR
+Global soil moisture maps
+with a time horizon of 6 to
+12 days
+Acquires soil moisture data in
+all weather conditions and
+with a precise resolution of
+3–10 m
+Product assessment in
+12–24 h
+[23]
+Tandem-L
+Worldwide soil moisture
+Provides extremely accurate
+measured data with
+millimeter-level accuracy and
+excellent resolution between
+20 m and 4 km
+A signiﬁcant premium over
+conventional satellite systems
+[24]
+Sentinel-1
+Dynamics observation
+With a precision resolution of
+5 to 20 m, ﬁeld determination
+is less precise
+Easy to create new systems,
+incorporating sensor
+structures and application
+development models
+[25]
+SMAP
+Analyzes the vegetation
+status and soil surface
+High likelihood of mission
+failure with a 9 km
+precise resolution
+SSM is captured by passive
+sensors for roughly 36 km
+[26]
+Environ. Sci. Proc. 2023, 25, 20
+4 of 7
+4. Crop Water Stress Detection Using Spectral Indices
+Table 3 below lists several reﬂectance indices used to indicate plant stress and their
+respective formulas. Reﬂectance indices are measures of the amount of light reﬂected from
+vegetation at speciﬁc wavelengths and can be used to estimate plant health and stress. The
+plant stress indicators listed in the table are associated with different physiological processes
+related to plant water statuses, such as stomatal conductance, chlorophyll ﬂuorescence, leaf
+water potential, and water content. The references listed provide additional information on
+the use and interpretation of each index.
+Table 3. Crop water stress detection using spectral indices.
+Reﬂectance Indices
+Formula
+Plant Stress Indicators
+References
+Photochemical Reﬂectance Index (PRI)
+R570−R531
+R570+R531
+Stomatal conductance and chlorophyll ﬂuorescence
+[27]
+Normalized Photochemical
+Reﬂectance Index (NPRI)
+PRI
+RDI∗R700
+R670
+Stomatal conductance and chlorophyll ﬂuorescence
+[28]
+Normalized Difference Vegetation
+Index (NDVI)
+R800−R670
+R800+R670
+Leaf water potential and stomatal conductance
+[29]
+Renormalized Difference
+Vegetation Index (RDVI)
+R800−R670
+√
+R800+R670
+Leaf water potential and stomatal conductance
+[30]
+Transformed Chlorophyll
+Absorption in Reﬂectance Index (TCARI)
+3[(R700 −R670) −0.2(R700 −R550) ∗
+ R700
+R670
+
+]
+Leaf water potential and stomatal conductance
+[31]
+Optimized Soil Adjusted
+Vegetation Index (OSAVI)
+(1+0.16)(R700−R550)
+(R800+R670)+0.16
+Leaf water potential and stomatal conductance
+[31]
+Normalized Difference Water Index (NDWI)
+R860−R1240
+R860+R1240
+Leaf water potential
+[32]
+Simple Ratio Water Index (SRWI)
+R860
+R1240
+Leaf water potential
+[33]
+Water Index (WI)
+R860
+R1240
+Leaf water potential
+[33]
+5. Crop Water Stress Detection Using Multispectral Sensing Systems
+Table 4 provides information on different multispectral sensing systems, their descrip-
+tions, advantages, and references. The ﬁrst system listed is a UAV remote multispectral
+sensing system called AIRPHEN Multispectral Camera, which has a high-resolution camera
+and precise CWS (crop water stress) detection. It is also low-cost, cheap, effective, and
+available with RGB color bands. The second system listed is a spaceborne multispectral
+sensing system that includes Landsat, Orb view, World view, IKONOS, and Quick bird.
+These systems are used to ﬁgure out agricultural water stress by collecting multispectral
+high-resolution data, which provides entire crop water stress temporal features.
+Table 4. Crop water stress detection using multispectral sensing systems.
+Multispectral Sensing Systems
+Description
+Advantages
+References
+UAV remote MS sensing system
+AIRPHEN Multispectral Camera with a
+lens of 8 mm focal length, 1280 × 960
+pixels, and spectral resolution 10 nm
+High-resolution camera, precise
+CWS detection, low cost, cheap,
+effective, and available with RGB
+color bands
+[34,35]
+Spaceborne MS sensing system
+Landsat, Orb view, World view,
+IKONOS, Quick bird
+SPOT-5
+To ﬁgure out agricultural water
+stress, multispectral
+high-resolution data should be
+collected. This will give us entire
+crop water stress
+temporal features
+[36,37]
+6. Future Directions
+The target water stress can be located using remote sensing technology. For applica-
+tions including agricultural growth assessment and irrigation, as well as leaf and canopy
+phenotypic categorizations that detect crop losses, digital imaging technologies are used.
+Using information from digital photography, the water stress can be measured. The most
+Environ. Sci. Proc. 2023, 25, 20
+5 of 7
+recent methods for crop water stress assessment that used digital pictures from remote
+sensing have shown notable results. Most of the studies showed three degrees of agricul-
+tural water stress: minimal stress (optimum moisture), medium stress (mild drought stress),
+and severe stress (drought stress). With an accuracy that ranged from 83 to 99%, these
+methods produced encouraging ﬁndings for the estimation of agricultural water stress.
+Machine learning is crucial to raising the calibers and effectiveness of these systems. For
+an accurate evaluation of the crop water stress, a microcontroller-based signal processor
+(MSP430) integrated soil and ambient sensors. A dependable resource for examining these
+crop water levels, and soil water stress factors is an independent wireless sensor system
+that is made up of a gateway plus a wireless sensory node.
+7. Conclusions
+Traditional methods, such as measuring the soil moisture, have drawbacks in terms
+of their sensor costs and installations, and difﬁculty in obtaining estimates. Plant-based
+estimates are more dependable and accurate. There are signiﬁcant relationships between
+the PRI and NDVI, and attributes such as the LWP, stomatal conductance, crop efﬁciency,
+and stem water potential. A crop water stress evaluation is a technical and intricate
+process in and of itself. Our study suggests new techniques that bring together farmers,
+researchers, and tech developers. Narrow-band optical indices could be used to plan
+the irrigation for high-value vegetable crops in water-stressed countries. Conventional
+irrigation scheduling methods use measurements of the soil moisture and weather, and
+physiological assessments of the plant response. These methods are ineffective because
+it is difﬁcult to obtain these measurements, especially for varied soil and crop canopies.
+This assessment makes recommendations for remote sensing systems and sets the path
+for creating new facilities that assess a system’s effectiveness in diverse environmental
+scenarios, such as multispectral/hyperspectral and thermal sensing systems that are based
+on remote sensing features.
+Author Contributions: Conceptualization, M.S.; Comparison of Crop Water Stress Detection Meth-
+ods, M.S. and M.A.S.; Satellite-Based Crop Water Stress Detection, A.S.; Crop Water Stress Detection
+Using Spectral Indices, F.R.; Crop Water Stress Detection Using Multispectral Sensing Systems,
+M.D.M., M.A.S., and R.M.S.; Future Directions & Conclusions, writing—original draft preparation,
+M.S.; writing a review and editing, M.S. All authors have read and agreed to the published version of
+the manuscript.
+Funding: This research received no external funding.
+Institutional Review Board Statement: Not applicable.
+Informed Consent Statement: Not applicable.
+Data Availability Statement: Free sources of satellite data are available for the study, but for better
+accuracy unavailability of data due to non-free availability.
+Conﬂicts of Interest: The authors declare no conﬂict of interest.
+References
+1.
+Chang, Y.N.; Zhu, C.; Jiang, J.; Zhang, H.; Zhu, J.K.; Duan, C.G. Epigenetic regulation in plant abiotic stress responses. J. Integr.
+Plant Biol. 2020, 62, 563–580. [CrossRef] [PubMed]
+2.
+Goldstein, A.; Fink, L.; Meitin, A.; Bohadana, S.; Lutenberg, O.; Ravid, G. Applying machine learning on sensor data for irrigation
+recommendations: Revealing the agronomist’s tacit knowledge. Precis. Agric. 2017, 19, 421–444. [CrossRef]
+3.
+Tian, H.; Wang, T.; Liu, Y.; Qiao, X.; Li, Y. Computer vision technology in agricultural automation—A review. Inf. Process. Agric.
+2020, 7, 1–19. [CrossRef]
+4.
+Aasen, H.; Honkavaara, E.; Lucieer, A.; Zarco-Tejada, P. Quantitative Remote Sensing at Ultra-High Resolution with UAV
+Spectroscopy: A Review of Sensor Technology, Measurement Procedures, and Data Correction Workﬂﬂows. Remote Sens. 2018,
+10, 1091. [CrossRef]
+5.
+Long, D.S.; Engel, R.E.; Siemens, M.C. Measuring Grain Protein Concentration with In-line Near Infrared Reﬂectance Spectroscopy.
+Agron. J. 2008, 100, 247. [CrossRef]

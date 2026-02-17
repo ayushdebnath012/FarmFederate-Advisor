@@ -13,15 +13,15 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 const String PRODUCTION_BACKEND = "https://farmfederate-advisor.onrender.com";
 
 /// Local development backend URLs
-const String _LOCALHOST = "http://localhost:8001";
-const String _ANDROID_EMULATOR = "http://10.0.2.2:8001";
-const String _IOS_SIMULATOR = "http://localhost:8001";
+const String _LOCALHOST = "http://localhost:8000";
+const String _ANDROID_EMULATOR = "http://10.0.2.2:8000";
+const String _IOS_SIMULATOR = "http://localhost:8000";
 
 /// LAN IP for testing on real devices (update to your machine's IP)
-const String _LAN_BACKEND = "http://192.168.1.100:8001";
+const String _LAN_BACKEND = "http://192.168.1.100:8000";
 
 /// Set to true when deploying to production
-const bool IS_PRODUCTION = true;
+const bool IS_PRODUCTION = false;
 
 /// Get the appropriate backend URL based on platform
 String getBackendUrl() {

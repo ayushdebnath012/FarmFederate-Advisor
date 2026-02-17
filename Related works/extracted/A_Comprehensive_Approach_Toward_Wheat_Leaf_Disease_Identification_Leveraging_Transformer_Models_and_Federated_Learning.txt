@@ -1,0 +1,442 @@
+Received 9 July 2024, accepted 29 July 2024, date of publication 5 August 2024, date of current version 16 August 2024.
+Digital Object Identifier 10.1109/ACCESS.2024.3438544
+A Comprehensive Approach Toward Wheat Leaf
+Disease Identification Leveraging Transformer
+Models and Federated Learning
+MD. FAHIM-UL-ISLAM
+1, AMITABHA CHAKRABARTY
+1, SARDER TANVIR AHMED1,
+RAFEED RAHMAN1, HYUN HAN KWON
+2,
+AND MD. JALIL PIRAN
+3, (Senior Member, IEEE)
+1Department of Computer Science and Engineering, Brac University, Dhaka 1212, Bangladesh
+2Department of Civil and Environmental Engineering, Sejong University, Seoul 05006, South Korea
+3Department of Computer Science and Engineering, Sejong University, Seoul 05006, South Korea
+Corresponding author: Md. Jalil Piran (piran@sejong.ac.kr)
+This work was supported by Korea Environmental Industry and Technology Institute (KEITI) through the Water Management Program for
+Drought Project, funded by Korea Ministry of Environment (MOE) under Grant 2022003610003.
+ABSTRACT Wheat is one of the most extensively cultivated crops worldwide that contributes significantly to
+global food caloric and protein production and is grown on millions of hectares yearly. However, diseases like
+brown rust, septoria, yellow rust, and other fungus diseases pose notable threats to wheat crops, impacting
+production and quality. Diagnosing these diseases is challenging, especially in areas with limited agricultural
+experts. Thus, creating computerized disease identification and decision-support technologies is crucial for
+safeguarding wheat leaf preservation and crop loss mitigation. The traditional approach to integrating data
+gathering and model training has substantial challenges in terms of data confidentiality, availability, and the
+costs related to data transmission. To address these challenges, federated learning (FL) is an appealing and
+effective option. Our study focuses on applying FL to classify agricultural diseases using image analysis.
+In our study, we conduct experiments on high-parameterized transfer learning (TL) models along with our
+proposed architecture based on the attention mechanism, introducing these models into a distributed learning
+strategy founded in FL. Our proposed architecture leverages the beneficial interactions of two cutting-edge
+vision transformer models including the advanced depthwise incorporating self-attention model referred to as
+CoAtNets, and the enhanced Swin Transformer V2, resulting in enhanced feature representation. Moreover,
+we introduce weight pruning into our model which is further classified by a reinforced linear attention
+mechanism (LA) to lower output dimensions. Our pruned lightweight (32M parameters) considerably
+decreases inference time with 624.249 ms and 644.899 on devices with low computational power, making
+it highly efficient in FL-based systems. The proposed model in our FL system significantly outperforms
+all other tested transfer learning models, including ConvNeXtBase, ConvNeXtLarge, EfficientNetV2L,
+InceptionResNetV2, ResNet152, and NASNetLarge, achieving accuracies up to 98% and 99%, precision
+up to 98%, recall up to 98%, and F-1 scores up to 95% across multiple input dimensions for wheat leaf
+disease classification.
+INDEX TERMS Machine learning, deep learning, federated learning, transformers, attention mechanism,
+wheat leaf disease identification.
+The associate editor coordinating the review of this manuscript and
+approving it for publication was Xinyu Du
+.
+I. INTRODUCTION
+Wheat (Triticum aestivum) is one of the most extensively
+consumed cereals globally and a key food source for human-
+ity [1]. Its relevance has grown, notably due to the harmful
+impacts of bad agricultural practices during the epidemic
+109128
+ 2024 The Authors. This work is licensed under a Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 License.
+For more information, see https://creativecommons.org/licenses/by-nc-nd/4.0/
+VOLUME 12, 2024
+M. Fahim-Ul-Islam et al.: Comprehensive Approach Toward Wheat Leaf Disease Identification
+and the subsequent conflict between Ukraine and Russia.
+Both countries rank among the top 10 wheat producers
+worldwide. Wheat is key in reducing hunger, especially in
+African areas with limited access to food [2]. As a result,
+there are enormous incentives to produce this crop, coupled
+with numerous methods targeted at enhancing productivity.
+Wheat is one of the key staple foods and is considered the
+second-largest crop in the world. Significant yield advances
+in wheat production over the past 40 years have resulted
+in an ongoing equilibrium of supply versus demand [3],
+[4]. However, climate change and extreme weather events
+present substantial obstacles to agriculture and ecosystems.
+Fluctuations in temperature and precipitation patterns lead
+to an escalation in droughts, floods, and heat waves, which
+have a detrimental effect on the growth and productivity of
+wheat. Furthermore, these occurrences lead to a rise in the
+occurrence and intensity of diseases, which in turn impair
+the inherent defenses of plants and diminish their output.
+Wheat is a staple crop that requires control from many
+diseases through breeding resistance, insecticides, or other
+techniques. Out of the 31 pests and pathogens recorded in
+wheat, fungal diseases such as leaf and stripe rust, Fusarium
+head blight, Septoria leaf blotch, spot blotch, tan spot, and
+powdery mildew cause the most significant losses [5]. Yellow
+rust is easily detected by orange/yellow uredinial pustules on
+leaves, while Septoria occurs on the leaf as necrotic yellow-
+to-brown lesions confined by veins with little black pycnidia.
+Confusion can emerge at two stages: early yellow rust and
+Septoria both show as elongated patches of chlorosis and
+later yellow rust and Septoria lesions can be confused. Brown
+or leaf rust, another common wheat leaf disease, generates
+orange/brown pustules on leaves, making it difficult to
+identify from yellow rust and Septoria [6]. Traditional
+procedures for diagnosing and managing wheat crop diseases
+are concentrated on pathologists, making them subjective,
+time-consuming, and labor-intensive. Given a scarcity of
+experience and manpower, researchers continue to investigate
+computer vision algorithms for effectively detecting disease
+occurrences on specific plots of land used for agricultural
+tasks [7]. Leveraging the transformative power of deep
+learning models, image-based plant disease detection has
+emerged as a promising solution to safeguard these wheat
+crops, as evidenced by the works of in the literature review,
+Navale and Basapur [8] showcased significant enhancements
+in the accuracy by using the (Convolutional Neural Network)
+CNN models. Additionally, Ceyhan et al. [9] proposed an
+image-based deep learning method that uses reflection data to
+classify wheat varieties accurately. This method offers a more
+effective and affordable substitute for wheat classification in
+the agricultural and industrial sectors. A noteworthy issue in
+this regard has been the limited ability to properly address
+unknown diseased wheat image data linked with distinct
+diseases by utilizing advanced computer vision computation
+in a global scale approach. By using this approach, the
+decision-making skill of the model would be more effective
+and informative as known by different classes with different
+variants of diseases of wheat. The purpose is to develop
+algorithms that can fast and reliably classify previously
+unknown data, ensuring precise findings on a worldwide
+scale, thus boosting the total accuracy of classification tasks.
+The present algorithms still exhibit a notable discrepancy
+in effectively classifying unknown photos of damaged wheat,
+particularly when confronted with a wide range of diseases
+worldwide. This difficulty emerges because these models rely
+significantly on pre-established disease categories and lack
+the adaptability to distinguish novel or rare disease variations.
+It is crucial to address this gap for multiple reasons.
+Initially, the agriculture sector is becoming more globalized,
+with the cultivation of wheat taking place in diverse
+climatic conditions and countries, each presenting distinct
+disease challenges. Effective disease management requires
+models that can generalize across multiple environments
+and accurately detect diseases not included in the training
+data. Presently, existing models cannot generally apply
+their knowledge to varied settings, resulting in decreasing
+precision and reliability in practical scenarios. Additionally,
+the ever-changing nature of disease development offers a
+substantial hurdle. Pathogens can undergo genetic alterations,
+leading to new disease strains. Current models may not
+have the capacity to recognize and interpret these new
+strains, underlining the need for strong models that can
+adapt to fresh data and continuously learn from new disease
+occurrences. Without this adaptability, models’ decision-
+making abilities remain limited, leaving crops vulnerable
+to emerging dangers. Furthermore, climate change and
+extreme climatic events are projected to increase agricultural
+challenges and disease prevalence [10]. Federated learning
+tackles the difficulties presented by unpredictable weather
+patterns and the spread of wheat leaf diseases by facilitating
+decentralized, ongoing, and adaptable training of models.
+This method enables various stakeholders to provide local-
+ized data without disclosing sensitive information, ensuring
+that models stay up-to-date and strong under multiple
+circumstances. Therefore, federated learning gives a solution
+to this challenge. By allowing models to be trained on
+decentralized data from varied sources without sharing
+raw data, federated learning boosts the models’ ability to
+generalize across different settings and adapt to new disease
+variants. This strategy harnesses the aggregate knowledge
+from different nodes, boosting the models’ resilience and
+accuracy in recognizing and managing wheat leaf diseases
+globally.
+The primary motivation for implementing federated learn-
+ing in the context of wheat leaf disease identification lies in
+its ability to improve data privacy and security while utilizing
+distributed data sources. Conventional centralized machine
+learning methods necessitate aggregating all data in one
+place, which raises significant privacy concerns, particularly
+when dealing with sensitive agricultural data [11], [12],
+[13]. Federated learning solves this issue by facilitating
+VOLUME 12, 2024
+109129
+M. Fahim-Ul-Islam et al.: Comprehensive Approach Toward Wheat Leaf Disease Identification
+model training over multiple distributed nodes, granting each
+participating node control over its data. This decentralized
+approach not only guarantees the confidentiality of data
+but also fosters collaboration among various parties without
+the need for sharing data. Furthermore, federated learning
+improves the ability to handle big amounts of data and
+increases efficiency by utilizing local computing resources.
+FL approach eliminates the requirement for transferring
+large amounts of data, resulting in reduced latency. This
+is especially crucial in agricultural settings where internet
+connectivity can be limited or unreliable.
+Therefore, in our FL architecture, we employ our proposed
+transformer model architecture with its improved ability to
+capture complicated patterns in picture data and enhance the
+accuracy and robustness of disease classification. Therefore,
+FL offers a promising technique for model training, allowing
+the integration of input from multiple sources without
+compromising privacy. This decentralized strategy not only
+boosts the model’s ability to generalize across diverse areas
+and situations but also ensures continual learning from new
+data, making the system more adaptable to emerging diseases
+and changing climatic conditions. Additionally, we have
+introduced weight pruning in federated learning systems
+that provide an efficient approach. Weight pruning includes
+lowering the number of parameters in a model by deleting
+less important weights and layers, hence reducing model
+complexity without severely sacrificing performance. This
+strategy is particularly advantageous in federated learning
+contexts where computational resources and bandwidth
+are potentially constrained. By performing weight pruning
+with the advanced method, we have reduced the overall
+model size, making it more viable to deploy and update
+models across different decentralized nodes. This strategy
+not only reduces the computing requirements but also boosts
+the efficiency and scalability of the federated learning
+system.
+Our main contributions therefore,
+• We use a four-layered preprocessing pipeline in our
+datasets that includes Canny Edge Detection, Gaussian
+Blur addition, Laplace Transformation, and High-Pass
+Filtering. Gaussian and Laplace noise transformation
+strengthen the model, and High-Pass Filtering sharpens
+images, making it simpler to retrieve disease-related
+characteristics. These methods, taken together, improve
+the accuracy alongside effectiveness of our wheat leaf
+disease categorization in an FL-based system.
+• Our study introduces an advanced vision transformer
+architecture aimed at achieving enhanced perfor-
+mance with reduced parameterization in the FL dis-
+tributed System. This architectural innovation com-
+bines the strengths of CoAtNet and the improved
+Swin Transformer version 2, leveraging a Local
+Attention (LA) mechanism. Compared to standard
+high-parameterized neural network models such as Con-
+vNeXtBase, ConvNeXtLarge, EfficientNetV2L, Incep-
+tionResNetV2, ResNet152, and NASNetLarge, our
+proposed method demonstrates superior performance,
+particularly in FL scenarios.
+• In addition, we propose an identifiable FL archi-
+tecture for interactive model training across clients
+with different datasets which enables the storage age
+of local updates, allowing for dynamic interactions
+between local and global model instances and promoting
+efficient model update transmission with advanced
+weight pruning method.
+• In our evaluation of model effectiveness, we apply
+multiple essential metrics and visualizations, including
+accuracy curves, loss curves, classification reports,
+confusion matrices, GPU utilization, and inference times
+through our training.
+Following is a synopsis of the remainder of this paper.
+In Section II, we introduce our connected work with the
+previous studies comparing our proposed technique in this
+domain. In Section III, we address the approach we suggest
+for documenting our data collection, preprocessing networks,
+and proposed model while defining our overall system
+architecture and its usefulness. In Section IV, we describe
+our assessment metrics for the performance measure of our
+model. Afterward, we provide the experimental components
+and frameworks required to train our models in the envi-
+ronment. After putting our model strategies into practice,
+we study our outcomes and insights in Section VI to assess
+the efficacy of our models. In section VIII. we consider
+the practical considerations of our proposed system. Finally,
+in section IX. we conclude our work by describing the
+importance of our work.
+II. RELATED WORK
+Agriculture crops such as rice, wheat, and soybean are staple
+foods for many countries and because of this sustainable
+agricultural practices have allowed these crops to be both
+inexpensive and a reliable source of food security. However,
+plant-based ailments have put this at risk. When bacteria or
+fungi infect plant tissue growing above ground, lesions occur
+on the leaves, stems, and panicles of the plants. Image-based
+plant disease detection systems are developed by integrating
+deep learning models to process photos of sick leaves.
+Shoaib et al. [14], explored recent advancements in using
+Machine Learning (ML) and Deep Learning (DL) techniques
+for plant disease proof of identity, illustrating improved
+accuracy and efficiency, while addressing challenges and
+limitations, offering valuable insights for researchers, practi-
+tioners, and industry professionals. However, the authors did
+not apply to handling vast amounts of data with an advanced
+model architecture on a large scale. The applications of image
+preprocessing of images also exhibited the lack of their study.
+Moreover, transformer models are becoming increasingly
+important due to the development of specialized quantization
+methods adapted to these models.
+Qin et al. in [15] proposed BiBERT, a completely
+binarized iteration of the BERT model that aims to substan-
+tially decrease computational and memory expenses while
+109130
+VOLUME 12, 2024
+M. Fahim-Ul-Islam et al.: Comprehensive Approach Toward Wheat Leaf Disease Identification
+TABLE 1. Overview of the existing related studies.
+preserving performance. The main advancements include
+the Bi-Attention mechanism, which reduces information loss
+during binarization by maximizing information entropy and
+replacing softmax with Bitwise-Affine Matrix Multiplication
+(BAMM), and the Direction-Matching Distillation (DMD)
+method, which enhances optimization accuracy by aligning
+the optimization directions of binarized and full-precision
+models through upstream distillation and similarity pattern
+matrices.
+Chen et al. in [16] introduced DB-LLM (Dual-Binarization
+for Large Language Models) as a method to improve
+computing performance by using ultra-low bit quantization.
+The key innovations consist of Flexible Dual Binarization
+(FDB), which divides 2-bit quantized weights into two
+binary sets to enable efficient operations without sacrificing
+accuracy, and Deviation-Aware Distillation (DAD), which
+modifies the distillation loss to prioritize ambiguous samples.
+The experiments conducted on LLaMA-1 and LLaMA-2
+models provide evidence that DB-LLM surpasses existing
+quantization approaches in terms of perplexity and accuracy,
+resulting in a 20% decrease in computing expenditure.
+Qin et al. [17] presented IR-QLoRA, an innovative
+approach to enhance the precision of quantized large
+language models (LLMs) by LoRA finetuning. The sys-
+tem employs two primary methodologies: Statistics-based
+Information Calibration Quantization, which effectively
+preserves the original information in quantized parameters,
+and Finetuning-based Information Elastic Connection, which
+enables versatile representation of information. The exper-
+iments demonstrate that IR-QLoRA greatly enhances the
+accuracy of the LLaMA and LLaMA2 models when using
+2-4 bit-widths. This improvement in accuracy is achieved
+with only a slight increase in time consumption, showcasing
+the efficiency and versatility of IR-QLoRA.
+Qin et al. in [18] introduced BiBench, a benchmark
+designed to examine network binarization holistically.
+It mainly evaluates the prerequisites for viable binarization,
+sets evaluation metrics, and assesses milestone binarization
+algorithms. Key findings include the crucial importance
+of binarized operators on performance and deployability,
+large accuracy variations across jobs and architectures, and
+promising efficiency on edge devices despite hardware limits.
+VOLUME 12, 2024
+109131
+M. Fahim-Ul-Islam et al.: Comprehensive Approach Toward Wheat Leaf Disease Identification
+Huang et al. in [19] introduced BiLLM, a revolutionary
+1-bit post-training quantization approach for LLMs. BiLLM
+discovered salient weights and minimized compression loss
+by binary residual approximation, while accurately binarizing
+non-salient weights using an optimal splitting search. BiLLM
+produced high-accuracy inference (e.g., 8.41 perplexity on
+LLaMA2-70B) with 1.08-bit weights, greatly surpassing
+state-of-the-art quantization approaches.
+Zhu et al. [20] proposed MSCVT, a lightweight hybrid
+transformer model for crop disease detection that combines
+features of CNN and Transformer via multiscale self-
+attention (MSSA) modules, demonstrating high recognition
+accuracies on practical disease data. Nevertheless, the authors
+did not implicit any preprocessing network for measuring the
+robustness and flexibility of the model in the real-life data.
+Zeng et al. [21] developed the Squeeze-and-Excitation Vision
+Transformer (SEViT) model for large-scale and fine-grained
+plant disease classification, combining ResNet with a channel
+attention module for preprocessing and ViT for feature
+classification but yielded a lower accuracy under a field
+background, indicating the difficulty of field identification.
+However, the authors weren’t interested in constructing this
+design in real-world environments while retaining the scale
+and effectiveness of the service.
+Pang et al. [22] established a novel approach called Dense
+CNNs and Transformer Network (DCTN) for accurate field
+crop disease detection, utilizing a multi-head self-attention
+mechanism, on their dataset and a publicly available dataset,
+respectively, showcasing its reliability against background
+interference in real-field environments. Consequently, it is
+vital to highlight the utility of the novel computer vision
+algorithms that improve model efficiency in a decentral-
+ized federated network setting that was missing in these
+works. Traditional transfer learning methods may not be
+as efficient in today’s world because they rely on a wide
+number of characteristics, which, while their abundance,
+may offer less precise categorization competencies. Addi-
+tionally, Arshad et al. [23] constructed a novel deep learning
+framework for precise and efficient detection leveraging
+two well-established models (VGG19 and Inception-V3)
+under the PLDNet framework designed to automatically
+predict potato leaf diseases. However, this study misses
+the promise of retaining the standard for making that
+deep learning system lightweight as VGG19 comprises
+143.7M parameters. Öğrekçi et al. [24] applied deep learning
+approaches, specifically DenseNet121, Vision Transformers
+(ViT), and a ViT + CNN combination, for the categorization
+of illnesses in sugarcane leaves, attaining high precision rates.
+However, the comparative study might not account for the
+varying nature of datasets, which can significantly impact the
+performance of vision transformers and CNNs.
+Wang et al. [25] proposed the novel ECA-ConvNeXt model
+for the identification of six categories of rice leaf diseases
+and healthy rice leaves, combining the Efficient Channel
+Attention (ECA) module and utilizing transfer learning,
+achieving an impressive accuracy on the rice leaf disease
+identification dataset. Aggarwal et al. [26] proposed the
+federated transfer learning (F-TL) approach for rice-leaf
+disease categorization, using both IID and non-IID datasets,
+with EfficientNetB3 and MobileNetV2 showing comparable
+results, demonstrating the advantages of the F-TL framework
+for cost-effective, data-privacy-assured paddy leaf disease
+identification in resource-constrained edge devices. Though
+the use of FL showed a promising approach to handling
+large amounts of data is vital for fast and efficient learning
+throughout the system, the comparative analysis of diverse
+VIT models is missing in this study. Also, the noise addition
+process for the robust performance of the model is missing in
+this paper.
+Haridasan et al. [27] proposed an automated computer
+vision-based approach utilizing image processing, machine
+learning, and deep learning, incorporating support vec-
+tor machine classifier and convolutional neural networks,
+to accurately identify and categorize rice plant diseases,
+achieving the finest validation accuracy of 0.9145 and offer-
+ing predictive remedies for disease management in Indian rice
+fields. However, for handling large sets of data, the traditional
+approach for deep learning with the assistance of a machine
+learning classifier would not be suitable. Liu et al. [28]
+proposed a NanoSegmenter model based on the Transformer
+structure, integrated with lightweight technologies, to achieve
+high-precision tomato disease detection, with a precision of
+0.98, a recall of 0.97, a mIoU of 0.95, and a computational
+efficiency of 37 FPS, providing a viable option for this
+crucial agricultural application on tomato disease detection.
+Idoje et al. [29] investigated the application of FL in
+smart farming, utilizing the federated averaging model for
+crop classification with climatic parameters as independent
+variables and crop types as labels, with decentralized models
+converging faster and achieving higher accuracy. However,
+all these efforts lack the application of FL approaches that
+principally handle the broad dispersion of data for multiple
+locations or organizations for more detailed findings for one
+or several types of plant diseases. This is a notable constraint
+that necessitates the requirement of development. Table 1
+has been prepared to present an overview of the strategies
+that have been employed for accurate diseased plant picture
+categorization.
+Upon a detailed evaluation of existing works, it becomes
+obvious that these efforts generally revolve around boosting
+system efficiency. Yet, there are considerable gaps in
+addressing the essential topic of guaranteeing real-time
+analysis in a decentralized environment with multiple clients.
+Therefore, integrating FL into the domain of wheat crop
+disease detection could offer several key benefits. Firstly,
+it would enhance collaborative learning and updating by
+ensuring that sensitive agricultural data, such as images of
+infected crops, remains localized and is never shared in
+its raw form. Secondly, it allows for collaboration among
+researchers, practitioners, and industry professionals. More-
+over, our advanced FL enables the development of a more
+robust and accurate global model by aggregating knowledge
+109132
+VOLUME 12, 2024

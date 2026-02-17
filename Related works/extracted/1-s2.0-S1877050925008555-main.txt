@@ -1,0 +1,226 @@
+ScienceDirect
+Available online at www.sciencedirect.com
+Procedia Computer Science 257 (2025) 921–926
+1877-0509 © 2025 The Authors. Published by Elsevier B.V.
+This is an open access article under the CC BY-NC-ND license (https://creativecommons.org/licenses/by-nc-nd/4.0)
+Peer review under the responsibility of the scientific committee of the Program Chairs
+10.1016/j.procs.2025.03.118
+Keywords: Precision Agriculture; UAV Imagery; YOLO; Vision Transformers; DeiT; Edge Deployment; Plant Disease Classification; Stress
+Detection; Data Augmentation; Interpretability; Deep Learning Models; Aerial Monitoring; Multimodal Pipeline; Object Detection; Large
+Language Models (LLMs)
+∗Corresponding author.
+E-mail address: 21nao3@queensu.ca
+The 8th International Conference on Emerging Data and Industry (EDI40),
+April 22-24, 2025, Patras, Greece
+A Multimodal UAV-Based Pipeline for Precision Agriculture:
+Aerial Stress Detection with YOLO and High-Fidelity Disease
+Classification Using DeiT
+Naser Al-Obeidata,*, Zimo Lia
+aDepartment of Electrical and Computer Engineering, Queen’s University, 99 University Ave, Kingston K7L 3N6, Canada
+Abstract
+Precision agriculture requires scalable, accurate monitoring solutions to bridge the gap from macro-level field awareness down to
+leaf-level diagnostics. This paper presents a novel multimodal pipeline that integrates Unmanned Aerial Vehicle (UAV) imagery
+with advanced deep-learning models, achieving broad-spectrum stress detection and fine-grained disease classification. A CNN
+initially established a foundational accuracy but struggled to capture the subtle signatures of different diseases. Switching to Vision
+Transformers (ViTs) improved performance, yet computational overhead and data requirements posed challenges. Later, we moved
+to DeiT with extensive hyperparameter tuning and data augmentations that gave an astonishing 99.45% accuracy on the multi-class
+plant disease dataset. To complement the close-up acumen of DeiT, we used YOLO from an aerial view to rapidly identify stressed
+versus healthy crop regions from real-time UAV footage. This two-tiered approach, wherein YOLO is used for aerial scanning and
+DeiT for leaf-level diagnoses, offers an unprecedented level of precision with scalability. Finally, complex output is translated by
+an LLM into farmer-friendly advisories to ensure immediate actionable insights. Our integrated framework sets a new benchmark
+in UAV-driven precision agriculture by balancing model sophistication, computational feasibility, and end-user interpretability.
+© 2025 The Authors. Published by Elsevier B.V.
+This is an open access article under the CC BY-NC-ND license (https://creativecommons.org/licenses/by-nc-nd/4.0)
+Peer review under the responsibility of the scientific committee of the Program Chairs
+922
+Naser Al-Obeidat  et al. / Procedia Computer Science 257 (2025) 921–926
+1. Introduction
+Agriculture is the backbone of food security at a global scale; however, it is increasingly facing challenges in terms
+of increased demand, climate change, and resource constraints. Traditional methods of crop monitoring, such as man-
+ual inspections, are not only labor-intensive and time-consuming but also lack the precision and scalability required
+to address these challenges effectively. The advent of unmanned aerial vehicles together with efficient, advanced ma-
+chine learning models enables a new frontier in precision agriculture through efficient, accurate, and large-scale crop
+monitoring.
+This paper introduces a multimodal pipeline that leverages UAV imagery with state-of-the-art deep-learning models
+in tackling the dual tasks of broad-spectrum stress detection and fine-grained disease classification. It uses YOLO V8
+for detecting aerial stresses and Data-Efficient Image Transformers (DeiT) for high-fidelity disease classification at
+the leaf level, which results in a holistic system that is balanced for scalability, accuracy, and computational efficiency.
+More importantly, LLM translation of technical output into actionable insight for the farmer bridges high technology
+with practical applicability.
+This paper is divided into five major sections, giving an all-inclusive overview of our work. The section of Related
+Work reviews current approaches to precision agriculture, including both the application of UAV imagery and deep
+learning models. We discuss the strengths and limitations of prior works, establishing the need for a unified pipeline
+that integrates the aerial and close-up perspectives. The Methodology section elaborates in detail on the datasets, pre-
+processing techniques, and model architectures in our system. We have elaborated on the training processes involved
+with YOLO V8 and DeiT, with particular emphasis on hyperparameter tuning and data augmentation techniques for
+which their performances were significantly improved.
+In the Results section, the performance metrics used to quantify the developed pipeline of the proposed model
+include accuracy, mean average precision, and computational efficiency, among others. This will depict the overall
+performance regarding aerial stress detection and leaf-level disease classification. A general discussion is presented,
+showing such results’ analysis by underlining the strengths of this approach in a multimodal pipeline, considering
+such practical limitations as partially overlapping regions within crops and processing. Finally, the section entitled
+”Conclusion and Future Work” summarizes our contributions and gives directions for future work: deployment on
+edge devices, multi-temporal analysis of dynamic crop monitoring, and further optimization for scalability.
+The aim is to set a new benchmark in the domain of UAV-driven precision agriculture and, hence, propose a
+robust, scalable, and user-friendly pipeline concerning pressing modern farming needs. We have presented the power
+of various advanced machine learning models integrated with UAV imagery to present its strength in transforming the
+agriculture landscape using this structured approach.
+2. Related Work
+2.1. UAV-Based Crop Monitoring
+UAV imagery has dramatically improved farm surveillance, enabling real-time, large-scale assessments. Early
+approaches often relied on vegetation indices, such as the Normalized Difference Vegetation Index (NDVI), which
+provide useful insights into crop health but lack the granularity needed for detailed disease diagnostics [1]. Recent
+advances in deep learning and computer vision have enhanced UAV-based crop monitoring capabilities by allowing
+pixel-level segmentation and object detection in agricultural contexts [2].
+2.2. Deep Learning in Plant Pathology
+Kamilaris and Prenafeta-Bold´u [3] discussed that although CNNs perform excellently for plant disease classifica-
+tion, their capabilities are restricted to large data sets and UAV imagery due to scalability and high computational
+load. Our hybrid approach DeiT uses self-attention mechanisms, which efficiently model global or field-level patterns
+with much reduced typical heavy computation associated with Transformers; thus, making the feasibility of DeiT for
+UAV datasets possible.
+Naser Al-Obeidat  et al. / Procedia Computer Science 257 (2025) 921–926
+923
+2.3. Data-Efficient Transformers (DeiT)
+Dosovitsky et al. [4] proposed the Vision Transformers, which, while performing remarkably well on large-scale
+data, have a very high computational cost and are impractical for real-world use. DeiT [5] by Touvron et al. is a
+data-efficient variant of ViTs that achieves performance parity while having much lower computational costs. While
+Dosovitsky et al. had originally presented their work in the context of general-purpose vision, our adaptation Naser
+Al-Obeidat, Zimo Li / Procedia Computer Science 00 (2019) 000–000 3 is fine-tuned for precision agriculture in view
+of its effectiveness in processing images from UAVs to identify stress and diseases.
+2.4. Aerial Object Detection with YOLO
+Reis et al. [6] demonstrated the utility of YOLO V8 for real-time UAV-based object detection, achieving 95%
+accuracy, but focused primarily on object localization, such as identifying plant rows or sections, rather than disease
+classification. Our approach extends Reis et al.’s work by combining YOLO V8 with DeiT and CNNs. YOLO is
+used for real-time object detection, focusing on plant-level health status, while DeiT and CNNs specialize in disease
+classification. Diverse complementary datasets, such as Plant Disease Identification and Plant Health Tracker, are used
+to further train these models for both close-up and field-level imagery.
+2.5. Interpretability via LLMs
+This is also where Large Language Models (LLMs) in GPT-based architectures [7], have helped generate end-
+friendly advisories from complex technical outputs. Integrating LLMs with computer vision pipelines allows the
+derivation of actionable insights for non-expert users, closing the gap from advanced analytics to practical applica-
+tions.
+Existing research highlights the transformative potential of UAV imagery and deep learning in precision agricul-
+ture. Kamilaris and Prenafeta-Boldu (2018) demonstrated the effectiveness of CNNs for plant disease classification
+but noted challenges with large datasets and UAV scalability. Reis et al. (2023) showcased YOLO V8’s real-time
+object detection capabilities for UAV imagery, achieving high accuracy in identifying plant rows but lacking disease-
+specific analysis. While Vision Transformers (ViTs) introduced by Dosovitskiy et al. (2020) offered global attention
+mechanisms for improved image classification, their high computational requirements make them impractical for field
+applications. DeiT, a data-efficient ViT variant, addresses these challenges but has yet to be applied comprehensively
+in agriculture. My work combines these advancements into a unified pipeline that leverages YOLO V8 for macro-level
+stress detection and DeiT for fine-grained disease classification. By integrating CNNs and data augmentation strate-
+gies, the pipeline bridges scalability and computational efficiency gaps, while incorporating Large Language Models
+(LLMs) ensures actionable insights for end-users, setting a new benchmark in UAV-driven precision agriculture.
+Table 1: Comparison of Different Studies and Our Work.
+Study
+Model
+Dataset
+Accuracy
+Limitations
+Kamilaris & Prenafeta-Bold´u
+CNNs
+PlantDiseaseDB
+89%
+Limited scalability due to
+dataset constraints
+Reis et al.
+YOLO V8
+UAV Imagery
+95%
+Focused on a narrow range
+of diseases, limiting broader
+applicability
+Dosovitskiy et al.
+ViTs
+ImageNet
+88%
+High
+computational
+de-
+mands
+hinder
+practical
+deployment
+Our Work
+ResNet-18, DeiT, YOLO V8/V11
+Kaggle [8] and Roboflow Plant Health Tracker Dataset [9]
+DeiT: Accuracy 99.45%,
+YOLO: mAP 95.4%,
+Precision: 93.2%,
+Recall: 91.8%
+Comprehensive
+approach
+integrating multiple models
+and
+diverse
+datasets
+for
+enhanced performance
+924
+Naser Al-Obeidat  et al. / Procedia Computer Science 257 (2025) 921–926
+3. Methodology
+Our proposed pipeline operates in two distinct levels: phases—macro-level stress detection and micro-level disease
+classification—followed by an interpretability layer.
+3.1. UAV Imagery and YOLO-Based Stress Detection
+A UAV (DJI Mavic Mini 2 SE) collects high-resolution images of cornfields. YOLO (we tested the YOLOv8 and
+YOLOv11 variants) processes these images, classifying the field areas as ’stressed’ or ’healthy’. By incorporating
+enhancements such as Feature Pyramid Network (FPN) and Path Aggregation Network (PAN), YOLO provides great
+detection across different scales and light conditions. The result is a set of geolocated hotspots requiring further
+scrutiny, dramatically reducing the field area needing detailed examination.
+3.2. Close-Up Disease Analysis: From CNN to DeiT
+For each stressed hot spot, close-up images of leaves are captured and passed through the disease classification
+models. Initially, we deployed a ResNet-18 CNN that achieved 86% accuracy. Introducing a baseline ViT improved
+accuracy to 88%, confirming that global attention captures subtle disease cues about diseases that often get missed
+by CNNs.
+(a) Loss plot for Deit
+(b) Loss plot for Resnet18 (CNN)
+Fig. 1: Comparison of Loss Plots
+Yet, the computational demands of ViT were very high. To balance efficiency and accuracy, we employed DeiT.
+We conducted extensive hyperparameter tuning: learning rates from 0.0001 to 0.00005, batch sizes from 16 to 64, and
+weight decay parameters were tuned for better performance. A key innovation was the use of advanced data augmen-
+tations: ±30◦rotations, brightness and contrast shifts, and scaling transformations. These augmentations introduce
+realistic variability and enable DeiT to learn robust representations which generalize across diverse field conditions.
+Careful optimization resulted in DeiT attaining an extremely high accuracy of 99.45% on the multi-class Kag-
+gle plant disease dataset with more than 87,000 images. The intrinsically data-efficient architecture of DeiT, along
+with these refinements, kept computational overhead low enough for on-farm servers or even mobile processing
+units—crucial for immediate interventions and rapid feedback loops.
+3.3. UAV Autonomous Flight and Video Transmission Bridge
+Manual control of UAVs for field coverage is both challenging and inefficient. To address this, we integrated
+various ROS packages with the DJI SDK to enable autonomous flight. This system ensures complete coverage of
+the designated area, significantly improving operational efficiency and reliability. One notable challenge was the lack
+of a native HDMI video output on the DJI Mavic Mini 2 SE, a common limitation among entry-level, cost-effective
+Naser Al-Obeidat  et al. / Procedia Computer Science 257 (2025) 921–926
+925
+drones. This restriction posed a significant obstacle to real-time video processing. To resolve this, we developed a
+local RTMP server to decode the drone’s video stream. The decoded video is seamlessly integrated into our program,
+enabling advanced data processing and analysis. This approach not only enables real-time streaming with low-cost
+drones but also reduces video delay to a consistent 2-second latency, a level of performance that surpasses most online
+streaming services.
+DJI MAVIC MINI 2
+Camera
+DJI controller
+Video feed
+Video feed
+RTMP
+Fig. 2: System Data Stream Diagram Showcasing System Workflow
+3.4. LLM Integration for Actionable Insights
+We aggregate the macro-level results, such as stressed area coordinates from YOLO and disease classifications
+from DeiT, into a structured report. A fine-tuned LLM on agronomic literature interprets this report to produce farmer-
+friendly recommendations. Whether advising on targeted fungicide treatments, suggesting irrigation adjustments, or
+recommending crop rotations, the LLM ensures that technical findings translate into tangible improvements in farm
+management.
+4. Results and Discussion
+4.1. Performance Evaluation
+The following models are a comparison of performance to classify the stressed and healthy state of crops. Notable
+improvements have been achieved by using advanced architectures and techniques.
+• CNN Baseline (Accuracy: 86%) The convolutional neural network (CNN) provided a foundational bench-
+mark. Though good for detecting general patterns, it lacks the ability to capture those subtle features indicative
+of specific diseases.
+• Standard Vision Transformer (ViT, Accuracy: 88%) With the use of global attention mechanisms, ViT is
+able to outdo CNN by capturing more critical fine details. This really says it all about performance leverage
+provided by transformer-based models in handling complex image data sets.
+• Data-Efficient Vision Transformer (DeiT, Accuracy: 99.45%) With optimized hyperparameters and targeted
+augmentation strategies, DeiT had the potential to reach near perfect accuracy, showing its efficiency in lever-
+aging scarce data to perform much better than CNN and standard ViT baselines.
+• YOLO (mAP: 95.4%, Precision: 93.2%, Recall: 91.8%) The YOLO architecture presented a very promising
+result of object detection tasks, achieving a high mean average precision (mAP) of 95.4%. These results validate
+that it’s highly effective for segregating crop conditions as either under stressed or healthy.

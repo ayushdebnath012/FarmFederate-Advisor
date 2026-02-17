@@ -1,0 +1,352 @@
+Citation: Aggarwal, M.; Khullar, V.;
+Goyal, N.; Gautam, R.; Alblehai, F.;
+Elghatwary, M.; Singh, A. Federated
+Transfer Learning for Rice-Leaf
+Disease Classiﬁcation across
+Multiclient Cross-Silo Datasets.
+Agronomy 2023, 13, 2483. https://
+doi.org/10.3390/agronomy13102483
+Academic Editor: Peng Fu
+Received: 2 September 2023
+Revised: 20 September 2023
+Accepted: 23 September 2023
+Published: 27 September 2023
+Copyright:
+© 2023 by the authors.
+Licensee MDPI, Basel, Switzerland.
+This article is an open access article
+distributed
+under
+the
+terms
+and
+conditions of the Creative Commons
+Attribution (CC BY) license (https://
+creativecommons.org/licenses/by/
+4.0/).
+agronomy
+Article
+Federated Transfer Learning for Rice-Leaf Disease
+Classiﬁcation across Multiclient Cross-Silo Datasets
+Meenakshi Aggarwal 1, Vikas Khullar 1,*
+, Nitin Goyal 2, Rama Gautam 3, Fahad Alblehai 4, Magdy Elghatwary 5
+and Aman Singh 6,7
+1
+Chitkara University Institute of Engineering and Technology, Chitkara University,
+Rajpura 140401, Punjab, India; meenu12283@gmail.com
+2
+Department of Computer Science and Engineering, School of Engineering and Technology, Central University
+of Haryana, Mahendragarh 123031, Haryana, India; er.nitin29@ieee.org
+3
+Department of Electronics and Communication Engineering, University Institute of Engineering and
+Technology, Kurukshetra University, Kurukshetra 123031, Haryana, India; ramagautam11dec@gmail.com
+4
+Computer Science Department, Community College, King Saud University, Riyadh 11437, Saudi Arabia;
+falblehi@ksu.edu.sa
+5
+Biomedical Technology Department, College of Applied Medical Sciences, King Saud University,
+Riyadh 12372, Saudi Arabia; melghatwary@ksu.edu.sa
+6
+Engineering Research & Innovation Group, Universidad Europea del Atlántico, C/Isabel Torres 21,
+39011 Santander, Spain; aman.singh@uneatlantico.es
+7
+Department of Engineering, Universidad Internacional Iberoamericana, Arecibo, PR 00613, USA
+*
+Correspondence: vikas.khullar@gmail.com
+Abstract: Paddy leaf diseases encompass a range of ailments affecting rice plants’ leaves, arising
+from factors like bacteria, fungi, viruses, and environmental stress. Precision agriculture leverages
+technologies for enhanced crop production, with disease detection being a vital element. Prompt
+identiﬁcation of diseases in paddy leaves is critical for curtailing their propagation and reducing
+crop damage. However, manually diagnosing paddy diseases in regions with vast agricultural areas
+and limited experts proves immensely difﬁcult. The utilization of machine learning (ML) and deep
+learning (DL) for diagnosing diseases in agricultural crops appears to be effective and well-suited
+for widespread application. These ML/DL methods cannot ensure data privacy, as they involve
+sharing training data with a central server, overlooking competitive and regulatory considerations.
+As a solution, federated learning (FL) aims to facilitate decentralized training to tackle the identiﬁed
+limitations of centralized training. This paper utilizes the FL approach for the classiﬁcation of
+rice-leaf diseases. The manuscript presents an effective approach for rice-leaf disease classiﬁcation
+with a federated architecture, ensuring data privacy. We have compiled an unbalanced dataset of
+rice-leaf disease images, categorized into four diseases with their respective image counts: bacterial
+blight (1584), brown spot (1440), blast (1600), and tungro (1308). The proposed method, called
+federated transfer learning (F-TL), maintains privacy for all connected devices using a decentralized
+client-server setup. Both IID (independent and identically distributed) and non-IID datasets were
+utilized for testing the F-TL framework after preprocessing. Initially, we conducted an effectiveness
+analysis of CNN and eight transfer learning models for rice-leaf disease classiﬁcation. Among them,
+MobileNetV2 and EfﬁcientNetB3 outperformed the other transfer-learned models. Subsequently,
+we trained these models using both IID and non-IID datasets in a federated learning environment.
+The framework’s performance was assessed through diverse scenarios, comparing it with traditional
+and federated learning models. The evaluation considered metrics like validation accuracy, loss as
+well as resource utilization such as CPU and RAM. EfﬁcientNetB3 excelled in training, achieving
+99% accuracy with 0.1 loss for both IID and non-IID datasets. MobilenetV2 showed slightly lower
+training accuracy at 98% (IID) and 90% (non-IID) with losses of 0.4 and 0.6, respectively. In evaluation,
+EfﬁcientNetB3 maintained 99% accuracy with 0.1 loss for both datasets, while MobilenetV2 achieved
+90% (IID) and 97% (non-IID) accuracy with losses of 0.6 and 0.2, respectively. Results indicated the
+F-TL framework’s superiority over traditional distributed deep-learning classiﬁers, demonstrating its
+effectiveness in both single and multiclient instances. Notably, the framework’s strengths lie in its
+Agronomy 2023, 13, 2483. https://doi.org/10.3390/agronomy13102483
+https://www.mdpi.com/journal/agronomy
+Agronomy 2023, 13, 2483
+2 of 25
+cost-effectiveness and data-privacy assurance for resource-constrained edge devices, positioning it as
+a valuable alternative for rice-leaf disease classiﬁcation compared to existing tools.
+Keywords: federated learning; transfer learning; resource utilization; IID and non-IID
+1. Introduction
+The agricultural sector plays a vital role in the economic advancement of any country.
+It provides fundamental raw materials, which act as the foundation for numerous industries.
+The production of agriculture is signiﬁcantly impacted by rice, a crop that is grown all
+over the world. Over 50% of the global population, mainly in Asia, Africa, and America,
+relies primarily on rice as a food source. It provides about 13% of the protein consumed
+per person daily and about 20% of the daily caloric intake. Sadly, pests and diseases cause
+signiﬁcant losses in the rice harvest for farmers every year, with an estimated average
+loss of 37%. It is cultivated in more than a hundred nations around the world, with an
+annual harvest that covers about 158 million hectares and yields about 700 million tons of
+rice [1]. Asia outperforms other continents in terms of rice cultivation, producing most of
+the world’s supply.
+Several methods and strategies are available to address the challenges posed by rice
+diseases. These include implementing effective equipment and ﬁeld cleaning practices
+between growing seasons, adopting disease-resistant seed varieties obtained from clean
+sources, employing appropriate fertilization techniques, promoting the presence of natural
+predators to control pests, ensuring proper grain storage, and judiciously using insecti-
+cides [2]. Out of the strategies outlined, many are categorized as preventative measures.
+However, the utilization of insecticides is a critical and immediate requirement to address
+rice-leaf diseases. It is important to note that various types of rice-leaf diseases exist, and
+each speciﬁc disease necessitates a distinct type of insecticide for effective eradication.
+Hence, the choice of insecticides should be tailored to the speciﬁc rice-leaf disease at hand,
+initiating treatment with the relevant insecticide for the majority of rice-leaf diseases en-
+countered in paddy ﬁelds [3]. Subsequently, a rotation of insecticides is implemented,
+switching to suitable options for different rice-leaf diseases present in the ﬁeld. The du-
+ration of this process can vary, contingent on the number and severity of rice-leaf disease
+types. This situation is projected to ameliorate with the advancement of precision agricul-
+ture techniques, allowing for the real-time monitoring of rice-leaf diseases and the precise
+application of appropriate insecticides, therefore streamlining the treatment process [4].
+To address this constraint, Artiﬁcial Intelligence (AI) methods enable the creation
+of smart applications designed to assist in the diagnosis of crop diseases [5]. Machine-
+learning (ML) approaches, particularly supervised learning, necessitate access to data both
+centrally and locally during the training process [6]. Nonetheless, computing and storage
+assets are distributed across various geographical areas, prompting organizations to adopt
+distributed training methods to leverage these resources effectively. Nevertheless, the
+presence of diverse and dispersed computing resources gives rise to concerns regarding
+privacy and security. As a solution, the concept of (FL) has emerged, presenting a method to
+harness the capabilities of distributed resources through collaborative training of a shared
+machine model. FL has already demonstrated its potential in various domains, including
+but not limited to medicine [7], industrial engineering [8], and mobile devices [9] in recent
+practical implementations. This study illuminates the viability of federated learning (FL)
+as an appropriate strategy for distributed machine learning within the realm of rice-leaf
+diseases. The research emphasizes the utilization and assessment of FL in the context
+of diagnosing ailments in rice leaves, leveraging transfer learning (TL), and adopting a
+centralized learning framework, which necessitates the data’s central presence on a server
+for training purposes. In the FL methodology, data dispersal across training clients is
+possible, operating in a distributed and asynchronous manner to construct a central model.
+Agronomy 2023, 13, 2483
+3 of 25
+The proposed work focuses on the classiﬁcation of diseases in rice leaves, which could
+provide valuable assistance to farmers and agricultural researchers in the identiﬁcation of
+crops. The main contributions of this paper are:
+i.
+Implementing a federated transfer learning approach for rice-leaf disease classiﬁca-
+tion;
+ii.
+Implementing an enhanced distributed training approach through federated learn-
+ing, involving both IID and Non-IID datasets;
+iii.
+The proposed method has shown its efﬁcacy while addressing data privacy and
+resource utilization concerns in the classiﬁcation of rice-leaf diseases.
+The proposed federated transfer learning technology shows immense potential for
+transforming the agriculture sector. By harnessing data from a variety of sources, including
+farms, agricultural experts, and industry stakeholders, this innovation allows for the cre-
+ation of highly precise and localized predictive models. Farmers stand to gain personalized
+guidance for crop management, pest control, and efﬁcient resource allocation, resulting in
+higher yields and cost savings. Agricultural experts can draw upon the collective knowl-
+edge embedded in the federated model to make data-informed decisions and offer tailored
+advice to farmers. Additionally, stakeholders in the agriculture industry can access valuable
+insights into market trends and supply chain dynamics, facilitating improved planning and
+risk management. Overall, federated transfer learning technology can boost productivity,
+sustainability, and proﬁtability within agriculture, all while upholding the integrity of data
+privacy and security.
+2. Related Study
+Over the years, the ﬁeld of identifying rice-leaf diseases through image analysis has
+witnessed the development of numerous approaches. Petchiammal et al. [10] Introduced
+a visual dataset called Paddy Doctor, designed to detect paddy diseases. The compre-
+hensive dataset comprises 16,225 annotated images of paddy leaves, distributed among
+13 categories encompassing 12 disease types and a category for healthy leaves. The au-
+thors subsequently employed this dataset to conduct the classiﬁcation of rice-leaf diseases
+with Convolutional Neural Network (CNN) as well as with VGG16, ResNet34, Xcep-
+tion, MobileNet, and four transfer learning models and achieved the highest F1-score
+value, i.e., 97.50%. Sudhesh et al. [11] introduced a method for identifying rice-leaf dis-
+eases, which leverages a combination of the Dynamic Mode Decomposition technique
+and an attention-driven preprocessing approach. Their study focuses on four distinct
+classes of rice-leaf diseases, speciﬁcally bacterial blight, blast, brown spot, and tungro,
+encompassing a total dataset of 3416 images. The authors proceed to employ ten distinct
+transfer-learned deep Convolutional Neural Network (CNN) models, integrating them
+with three machine-learning classiﬁers for disease classiﬁcation. Their analysis concludes
+that the XceptionNet model achieves the highest accuracy, notably 94.33%, surpassing the
+performance of other transfer-learned models. Haruna et al. [12] developed a specialized
+model called StyleGAN2-ADA, which stands for Style-Generative Adversarial Network
+Adaptive Discriminator Augmentation. This model was designed to detect diseases in rice
+leaves.
+Patil et al. [13] introduced an innovative AI model for grading rice, which employs an
+enhanced strategy employing the faster-region-based convolutional neural network (FR-
+CNN). This method is utilized to accurately determine the sizes of individual leaf instances
+and identify regions affected by infections. The model’s effectiveness was evaluated in
+comparison to other CNN architectures. The backbone of the system, the EfﬁcientNet-
+B0 architecture, was chosen due to its exceptional accuracy performance, achieving an
+impressive accuracy rate of 96.43%. Furthermore, Patil et al. [14] introduced an innovative
+multimodel approach called Rice-Fusion to effectively diagnose rice diseases. This method
+involved combining data from two distinct sources: agro-meteorological sensors and a
+camera. By extracting numerical characteristics from the agro-meteorological sensor data,
+and visual attributes from images of the rice, they achieved an impressive testing accuracy
+Agronomy 2023, 13, 2483
+4 of 25
+of 95.31% using the Rice-Fusion framework. In comparison, other approaches that relied
+solely on a single source of data achieved lower accuracies: 82.03% using a Convolutional
+Neural Network (CNN) and 91.25% using a Multi-Layer Perceptron (MLP) architecture.
+This showcases the superior performance of the Rice-Fusion method in diagnosing rice
+diseases. Salamai et al. [15] have presented a lesion-aware visual transformer approach
+designed to enhance the precise and dependable detection of paddy leaf diseases. This
+innovative method focuses on identifying distinct lesion features that play a crucial role
+in the process. They have introduced a novel network for multi-scale contextual feature
+extraction, which effectively captures both local and global contextual representations of
+disease-related features across various scales and channels. Remarkably, their approach
+achieved remarkable results, attaining an accuracy of 98.74% along with an impressive F1-
+score of 98.18%. Gulzar et al. [16] employed ﬁve deep-learning models, including AlexNet,
+VGG16, InceptionV3, MobileNetV3, and EfﬁcientNet, for the classiﬁcation of sunﬂower
+disease detection. Their ﬁndings revealed that the EfﬁcientNetB3 model achieved the high-
+est accuracy, reaching 97.9%. Mamat et al. [17] implement an automatic image annotation
+system to classify the ripeness of oil palm fruit. The approach utilizes deep learning in
+combination with the You Only Look Once (YOLO) algorithm. The mean Average Precision
+(mAP) achieved for oil palm fruit classiﬁcation was 98.7%, while for other fruit, it reached
+99.5%. The proposed technique effectively and accurately annotated a substantial number
+of images.
+All the aforementioned research endeavors employed traditional machine-learning
+methodologies, wherein an aggregated server or computing device handled both the
+storage of data and the training of the model. Consequently, the requirement emerged for
+all data to be centralized before commencing the training process. Traditional ML methods
+necessitate a model designed to learn from an extensive set of training samples, a task that
+can prove challenging at times due to privacy concerns that hinder the collection of such
+data [18], However, in the FL framework, models undergo individual training on local
+sites, and updated weights are subsequently transmitted to a central server for aggregation.
+As a consequence, the central server remains unaware of raw data, solely receiving model
+characteristics such as parameters, gradients, and weights [19].
+Antico et al. [20] presented a study showcasing how FL effectively addresses chal-
+lenges while also emphasizing the obstacles that demand attention. Their research involved
+the implementation of a federated learning framework utilizing ﬁve Convolutional Neural
+Network (CNN) models. This framework was employed to accurately identify diseases
+affecting Maize crops, all while maintaining data privacy across varied domains. Kabala
+et al. [21] delved into the utilization of federated learning (FL) for the categorization of
+crop diseases through image analysis. They devised and examined Convolutional Neu-
+ral Network (CNN) models that incorporated attention mechanisms, including vision
+transformers, within a federated learning framework, leveraging an accessible plantvil-
+lage dataset platform, they determined that ResNet50 exhibited superior performance
+in multiple experiments compared to alternative models. Additionally, ResNet50 was
+identiﬁed as an ideal and well-suited choice within the context of a federated learning
+scenario. Khullar and Singh. [22] Presented a federated framework termed f-FNC, aimed at
+classifying fake news. This framework functions using a decentralized client-server struc-
+ture, emphasizing the privacy of data for all interconnected clients or edge devices. The
+methodology involves the application of LSTM, BiLSTM, CNN-LSTM, and CNN-BiLSTM
+DL algorithms. These algorithms were employed on datasets exhibiting both IID and
+non-IID characteristics. Through the adoption of a multiclient FL approach, the framework
+achieved notable accuracy, ranging between 90% and 92%, for the classiﬁcation of fake
+news. Table 1 demonstrates the comparative study for rice-leaf disease image classiﬁcation
+using ML, DL, and FL techniques.
+Agronomy 2023, 13, 2483
+5 of 25
+Table 1. Comparative analysis of related technique.
+Reference
+Study Area
+Approach Used
+Training Place
+Accuracy
+Privacy Support
+[10]
+Rice Diseases
+DL
+Centralized
+F1-Score = 97.50%
+No
+[11]
+Rice Diseases
+DL
+Centralized
+Accuracy = 94.3%
+No
+[12]
+Rice Diseases
+DL
+Centralized
+mean Average Precision
+(mAP) = 0.93% and
+0.91%
+No
+[13]
+Rice Diseases
+DL
+Centralized
+Accuracy = 96.4%
+NO
+[14]
+Rice Diseases
+DL
+Centralized
+Accuracy = 95.3%
+NO
+[15]
+Rice Diseases
+DL
+Centralized
+Accuracy = 98.7%
+NO
+[16]
+Sunﬂower
+Diseases
+DL
+Centralized
+Accuracy = 97/9%
+NO
+[17]
+Oil Palm Fruit
+Ripeness
+DL
+Centralized
+mean Average Precision
+(mAP) = 98.7%
+NO
+[20]
+Maize Diseases
+FL
+Distributed
+Accuracy = 96.87%
+YES
+3. Methods and Materials
+The conventional machine-learning technique collected and processed the data in
+a centralized manner for rice-leaf disease prediction. The process involves gathering a
+dataset of rice-leaf images, where each image is labeled with the corresponding disease
+category.
+The centralized nature of data collection and processing is the major disadvantage
+of conventional machine-learning techniques [23]. Federated learning can mitigate this
+issue by allowing models to be trained on data distributed across multiple clients or data
+sources. This distributed nature enables a more diverse and representative dataset to be
+used for training, as each client may have its own unique data distribution. By aggre-
+gating the model updates from multiple clients, federated learning can capture a more
+comprehensive understanding of the underlying data distribution and improve the model’s
+generalization performance [24]. This section describes the techniques and computational
+processes utilized in the research study. The F-TL framework, as proposed, comprises three
+primary steps: (1) Data preprocessing involves resizing images to a 75 × 75 dimension and
+converting them to grayscale. (2) Model training and analysis encompass the utilization of
+CNN and eight transfer learning models, including DenseNet201, EfﬁcientNetB3, Incep-
+tionNetResNetV2, MobileNetV2, VGG16, VGG19, Xception, and ResNet152V2, to identify
+the best-performing model. (3) The implementation of the federated learning approach
+with both IID and non-IID datasets is executed to address concerns related to data privacy
+and computational resource usage. The steps followed in the proposed approach is shown
+in Figure 1. The paper introduces a federated transfer learning framework designed to
+tackle concerns regarding data privacy and resource utilization in rice-leaf diseases image
+classiﬁcation.
+3.1. Federated Learning
+FL is an ML approach that permits the training of a shared model through multiple
+decentralized devices or servers without the need to directly transfer or centralize their data.
+In FL, instead of sending raw data to a central server for the training of the model, training
+occurs directly on the devices or servers at a local level [25]. The models are then updated
+collaboratively by aggregating the locally trained model parameters or gradients. The
+fundamental principle of federated learning is to bring the model training process closer to
+the data sources while preserving data privacy and security. Federated Learning ensures
+data privacy by enabling devices to collectively improve a global model without disclosing
+raw data. Instead of sharing data, it aggregates model updates, and privacy-enhancing

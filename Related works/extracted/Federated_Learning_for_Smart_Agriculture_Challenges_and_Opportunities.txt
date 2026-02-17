@@ -1,0 +1,533 @@
+2024 Third International Conference on Distributed Computing and Electrical Circuits and Electronics (ICDCECE)
+Federated Learning for Smart Agriculture:
+Challenges and Opportunities
+Hari Kishan Kondaveeti
+School of Computer Science and Engineering
+VIT-AP University
+Andhra Pradesh, India
+Guduru Balamanikanta Sai
+School of Computer Science & Engineering
+VIT-AP University
+Andhra Pradesh, India
+Shaik Asneem Athar
+School of Computer Science & Engineering
+VIT-AP University
+Andhra Pradesh, India
+Valli Kumari Vatsavayi
+Department of CS & SE, AUCE(A)
+Andhra University
+Andhra Pradesh, India
+Alakananda Mitra
+Nebraska Water Center
+University of Nebraska-Lincoln
+Lincoln, Nebraska, USA
+Preethi Ananthachari
+AI & BigData Dept
+Endicott College of International Studies
+Woosong University, Daejeon
+South Korea
+Abstract—FL is a machine learning approach that allows
+knowledge sharing with privacy maintenance and cost reduction.
+FL has the potential to revolutionize the smart agriculture sector
+by enabling farmers to train and deploy machine learning models
+on their own devices, without the need to share their data with
+a central server. In this article, we review the applications of
+FL in smart agriculture, such as disease diagnosis and severity
+assessment, the Internet of Agricultural Things (IoAT), and yield
+forecasting. We also highlight the challenges and opportunities
+of using FL for smart agriculture.
+Index Terms—Smart Agriculture, Federated Learning, Dis-
+tributed Learning, Disease Detection, Severity Assessment, Yield
+Forecasting.
+I. INTRODUCTION
+Smart agriculture refers to smart and efficient agriculture
+with the use of technologies such as the Internet of Things
+(IoT), sensors, location systems, robots, and artificial intel-
+ligence in farming practices [1]. The goal of smart agricul-
+ture is to improve the cost effectiveness and sustainability
+of agriculture while improving crop yields [2] . Machine
+learning (ML) techniques are used to predict crop yield,
+early detection of crop diseases, estimation of crop damage
+by weather parameters such as atmospheric temperature and
+humidity, assessment of disease severity, and detection of
+soil nutrition, water quality management, crop monitoring,
+livestock monitoring, etc. [1]. Researchers have developed
+various solutions based on artificial neural networks (ANN) to
+simplify agricultural tasks. In general, farm data is obtained
+from various sources such as IoT sensors, organizational data
+archives, and users and are then transferred to cloud servers
+where machine learning models are trained. This approach has
+a significant limitation, especially when the training data set
+contains sensitive information, as it poses security threats, and
+this gives rise to concerns about the privacy of the data [3].
+In 2016, Google introduced FL, an emerging approach that
+addresses this limitation by allowing knowledge sharing while
+maintaining privacy and reducing costs [4]. FL allows devices
+to collectively learn a shared model while keeping learning
+data stored on devices, thus separating machine learning
+functionality from the need for centralized data storage [5].
+FL is also beneficial in resource-constrained situations, such
+as mobile devices, IoT devices, or networks with restricted
+bandwidth, because it tries to be both effective and scalable
+[6]. Figure 1 shows the general applications of FL in agricul-
+ture, advantages, challenges and limitations of using FL.
+FL in smart agriculture has revolutionized data storage and
+analysis in the field. Using the power of distributed computing,
+FL allows researchers to train ML models using data from
+multiple sources, such as sensors, drones, and IoT devices,
+without the need to centralize the data. This decentralized
+approach not only ensures data privacy and security, but also
+enables real-time decision-making and optimization of farming
+practices. With FL, farmers can now benefit from the collec-
+tive intelligence of a network of devices, resulting in more
+accurate predictions, improved crop yields, and sustainable
+agricultural practices without compromising data privacy [7].
+This innovative technology has the potential to transform the
+agriculture industry by enabling efficient resource allocation,
+reducing environmental impact, and, ultimately, ensuring food
+security for a growing global population.
+In an FL network, local nodes(end devices) send their
+updated weights to the server, which aggregates these weights
+and sends back the updated model weights for further training
+at the edge nodes. This process continues until convergence
+2024 Third International Conference on Distributed Computing and Electrical Circuits and Electronics (ICDCECE) | 979-8-3503-1860-9/24/$31.00 ©2024 IEEE | DOI: 10.1109/ICDCECE60827.2024.10548604
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 15:52:03 UTC from IEEE Xplore.  Restrictions apply. 
+Federated Learning in Smart Agriculture
+Disease classification
+Disease severity assessment
+Crop classification
+Yield forecasting
+Pest detection
+Intrusion detection
+Crop risk analysis
+Applications
+Privacy preservation
+Distributed processing
+Decentralized data storage
+Reduced communication overheads
+Scalability
+Improved security
+Improved data diversity
+Advantages
+Unreliable model upload
+Heterogeneity
+Privacy concerns
+Security concerns
+Scalability concerns
+Data communication concerns
+Energy efficiency concerns
+Challenges
+Limited control over data quality
+Limited debugging and analysis
+System heterogeneity
+Statistical heterogeneity
+Privacy issues
+Communication
+Energy efficiency
+Limitations
+Fig. 1. Federated Learning in Smart Agriculture
+is achieved [8]. The architecture of FL in smart agriculture is
+depicted in Figure 2. The following steps outline the process.
+1) Various sensors deployed in farms monitor and col-
+lect data related to agriculture such as soil conditions,
+weather, irrigation, light, temperature, positioning, and
+air quality
+2) The collected data is then transmitted to the local
+database
+3) The local sites train their respective model using the data
+in local database
+4) Updates of locally trained models are uploaded to the
+central server
+5) The collected updates from multiple clients aggregated
+using aggregation algorithms such as FedAvg, FedProx
+6) The updated model weights are sent back to the clients
+A. Advantages of FL in smart agriculture
+The utilization of ML in the field of agriculture offers
+numerous benefits, such as the ability to detect crop diseases at
+an early stage, detect intrusions, manage crops, and assess the
+situation and severity of various issues. However, the imple-
+mentation of FL introduces additional advantages over ML,
+such as the preservation of privacy for crop data, reduction
+in communication costs, scalability, increased data diversity
+and many more [7]. Some of the advantages of FL in smart
+agriculture are described in the following subsections.
+1) Privacy Preservation: In the traditional ML approaches,
+there is a concern about privacy as data is exchanged between
+clients and the server. However, FL addresses this issue by
+storing crop data on the device and only transmitting model
+updates to the central server. By keeping the data on the
+device, FL ensures the protection of raw data, reduces the
+chances of data leakage, and ensures secure operations. The FL
+model gathers crop data and stores it exclusively at the edge,
+minimizing the risk of data leakage and ensuring the security
+of operations. Consequently, the data remains preserved.
+2) Distributed Processing: The process of collecting crop
+data and training a model requires significant computational
+resources and time. However, FL offers a solution by enabling
+distributed processing, where training occurs simultaneously
+on multiple edge nodes. This approach helps to save compu-
+tational resources and reduce the time required for training.
+3) Decentralized Data Storage: In contrast to the tradi-
+tional ML approach, FL enables crop data to be stored in
+a distributed manner across multiple devices or servers rather
+than being centralized in a single location. This decentralized
+data storage offers several advantages, including addressing
+privacy and security concerns. Since the data remains on the
+local devices or servers and is not transmitted to a central
+server, the risk of data breaches or unauthorized access to
+sensitive information is reduced. Additionally, FL leads to
+improved scalability and efficiency.
+4) Reduced Communication Overheads: If the clients or
+local servers are located far away from the centralized server,
+transferring data from the local servers to the central server
+becomes challenging. This issue may arise if the local servers
+are in areas without communication lines or if there are fre-
+quent disruptions in the communication lines. Consequently,
+transferring data to the central server becomes problematic. To
+address this, decentralized data storage approach can be used,
+where the model trains at the local servers and then transmits
+the updated weights to the central server. This decentralized
+approach can significantly reduce the cost of data transmission.
+Additionally, to minimize upload times, the communication
+between the clients and the central server is kept to a minimum
+by only exchanging model updates, regardless of the size
+of the dataset. This approach helps to greatly reduce the
+communication costs involved.
+5) Improved Security: The security of crop data is guaran-
+teed as it is exclusively in the possession of the farmers.
+6) Energy Efficient: Significant computational power is
+required when training the model on a central server. In FL,
+models are trained using smaller datasets, which results in
+lower energy and power consumption compared to traditional
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 15:52:03 UTC from IEEE Xplore.  Restrictions apply. 
+CLIENT 1 AT LOCATION 1
+CLIENT 2 AT LOCATION 2
+CLIENT 3 AT LOCATION 3
+CLIENT K AT LOCATION K
+1
+2
+3
+1
+2
+3
+2
+3
+1
+2
+3
+1
+4
+4
+4
+4
+5
+6
+6
+6
+6
+CENTRAL SERVER
+CENTRALIZED MODEL
+Fig. 2. The architecture of FL in smart agriculture
+ML methods. As a result, devices with limited computational
+power, such as mobile phones, can effectively perform the
+model training.
+7) Continuous Learning: In certain cases, the data that
+is received is in analog form rather than being discrete.
+Continuous learning facilitates the process of learning from the
+continuous flow of data, enabling adaptation to environmental
+changes and enhancing real-time performance.
+8) Collaborative Learning: The approach known as collab-
+orative learning involves training multiple classifier heads of
+the same network on the same training data simultaneously.
+This is done to enhance generalization and increase resistance
+to label noise, all without incurring any additional inference
+cost. Another term used to describe this approach is FL, as it
+involves using multiple sources to individually train the model
+and then combining them into a single model. This helps to
+improve accuracy and decrease the training time required for
+the model.
+9) Scalability: Federated learning enables the storage of
+datasets in various locations and the concurrent training of
+models. This speeds up the deployment of AI and IoT models
+and enhances operational scalability spatially.
+10) Improved Data Diversity: In the agricultural sector,
+FL algorithms are utilized to train models using data from
+various crops situated in different geographical regions. This
+approach leads to the creation of comprehensive models as
+the dataset consists of crops with diverse characteristics such
+as humidity, pest infestation, heavy metal content, and crop
+fertility. Consequently, the models developed through this
+method exhibit enhanced capacity to effectively handle new
+data, accommodate variations, and mitigate bias.
+II. LITERATURE REVIEW
+A. Disease Classification
+Mehta et al. [9] used a lightweight convolutional neural
+network model to identify and categorize mango leaf diseases.
+The effectiveness of this lightweight model was evaluated in
+four different clients and five disease categories, including
+healthy, anthracnose, powdery mildew, leaf spot, and leaf curl.
+The researchers achieved a detection accuracy of 98% for these
+particular diseases. Table I presents a comparative analysis of
+existing studies.
+In a study by Aggarwal et al. [6], the EfficientNetB3 model
+was used to detect rice diseases. The data set consisted of
+5,932 images from rice fields in Odisha, India, as well as
+an agricultural and insect pest image database. The model
+achieved an accuracy of 99.79% for IID data and 97.48% for
+non-IID data.
+The classification of pear disease was performed by Dock-
+endorf et al. [17]. The authors integrated FL for training the
+various CNNs in TinyML devices and benchmarked different
+CNNs.
+B. Disease Severity Assessment
+Mehta et al. [11] used MobileNet to identify apple leaf
+disease and assess its severity levels. They examined the
+effectiveness of the model in four different categories of
+severity: healthy, mild, moderate, and severe. The focus was on
+two classes of specific diseases, namely apple scab, marsonina
+coronoria, and Alternaria leaf blotch. The researchers achieved
+a remarkable accuracy of 99.2% in detecting these diseases.
+C. Crop Classification
+Idoje et al [8] utilized Hyper tuned Federated averaging
+models for crop classification. The main objective of the study
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 15:52:03 UTC from IEEE Xplore.  Restrictions apply. 
+TABLE I
+COMPARATIVE ANALYSIS OF EXISTING STUDIES
+Reference
+Type of problem
+Models
+Accuracy
+Number of
+clients
+[9]
+Disease detection
+Lightweighted CNN
+98%
+4
+[10]
+Disease detection
+Vector machines, K-nearest
+neighbors, Random forest,
+Logistic regression, MobileNet
+99.20%
+-
+[11]
+Disease detection
+Vector machines,
+Linear,quadratic,
+Cubic regresion, Resnet
+94.7
+-
+[12]
+Disease detection
+Resnet-101
+90.27
+6
+[6]
+Disease detection
+EfficientNetB3
+99.79
+10
+[8]
+Crop classification
+Naive bayes, Classifier chain
+91(doubt)
+-
+[13]
+Yield prediction
+LASSO, Random forest,
+Resnet-16, Resnet-28
+99.95
+3
+[14]
+Intrusion detection system
+FedACNN
+99.76
+-
+[4]
+Intrusion detection system
+DNN,CNN and RNN
+98.54
+5,10,15
+[15]
+Intrusion detection system
+IDSFNET
+95.41
+5,10,15
+[16]
+Pest detection with UAV
+EfficientnetB3
+99.55
+-
+was to predict chickpea crops in the presence of Rice and
+Maize crops. The results showed that the model achieved an
+accuracy of 91%.
+D. UAV for Pest Detection
+Khan et al. [16] employed FL-based unmanned aerial ve-
+hicles (UAVs) to classify various pests. They used an Effi-
+cientNet B03 for classification and detection purposes and
+compared the results with other models such as ANN, SVM,
+KNN and Naive Bayes. The CNN model demonstrated the
+highest accuracy of 99.55%.
+Deng et al. [12] utilized a faster R-CNN to detect orchard
+pests. They employed the Online Hard Example Mining
+(OHEM) network training method to improve detection ac-
+curacy. The experimental findings indicated that the improved
+model achieved an accuracy of 90.27% for the detection of
+multiple pests.
+E. Intrusion Detection System
+Man et al [14] proposed an intelligent intrusion detection
+system using edge-assisted IoT. They utilized the Federated
+Attention Convolution Neural Network (FedACNN) and eval-
+uated their model using the NSL-KDD dataset. The model
+achieved an accuracy of 99.76%. Compared to the Federated
+Average (FedAVG) model, the number of communication
+rounds was reduced to 50%.
+Friha et al. [4] conducted a study on the performance of
+the Intrusion Detection System (IDS) using three different
+data sets. CSE-CIC-IDS2018, MQTTset, and InSDN. They
+experimented with three deep learning classifiers: deep neu-
+ral networks (DNN), recurrent neural networks (RNN), and
+convolutional neural networks (CNN). The FL-based Intrusion
+Detection System (FELIDS) using a DNN model achieved an
+accuracy of 98.54% with the dataset collected from InSDN,
+outperforming other systems..
+Zainuddin et al. [15] developed and evaluated the per-
+formance of a lightweight DNN model called IDSFedNet
+on the InSDN and Edge-IIoTset datasets. Their framework
+utilized the Chi-square and Pearson correlation coefficients to
+reduce the complexity of the model and improve performance.
+The model outperformed existing FL-based intrusion detection
+models, achieving accuracies of 90.83% for the InSDN dataset
+and 95.41% for the Edge-IIoTset dataset.
+F. Yield Forecasting
+Manoj et al. [13] used a deep residual network to predict
+the soybean yield. They evaluated the performance of this
+model by comparing it with other learning models, namely
+LASSO, Random Forest, and Resnet-28. The results obtained
+demonstrated an accuracy of 99.95%.
+G. Crop Risk Analysis
+Yu et al. [18] introduced a risk-entropy model that uses
+FL. This model assesses the risk associated with crops, con-
+sidering various factors such as policy, economic conditions,
+knowledge and information, infrastructure, cultural aspects,
+access to food, climate conditions, and social challenges. This
+model quantitatively describes the level of risk for agricultural
+products. They tested this model using a dataset of 90,510
+agricultural product samples from 2015 to 2019. To implement
+this model in smart agriculture, three components are neces-
+sary: parties, a manager (server), and a framework. Parties
+refer to the data owners who possess the data, while the
+manager is a device that aggregates local models, performs the
+required computations, and sends back the updated model. To
+facilitate computation, privacy mechanisms, scheduling, and
+frameworks are essential.
+TOOLS
+There are several tools available to implement FL. Some
+popular FL tools include TensorFlow Federated (TFF) [19],
+PySyft [20], IBM Federated Learning Framework [21], [22],
+and Fate framework [23]. These tools provide the libraries
+necessary to enable FL in various agricultural applications.
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 15:52:03 UTC from IEEE Xplore.  Restrictions apply. 
+H. Matlab
+Matlab serves as a valuable tool for analyzing and designing
+systems and products. The use of Matlab for model simula-
+tion is widespread among researchers [24], [25]. It offers a
+wide range of libraries for the execution and construction of
+machine learning algorithms and neural networks. Matlab is
+compatible with most models.
+I. TensorFlow Federated(TFF)
+Google’s TensorFlow offers an API that allows users to
+develop and customize their own models for experimentation.
+TensorFlow Federated (TFF) is an open source framework that
+extends Keras models to enable computation on vertically and
+horizontally distributed data. With TFF, developers can apply
+FL algorithms to their models and data. Keras, on the other
+hand, provides a user-friendly and efficient interface to solve
+machine learning problems.
+J. Fate
+The framework Fate [26] enables secure computation
+through the use of homomorphic encryption and multiparty
+computation, making it widely recognized and popular. It
+offers support for a range of machine learning algorithms,
+including logistic regression, tree-based algorithms, and deep
+learning techniques such as deep learning neural networks and
+transfer learning. Over time, Fate has evolved into various
+branches, each serving different purposes. These branches
+provide a wide array of services, with FATE-cloud offering
+industrial-level Federated Learning cloud services, the Eggroll
+framework facilitating the implementation of machine learning
+models, and the FATE-LLM framework specifically supporting
+FL for large language models (LLMs).
+K. IBM Federated learning
+IBM Federated Learning, which was created by IBM Tech-
+nologies [27], includes supervised, unsupervised, and rein-
+forcement learning. It can work with any neural network
+topology that is compatible with Keras, PyTorch, and Ten-
+sorFlow. Furthermore, it supports Decision Tree ID3, linear
+classifiers, linear regression, linear SVM, ridge regression,
+k-means clustering, and Nave Bayes. It also supports deep
+reinforcement learning models such as DQN, DPPG, PDO,
+and others.
+L. Flower Framework
+Researchers widely adopt the Flower framework because
+of its versatility. It offers both an Android SDK and an iOS
+SDK, making it compatible with a wide range of devices.
+Additionally, Flower can seamlessly integrate with various
+other frameworks, including PyTorch, TensorFlow, Hugging
+Face Transformers, Scikit-Learn, and more.
+M. Pysyft
+PySyft is a widely adopted framework that employs various
+techniques, such as federated learning, differential privacy, and
+encrypted computation, to separate private data from model
+training. Currently, it exclusively supports the deep learning
+libraries PyTorch and TensorFlow. However, starting with
+version 0.7, it will also offer a TensorFlow Federated API.
+We observe the properties of other tools like NVFLARE,
+OpenFL, Fedml, Fedlab, FedJAX, FedTree, etc. in the table
+II.
+III. DISCUSSIONS
+FL enables the devices to collaboratively learn from the
+model while keeping the data to themselves, unlike traditional
+learning, where the data is transferred to the central server. The
+main reason for the need for FL is farmers’ concern about the
+privacy of their crop data. According to the survey conducted
+by the American Farm Bureau Federation, 77% of farmers are
+concerned about the privacy of their data [36].
+We need hardware and software elements to implement Fed-
+erated learning. In the hardware segment, there are three essen-
+tial components: end devices, training devices, and databases.
+Environmental sensors are responsible for monitoring vari-
+ous factors such as soil conditions, humidity, plant health,
+and temperature. Soil sensors are specifically designed to
+monitor pH and metal concentration. While sensors collect
+data, devices process and analyze it based on criteria such
+as the number of features and their complexity. To ensure
+privacy, additional techniques such as privacy encoding and
+homomorphic encryption can be used.
+For low-complexity models with simple characteristics,
+microcontrollers such as Arduino, Raspberry Pi, and mobile
+phones can be utilized. However, clients involved in decen-
+tralized federated learning require more computing power to
+communicate and share model parameters without relying on a
+central server. Training on mobile phones can be challenging.
+Since the model is trained locally, it can be stored on mobile
+phones or any SSDs connected to microcontrollers.
+When it comes to software requirements, we require a
+framework that can run our model, manage the aggregation
+process, and handle a large number of devices, ranging from
+thousands to millions. We have previously discussed several
+frameworks in the previous sections.
+Although Federated Learning shows great potential, there
+exist various challenges and limitations in its implementation,
+as outlined in the following sections.
+A. Communication
+Areas with limited network bandwidth and heterogeneous
+networks, such as remote rural areas where agriculture is the
+main industry, are expected to experience increased communi-
+cation costs, an increased number of communication rounds,
+and reduced latency. However, there is a lack of techniques
+that efficiently support communication by reducing the total
+number of communication rounds and operating effectively in
+areas of high bandwidth [37].
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 15:52:03 UTC from IEEE Xplore.  Restrictions apply. 

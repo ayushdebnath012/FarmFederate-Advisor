@@ -1,0 +1,207 @@
+Article
+Not peer-reviewed version
+Multimodal Large Language Model for
+Intelligent Diagnosis and Management
+of Crop Nutrient Deficiencies and
+Environmental Stresses
+Zihan Long * and Mingrui Rao
+Posted Date: 11 November 2025
+doi: 10.20944/preprints202511.0647.v1
+Keywords: multimodal large language model; agricultural diagnosis; vision-language integration; LoRA Fine-
+tuning; crop health management
+Preprints.org is a free multidisciplinary platform providing preprint service
+that is dedicated to making early versions of research outputs permanently
+available and citable. Preprints posted at Preprints.org appear in Web of
+Science, Crossref, Google Scholar, Scilit, Europe PMC.
+Copyright: This open access article is published under a Creative Commons CC BY 4.0
+license, which permit the free download, distribution, and reuse, provided that the author
+and preprint are cited in any reuse.
+Article
+Multimodal Large Language Model for Intelligent
+Diagnosis and Management of Crop Nutrient
+Deficiencies and Environmental Stresses
+Zihan Long * and Mingrui Rao
+Minia University, Egypt
+*
+Correspondence: 81145076@fci.s-mu.edu.eg
+Abstract
+Crop nutrient deficiencies and environmental stresses pose major challenges to modern agriculture,
+often leading to reduced yields and inefficient management. This study presents AgriHealth-LLM,
+a multimodal intelligent system designed for crop health diagnosis and management. The model
+combines a vision encoder, a modality alignment module, and a language model to analyze crop
+images and farmer queries, enabling precise identification of issues and generation of personalized
+recommendations. A domain-specific dataset, AgriDiagnose-MVD, is constructed to support model
+training, featuring diverse crops, annotated symptoms, and expert-curated question–answer pairs.
+Experimental evaluation shows that AgriHealth-LLM surpasses existing approaches in both diagnostic
+accuracy and quality of management suggestions, demonstrating its potential to support sustainable
+and data-driven agricultural practices.
+Keywords: multimodal large language model; agricultural diagnosis; vision-language integration;
+LoRA Fine-tuning; crop health management
+1. Introduction
+The escalating global population and the pervasive impacts of climate change pose unprece-
+dented challenges to agricultural productivity and food security. Crop health stands as a cornerstone
+for ensuring a stable food supply, yet it is frequently undermined not only by pests and diseases
+but also significantly by crop nutrient deficiencies and environmental stresses such as drought,
+high temperatures, and salinity. These factors are primary contributors to reduced crop yields and
+diminished quality. Traditional methods for diagnosing crop health issues typically rely on expert
+knowledge, time-consuming laboratory analyses, or manual visual inspection. Such approaches are
+often inefficient, labor-intensive, costly, and lack the scalability and precision required for modern,
+large-scale agricultural management [1].
+In recent years, artificial intelligence (AI), particularly large language models (LLMs) and mul-
+timodal large language models (VLMs), has demonstrated remarkable capabilities in areas such as
+image recognition, natural language processing, and human-computer interaction [2]. The emergence
+of generative AI, for instance, has significantly elevated tasks like machine translation [3], while
+advancements in vision representation compression contribute to efficient video generation with
+LLMs [4]. Despite this potential, applying existing general-purpose vision-language models to the
+highly specialized domain of agriculture presents several significant challenges:
+•
+Insufficient Domain Knowledge: Generic models often lack a deep understanding of crop
+physiology, plant nutrition, and environmental science, which are critical for accurate agricultural
+diagnostics.
+•
+Difficulty in Fine-grained Recognition: Symptoms of crop nutrient deficiencies and environ-
+mental stresses can be subtle and often mimic those of other issues, such as diseases, demanding
+highly specialized visual discernment capabilities.
+Preprints.org (www.preprints.org)  |  NOT PEER-REVIEWED  |  Posted: 11 November 2025
+doi:10.20944/preprints202511.0647.v1
+Disclaimer/Publisher’s Note: The statements, opinions, and data contained in all publications are solely those of the individual author(s) and
+contributor(s) and not of MDPI and/or the editor(s). MDPI and/or the editor(s) disclaim responsibility for any injury to people or property resulting
+from any ideas, methods, instructions, or products referred to in the content.
+© 2025 by the author(s). Distributed under a Creative Commons CC BY license.
+2 of 13
+•
+Multimodal Information Integration: Farmers and agricultural technicians typically provide
+multi-modal inputs, combining crop images with textual descriptions (e.g., "Why are the leaves
+turning yellow?"). Existing models struggle to effectively integrate these diverse data sources for
+accurate diagnosis.
+•
+Generation of Professional Advice: Beyond diagnosis, there is a crucial need for models to
+generate professional, actionable, and contextually coherent management recommendations that
+are easily understood and implemented by users.
+Figure 1. Addressing the Challenges in Agricultural AI Diagnosis with AgriHealth-LLM.
+To address these limitations and bridge the existing gaps, this research aims to design and develop a
+specialized multimodal large language model for crop nutrient deficiency and environmental stress,
+facilitating more precise and efficient intelligent diagnosis and management advice, thereby enhancing
+agricultural productivity and sustainability.
+We propose a novel multimodal large language model, termed AgriHealth-LLM, specifically
+engineered to integrate visual and linguistic information for the intelligent identification of crop
+nutrient deficiencies and environmental stresses, and to provide expert management recommendations.
+The core mission of AgriHealth-LLM is to process multimodal inputs, comprising crop images and
+user queries, to first identify the specific type of nutrient deficiency or environmental stress (e.g.,
+nitrogen deficiency, potassium deficiency, drought stress, heat stress). Subsequently, based on the
+identification results and further user inquiries, the model offers personalized, professional, and
+actionable management and prevention advice through a multi-turn conversational interface, drawing
+inspiration from methods for aligning LLMs with implicit user feedback in conversational systems [5].
+The architecture of AgriHealth-LLM mirrors that of advanced VLM structures like VisualGLM [6],
+incorporating three key modules: a Vision Encoder (based on a pre-trained Vision Transformer
+(ViT) [7] adapted for agricultural nuances), a Modality Aligner (inspired by Q-Former [8] to bridge
+visual and linguistic feature spaces), and a Language Model (utilizing ChatGLM-6B [9] for its robust
+Chinese comprehension and generation capabilities). For efficient adaptation to the specialized
+agricultural domain, we employ the Low-Rank Adaptation (LoRA) [10] method for fine-tuning.
+This approach, coupled with research into model and data parallelism optimization methods for
+large language models [11], significantly reduces computational overhead while maintaining high
+performance.
+To validate the efficacy of AgriHealth-LLM, we constructed a custom Chinese agricultural mul-
+timodal dataset called AgriDiagnose-MVD. This dataset focuses exclusively on crop nutrient defi-
+ciencies and environmental stresses, comprising 3,560 color images covering 185 distinct categories
+across 20 common crop types (e.g., rice, corn, wheat, tomato, cucumber). Each image is meticulously
+annotated with detailed descriptions of symptoms and corresponding deficiency/stress types, comple-
+Preprints.org (www.preprints.org)  |  NOT PEER-REVIEWED  |  Posted: 11 November 2025
+doi:10.20944/preprints202511.0647.v1
+© 2025 by the author(s). Distributed under a Creative Commons CC BY license.
+3 of 13
+mented by 3-5 relevant question-answer pairs per image to train the model’s diagnostic and advice
+generation capabilities. Our experiments involved fine-tuning AgriHealth-LLM using LoRA, with a
+learning rate of 0.0001, batch size of 4, and 12,000 training steps, utilizing data augmentation techniques
+for images and standard tokenization for text. The model’s performance was rigorously evaluated
+using Accuracy and F1-Score for identification tasks, and a hybrid approach involving GPT-4 assisted
+evaluation alongside agricultural expert manual scoring for the quality of generated management
+advice, assessing professionalism, accuracy, practicality, and fluency.
+Experimental results demonstrate the superior performance of AgriHealth-LLM compared to
+several mainstream vision-language models, including MiniGPT4 [12], Qwen-VL [13], VisCPM [14],
+and VisualGLM [15]. In the "Nutrient Deficiency Identification" task, AgriHealth-LLM achieved an
+accuracy of 83.5% and an F1-Score of 82.1%, outperforming the closest competitor, VisualGLM, by a
+significant margin. Similarly, for the "Environmental Stress Identification" task, our model reached
+an accuracy of 80.9% and an F1-Score of 79.5%, again setting a new benchmark. Furthermore, in
+the "Question Answering (Comprehensive Management Advice)" task, AgriHealth-LLM attained an
+average score of 87.2 out of 100, as evaluated by GPT-4 and agricultural experts, indicating its excep-
+tional ability to generate professional and practical advice. These results collectively underscore the
+effectiveness and robustness of AgriHealth-LLM in intelligent agricultural diagnosis and management.
+Our primary contributions are summarized as follows:
+•
+We propose AgriHealth-LLM, a novel multimodal large language model specifically tailored
+for the intelligent diagnosis and management of crop nutrient deficiencies and environmental
+stresses, addressing critical challenges in agricultural AI.
+•
+We introduce AgriDiagnose-MVD, a comprehensive, self-curated Chinese agricultural multi-
+modal dataset focusing on fine-grained identification of nutrient deficiencies and environmental
+stresses, which is crucial for training specialized agricultural VLMs.
+•
+We demonstrate that AgriHealth-LLM significantly outperforms existing general-purpose vision-
+language models across various tasks, including nutrient deficiency identification, environmental
+stress identification, and the generation of professional management advice, showcasing its
+potential for real-world agricultural applications.
+1.1. Large Vision-Language Models
+Large Vision-Language Models (LVLMs) draw from diverse fields such as augmented cognition [2].
+Their vision component is enhanced by foundational research in computer vision, including Simul-
+taneous Localization and Mapping (SLAM) for better spatial understanding [16,17]. Principles from
+systems like SurveyMan help engineer robust, structured outputs [18], while models such as Video-
+ChatGPT advance video-based conversational AI [19]. Key research areas include leveraging generative
+imagination [3], vision representation compression for efficiency [4], and multi-teacher distillation [20].
+For multimodal learning, graph-based frameworks like MTAG [21] and continuous-time dynamic
+graphs [22] are significant. Deeper semantic challenges are addressed by research into implicit
+meaning [23]. Studies also investigate the few-shot capabilities of models like CLIP [24], fine-tuning
+for alignment with user feedback [5], and the mechanisms of in-context learning [25]. Efficiency is
+improved through parameter-efficient methods like LN-tuning [26] and parallelism optimization [11].
+Advances in visual and cross-modal understanding stem from improved feature learning [27], mul-
+timodal fusion [28], and novel retrieval techniques [29,30]. Important considerations include ethical
+fairness [31], out-of-distribution robustness [32], and security against backdoor attacks [33]. System
+stability and robustness also draw parallels from control theory [34–36]. Finally, models like the
+Knowledge Augmented Transformer (KAT) focus on integrating external knowledge for tasks such as
+VQA [37].
+Preprints.org (www.preprints.org)  |  NOT PEER-REVIEWED  |  Posted: 11 November 2025
+doi:10.20944/preprints202511.0647.v1
+© 2025 by the author(s). Distributed under a Creative Commons CC BY license.
+4 of 13
+1.2. AI for Crop Health Diagnosis and Management
+Applying AI to crop health benefits from research in other domains, such as using LLMs for
+interpretable decision-making to provide farmers with explainable diagnostics [38]. Advanced NLP
+techniques, including cross-lingual knowledge graph question answering [39], robust text retrieval [40],
+and evidence validation methods [41], can enhance agricultural AI systems’ ability to process diverse
+information. Language understanding benchmarks like CBLUE are vital for adapting NLP models to
+specialized agricultural data [42]. Furthermore, predictive modeling methodologies from other fields,
+such as finance [43], can be adapted for tasks like yield forecasting. Practical deployment relies on
+robust infrastructure, including advanced communication hardware for data transmission [44–46] and
+precise motor control for agricultural robotics [47–49]. Rigorous evaluation is also crucial, drawing from
+benchmarking practices in other fields [50] and multilingual assessments to ensure global applicability
+of generative models for tasks like phenotyping data interpretation [51].
+2. Method
+In this section, we present the details of our proposed multimodal large language model,
+AgriHealth-LLM, designed for the intelligent diagnosis and management of crop nutrient deficien-
+cies and environmental stresses. AgriHealth-LLM aims to effectively integrate visual and linguistic
+information to provide precise identification and actionable agricultural recommendations, thereby
+enhancing agricultural productivity and sustainability.
+Figure 2. Overview of the AgriHealth-LLM architecture for intelligent crop health diagnosis and management. It
+integrates visual and textual inputs through a Vision Encoder, Modality Aligner, and a LoRA fine-tuned Language
+Model to provide precise identification and actionable advice.
+The core mission of AgriHealth-LLM is to process multimodal inputs, which consist of a crop
+image and a user’s textual query. Upon receiving these inputs, the model performs two primary tasks.
+Firstly, for Identification, it discerns the specific type of crop nutrient deficiency or environmental
+stress present, such as nitrogen deficiency, potassium deficiency, drought stress, or heat stress. This
+precise identification is crucial for targeted intervention. Secondly, for Management Recommendation,
+based on the identified issue and any subsequent user inquiries, the model generates personalized,
+professional, and actionable management and prevention advice. This is facilitated through a multi-
+turn conversational interface, allowing for dynamic interaction and refinement of recommendations
+based on user feedback.
+2.1. Model Architecture
+AgriHealth-LLM adopts a modular architecture inspired by advanced vision-language models,
+comprising three interconnected modules: a Vision Encoder, a Modality Aligner, and a Language
+Model. This modular design facilitates robust processing of diverse agricultural data by allowing
+specialized components to handle different data types and then seamlessly integrate their outputs.
+2.1.1. Vision Encoder
+The Vision Encoder is responsible for extracting rich, high-dimensional visual features from
+the input crop images. We utilize a pre-trained Vision Transformer (ViT) as the backbone for this
+module. The ViT is adapted to better capture the subtle visual cues indicative of crop health status,
+Preprints.org (www.preprints.org)  |  NOT PEER-REVIEWED  |  Posted: 11 November 2025
+doi:10.20944/preprints202511.0647.v1
+© 2025 by the author(s). Distributed under a Creative Commons CC BY license.

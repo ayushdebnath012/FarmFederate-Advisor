@@ -1,0 +1,462 @@
+Remote Sensing of Environment 280 (2022) 113198
+Available online 4 August 2022
+0034-4257/© 2022 The Authors. Published by Elsevier Inc. This is an open access article under the CC BY-NC license (http://creativecommons.org/licenses/by-
+nc/4.0/).
+Review 
+Multi-sensor spectral synergies for crop stress detection and monitoring in 
+the optical domain: A review 
+Katja Berger a,b,*, Miriam Machwitz c, Marlena Kycko d, Shawn C. Kefauver e,f, 
+Shari Van Wittenberghe a, Max Gerhards g, Jochem Verrelst a, Clement Atzberger h, 
+Christiaan van der Tol i, Alexander Damm j,k, Uwe Rascher l, Ittai Herrmann m, 
+Veronica Sobejano Paz n, Sven Fahrner l, Roland Pieruschka l, Egor Prikaziuk i, 
+Ma. Luisa Buchaillot e,f, Andrej Halabuk o, Marco Celesti p, Gerbrand Koren q, 
+Esra Tunc Gormus r, Micol Rossini s, Michael Foerster t, Bastian Siegmann l, Asmaa Abdelbaki g, 
+Giulia Tagliabue s, Tobias Hank b, Roshanak Darvishzadeh i, Helge Aasen u,v, Monica Garcia w, 
+Isabel Pˆoças x, Subhajit Bandopadhyay y, Mauro Sulis c, Enrico Tomelleri z, Offer Rozenstein aa, 
+Lachezar Filchev ab, Gheorghe Stancile ac, Martin Schlerf c 
+a Image Processing Laboratory (IPL), University of Valencia, C/Catedr´atico Jos´e Beltr´an 2, Paterna 46980, Valencia, Spain 
+b Department of Geography, Ludwig-Maximilians-Universit¨at München (LMU), Luisenstr. 37, 80333 Munich, Germany 
+c Remote Sensing and Natural Resources Modelling Group, Environmental Research and Innovation Department, Luxembourg Institute of Science and Technology (LIST), 
+41, rue du Brill, L-4422 Belvaux, Luxembourg 
+d Department of Geoinformatics Cartography and Remote Sensing, Chair of Geomatics and Information Systems, Faculty of Geography and Regional Studies, University of 
+Warsaw, 00-927 Warszawa, Poland 
+e Integrative Crop Ecophysiology Group, Plant Physiology Section, Faculty of Biology, University of Barcelona, 08028 Barcelona, Spain 
+f AGROTECNIO (Center for Research in Agrotechnology), Av. Rovira Roure 191, 25198 Lleida, Spain 
+g Earth Observation and Climate Processes, Trier University, 54286 Trier, Germany 
+h Institute of Geomatics, University of Natural Resources and Life Sciences, Vienna (BOKU), Peter Jordan Str. 82, 1190 Vienna, Austria 
+i Faculty Geo-Information Science and Earth Observation, ITC, University of Twente, the Netherlands 
+j Department of Geography, University of Zurich, Winterthurerstrasse 190, 8057 Zurich, Switzerland 
+k Eawag, Swiss Federal Institute of Aquatic Science and Technology, Überlandstrasse 133, 8600 Dübendorf, Switzerland 
+l Institute of Bio- and Geosciences, Plant Sciences (IBG-2), Forschungszentrum Jülich, 52428 Jülich, Germany 
+m The Plant Sensing Laboratory, The Robert H. Smith Institute for Plant Sciences and Genetics in Agriculture, The Robert H. Smith Faculty of Agriculture, Food and 
+Environment, The Hebrew University of Jerusalem, P.O. Box 12, Rehovot 7610001, Israel 
+n Department of Environmental Engineering, Technical University of Denmark, 2800 Kgs. Lyngby, Denmark 
+o Institute of Landscape Ecology, Slovak Academy of Sciences, 814 99 Bratislava, Slovakia 
+p HE Space for ESA - European Space Agency, European Space Research and Technology Centre (ESA-ESTEC), Keplerlaan 1, 2201, AZ Noordwijk, the Netherlands 
+q Copernicus Institute of Sustainable Development, Utrecht University, Utrecht, the Netherlands 
+r Department of Geomatics Engineering, Karadeniz Technical University, 61080 Trabzon, Turkey 
+s Remote Sensing of Environmental Dynamics Laboratory (LTDA), University of Milano - Bicocca, Piazza della Scienza 1, 20126 Milano, Italy 
+t Geoinformation in Environmental Planning Lab, Technische Universit¨at Berlin, 10623 Berlin, Germany 
+u Earth Observation and Analysis of Agroecosystems Team, Division Agroecology and Environment, Agroscope, Zurich, Switzerland 
+v Institute of Agricultural Science, ETH Zürich, Zurich, Switzerland 
+w Research Centre for the Management of Agricultural and Environmental Risks (CEIGRAM), ETSIAAB, Universidad Polit´ecnica de Madrid, 28040, Spain 
+x ForestWISE - Collaborative Laboratory for Integrated Forest & Fire Management, Quinta de Prados, Campus da UTAD, 5001-801 Vila Real, Portugal 
+y Department of Geography and Environmental Science, University of Southampton, UK 
+z Faculty of Science and Technology, Free University of Bozen/Bolzano, Italy 
+aa Institute of Soil, Water and Environmental Sciences, Agricultural Research Organization—Volcani Institute, HaMaccabim Road 68, P.O. Box 15159, Rishon LeZion 
+7528809, Israel 
+ab Space Research and Technology Institute, Bulgarian Academy of Sciences (SRTI-BAS), Bulgaria 
+ac National Meteorological Administration, Building A, Soseaua Bucuresti-Ploiesti 97, 013686 Bucuresti, Romania   
+* Corresponding author at: Image Processing Laboratory (IPL), University of Valencia, C/Catedr´atico Jos´e Beltr´an 2, Paterna 46980, Valencia, Spain. 
+E-mail address: katber@uv.es (K. Berger).  
+Contents lists available at ScienceDirect 
+Remote Sensing of Environment 
+journal homepage: www.elsevier.com/locate/rse 
+https://doi.org/10.1016/j.rse.2022.113198 
+Received 1 April 2022; Received in revised form 8 July 2022; Accepted 25 July 2022   
+Remote Sensing of Environment 280 (2022) 113198
+2
+A R T I C L E  I N F O   
+Edited by Jing M. Chen  
+Keywords: 
+Precision agriculture multi-modal solar- 
+induced fluorescence satellite hyperspectral 
+multispectral biotic and abiotic stress 
+A B S T R A C T   
+Remote detection and monitoring of the vegetation responses to stress became relevant for sustainable agri­
+culture. Ongoing developments in optical remote sensing technologies have provided tools to increase our un­
+derstanding of stress-related physiological processes. Therefore, this study aimed to provide an overview of the 
+main spectral technologies and retrieval approaches for detecting crop stress in agriculture. Firstly, we present 
+integrated views on: i) biotic and abiotic stress factors, the phases of stress, and respective plant responses, and ii) 
+the affected traits, appropriate spectral domains and corresponding methods for measuring traits remotely. 
+Secondly, representative results of a systematic literature analysis are highlighted, identifying the current status 
+and possible future trends in stress detection and monitoring. Distinct plant responses occurring under short- 
+term, medium-term or severe chronic stress exposure can be captured with remote sensing due to specific 
+light interaction processes, such as absorption and scattering manifested in the reflected radiance, i.e. visible 
+(VIS), near infrared (NIR), shortwave infrared, and emitted radiance, i.e. solar-induced fluorescence and thermal 
+infrared (TIR). From the analysis of 96 research papers, the following trends can be observed: increasing usage of 
+satellite and unmanned aerial vehicle data in parallel with a shift in methods from simpler parametric ap­
+proaches towards more advanced physically-based and hybrid models. Most study designs were largely driven by 
+sensor availability and practical economic reasons, leading to the common usage of VIS-NIR-TIR sensor com­
+binations. The majority of reviewed studies compared stress proxies calculated from single-source sensor do­
+mains rather than using data in a synergistic way. We identified new ways forward as guidance for improved 
+synergistic usage of spectral domains for stress detection: (1) combined acquisition of data from multiple sensors 
+for analysing multiple stress responses simultaneously (holistic view); (2) simultaneous retrieval of plant traits 
+combining multi-domain radiative transfer models and machine learning methods; (3) assimilation of estimated 
+plant traits from distinct spectral domains into integrated crop growth models. As a future outlook, we recom­
+mend combining multiple remote sensing data streams into crop model assimilation schemes to build up Digital 
+Twins of agroecosystems, which may provide the most efficient way to detect the diversity of environmental and 
+biotic stresses and thus enable respective management decisions.   
+1. Introduction 
+One of the most challenging concerns of today is finding answers to 
+the question “How to feed the world?”, as formulated in the 2nd Sus­
+tainable Development Goal (SDG), FAO (2021). The task is huge as the 
+world population is expected to increase to 9.8 billion by 2050 (UN, 
+2017). Thus, global food production needs to be expanded by 70% in 
+order to feed the future population, maintain nutritional security, ac­
+count for changing diets and the increasing demand for biological 
+products from the construction and energy sectors (Galieni et al., 2021; 
+Mueller et al., 2012; Tester and Langridge, 2010). In this context, the 
+environmental impact of agriculture must be minimized to protect 
+water, climate, soil, and biodiversity resources (Gomiero et al., 2011) 
+while reducing production risks for farmers. Climate change is adding 
+pressure, as the frequency of extreme weather events as well as major 
+shifts in precipitation and temperature patterns are expected to increase 
+worldwide (Cogato et al., 2019; Gomiero et al., 2011). As a consequence, 
+abiotic (e.g., heat and drought) and/or biotic (e.g., diseases and pests) 
+stresses and their combinations (Govender et al., 2009), will also 
+become more frequent and lead, without swift and effective manage­
+ment responses, to decreases in crop productivity (Atzberger, 2013). 
+Thus, early detection of crop stress prior to irreversible damage is 
+essential to be able to respond with suitable agrotechnical solutions and 
+thus minimize yield loss. 
+For the detection and quantification of biotic and abiotic stresses in 
+agricultural crops, destructive and non-destructive methods can be used. 
+Some quantitative methods provide sensitive analyses of molecules in 
+biological systems, also known as high-throughput-omic techniques 
+(Fiehn, 2001; Llanes et al., 2018). However, these methods are not only 
+destructive but also time-consuming and costly, limiting their use in 
+continuous monitoring and scalable research (Galieni et al., 2021). As 
+for non-destructive quantitative methods, remote sensing (RS) technol­
+ogies have been established, such as imaging spectroscopy, fluorescence 
+spectroscopy, thermal and microwave remote sensing, which all provide 
+insights into the effects of stress in plants. In contrast to omic techniques, 
+RS can be applied at larger spatial scales, with high revisit frequency, 
+hence enabling a cost-effective detection of crop stress status and 
+spatiotemporal dynamics across cultivated landscapes. Furthermore, RS 
+is suitable for global coverage and can thus potentially contribute to 
+enhanced food security in developing countries (e.g., Rembold et al., 
+2000). 
+Driven by new platforms and sensors with enhanced spatial, tem­
+poral and spectral capacities, RS studies focusing on agricultural appli­
+cations grew exponentially in the last decades (Weiss et al., 2020). 
+Together with improvements in computing power and machine learning 
+(ML), unprecedented possibilities are offered for precision agriculture 
+and other agricultural applications, going along with major improve­
+ments in crop stress detection. The most common crop stress type ana­
+lysed by means of RS techniques is drought, i.e., water deficit stress 
+Damm et al., 2022; Gago et al., 2015; Gerhards et al., 2016; Govender 
+et al., 2009; Ihuoma and Madramootoo, 2017; Parkash and Singh, 2020; 
+Virnodkar et al., 2020). Also, other stress factors have been studied with 
+RS, such as insects (Herrmann et al., 2017) and pathogens (Gold et al., 
+2020; Herrmann et al., 2018; Mahlein, 2016; Sishodia et al., 2020) 
+nutrient deficiency (Baret et al., 2007; Herrmann et al., 2010; Mahajan 
+et al., 2021) or soil contamination (Gholizadeh and Kopackov´a, 2019). 
+Optical remote sensing covers the wavelengths from the visible to the 
+shortwave infrared (VSWIR, 400–2500 nm) and the thermal infrared 
+(TIR, 8–14 μm), collecting radiation reflected and emitted from the 
+observed surfaces. When it comes to the detection of plant responses to 
+diverse stresses, visible (VIS, 400–700 nm), near-infrared (NIR, 
+700–1300 nm) and shortwave infrared (SWIR, 1300–2500 nm) reflec­
+tance, but also TIR and solar-induced fluorescence (SIF, often at 687 nm 
+and 760 nm, or over the full emission wavelength between 650 and 800 
+nm) have been the most exploited passive sensing signals (Gerhards 
+et al., 2019). In these spectral domains, information on plant 
+morphology and structure can also be derived by means of active sensing 
+devices, such as LiDAR (light detection and ranging; Madec et al., 2017), 
+and through stereophotogrammetry using multi-spectral imagery (St- 
+Onge et al., 2008). Note that this review explicitly excludes microwave 
+technologies. Passive microwave remote sensing operates at spatial 
+scales (typically at 0.25◦) being too coarse for studies at the farm or field 
+scale. Active microwave remote sensing (RADAR) has been shown useful 
+in obtaining crop type information (Gella et al., 2021) and surface soil 
+moisture, with potentially high relevance for assessing crop water 
+availability. However, we restrict this review to crop traits for stress 
+K. Berger et al.                                                                                                                                                                                                                                  
+Remote Sensing of Environment 280 (2022) 113198
+3
+detection and exclude soil attributes. 
+Beyond usage of single RS domains, observations in multiple spectral 
+domains are strongly suggested, potentially providing a deeper under­
+standing of the complex interactions of stressors and affected crop traits 
+(Damm et al., 2018; Jiao et al., 2021). Optical multi-sensor synergies for 
+stress-related research in agriculture have been identified for precision 
+agriculture (Chaerle et al., 2006; Gerhards et al., 2019; Maes and Steppe, 
+2019), but also for plant breeding projects (Herrmann et al., 2020; 
+Pineda et al., 2020; Singh et al., 2016; Yang et al., 2017a). The syner­
+gistic use of data from various electromagnetic domains goes back to the 
+launch of the Thematic Mapper (TM) onboard Landsat-4 in 1982. 
+However, the rather coarse spectral and spatial resolutions of the sensor 
+and its successors prevented a deeper look into plant conditions at sub- 
+field scales. By the end of the 1990s, plant scientists promoted near- 
+range sensing for single leaves and plants using thermography, VIS 
+and NIR, as well as fluorescence imaging, to improve understanding of 
+plant physiological states and related stresses (Chaerle and Van Der 
+Straeten, 2000; Lichtenthaler et al., 1998), but challenges in precise 
+image alignment and data calibration prevented synergistic usage of 
+such multi-domain data. First synergistic use of multi-domain acquisi­
+tions has been realized using piloted aircraft (Gerhards et al., 2018; 
+Mohammed et al., 2019; Panigada et al., 2014) while miniaturization in 
+sensor design has led to the development of drone systems allowing for 
+multi-sensor integration at the field level (Aasen et al., 2018). For the 
+first time, the FLuorescence EXplorer-Sentinel 3 (FLEX-S3) tandem 
+mission will provide concurrent observations of VIS, NIR, SWIR and TIR 
+along with SIF at satellite level. (e.g., Drusch et al., 2017). 
+Recent studies propose efficient early stress detection using multi- 
+scale UAVs and satellite observations. Within such frameworks, the 
+advantages of both platforms can be explored, such as the availability of 
+higher temporal and spatial resolution data (Alvarez-Vanhard et al., 
+2021; Sagan et al., 2019). However, the integration of multi-scale ap­
+proaches goes beyond the scope of this review, which is explicitly con­
+strained to synergistic exploitation of multiple spectral domains for 
+stress detection in agriculture. 
+While the developments in sensor and airborne platform technolo­
+gies allow for coincident recordings from multiple (spectral) domains (e. 
+g., Timmermans et al., 2015), studies exploring these data by applying 
+integrative methods to assess plant stress are still rare. Before a multi- 
+domain retrieval approach can be defined, all acquired remotely 
+sensed signals must be translated into meaningful values (proxies) 
+related to stress (i.e. affected plant traits). In this respect, a multitude of 
+modeling and retrieval approaches have been investigated (Verrelst 
+et al., 2015, 2019a). The majority of proposed methods relied on para­
+metric regressions, i.e. use of spectral bands, vegetation indices (VIs) or 
+spectral ratios and their relationships with functional traits linked to 
+plant stress (e.g. Gerhards et al., 2016; Govender et al., 2009; Herrmann 
+et al., 2020). To better understand cause–effect relationships, and to 
+simultaneously use the full set of spectral variables, physically-based 
+methods opened attractive pathways. For instance, a promising 
+approach is provided by the soil-canopy observation, photochemistry 
+and energy fluxes (SCOPE) model (Van der Tol et al., 2009; Yang et al., 
+2021a) and its vertically heterogeneous versions mSCOPE (Yang et al., 
+2017b) and senSCOPE (Pacheco-Labrador et al., 2021), which combines 
+radiative transfer approaches with photosynthesis and energy balance 
+modeling. In contrast to physically-based approaches, other studies 
+investigated methods of reduced complexity but increased efficiency via 
+implementation of data-driven approaches, in particular ML regression 
+algorithms (Gewali et al., 2019; Singh et al., 2016; Virnodkar et al., 
+2020). To provide a scientific foundation to the pros and cons of 
+different approaches, Sishodia et al. (2020) recently reviewed stress- 
+related applications of RS in precision agriculture, including water 
+stress and disease detection. The authors stated that advanced ap­
+proaches using process-based physical models should be pursued to 
+complement ML regression algorithms, as for instance demonstrated by 
+Reichstein et al. (2019) in the context of surface energy balance (SEB) 
+modeling. A pioneering example is provided by Zarco-Tejada et al. 
+(2018) who used multi-sensor acquisitions (airborne hyperspectral and 
+thermal) to analyse trees undergoing early stress caused by infection 
+with the vector-transmitted bacterial plant pathogen Xylella Fastidiosa. 
+The authors estimated fluorescence efficiency by exploring a three- 
+dimensional radiative transfer model (RTM) in a multi-step inversion 
+scheme. Also, thermal stress indicators were derived, and canopy 
+structural and leaf biochemical traits were estimated from RTM inver­
+sion. In addition, narrow-band spectral indices known to be sensitive to 
+certain functional plant traits (i.e., chlorophylls, carotenes and xantho­
+phylls) were calculated. All traits and indicators were processed within a 
+multivariate analysis based on ML algorithms for the classification of the 
+(pre-visual) disease incidence and severity at the landscape scale. 
+Another example of early stress detection by multiple spectral domains 
+is provided by Hern´andez-Clemente et al. (2019). The authors reviewed 
+the capability of remotely sensed physiological indicators, such as can­
+opy temperature, chlorophyll fluorescence, photosynthesis and pig­
+ments to monitor the early responses of plants to a variety of stressors. 
+They pointed towards the main challenges for the RS community in 
+detecting stress, being: (1) the availability of high spatial, spectral and 
+temporal resolution data, (2) the validation of diverse retrieval methods, 
+(3) upscaling of physiological traits from leaf to canopy-level, and (4) 
+capturing the temporal dynamics and interaction of traits as stress 
+proxies. 
+Altogether, despite these advances, critical knowledge and method­
+ological gaps for crop stress detection remain. The main gap is that 
+currently no concept exists that uses multiple spectral domains in an 
+integrated way for a complete view of crop conditions to differentiate 
+between crop stress types and to understand the degree of stress severity. 
+This shortcoming can be addressed by leveraging the full potential of 
+spectral information provided by multi-domain RS data sources in a 
+synergistic way. Therefore, we aim to elaborate and propose a new 
+methodological concept for the assessment of multiple plant stresses in 
+agriculture through optical RS synergies. To achieve this, we review, 
+synthesize and integrate current knowledge across spectral domains, 
+remote sensing platforms and retrieval methods for the identification of 
+crop stress. 
+The paper is organized as follows: in Chapter 2, we present a general 
+introduction on plant stress, physiological strain as well as adaptations 
+to stress at different temporal stages. This is followed by RS of stress 
+using distinct proxies and sensor systems in Chapter 3. Chapter 4 con­
+centrates on the systematic literature review about multi-domain and 
+multi-sensor studies, and Chapter 5 elaborates the proposed multi- 
+sensor synergy concept. 
+2. Stress definitions and physiology 
+2.1. Stress definitions 
+Plants are sessile organisms exposed to biotic and abiotic pressures, i. 
+e. the physical, chemical and biological environment characterizing 
+their habitat (Jones and Jones, 1989). Abiotic stress includes, among 
+others, radiation, salinity, flooding (waterlogging), water stress, tem­
+perature extremes, nutrient shortage and heavy metals (Gull et al., 2019; 
+Larcher, 2003). Second, plants are influenced by their biotic surround­
+ings, referring to other co-occurring organisms. Specifically, biotic stress 
+involves inter- and intra-specific competitions as well as diseases caused 
+by fungal and bacterial pathogens (Lichtenthaler, 1996), weeds, insect 
+pests and/or damage to plants by nematodes, protists, viruses, and vi­
+roids (Madani et al., 2019). 
+Both the biotic and abiotic interactions can impact the survival or 
+success of plant species. Thus, understanding the impacts of different 
+stress factors on plants have been the focus of plant physiologists 
+(Larcher, 2003), particularly important in crop sciences (Blum, 2016). In 
+general terms, plant stress can be defined according to Lichtenthaler 
+(1996) as: ‘any unfavourable condition or substance that affects or blocks a 
+K. Berger et al.                                                                                                                                                                                                                                  
+Remote Sensing of Environment 280 (2022) 113198
+4
+plant’s metabolism, growth or development’. 
+A simplified description of the effect of various stress factors on a 
+plant is outlined in Fig. 1 (Blum, 2016; Kranner et al., 2010). Accord­
+ingly, plants respond to a changing environment by a coordinated short- 
+term acclimation. The response is initiated by biochemical triggers like 
+phytohormones or enzymes and leads to a damage and repair cycle, 
+activating the plant metabolism usually with small or non-visible 
+phenotypic adaptation (reversible and adaptive strain tolerance). With 
+increased severity and duration of the stress exposure, plants change 
+their phenotypic expressions through long-term adaptations. This af­
+fects, for instance, leaf size and thickness, stomatal density, or function 
+of chloroplasts depending on high or low light conditions. Depending on 
+the stress factor, the adaptation may take days or weeks, while persistent 
+and severe (long-term) stress may arise in the final stage and even lead to 
+apoptosis (Lichtenthaler, 1996). The ability of plants to vary their 
+phenotypic expression in response to environmental conditions is also 
+described as “phenotypic plasticity” (Sultan, 2000), which can result in 
+altered phenotypic traits and fluxes. 
+It has to be noted that the impact of any stress factor usually results in 
+a complex interplay between the plant’s genes and its environment often 
+leading to multiple strains, not explicitly shown in Fig. 1. For example, 
+high light stress affects fluorescence parameters, impacts photosyn­
+thesis, increases non-photochemical quenching (NPQ), and enhances 
+leaf temperature leading to increased transpiration and changes in leaf 
+angle. Likewise, it must be remarked that the effect of a single and/or 
+multiple stress factors, as well as the combination of biotic and/or 
+abiotic stresses, can often lead to very similar physiological responses in 
+the plants (Blum, 2016; Kranner et al., 2010), see Fig. 1. 
+It is also important to consider the timing of stress impacts. For 
+example, short-term environmental changes may be reflected in 
+changing flux rates of photosynthesis, respiration, and transpiration 
+(Damm et al., 2018). Stress occurring over long-term periods during 
+different development stages may affect growth variously. For example, 
+drought stress in wheat may affect leaf expansion in the initial phase, the 
+number of tillers in the tillering phase, plant height in the stem elon­
+gation phase, and grain development during the flowering stage, with 
+the period between stem elongation and flowering being the most 
+sensitive to drought (Sarto et al., 2017). 
+2.2. Stages of plant stress responses 
+Reactions to biotic and abiotic stresses usually are continuous but 
+often also non-linear processes (Kranner et al., 2010). In general, three 
+phases of the plant stress response may be identified with respect to the 
+severity and duration of one or multiple stressors. We exemplary 
+demonstrate the phases (or stages) of drought stress and subsequent 
+plant response in Fig. 2. very mild drought stress usually has little impact 
+on the plant, i.e., initial stomatal closure may occur, but the photosyn­
+thetic capacity remains high and no phenotypic changes are observed. 
+Under increasing stress levels, however, stomatal closure reduces the 
+internal CO2 availability, which often triggers the production of reactive 
+oxygen species (ROS) and lowers the photosynthetic rates. Moreover, 
+leaf temperature increases and changes in leaf angle or leaf rolling are 
+observed. As a result, plant growth may be inhibited. A stronger 
+decrease in water availability will result in a reduced stomatal 
+conductance affecting the leaf turgor (Abdullah et al., 2019). Over­
+production and accumulation of ROS and membrane instability will lead 
+to cellular damage beyond repair and thus to necrotic spots. Under se­
+vere drought stress, growth usually stops, and continuous damage may 
+eventually lead to apoptosis (see Fig. 1, Fig. 2). 
+These stress phases may vary for diverse or combined stressors. This 
+is particularly important for agriculture, where often even mild stress 
+may reduce crop growth, and finally the yield, particularly when it oc­
+curs at crucial growth stages (Fahad et al., 2017). Consequently, it is 
+essential to detect and quantify crop stress at the earliest possible stage. 
+Only responses affecting the biophysical and functional properties 
+and thus, traits of the plants may be detected by RS. Stress factors such as 
+water scarcity, water logging, salinity, heat and excessive light often 
+induce changes in the rates of photosynthesis, respiration, transpiration 
+and stomatal conductance in the early stress stage. This is usually fol­
+lowed by changes in amounts and ratios of the photosynthetic pigments 
+(chlorophylls and carotenoids), and the concentration of different me­
+tabolites at later stages (Lichtenthaler, 1996). While the remote detec­
+tion of altered phenotypic traits, such as pigments and water content, is 
+B i o t i c  o r  a b i o t i c  s t r e s s o r ( s )
+mild strain 
+severe strain 
+Adaptive strain resistance 
+(tolerance / avoidance)
+Signals
+(hormone and enzyme responses)
+Dehydration and turgor loss
+Membrane instability
+Signals
+(hormone and enzyme responses)
+plant-specific 
+stress tolerance
+Constitutive strain resistance 
+(tolerance / avoidance)
+Early responses 
+Constitutive responses 
+A l t e r e d  f l u x e s  a n d  t r a i t s
+Apoptosis to strain
+(plant death or survival)
+Signals
+(accumulation of reactive oxygen species (ROS))
+Fig. 1. Scheme of plant stress, strain, and signaling, leading to plant responses and resistance. Adapted from (Blum, 2016).  
+K. Berger et al.                                                                                                                                                                                                                                  
+Remote Sensing of Environment 280 (2022) 113198
+5
+prevalent when monitoring medium-term, mild long-term and severe or 
+chronic stress, altered photosynthesis and transpiration fluxes and their 
+possible feedback mechanisms already show subtle responses under the 
+first occurring stress (e.g., Gerhards et al., 2016; Jonard et al., 2020). In 
+fact, daily occurring cycles of stress are common for crops as diurnal 
+cycles in radiation and temperature show strong variation, often 
+reaching excessive energy inputs at solar noon. In general, electromag­
+netic energy absorbed by plants is used to fuel photosynthesis, but under 
+excessive irradiation the photosynthetic apparatus needs to immediately 
+adapt energy pathways to avoid photo-damage. Increasing stress that 
+inhibits the photosynthetic light reactions induces an increasing dissi­
+pation of energy by NPQ and reduces the fluorescence yield. The latter is 
+detectable over vast vegetated areas as solar-induced fluorescence (SIF), 
+a subtle energy flux emitted by vegetation that may be used to detect the 
+onset and progress of stress (Aˇc et al., 2015; Demmig-Adams et al., 2020; 
+Gerhards et al., 2019). Dynamic adjustments under early stress are also 
+observed for transpiration, an energy-demanding process that decreases 
+leaf surface temperature. Therefore, sensing the canopy surface tem­
+perature became a useful tool for assessing early changes in plant-water 
+and plant-health status (Idso et al., 1981; Jackson et al., 1988; Maes and 
+Steppe, 2012). 
+2.3. Common symptoms of crop stress 
+In the following, we describe the causalities and illustrate several 
+examples of stress occurrence in crops (Fig. 3). 
+Biotic stress responses result from complex interactions between 
+plants and other biological organisms and can be very diverse. Often 
+plant responses are induced directly by the biotic agents. For instance, in 
+the (common) case of herbivory (see Fig. 3(a)), the immediate effect is 
+loss of water content due to wounding and loss of functional leaf area 
+combined with the necrosis of the wounded leaf parts (Meza-Canales 
+et al., 2017). In this way, biotic pathogens often affect a plant locally and 
+then induce a systemic plant response. This may include the activation 
+of signal pathways to reduce stomatal conductance (Aldea et al., 2005) 
+or increased production of volatile organic compounds (VOCs) as 
+defence mechanisms (Holopainen and Gershenzon, 2010; Kessler, 
+2001). 
+Viruses can also lead to biotic stress as shown in Fig. 3(b) for an 
+example of Maize Lethal Necrosis (MLN). MLN causes mostly pigment 
+damage but also some structural wilting in advanced stages due to ne­
+crosis and viral replication related to phosphorous deficiencies. 
+A broad diversity in fungal pathogens exists. Some pathogens, such 
+as yellow rust, can stimulate photosynthesis during early infection 
+stages as the fungus benefits from the increase in sugar production 
+(Chang et al., 2013). However, at a later stress stage it may cause de­
+creases in photosynthetic capacity, leading to visible foliar lesions 
+(Vergara-Diaz et al., 2015). The diversity of fungal pathogens may cause 
+plant diseases, such as anthracnose, leaf spot, rust, or wilt (for an 
+overview, see Jain et al. (2019)). Many of these diseases are manifested 
+as changes in optical reflectance properties of the canopy, which may be 
+specific to the pathogen. Such changes in optical properties can either be 
+detected as radiometric changes or can be identified at leaf level through 
+computer vision approaches for classification of plant diseases (Singh 
+et al., 2020). Similar symptoms can be caused by microbes, as shown in 
+the example of downy mildew in Fig. 3(c). 
+Radiation stress or excessive exposure to ultraviolet (UV) sunlight 
+also disturbs plant growth when the absorbed excess energy cannot 
+dissipate. It results in an overproduction of ROS that may be detoxified 
+or eventually disturb the overall cellular homeostasis of the plant (Singh 
+et al., 2020). In Fig. 3(d), the effects of radiation stress are shown for an 
+exemplary vineyard. 
+As illustrated in Fig. 3(e), frost or cold stress is another serious threat 
+to crops (Yadav, 2010). Moderate cold stress reduces plant growth and 
+Fig. 2. Biotic and abiotic stress factors and the plants’ responses to stress as a function of dose and exposure time: early (mild), medium-term or mild long-term, and 
+severe/chronic exposure. 
+K. Berger et al.                                                                                                                                                                                                                                  

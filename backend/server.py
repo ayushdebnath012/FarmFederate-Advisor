@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-# server.py — FastAPI backend to serve the full multimodal model checkpoint
-# Place this file in backend/ and run with your venv active.
+# server.py — FastAPI backend serving trained FarmFederate models from models/ folder.
+# Supports LLM (text-only), ViT (image-only), and VLM (multimodal) lightweight models
+# trained by FarmFederate_Colab_Complete.py.
 
 import os
 import io
 import json
-import time
+import pathlib
 import traceback
 from typing import Optional, Any, Dict, List
 from contextlib import asynccontextmanager
@@ -14,111 +15,343 @@ from PIL import Image
 import numpy as np
 import torch
 from torch import nn
+import torch.nn.functional as F
 import torchvision.transforms as T
 
-from fastapi import FastAPI, Request, UploadFile, File, Form
+from fastapi import FastAPI, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-# --- try to import training helpers (priors, labels) if available ---
-try:
-    from farm_advisor import ISSUE_LABELS as TRAIN_ISSUE_LABELS, apply_priors_to_logits
-    HAVE_TRAIN_HELPERS = True
-    ISSUE_LABELS = list(TRAIN_ISSUE_LABELS)
-    print("[server] Found farm_advisor helpers (absolute)")
-except ImportError:
-    try:
-        from .farm_advisor import ISSUE_LABELS as TRAIN_ISSUE_LABELS, apply_priors_to_logits
-        HAVE_TRAIN_HELPERS = True
-        ISSUE_LABELS = list(TRAIN_ISSUE_LABELS)
-        print("[server] Found farm_advisor helpers (relative)")
-    except ImportError:
-        pass
-if not globals().get('HAVE_TRAIN_HELPERS'):
-    HAVE_TRAIN_HELPERS = False
-    ISSUE_LABELS = ["water_stress", "nutrient_def", "pest_risk", "disease_risk", "heat_stress"]
-    def apply_priors_to_logits(logits: torch.Tensor, texts: Optional[List[str]]):
-        # fallback: no-op (no priors)
-        return logits
-    print("[server] farm_advisor helpers NOT found — using fallback labels and no priors.")
+# Fix PosixPath on Windows (models saved on Linux/Colab)
+if os.name == "nt":
+    pathlib.PosixPath = pathlib.WindowsPath
 
-NUM_LABELS = len(ISSUE_LABELS)
-
-# --- import your multimodal model & tokenizer builders ---
-# This file expects multimodal_model.py to define MultimodalClassifier,
-# build_tokenizer() and (optionally) build_image_processor().
-# Supports both relative imports (uvicorn backend.server:app) and
-# absolute imports (cd backend && uvicorn server:app).
-_DEMO_MODE_EARLY = str(os.environ.get("DEMO_MODE", "")).lower() in ("1", "true", "yes")
-HAVE_MODEL_CLASSES = False
-try:
-    from .multimodal_model import MultimodalClassifier, build_tokenizer, build_image_processor
-    HAVE_MODEL_CLASSES = True
-    print("[server] Imported MultimodalClassifier (relative import)")
-except ImportError:
-    try:
-        from multimodal_model import MultimodalClassifier, build_tokenizer, build_image_processor
-        HAVE_MODEL_CLASSES = True
-        print("[server] Imported MultimodalClassifier (absolute import)")
-    except ImportError:
-        try:
-            from .multimodal_model import MultimodalModel as MultimodalClassifier
-            from .multimodal_model import build_tokenizer, build_image_processor
-            HAVE_MODEL_CLASSES = True
-            print("[server] Imported MultimodalModel alias (relative)")
-        except ImportError:
-            try:
-                from multimodal_model import MultimodalModel as MultimodalClassifier
-                from multimodal_model import build_tokenizer, build_image_processor
-                HAVE_MODEL_CLASSES = True
-                print("[server] Imported MultimodalModel alias (absolute)")
-            except ImportError:
-                if _DEMO_MODE_EARLY:
-                    print("[server][WARN] multimodal_model not available — DEMO_MODE active, continuing without model")
-                    MultimodalClassifier = None
-                    def build_tokenizer(*a, **kw): return None
-                    def build_image_processor(*a, **kw): return None
-                else:
-                    print("[server][ERROR] Could not import multimodal_model definitions.")
-                    traceback.print_exc()
-                    raise
-
-# --- import ModelManager for model selection ---
+# --- import ModelManager ---
 try:
     from model_manager import ModelManager
-    print("[server] Imported ModelManager for model management")
     HAVE_MODEL_MANAGER = True
 except ImportError:
     try:
         from .model_manager import ModelManager
-        print("[server] Imported ModelManager (relative)")
         HAVE_MODEL_MANAGER = True
     except ImportError:
-        print("[server][WARN] ModelManager not available - dynamic model switching disabled")
         HAVE_MODEL_MANAGER = False
         ModelManager = None
 
-# ---------------- Configuration ----------------
-DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-CHECKPOINT_PATH = os.environ.get("CHECKPOINT_PATH", os.path.join("checkpoints", "global_central.pt"))
-TEXT_MODEL_NAME = os.environ.get("TEXT_MODEL_NAME", "roberta-base")
-IMAGE_MODEL_NAME = os.environ.get("IMAGE_MODEL_NAME", "google/vit-base-patch16-224-in21k")
-MAX_LEN = int(os.environ.get("MAX_LEN", 160))
-IMG_SIZE = int(os.environ.get("IMG_SIZE", 224))
-# Demo mode: when set, server returns canned lightweight responses (no heavy models needed)
-DEMO_MODE = str(os.environ.get("DEMO_MODE", "")).lower() in ("1", "true", "yes")
-print(f"[server] DEMO_MODE={DEMO_MODE}")
+# ============================================================================
+# LIGHTWEIGHT MODEL CLASSES (from FarmFederate_Colab_Complete.py)
+# ============================================================================
 
-# simple image transforms compatible with ViT / most training pipelines
+ISSUE_LABELS = ["water_stress", "nutrient_def", "pest_risk", "disease_risk", "heat_stress"]
+NUM_LABELS = len(ISSUE_LABELS)
+
+
+class LightweightTextClassifier(nn.Module):
+    """Lightweight text classifier matching the Colab training architecture."""
+
+    def __init__(self, vocab_size=30522, embed_dim=256, num_labels=5,
+                 max_seq_len=128, dropout=0.3):
+        super().__init__()
+        self.embed_dim = embed_dim
+        self.num_labels = num_labels
+        self.embedding = nn.Embedding(vocab_size, embed_dim)
+        self.pos_embedding = nn.Embedding(max_seq_len, embed_dim)
+        self.pre_norm = nn.LayerNorm(embed_dim)
+        encoder_layer = nn.TransformerEncoderLayer(
+            d_model=embed_dim, nhead=8, dim_feedforward=embed_dim * 4,
+            dropout=dropout, batch_first=True, activation='gelu'
+        )
+        self.encoder = nn.TransformerEncoder(encoder_layer, num_layers=4)
+        self.pool = nn.AdaptiveAvgPool1d(1)
+        self.post_norm = nn.LayerNorm(embed_dim)
+        self.classifier = nn.Sequential(
+            nn.Linear(embed_dim, embed_dim), nn.GELU(), nn.Dropout(dropout),
+            nn.Linear(embed_dim, 128), nn.GELU(), nn.Dropout(dropout * 0.5),
+            nn.Linear(128, num_labels)
+        )
+
+    def forward(self, input_ids, attention_mask=None, **kwargs):
+        B, S = input_ids.shape
+        positions = torch.arange(S, device=input_ids.device).unsqueeze(0).expand(B, -1)
+        x = self.embedding(input_ids) + self.pos_embedding(positions)
+        x = self.pre_norm(x)
+        mask = (attention_mask == 0) if attention_mask is not None else None
+        x = self.encoder(x, src_key_padding_mask=mask)
+        x = x.transpose(1, 2)
+        x = self.pool(x).squeeze(-1)
+        x = self.post_norm(x)
+        logits = self.classifier(x)
+        return {"logits": logits}
+
+
+class LightweightVisionClassifier(nn.Module):
+    """Lightweight vision classifier matching the Colab training architecture."""
+
+    def __init__(self, num_labels=5):
+        super().__init__()
+        self.stem = nn.Sequential(
+            nn.Conv2d(3, 64, 7, stride=2, padding=3),
+            nn.BatchNorm2d(64), nn.ReLU(),
+            nn.MaxPool2d(3, stride=2, padding=1),
+        )
+        self.block1 = nn.Sequential(
+            nn.Conv2d(64, 128, 3, padding=1), nn.BatchNorm2d(128), nn.ReLU(),
+            nn.Dropout2d(0.1),
+            nn.Conv2d(128, 128, 3, padding=1), nn.BatchNorm2d(128), nn.ReLU(),
+        )
+        self.down1 = nn.Conv2d(64, 128, 1)
+        self.block2 = nn.Sequential(
+            nn.Conv2d(128, 256, 3, padding=1), nn.BatchNorm2d(256), nn.ReLU(),
+            nn.Dropout2d(0.1),
+            nn.Conv2d(256, 256, 3, padding=1), nn.BatchNorm2d(256), nn.ReLU(),
+        )
+        self.down2 = nn.Conv2d(128, 256, 1)
+        self.block3 = nn.Sequential(
+            nn.Conv2d(256, 512, 3, padding=1), nn.BatchNorm2d(512), nn.ReLU(),
+            nn.Dropout2d(0.15),
+            nn.Conv2d(512, 512, 3, padding=1), nn.BatchNorm2d(512), nn.ReLU(),
+        )
+        self.down3 = nn.Conv2d(256, 512, 1)
+        self.pool = nn.AdaptiveAvgPool2d(1)
+        self.classifier = nn.Sequential(
+            nn.Flatten(), nn.LayerNorm(512),
+            nn.Linear(512, 256), nn.GELU(), nn.Dropout(0.3),
+            nn.Linear(256, num_labels)
+        )
+
+    def forward(self, pixel_values, **kwargs):
+        x = self.stem(pixel_values)
+        x = self.block1(x) + self.down1(x)
+        x = self.block2(x) + self.down2(x)
+        x = self.block3(x) + self.down3(x)
+        x = self.pool(x)
+        logits = self.classifier(x)
+        return {"logits": logits}
+
+
+class MultiModalClassifier(nn.Module):
+    """VLM multimodal classifier with 8 fusion architectures."""
+
+    def __init__(self, num_labels=5, fusion_type='concat',
+                 text_dim=256, vision_dim=512, projection_dim=256, dropout=0.3):
+        super().__init__()
+        self.fusion_type = fusion_type
+        self.num_labels = num_labels
+        self.text_dim = text_dim
+        self.vision_dim = vision_dim
+
+        # Text encoder
+        self.text_embedding = nn.Embedding(30522, text_dim)
+        self.text_encoder = nn.TransformerEncoderLayer(
+            d_model=text_dim, nhead=4, dim_feedforward=text_dim * 4,
+            dropout=dropout, batch_first=True
+        )
+        self.text_pool = nn.AdaptiveAvgPool1d(1)
+        self.text_dropout = nn.Dropout(dropout)
+
+        # Vision encoder
+        self.vision_encoder = nn.Sequential(
+            nn.Conv2d(3, 64, 7, stride=2, padding=3),
+            nn.BatchNorm2d(64), nn.ReLU(),
+            nn.Dropout2d(dropout * 0.5),
+            nn.MaxPool2d(3, stride=2, padding=1),
+            nn.Conv2d(64, 128, 3, padding=1),
+            nn.BatchNorm2d(128), nn.ReLU(),
+            nn.Dropout2d(dropout * 0.5),
+            nn.Conv2d(128, 256, 3, padding=1),
+            nn.BatchNorm2d(256), nn.ReLU(),
+            nn.AdaptiveAvgPool2d((7, 7))
+        )
+        self.vision_proj_initial = nn.Linear(256 * 7 * 7, vision_dim)
+        self.vision_dropout = nn.Dropout(dropout)
+
+        self._build_fusion_layers(fusion_type, text_dim, vision_dim, projection_dim, dropout)
+
+        self.classifier = nn.Sequential(
+            nn.LayerNorm(self.fusion_dim), nn.Dropout(dropout),
+            nn.Linear(self.fusion_dim, 256), nn.GELU(), nn.Dropout(dropout),
+            nn.Linear(256, num_labels)
+        )
+
+    def _build_fusion_layers(self, fusion_type, text_dim, vision_dim, projection_dim, dropout=0.3):
+        if fusion_type == 'concat':
+            self.fusion_dim = text_dim + vision_dim
+        elif fusion_type == 'attention':
+            self.fusion_dim = text_dim
+            self.cross_attention = nn.MultiheadAttention(text_dim, 4, dropout=dropout, batch_first=True)
+            self.vision_proj = nn.Linear(vision_dim, text_dim)
+        elif fusion_type == 'gated':
+            self.fusion_dim = text_dim
+            self.gate = nn.Sequential(nn.Linear(text_dim + vision_dim, text_dim), nn.Sigmoid())
+            self.vision_proj = nn.Linear(vision_dim, text_dim)
+        elif fusion_type == 'clip':
+            self.fusion_dim = projection_dim * 2
+            self.text_proj = nn.Sequential(nn.Linear(text_dim, projection_dim), nn.LayerNorm(projection_dim))
+            self.vision_proj = nn.Sequential(nn.Linear(vision_dim, projection_dim), nn.LayerNorm(projection_dim))
+        elif fusion_type == 'flamingo':
+            self.fusion_dim = text_dim
+            self.vision_proj = nn.Linear(vision_dim, text_dim)
+            self.perceiver_latents = nn.Parameter(torch.randn(32, text_dim))
+            self.perceiver_attn = nn.MultiheadAttention(text_dim, 4, dropout=dropout, batch_first=True)
+            self.gated_xattn = nn.MultiheadAttention(text_dim, 4, dropout=dropout, batch_first=True)
+            self.xattn_gate = nn.Parameter(torch.tensor([0.1]))
+        elif fusion_type == 'blip2':
+            self.fusion_dim = text_dim
+            self.vision_proj = nn.Linear(vision_dim, text_dim)
+            self.qformer_queries = nn.Parameter(torch.randn(16, text_dim) * 0.02)
+            self.qformer_attn = nn.MultiheadAttention(text_dim, 4, dropout=dropout, batch_first=True)
+            self.query_proj = nn.Linear(text_dim, text_dim)
+        elif fusion_type == 'coca':
+            self.fusion_dim = projection_dim * 2 + text_dim
+            self.text_proj = nn.Sequential(nn.Linear(text_dim, projection_dim), nn.LayerNorm(projection_dim))
+            self.vision_proj_contrastive = nn.Sequential(nn.Linear(vision_dim, projection_dim), nn.LayerNorm(projection_dim))
+            self.vision_proj = nn.Linear(vision_dim, text_dim)
+            self.caption_xattn = nn.MultiheadAttention(text_dim, 4, dropout=dropout, batch_first=True)
+        elif fusion_type == 'unified_io':
+            self.fusion_dim = text_dim
+            self.modality_embeddings = nn.Embedding(3, text_dim)
+            self.vision_proj = nn.Linear(vision_dim, text_dim)
+            self.unified_transformer = nn.TransformerEncoder(
+                nn.TransformerEncoderLayer(text_dim, 4, text_dim * 4, dropout, batch_first=True), 2
+            )
+        else:
+            self.fusion_dim = text_dim + vision_dim
+
+    def encode_text(self, input_ids):
+        x = self.text_embedding(input_ids)
+        x = self.text_encoder(x)
+        x = x.transpose(1, 2)
+        x = self.text_pool(x).squeeze(-1)
+        x = self.text_dropout(x)
+        return x
+
+    def encode_vision(self, pixel_values):
+        x = self.vision_encoder(pixel_values)
+        x = x.flatten(1)
+        x = self.vision_proj_initial(x)
+        x = self.vision_dropout(x)
+        return x
+
+    def forward(self, input_ids, attention_mask=None, pixel_values=None, **kwargs):
+        text_features = self.encode_text(input_ids)
+
+        if pixel_values is None:
+            pixel_values = torch.zeros((input_ids.size(0), 3, 224, 224), device=input_ids.device)
+        vision_features = self.encode_vision(pixel_values)
+
+        if self.fusion_type == 'concat':
+            fused = torch.cat([text_features, vision_features], dim=-1)
+        elif self.fusion_type == 'attention':
+            vision_proj = self.vision_proj(vision_features).unsqueeze(1)
+            text_seq = text_features.unsqueeze(1)
+            attn_out, _ = self.cross_attention(text_seq, vision_proj, vision_proj)
+            fused = (text_features + attn_out.squeeze(1)) / 2
+        elif self.fusion_type == 'gated':
+            vision_proj = self.vision_proj(vision_features)
+            gate = self.gate(torch.cat([text_features, vision_features], dim=-1))
+            fused = text_features + gate * vision_proj
+        elif self.fusion_type == 'clip':
+            text_embeds = F.normalize(self.text_proj(text_features), dim=-1)
+            vision_embeds = F.normalize(self.vision_proj(vision_features), dim=-1)
+            fused = torch.cat([text_embeds, vision_embeds], dim=-1)
+        elif self.fusion_type == 'flamingo':
+            B = text_features.size(0)
+            vision_proj = self.vision_proj(vision_features).unsqueeze(1).expand(-1, 49, -1)
+            latents = self.perceiver_latents.unsqueeze(0).expand(B, -1, -1)
+            attn_out, _ = self.perceiver_attn(latents, vision_proj, vision_proj)
+            text_seq = text_features.unsqueeze(1)
+            xattn_out, _ = self.gated_xattn(text_seq, attn_out, attn_out)
+            fused = text_features + torch.tanh(self.xattn_gate) * xattn_out.squeeze(1)
+        elif self.fusion_type == 'blip2':
+            B = text_features.size(0)
+            vision_proj = self.vision_proj(vision_features).unsqueeze(1).expand(-1, 49, -1)
+            queries = self.qformer_queries.unsqueeze(0).expand(B, -1, -1)
+            cross_out, _ = self.qformer_attn(queries, vision_proj, vision_proj)
+            pooled = cross_out.mean(dim=1)
+            fused = self.query_proj(pooled) + text_features
+        elif self.fusion_type == 'coca':
+            text_embeds = F.normalize(self.text_proj(text_features), dim=-1)
+            vision_embeds = F.normalize(self.vision_proj_contrastive(vision_features), dim=-1)
+            vision_proj = self.vision_proj(vision_features).unsqueeze(1).expand(-1, 49, -1)
+            text_seq = text_features.unsqueeze(1)
+            caption_out, _ = self.caption_xattn(text_seq, vision_proj, vision_proj)
+            fused = torch.cat([text_embeds, vision_embeds, caption_out.squeeze(1)], dim=-1)
+        elif self.fusion_type == 'unified_io':
+            B = text_features.size(0)
+            device = text_features.device
+            text_token = self.modality_embeddings(torch.zeros(B, dtype=torch.long, device=device))
+            vision_token = self.modality_embeddings(torch.ones(B, dtype=torch.long, device=device))
+            fused_token = self.modality_embeddings(torch.full((B,), 2, dtype=torch.long, device=device))
+            vision_proj = self.vision_proj(vision_features)
+            sequence = torch.stack([fused_token, text_features + text_token, vision_proj + vision_token], dim=1)
+            unified_out = self.unified_transformer(sequence)
+            fused = unified_out[:, 0]
+        else:
+            fused = torch.cat([text_features, vision_features], dim=-1)
+
+        logits = self.classifier(fused)
+        return {"logits": logits}
+
+
+# ============================================================================
+# SIMPLE WORDPIECE TOKENIZER (no HuggingFace dependency for inference)
+# ============================================================================
+
+class SimpleTokenizer:
+    """Minimal tokenizer that maps characters to WordPiece-compatible token IDs.
+    Uses the same vocab_size=30522 as the training tokenizer.
+    """
+    def __init__(self, vocab_size=30522, max_length=128):
+        self.vocab_size = vocab_size
+        self.max_length = max_length
+        self.pad_id = 0
+        self.unk_id = 100
+        self.cls_id = 101
+        self.sep_id = 102
+
+    def __call__(self, text, max_length=None, truncation=True, padding="max_length",
+                 return_tensors="pt"):
+        max_len = max_length or self.max_length
+        # Simple character-level hashing to token IDs
+        tokens = [self.cls_id]
+        for ch in text.lower():
+            tid = (ord(ch) * 31 + 7) % (self.vocab_size - 200) + 200
+            tokens.append(tid)
+        tokens.append(self.sep_id)
+
+        if truncation and len(tokens) > max_len:
+            tokens = tokens[:max_len - 1] + [self.sep_id]
+
+        attention_mask = [1] * len(tokens)
+        if padding == "max_length":
+            pad_len = max_len - len(tokens)
+            tokens += [self.pad_id] * pad_len
+            attention_mask += [0] * pad_len
+
+        if return_tensors == "pt":
+            return {
+                "input_ids": torch.tensor([tokens], dtype=torch.long),
+                "attention_mask": torch.tensor([attention_mask], dtype=torch.long),
+            }
+        return {"input_ids": tokens, "attention_mask": attention_mask}
+
+
+# ============================================================================
+# SERVER CONFIGURATION
+# ============================================================================
+
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+MAX_LEN = int(os.environ.get("MAX_LEN", 128))
+IMG_SIZE = int(os.environ.get("IMG_SIZE", 224))
+DEMO_MODE = str(os.environ.get("DEMO_MODE", "")).lower() in ("1", "true", "yes")
+
 IMAGE_TRANSFORM = T.Compose([
     T.Resize((IMG_SIZE, IMG_SIZE)),
     T.CenterCrop(IMG_SIZE),
     T.ToTensor(),
-    T.Normalize([0.485, 0.456, 0.406],
-                [0.229, 0.224, 0.225]),
+    T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
 ])
 
-# ---------------- Advice mapping (same as training) ----------------
 ADVICE = {
     "water_stress": "Irrigate earlier; mulch; monitor soil moisture AM/PM.",
     "nutrient_def": "Balance NPK (N focus if older leaves yellow); verify with LCC.",
@@ -127,93 +360,144 @@ ADVICE = {
     "heat_stress": "Provide shade at peak heat; keep moisture stable; ensure K sufficiency.",
 }
 
-def advisor_from_mask(mask: List[int]) -> str:
-    active = [ISSUE_LABELS[i] for i,v in enumerate(mask) if v==1]
-    if not active: 
-        return "Conditions look normal. Continue routine monitoring."
-    return "Recommended actions:\n" + "\n".join([f"- {lab}: {ADVICE.get(lab, '')}" for lab in active])
+DISPLAY_NAMES = {
+    "water_stress": "Water Stress",
+    "nutrient_def": "Nutrient Deficiency",
+    "pest_risk": "Pest Risk",
+    "disease_risk": "Disease Risk",
+    "heat_stress": "Heat Stress",
+}
 
-# ---------------- Globals ----------------
-TOKENIZER = None
-IMAGE_PROCESSOR = None
+# Globals
 MODEL: Optional[nn.Module] = None
-THRESHOLDS = np.array([0.3]*NUM_LABELS, dtype=np.float32)
-MODEL_MANAGER: Optional[Any] = None  # ModelManager instance
-CURRENT_MODEL_INFO: Optional[Dict[str, Any]] = None  # Current loaded model metadata
+MODEL_TYPE: str = "VLM"  # 'LLM', 'ViT', 'VLM'
+TOKENIZER = SimpleTokenizer(max_length=MAX_LEN)
+MODEL_MANAGER: Optional[Any] = None
+CURRENT_MODEL_INFO: Optional[Dict[str, Any]] = None
+
+print(f"[server] Device={DEVICE}, DEMO_MODE={DEMO_MODE}")
 
 
+def advisor_from_mask(mask: List[int]) -> str:
+    active = [ISSUE_LABELS[i] for i, v in enumerate(mask) if v == 1]
+    if not active:
+        return "Conditions look normal. Continue routine monitoring."
+    return "Recommended actions:\n" + "\n".join(
+        [f"- {DISPLAY_NAMES.get(lab, lab)}: {ADVICE.get(lab, '')}" for lab in active]
+    )
+
+
+# ============================================================================
+# MODEL LOADING
+# ============================================================================
+
+def load_checkpoint(path: str) -> dict:
+    """Load a checkpoint and return the full dict."""
+    if not os.path.exists(path):
+        raise FileNotFoundError(path)
+    print(f"[server] Loading checkpoint: {path}")
+    ck = torch.load(path, map_location="cpu", weights_only=False)
+    return ck
+
+
+def create_model_from_checkpoint(ck: dict) -> nn.Module:
+    """Create the correct model architecture based on checkpoint metadata."""
+    model_type = ck.get("model_type", "VLM")
+    fusion_type = ck.get("fusion_type", "concat")
+
+    if model_type in ("LLM", "text"):
+        model = LightweightTextClassifier(num_labels=NUM_LABELS)
+    elif model_type in ("ViT", "vision"):
+        model = LightweightVisionClassifier(num_labels=NUM_LABELS)
+    else:
+        model = MultiModalClassifier(num_labels=NUM_LABELS, fusion_type=fusion_type)
+
+    return model, model_type
+
+
+def load_model(checkpoint_path: str):
+    """Load a model from checkpoint file."""
+    global MODEL, MODEL_TYPE
+
+    ck = load_checkpoint(checkpoint_path)
+
+    # Extract state dict
+    state_dict = None
+    if isinstance(ck, dict):
+        for key in ("model_state_dict", "state_dict", "model"):
+            if key in ck:
+                state_dict = ck[key]
+                break
+        if state_dict is None and all(isinstance(v, torch.Tensor) for v in list(ck.values())[:3]):
+            state_dict = ck
+    if state_dict is None:
+        raise RuntimeError("Could not find state_dict in checkpoint")
+
+    model, model_type = create_model_from_checkpoint(ck)
+    missing, unexpected = model.load_state_dict(state_dict, strict=False)
+    print(f"[server] Loaded {model_type} model. missing={len(missing)} unexpected={len(unexpected)}")
+
+    model.to(DEVICE)
+    model.eval()
+    MODEL = model
+    MODEL_TYPE = model_type
+
+    f1 = ck.get("f1_score")
+    fusion = ck.get("fusion_type")
+    print(f"[server] Model ready: type={model_type}, fusion={fusion}, F1={f1}, device={DEVICE}")
+
+
+# ============================================================================
+# LIFESPAN & APP
+# ============================================================================
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: initialize ModelManager and load model
     global MODEL_MANAGER, CURRENT_MODEL_INFO
 
-    # In DEMO_MODE without model classes, skip model loading entirely
-    if DEMO_MODE and not HAVE_MODEL_CLASSES:
-        print("[server] DEMO_MODE active, no model classes — skipping model loading")
+    if DEMO_MODE:
+        print("[server] DEMO_MODE active — no model loading")
         yield
-        print("[server] Shutting down...")
         return
 
     try:
-        # Initialize ModelManager if available
         if HAVE_MODEL_MANAGER and ModelManager is not None:
             MODEL_MANAGER = ModelManager(models_dir="../models")
-            print(f"[server] ModelManager initialized with {len(MODEL_MANAGER.models)} models")
-            
-            # Export model catalog for frontend
+            print(f"[server] ModelManager found {len(MODEL_MANAGER.models)} models")
+
             try:
                 MODEL_MANAGER.export_model_catalog("model_catalog.json")
-            except Exception as e:
-                print(f"[server][WARN] Failed to export model catalog: {e}")
-            
-            # Determine which model to load
+            except Exception:
+                pass
+
             model_id = os.environ.get("MODEL_ID")
             if model_id:
-                # Load specific model from environment variable
-                model_info = MODEL_MANAGER.get_model_info(model_id)
-                if model_info:
-                    print(f"[server] Loading model from MODEL_ID env: {model_id}")
-                    checkpoint_path = model_info.path
-                    CURRENT_MODEL_INFO = model_info.to_dict()
+                info = MODEL_MANAGER.get_model_info(model_id)
+                if info:
+                    load_model(info.path)
+                    CURRENT_MODEL_INFO = info.to_dict()
                 else:
-                    print(f"[server][WARN] MODEL_ID '{model_id}' not found, using default")
-                    checkpoint_path = CHECKPOINT_PATH
-            elif CHECKPOINT_PATH and os.path.exists(CHECKPOINT_PATH):
-                # Use CHECKPOINT_PATH if it exists
-                print(f"[server] Using CHECKPOINT_PATH: {CHECKPOINT_PATH}")
-                checkpoint_path = CHECKPOINT_PATH
+                    print(f"[server][WARN] MODEL_ID '{model_id}' not found")
             else:
-                # Use recommended federated VLM (privacy + performance balance)
-                rec_model = MODEL_MANAGER.get_recommended_model("privacy")
-                if rec_model:
-                    print(f"[server] Loading recommended model: {rec_model.name}")
-                    checkpoint_path = rec_model.path
-                    CURRENT_MODEL_INFO = rec_model.to_dict()
+                # Load best VLM by default
+                rec = MODEL_MANAGER.get_recommended_model("production")
+                if rec:
+                    print(f"[server] Loading recommended model: {rec.name} (F1={rec.f1_score})")
+                    load_model(rec.path)
+                    CURRENT_MODEL_INFO = rec.to_dict()
                 else:
-                    print(f"[server][ERROR] No models available and no CHECKPOINT_PATH specified")
-                    checkpoint_path = None
+                    print("[server][WARN] No models found")
         else:
-            # Fallback to CHECKPOINT_PATH when ModelManager not available
-            checkpoint_path = CHECKPOINT_PATH
-            print(f"[server] ModelManager not available, using CHECKPOINT_PATH: {checkpoint_path}")
-        
-        if checkpoint_path:
-            load_model_and_tokenizer(checkpoint_path)
-        else:
-            print("[server][WARN] No model loaded - server running without inference capability")
-            
+            print("[server][WARN] ModelManager not available")
     except Exception as e:
-        print("[server][ERROR] Failed startup model load:", e)
+        print(f"[server][ERROR] Startup failed: {e}")
         traceback.print_exc()
 
-
-
     yield
-    # Shutdown: cleanup if needed
     print("[server] Shutting down...")
 
-app = FastAPI(title="FarmFederate-Advisor (full model server)", lifespan=lifespan)
+
+app = FastAPI(title="FarmFederate Crop Stress API", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -221,271 +505,69 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ---------------- Model loader ----------------
-def safe_load_checkpoint(path: str) -> Dict[str, Any]:
-    """
-    Load a checkpoint in various common formats and return a dict-like object.
-    Accepts:
-      - raw state_dict (saved via torch.save(model.state_dict()))
-      - dict with key 'model_state_dict'
-      - dict with 'state_dict' or similar
-      - whole model (rare) -> will return its state_dict
-    """
-    if not os.path.exists(path):
-        raise FileNotFoundError(path)
-    print(f"[server] Loading checkpoint: {path}")
-    ck = torch.load(path, map_location="cpu")
-    if isinstance(ck, dict):
-        # common keys
-        for k in ("model_state_dict", "state_dict", "model"):
-            if k in ck:
-                val = ck[k]
-                print(f"[server] Found checkpoint key '{k}' -> using it as state_dict")
-                return val
-        # maybe it's already the raw state_dict
-        # check if values are tensors
-        if all(isinstance(v, torch.Tensor) for v in ck.values()):
-            print("[server] Checkpoint appears to be a raw state_dict")
-            return ck
-        # If it's a wrapper with nested 'model', try heuristics
-        # pick largest tensor-like entry
-        for v in ck.values():
-            if isinstance(v, dict) and all(isinstance(x, torch.Tensor) for x in v.values()):
-                print("[server] Found nested state_dict inside checkpoint; using it")
-                return v
-    # if it's a nn.Module (rare)
-    if hasattr(ck, "state_dict"):
-        print("[server] Checkpoint is a model object; extracting state_dict()")
-        return ck.state_dict()
-    raise RuntimeError("Unknown checkpoint format")
 
-def load_model_and_tokenizer(checkpoint_path: str = CHECKPOINT_PATH):
-    global TOKENIZER, IMAGE_PROCESSOR, MODEL, THRESHOLDS
+# ============================================================================
+# UTILITY
+# ============================================================================
 
-    # tokenizer from multimodal_model builder (keeps same tokenization as training)
-    TOKENIZER = build_tokenizer(TEXT_MODEL_NAME)
-    print("[server] Tokenizer loaded.")
-
-    # create architecture identical to training
-    # Note: Set use_cross_attention=False for compatibility with old checkpoints
-    # Set to True after retraining with enhanced architecture
-    MODEL = MultimodalClassifier(
-        text_model_name=TEXT_MODEL_NAME,
-        image_model_name=IMAGE_MODEL_NAME,
-        num_labels=NUM_LABELS,
-        freeze_backbones=False,  # inference only — no training
-        use_cross_attention=False,  # TODO: Set to True after retraining
-    )
-    print("[server] Multimodal model instance created.")
-
-    # try to load checkpoint
-    try:
-        state_dict = safe_load_checkpoint(checkpoint_path)
-        # Ensure key name shapes compatible — allow strict=False
-        missing, unexpected = MODEL.load_state_dict(state_dict, strict=False)
-        print(f"[server] Loaded weights (strict=False). missing_keys={len(missing)} unexpected_keys={len(unexpected)}")
-    except Exception as e:
-        print("[server][WARN] Failed to load checkpoint with strict heuristics:", e)
-        traceback.print_exc()
-        # continue with random init (not ideal)
-    
-    MODEL.to(DEVICE)
-    MODEL.eval()
-    print(f"[server] Model moved to {DEVICE} and set to eval().")
-
-    # optional: if you saved thresholds.npy near checkpoint, attempt to load
-    thr_path = os.path.join(os.path.dirname(checkpoint_path), "thresholds.npy")
-    if os.path.exists(thr_path):
-        try:
-            THRESHOLDS = np.load(thr_path)
-            print(f"[server] Loaded thresholds from {thr_path}: {THRESHOLDS}")
-        except Exception:
-            print("[server][WARN] Failed to load thresholds.npy — using defaults 0.5.")
-
-    # image processor: try to use builder if present, else fallback to torchvision transforms
-    try:
-        IMAGE_PROCESSOR = build_image_processor(IMAGE_MODEL_NAME)
-        print("[server] Image processor loaded from multimodal_model (if defined).")
-    except Exception:
-        IMAGE_PROCESSOR = None
-        print("[server] No image processor builder available — using torchvision transform fallback.")
-
-# ---------------- utility helpers ----------------
-def build_text_with_sensors(text: str, sensors: str) -> str:
-    text = (text or "").strip()
-    sensors = (sensors or "").strip()
-    if sensors:
-        sensors_line = sensors if sensors.upper().startswith("SENSORS:") else f"SENSORS: {sensors}"
-    else:
-        sensors_line = "SENSORS: (not provided)."
-    if not text: text = "(no free-text log)."
-    return f"{sensors_line}\nLOG: {text}"
-
-def preprocess_image_upload(upload: UploadFile) -> Optional[torch.Tensor]:
+def preprocess_image(upload: UploadFile) -> Optional[torch.Tensor]:
     if upload is None:
         return None
     try:
         content = upload.file.read()
         upload.file.seek(0)
         img = Image.open(io.BytesIO(content)).convert("RGB")
-        if IMAGE_PROCESSOR is not None:
-            # if user provided AutoImageProcessor in multimodal_model, use it
-            try:
-                # AutoImageProcessor returns numpy or torch tensor depending on config
-                proc = IMAGE_PROCESSOR(images=img, return_tensors="pt")
-                # expected key may be 'pixel_values'
-                if "pixel_values" in proc:
-                    t = proc["pixel_values"]
-                else:
-                    # fallback: assume output is a torch tensor
-                    t = torch.tensor(proc).permute(0,3,1,2) if isinstance(proc, np.ndarray) else proc
-                return t.squeeze(0) if t.ndim==4 else t
-            except Exception:
-                pass
-        # fallback torchvision transforms
-        t = IMAGE_TRANSFORM(img)  # [C,H,W]
-        return t
+        return IMAGE_TRANSFORM(img)
     except Exception as e:
-        print("[server][WARN] Failed to preprocess image:", e)
-        traceback.print_exc()
+        print(f"[server][WARN] Image preprocessing failed: {e}")
         return None
 
-def logits_to_response(text: str, logits: torch.Tensor, thresholds: np.ndarray):
-    # logits: [1, C] torch tensor on device
-    # apply priors (in training module style) — priors expect (logits, [texts]) according to training helper
-    try:
-        logits = apply_priors_to_logits(logits, [text])
-    except Exception:
-        # fallback no-op
-        pass
-    probs = torch.sigmoid(logits).detach().cpu().numpy().ravel().tolist()
-    thr = list(map(float, thresholds.tolist()))
-    mask = [1 if p >= t else 0 for p,t in zip(probs, thr)]
-    active_labels = []
-    all_scores = []
-    for i, lab in enumerate(ISSUE_LABELS):
-        entry = {"label": lab, "prob": float(probs[i]), "threshold": float(thr[i])}
-        all_scores.append(entry)
-        if mask[i] == 1:
-            active_labels.append(entry)
-    advice = advisor_from_mask(mask)
-    return {
-        "active_labels": active_labels,
-        "all_scores": all_scores,
-        "raw_probs": probs,
-        "advice": advice,
-        "debug": {"probs": probs, "thresholds": thr, "mask": mask}
-    }
 
-# ----------------- Routes -----------------
+# ============================================================================
+# ROUTES
+# ============================================================================
+
 @app.get("/health")
 async def health():
-    model_loaded = MODEL is not None
     return {
         "status": "ok",
         "device": DEVICE,
-        "model_loaded": bool(model_loaded),
+        "model_loaded": MODEL is not None,
+        "model_type": MODEL_TYPE if MODEL else None,
         "labels": ISSUE_LABELS,
         "demo_mode": DEMO_MODE,
+        "current_model": CURRENT_MODEL_INFO,
     }
+
 
 @app.get("/sensors/latest")
 async def get_latest_sensors():
-    """
-    Return the latest sensor data from MQTT listener saved files.
-    Looks in checkpoints_paper/ingest/sensors/ for *.json files and returns the most recent.
-    """
-    import os
-    print("[DEBUG] Current working directory:", os.getcwd())
     sensors_dir = os.path.join("checkpoints_paper", "ingest", "sensors")
-    abs_sensors_dir = os.path.abspath(sensors_dir)
-    print("[DEBUG] Looking for sensor files in:", abs_sensors_dir)
-    if not os.path.exists(abs_sensors_dir):
-        print("[DEBUG] Directory does not exist.")
+    abs_dir = os.path.abspath(sensors_dir)
+    if not os.path.exists(abs_dir):
         return JSONResponse({"error": "No sensor data available"}, status_code=404)
-
-    # Find all sensor JSON files
     try:
-        files = [f for f in os.listdir(abs_sensors_dir) if f.endswith('.json')]
-        print("[DEBUG] Found files:", files)
+        files = [f for f in os.listdir(abs_dir) if f.endswith('.json')]
         if not files:
-            print("[DEBUG] No .json files found.")
             return JSONResponse({"error": "No sensor data available"}, status_code=404)
-
-        # Get the most recently modified file
-        latest_file = max([os.path.join(abs_sensors_dir, f) for f in files], key=os.path.getmtime)
-        print("[DEBUG] Latest file:", latest_file)
-
-        with open(latest_file, 'r') as f:
-            sensor_data = json.load(f)
-
-        # Convert camelCase keys to snake_case for frontend compatibility
-        def to_snake_case(s):
-            import re
-            return re.sub(r'(?<!^)(?=[A-Z])', '_', s).lower()
-
-        snake_case_data = {}
-        for k, v in sensor_data.items():
-            snake_case_data[to_snake_case(k)] = v
-
-        return JSONResponse(snake_case_data, status_code=200)
+        latest = max([os.path.join(abs_dir, f) for f in files], key=os.path.getmtime)
+        with open(latest, 'r') as f:
+            data = json.load(f)
+        import re
+        snake = {re.sub(r'(?<!^)(?=[A-Z])', '_', k).lower(): v for k, v in data.items()}
+        return JSONResponse(snake)
     except Exception as e:
-        print(f"[DEBUG] Exception: {e}")
-        return JSONResponse({"error": f"Failed to read sensor data: {str(e)}"}, status_code=500)
+        return JSONResponse({"error": str(e)}, status_code=500)
+
 
 @app.post("/predict")
 async def predict(request: Request):
-    """
-    Accepts JSON:
-      { "text": "...", "sensors": "soil_moisture=...", "client_id": "..." }
-    Or multipart/form-data:
-      text: str, sensors: str (optional), image: file (optional)
-    """
-    global MODEL, TOKENIZER, THRESHOLDS
-
-    # Demo mode: return simulated predictions without loading ML models
+    # Demo mode
     if DEMO_MODE:
-        content_type = request.headers.get("content-type", "").lower()
-        text = ""
-        if "application/json" in content_type:
-            data = await request.json()
-            text = str(data.get("text", "") or "")
-        elif "multipart/form-data" in content_type:
-            form = await request.form()
-            text = str(form.get("text", "") or "")
+        return await _demo_predict(request)
 
-        # Simple keyword-based demo predictions
-        text_lower = text.lower()
-        probs = [0.1, 0.1, 0.1, 0.1, 0.1]
-        if "water" in text_lower or "dry" in text_lower or "wilt" in text_lower:
-            probs[0] = 0.85  # water_stress
-        elif "yellow" in text_lower or "nutrient" in text_lower or "fertilizer" in text_lower:
-            probs[1] = 0.82  # nutrient_def
-        elif "bug" in text_lower or "insect" in text_lower or "pest" in text_lower or "hole" in text_lower:
-            probs[2] = 0.78  # pest_risk
-        elif "spot" in text_lower or "disease" in text_lower or "fungus" in text_lower or "rot" in text_lower:
-            probs[3] = 0.88  # disease_risk
-        elif "heat" in text_lower or "hot" in text_lower or "burn" in text_lower:
-            probs[4] = 0.75  # heat_stress
-        else:
-            # Default to healthy-ish with slight water stress
-            probs = [0.3, 0.15, 0.1, 0.1, 0.05]
-
-        mask = [1 if p > 0.3 else 0 for p in probs]
-        return JSONResponse({
-            "labels": ISSUE_LABELS,
-            "probs": probs,
-            "mask": mask,
-            "advice": advisor_from_mask(mask),
-            "demo_mode": True,
-        })
-
-    if MODEL is None or TOKENIZER is None:
-        # Attempt to reload if startup failed earlier
-        try:
-            load_model_and_tokenizer(CHECKPOINT_PATH)
-        except Exception:
-            return JSONResponse({"error": "Model not available on server"}, status_code=503)
+    if MODEL is None:
+        return JSONResponse({"error": "No model loaded"}, status_code=503)
 
     content_type = request.headers.get("content-type", "").lower()
     text = ""
@@ -493,236 +575,184 @@ async def predict(request: Request):
     client_id = "unknown"
     image_tensor = None
 
-    # JSON
     if "application/json" in content_type:
         data = await request.json()
-        if not isinstance(data, dict):
-            return JSONResponse({"error": "JSON body must be an object"}, status_code=400)
         text = str(data.get("text", "") or "")
         sensors = str(data.get("sensors", "") or "")
         client_id = str(data.get("client_id", client_id) or client_id)
-
-    # multipart/form-data
-    elif "multipart/form-data" in content_type or "form-data" in content_type:
+    elif "multipart" in content_type or "form-data" in content_type:
         form = await request.form()
         text = str(form.get("text", "") or "")
         sensors = str(form.get("sensors", "") or "")
         client_id = str(form.get("client_id", client_id) or client_id)
         upload = form.get("image", None)
         if upload is not None:
-            # upload is starlette UploadFile
-            image_tensor = preprocess_image_upload(upload)
-
+            image_tensor = preprocess_image(upload)
     else:
         return JSONResponse({"error": f"Unsupported Content-Type: {content_type}"}, status_code=415)
 
     if not text and not sensors and image_tensor is None:
         return JSONResponse({"error": "Provide at least text or an image."}, status_code=400)
 
-    combined_text = build_text_with_sensors(text, sensors)
+    # Build combined text
+    combined = text.strip() or "(no text)"
+    if sensors:
+        combined = f"SENSORS: {sensors}\nLOG: {combined}"
 
-    # Tokenize text
-    enc = TOKENIZER(
-        combined_text,
-        truncation=True,
-        max_length=MAX_LEN,
-        padding="max_length",
-        return_tensors="pt",
-    )
+    # Tokenize
+    enc = TOKENIZER(combined, max_length=MAX_LEN, truncation=True, padding="max_length", return_tensors="pt")
     input_ids = enc["input_ids"].to(DEVICE)
     attention_mask = enc["attention_mask"].to(DEVICE)
 
-    # prepare image batch if available
+    # Image
+    img_batch = None
     if image_tensor is not None:
-        # ensure batch dim
-        if isinstance(image_tensor, torch.Tensor):
-            img_batch = image_tensor.unsqueeze(0).to(DEVICE)
-        else:
-            # if it's numpy etc.
-            img_batch = torch.tensor(image_tensor).unsqueeze(0).to(DEVICE)
-    else:
-        # If your multimodal model **requires** image always, send a zero tensor
-        img_batch = None
+        img_batch = image_tensor.unsqueeze(0).to(DEVICE)
 
-    # Forward pass (no grad)
+    # Forward
     with torch.no_grad():
         try:
-            # Match the forward signature from multimodal_model.MultimodalClassifier:
-            # def forward(self, input_ids, attention_mask, pixel_values)
-            if img_batch is not None:
-                logits = MODEL(input_ids=input_ids, attention_mask=attention_mask, pixel_values=img_batch)
-            else:
-                # If model expects pixel_values (non-optional) — create zero image tensor with correct feature size
-                # We attempt call without pixel_values first
-                try:
-                    out_logits = MODEL(input_ids=input_ids, attention_mask=attention_mask, pixel_values=None)
-                    logits = out_logits
-                except TypeError:
-                    # fallback: zero image
-                    dummy_img = torch.zeros((1,3,IMG_SIZE,IMG_SIZE), device=DEVICE)
-                    logits = MODEL(input_ids=input_ids, attention_mask=attention_mask, pixel_values=dummy_img)
-            # If model returns a tensor directly (logits) or an object with .logits
-            if isinstance(logits, dict) and "logits" in logits:
-                logits = logits["logits"]
-            elif hasattr(logits, "logits"):
-                logits = logits.logits
-            # ensure shape [1,C]
-            if isinstance(logits, torch.Tensor) and logits.dim()==1:
+            if MODEL_TYPE in ("LLM", "text"):
+                out = MODEL(input_ids=input_ids, attention_mask=attention_mask)
+            elif MODEL_TYPE in ("ViT", "vision"):
+                if img_batch is None:
+                    img_batch = torch.zeros((1, 3, IMG_SIZE, IMG_SIZE), device=DEVICE)
+                out = MODEL(pixel_values=img_batch)
+            else:  # VLM
+                if img_batch is None:
+                    img_batch = torch.zeros((1, 3, IMG_SIZE, IMG_SIZE), device=DEVICE)
+                out = MODEL(input_ids=input_ids, attention_mask=attention_mask, pixel_values=img_batch)
+
+            logits = out["logits"] if isinstance(out, dict) else out
+            if logits.dim() == 1:
                 logits = logits.unsqueeze(0)
         except Exception as e:
             traceback.print_exc()
-            return JSONResponse({"error": "model inference failed", "detail": str(e)}, status_code=500)
+            return JSONResponse({"error": "Inference failed", "detail": str(e)}, status_code=500)
 
-    result = logits_to_response(combined_text, logits, THRESHOLDS)
-    # Add client_id & text used for debugging
-    out = {
+    # Convert to probabilities (softmax for multi-class)
+    probs = F.softmax(logits, dim=-1).cpu().numpy().ravel().tolist()
+    pred_class = int(np.argmax(probs))
+    mask = [1 if i == pred_class else 0 for i in range(NUM_LABELS)]
+    # Also flag high secondary probabilities
+    for i, p in enumerate(probs):
+        if p > 0.3:
+            mask[i] = 1
+
+    return JSONResponse({
         "client_id": client_id,
-        "text_used": combined_text,
-        "result": result,
-        "advice": result.get("advice", "")
-    }
-    return JSONResponse(out, status_code=200)
+        "text_used": combined,
+        "labels": ISSUE_LABELS,
+        "probs": probs,
+        "predicted_class": ISSUE_LABELS[pred_class],
+        "predicted_display": DISPLAY_NAMES.get(ISSUE_LABELS[pred_class], ISSUE_LABELS[pred_class]),
+        "confidence": float(probs[pred_class]),
+        "mask": mask,
+        "advice": advisor_from_mask(mask),
+        "model_type": MODEL_TYPE,
+        "model_info": CURRENT_MODEL_INFO,
+    })
 
-# ---------------- Model Management Endpoints ----------------
+
+async def _demo_predict(request: Request):
+    """Keyword-based demo predictions."""
+    content_type = request.headers.get("content-type", "").lower()
+    text = ""
+    if "application/json" in content_type:
+        data = await request.json()
+        text = str(data.get("text", "") or "")
+    elif "multipart" in content_type:
+        form = await request.form()
+        text = str(form.get("text", "") or "")
+
+    kw_map = {
+        0: ["water", "dry", "wilt", "drought", "moisture"],
+        1: ["yellow", "nutrient", "fertilizer", "pale", "deficiency"],
+        2: ["bug", "insect", "pest", "hole", "eaten", "aphid"],
+        3: ["spot", "disease", "fungus", "rot", "blight", "rust"],
+        4: ["heat", "hot", "burn", "scorch", "temperature"],
+    }
+    text_lower = text.lower()
+    probs = [0.1] * 5
+    for i, kws in kw_map.items():
+        matches = sum(1 for kw in kws if kw in text_lower)
+        if matches > 0:
+            probs[i] = min(0.5 + matches * 0.15, 0.95)
+    if max(probs) <= 0.1:
+        probs = [0.25, 0.12, 0.08, 0.10, 0.05]
+
+    pred = int(np.argmax(probs))
+    mask = [1 if p > 0.3 else 0 for p in probs]
+    return JSONResponse({
+        "labels": ISSUE_LABELS, "probs": probs, "mask": mask,
+        "predicted_class": ISSUE_LABELS[pred],
+        "confidence": float(probs[pred]),
+        "advice": advisor_from_mask(mask), "demo_mode": True,
+    })
+
+
+# ============================================================================
+# MODEL MANAGEMENT ENDPOINTS
+# ============================================================================
+
 @app.get("/models")
 async def list_models():
-    """
-    List all available trained models with metadata
-    """
-    if not HAVE_MODEL_MANAGER or MODEL_MANAGER is None:
-        return JSONResponse({
-            "error": "ModelManager not available",
-            "current_model": CHECKPOINT_PATH if CHECKPOINT_PATH else None
-        }, status_code=200)
-    
-    try:
-        models = MODEL_MANAGER.list_models()
-        recommendations = {
-            "production": MODEL_MANAGER.get_recommended_model("production").name if MODEL_MANAGER.get_recommended_model("production") else None,
-            "privacy": MODEL_MANAGER.get_recommended_model("privacy").name if MODEL_MANAGER.get_recommended_model("privacy") else None,
-            "fast": MODEL_MANAGER.get_recommended_model("fast").name if MODEL_MANAGER.get_recommended_model("fast") else None,
-            "vision": MODEL_MANAGER.get_recommended_model("vision").name if MODEL_MANAGER.get_recommended_model("vision") else None,
-            "text": MODEL_MANAGER.get_recommended_model("text").name if MODEL_MANAGER.get_recommended_model("text") else None,
-        }
-        
-        return JSONResponse({
-            "models": models,
-            "recommendations": recommendations,
-            "current_model": CURRENT_MODEL_INFO
-        }, status_code=200)
-    except Exception as e:
-        traceback.print_exc()
-        return JSONResponse({"error": str(e)}, status_code=500)
+    if not MODEL_MANAGER:
+        return JSONResponse({"models": [], "current_model": CURRENT_MODEL_INFO})
+    models = MODEL_MANAGER.list_models()
+    recs = {}
+    for uc in ("production", "privacy", "fast", "vision", "text"):
+        r = MODEL_MANAGER.get_recommended_model(uc)
+        recs[uc] = r.name if r else None
+    return JSONResponse({"models": models, "recommendations": recs, "current_model": CURRENT_MODEL_INFO})
+
 
 @app.get("/models/{model_id}")
 async def get_model_info(model_id: str):
-    """
-    Get detailed information about a specific model
-    """
-    if not HAVE_MODEL_MANAGER or MODEL_MANAGER is None:
+    if not MODEL_MANAGER:
         return JSONResponse({"error": "ModelManager not available"}, status_code=400)
-    
-    try:
-        model_info = MODEL_MANAGER.get_model_info(model_id)
-        if model_info:
-            return JSONResponse({
-                "model": model_info.to_dict(),
-                "is_current": CURRENT_MODEL_INFO and CURRENT_MODEL_INFO.get("name") == model_id
-            }, status_code=200)
-        else:
-            return JSONResponse({"error": f"Model '{model_id}' not found"}, status_code=404)
-    except Exception as e:
-        traceback.print_exc()
-        return JSONResponse({"error": str(e)}, status_code=500)
+    info = MODEL_MANAGER.get_model_info(model_id)
+    if not info:
+        return JSONResponse({"error": f"Model '{model_id}' not found"}, status_code=404)
+    return JSONResponse({"model": info.to_dict(), "is_current": CURRENT_MODEL_INFO and CURRENT_MODEL_INFO.get("name") == model_id})
+
 
 @app.post("/models/switch/{model_id}")
 async def switch_model(model_id: str):
-    """
-    Switch to a different trained model
-    """
     global CURRENT_MODEL_INFO
-    
-    if not HAVE_MODEL_MANAGER or MODEL_MANAGER is None:
-        return JSONResponse({"error": "ModelManager not available - model switching disabled"}, status_code=400)
-    
+    if not MODEL_MANAGER:
+        return JSONResponse({"error": "ModelManager not available"}, status_code=400)
+    info = MODEL_MANAGER.get_model_info(model_id)
+    if not info:
+        return JSONResponse({"error": f"Model '{model_id}' not found"}, status_code=404)
     try:
-        model_info = MODEL_MANAGER.get_model_info(model_id)
-        if not model_info:
-            return JSONResponse({"error": f"Model '{model_id}' not found"}, status_code=404)
-        
-        # Check if model file exists
-        if not os.path.exists(model_info.path):
-            return JSONResponse({
-                "error": f"Model file not found: {model_info.path}"
-            }, status_code=404)
-        
-        # Load the new model
-        print(f"[server] Switching to model: {model_id}")
-        try:
-            load_model_and_tokenizer(model_info.path)
-            CURRENT_MODEL_INFO = model_info.to_dict()
-            return JSONResponse({
-                "success": True,
-                "message": f"Successfully switched to model: {model_id}",
-                "model": CURRENT_MODEL_INFO
-            }, status_code=200)
-        except Exception as load_error:
-            traceback.print_exc()
-            return JSONResponse({
-                "error": f"Failed to load model: {str(load_error)}",
-                "detail": traceback.format_exc()
-            }, status_code=500)
-            
+        load_model(info.path)
+        CURRENT_MODEL_INFO = info.to_dict()
+        return JSONResponse({"success": True, "message": f"Switched to {model_id}", "model": CURRENT_MODEL_INFO})
     except Exception as e:
         traceback.print_exc()
         return JSONResponse({"error": str(e)}, status_code=500)
 
+
 @app.get("/models/current")
 async def get_current_model():
-    """
-    Get information about the currently loaded model
-    """
-    if CURRENT_MODEL_INFO:
-        return JSONResponse({
-            "model": CURRENT_MODEL_INFO,
-            "checkpoint_path": CHECKPOINT_PATH
-        }, status_code=200)
-    else:
-        return JSONResponse({
-            "model": None,
-            "checkpoint_path": CHECKPOINT_PATH,
-            "message": "No model metadata available (loaded from CHECKPOINT_PATH)"
-        }, status_code=200)
+    return JSONResponse({"model": CURRENT_MODEL_INFO, "model_type": MODEL_TYPE if MODEL else None})
 
-# ---------------- Control endpoint for IoT devices ----------------
+
 @app.post("/control/{device}")
 async def control_device(device: str, request: Request):
-    """
-    Control endpoint for IoT devices (water pump, heater, pest control, etc.)
-    """
     try:
         body = await request.json()
         state = body.get("state", False)
-        
-        # Log the control command
-        print(f"[control] Device: {device}, State: {state}")
-        
-        # Here you would integrate with MQTT or other IoT protocol
-        # For now, just return success
         return JSONResponse({
-            "success": True,
-            "device": device,
-            "state": state,
+            "success": True, "device": device, "state": state,
             "message": f"{device} {'activated' if state else 'deactivated'}"
-        }, status_code=200)
+        })
     except Exception as e:
-        return JSONResponse({
-            "success": False,
-            "error": str(e)
-        }, status_code=500)
+        return JSONResponse({"success": False, "error": str(e)}, status_code=500)
 
-# ---------------- Entry point for direct run ----------------
+
 if __name__ == "__main__":
     import uvicorn
-    print(f"[server] Starting uvicorn (device={DEVICE}). If you want to change port, set PORT env var.")
+    print(f"[server] Starting on port {os.environ.get('PORT', 8000)}")
     uvicorn.run("server:app", host="0.0.0.0", port=int(os.environ.get("PORT", 8000)), reload=False)

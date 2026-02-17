@@ -1,0 +1,848 @@
+BananaLeafNet: Federated Learning CNNs  for 
+Multiclass Disease Identification in Banana Crops 
+Vikrant Sharma 
+ Computer Science and Engineering,  
+Graphic Era Hill University, 
+Dehradun, Uttarakhand, India 
+vsharma@gehu.ac.in 
+ 
+Manisha Aeri 
+Computer Science and Engineering,  
+Graphic Era Deemed to be University, 
+Dehradun, Uttarakhand, India 
+ maniaeri16@gmail.com 
+Vinay Kukreja 
+Chitkara University Institute of 
+Engineering and Technology  
+Chitkara University 
+Punjab, India 
+vinay.kukreja@chitkara.edu.in 
+Shiva Mehta 
+Chitkara University Institute of 
+Engineering and Technology 
+ Chitkara University 
+ Punjab, India  
+shiva.2387@chitkara.edu.in
+Abstract— This research study explores a unique use of 
+convolutional neural networks (CNN) in federated learning 
+(FL) for the classification of banana leaf diseases across a 
+decentralised network of five clients (pm_1 to pm_5), each of 
+which represents a different agricultural situation. The goal of 
+the research, which covers five classes of banana leaf illnesses 
+(UT-1 to UT-5), is to provide a reliable and private-protecting 
+remedy for the many problems encountered in banana 
+farming. By using FL's decentralised training paradigm, every 
+client independently improves its model using data that is 
+stored locally, guaranteeing the privacy of user information. 
+The effectiveness of the model at the local level is shown in the 
+Result Analysis section, where precise values range from 
+87.45% to 92.17%, recall values from 87.61% to 92.20%, and 
+F1-Score values from 87.41% to 92.16%. Then, by examining 
+Federated Averaging, the standardised model performance is 
+shown using macro, micro, and weighted averages. The macro 
+average accuracy, recall, and F1-Score of 87.49%, 87.58%, and 
+90.02%, respectively, show that the customers' performance is 
+balanced. Weighted averages that account for class imbalances 
+produce yield percentages of 87.43%, 87.53%, and 90.00%, in 
+that order. Micro Averages with accuracy, recall, and F1-
+Scores of 87.39%, 87.50%, and 89.97% are obtained by 
+summing true positives, false positives, and false negatives 
+among customers. The investigation into using Federated 
+Averaging to transform local data into global data highlights 
+the model's ability to work collaboratively across individual 
+client performances. This transforming process explains a 
+coherent and strong global model performance, as shown by 
+the macro, micro, and weighted averages. This study highlights 
+the potential of FL with CNN to solve issues in precision 
+agriculture while also advancing the knowledge of disease 
+categorization via the integration of technical innovation and 
+agricultural imperatives. 
+Keywords: Banana leaves, Leaf diseases, (CNN)_(FL), 
+Disease, Augmentation image, data privacy, data security. 
+I. 
+INTRODUCTION 
+Because of the proliferation of smartphones and IoT devices, 
+to now have access to a treasure trove of data that might be 
+crucial in illuminating and resolving global issues. Banana 
+farming faces an existential danger from several pests and 
+diseases that have become ubiquitous on banana leaves. 
+Millions of people worldwide rely on the banana industry, so 
+India is the world leader in banana production [1]. Banana 
+leaf diseases, however, have wider repercussions on the 
+socioeconomic fabric of countries than just a threat to food 
+security [2]. This study takes a novel approach by combining 
+the benefits of Federated Learning (FL) and Convolutional 
+Neural Networks (CNN) to conquer these difficulties. This 
+work takes a novel approach by introducing a refined 
+averaging technique in FL, leading to more effective and 
+secure 
+model 
+updates 
+without 
+compromising 
+users' 
+privacy[3]. Fundamental to FL is decentralization, meaning 
+data may be processed wherever it is needed most. To 
+propose a new averaging method to improve the precision 
+and efficiency of model training, allowing it to better 
+accommodate the varying complexities of different data 
+sources. Banana leaf disease is a massive issue, but it can be 
+broken down into five distinct categories, each with its 
+distinctive signs and consequences. 
+Black Sigatoka is a fungal disease that causes necrotic leaf 
+patches, which in turn significantly reduces fruit supply. 
+Another fungal disease that reduces a leaf's photosynthetic 
+capacity is called yellow Sigatoka [4]. Panama is a fungal 
+disease that targets plant roots and kills the plant. Banana 
+Bunchy Top Virus (BBTV): A virus that causes dwarfed 
+growth and 'bunched' leaves at the top of banana plants. 
+Banana mosaic disease is a virus that causes the leaves to 
+become discoloured and mosaic-like. For each illness 
+category, the study has painstakingly chosen datasets from 
+five different clients, yielding a wealth of data points to 
+ensure complete coverage[5]. The CNN model benefits from 
+this variety since it can pick up specifics about each 
+condition, leading to a more complete picture. This study has 
+implications beyond the academic world. These illnesses are 
+an economic burden and an agricultural problem for 
+countries like India, the world's biggest producer of bananas. 
+With cutting-edge technology, this study hopes to lighten the 
+loads of many farmers and revitalize the whole sector [6]. 
+Overall, the work is groundbreaking in three ways: as a 
+technique for federated learning, as an analysis and treatment 
+for illnesses affecting banana leaves, and as a source of hope 
+for communities and countries dealing with the fallout of 
+these epidemics. Integrating technology and agronomy will 
+pave the way for a new age of fruitful and environmentally 
+responsible banana farming [7]. 
+Banana leaf disease classification using federated learning 
+and convolutional neural networks: The primary goal is to 
+advance the state-of-the-art in Federated Learning (FL) by 
+proposing a novel averaging strategy that allows us to go 
+beyond more traditional methods. To acknowledge that the 
+local updates of classic FL approaches may need to be more 
+accurate or consistent and to work to improve the 
+consistency and accuracy of global model updates [8]. To 
+aim to improve FL's performance by making its aggregation 
+of local models more efficient, making it more sensitive to 
+the subtleties of different datasets, and providing better 
+prediction results. In order to use CNN to understand better 
+2023 Fourth International Conference on Smart Technologies in Computing, Electrical and Electronics (ICSTCEE) | 979-8-3503-8462-8/23/$31.00 ©2023 IEEE | DOI: 10.1109/ICSTCEE60504.2023.10584854
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 16:00:42 UTC from IEEE Xplore.  Restrictions apply. 
+and categorize the spectrum of banana leaf diseases, 
+Focusing on the five most common banana leaf diseases—
+Black Sigatoka, Yellow Sigatoka, Panama Disease, Banana 
+Bunchy Top Virus (BBTV), and Banana Mosaic Disease—is 
+central to this study. Using the capabilities of convolutional 
+neural networks (CNN), to want to develop a model that can 
+not only accurately identify between various illnesses but 
+also fully understand the nuances of their symptoms. In order 
+to create effective interventions and treatments, fine-grained 
+categorization is essential. To encourage the free sharing of 
+and protected access to agricultural research data: While data 
+privacy is increasingly revered, the study aims to spread data 
+democratization ideals in agriculture [9]. Using Federated 
+Learning to stress the necessity of data localization, avoiding 
+the risks of centralized storage. This is an ethical and 
+technological goal, as it defends the independence of 
+individual customers and farmers' data while encouraging 
+their participation in improving agriculture [10].To Stimulate 
+Economic and Social Progress in Banana-Growing Areas: 
+Beyond its purely technical goals, this study aspires to revive 
+the economies of areas plagued by banana leaf blights. To 
+want to provide a technical silver bullet since to are aware of 
+the devastating effects these illnesses have on the economies 
+of countries like India. To intend to revitalize banana 
+farming by reducing the impact of these illnesses by early 
+and precise identification, which might revive an entire 
+sector and provide hope to many farmers. The convergence 
+of technology and agriculture may bring about revolutionary 
+change; thus, by embracing these goals, to want to push the 
+boundaries of agronomic research[11]. 
+II. Literature Review 
+This research recognises the danger that illnesses and 
+plagues bring to the efficiency and quality of output in the 
+agro-industry. This study chose to use photos from a publicly 
+available 
+internet 
+resource 
+because 
+the 
+researchers 
+understood the urgent need for accurate illness diagnosis in 
+the modern agricultural environment. This research set out to 
+use convolutional neural networks (CNNs) to analyse RGB 
+photos of banana leaves in an effort to identify banana plant 
+illnesses. Three models were developed as part of the 
+investigation: one without regularisation, one with dropout, 
+and one with weight regularisation. The K-fold cross-
+validation approach was used to tune the hyperparameters, 
+and the Adam optimizer was used to speed up the training of 
+the neural network (NN). To evaluate the effectiveness of 
+NN, important measures, including accuracy and F1-Score, 
+were used. Every kind of model has 27 possible 
+hyperparameter settings, and the best one was chosen. 
+Despite the data set's limitations, the research found that the 
+CNN model without regularisation performed better than the 
+others in illness prediction for banana plants [12]. Rising 
+sector rivalry necessitates creative solutions to sustainably 
+increase crop yields in the agriculturally important area of 
+Piura, where crop production is an essential economic pillar. 
+Crops' susceptibility to things like insect attacks, diseases, 
+and abrupt weather changes is one of the reasons why results 
+are 
+inconsistent. 
+The 
+importance 
+of 
+early 
+disease 
+identification throughout the development phases is 
+highlighted in this research, which presents a system that 
+uses digital image processing methods to analyse and 
+diagnose illnesses in banana leaves. The study's results show 
+that the suggested approach is efficient in detecting and 
+classifying Bacterial Wilt (BBW) and Black Sigatoka (BBS), 
+two main diseases affecting banana leaves. This study has 
+the potential to improve agricultural resilience in Piura by 
+making it easier to identify conditions early on, which would 
+boost the region's competitiveness in the ever-changing 
+farming industry [13]. In order to keep agricultural output 
+high, which is a key factor in economic stability, it is 
+essential to identify plant diseases. The yields' quality, 
+quantity, and overall production may be severely affected by 
+neglecting this component, which in turn affects plant health. 
+In addition to reducing the time and effort needed to 
+manually monitor large areas of crops, automatic disease 
+detection may identify the first signs of illness on plant 
+leaves. As a cost-effective and efficient way for farmers to 
+monitor plant health, this research presents a photo 
+segmentation approach that is applied to the automated 
+classification of banana leaf diseases. When it comes to 
+analysing and extracting information from images, picture 
+segmentation is crucial. It separates the item of interest from 
+the 
+surrounding 
+background, 
+allowing 
+for 
+a 
+more 
+comprehensive analysis. Accurate picture segmentation 
+modules are essential to the functioning of more advanced 
+image processing modules. To detect diseases in banana 
+plants, to use a hybrid fuzzy C-means technique for 
+segmentation and classification, extracting features based on 
+colour, shape, and texture. Careful evaluation of a number of 
+quantitative variables allowed us to compare the suggested 
+method's performance to that of pre-existing deep learning 
+approaches for illnesses such as black and yellow Sigatoka, 
+dried and old leaves, banana bacterial wilt, and healthy plants 
+[14]. Banana plants are very vulnerable to a wide range of 
+illnesses, which makes disease identification a major 
+difficulty and ultimately leads to huge losses for farmers. 
+This study seeks to remedy the situation by presenting state-
+of-the-art image-processing techniques that may improve the 
+early detection of diseases in banana leaves. In order to 
+prepare the images for segmentation, use a median filter and 
+a histogram pixel localization method. Using convolutional 
+recurrent neural networks (CRNNs) and Gabor-based binary 
+patterns, the research introduces a new integrated approach 
+for feature extraction. The last step improves diagnosis 
+accuracy by using a region-based convolutional neural 
+network (RCNN) to extract and categorise information, 
+allowing for exact disease area identification [11]. 
+Outstanding performance is demonstrated by the proposed 
+CRNN-RCNN classifier, which achieved a recall score of 
+97.7 per cent, a sensitivity score of 98.69 per cent, and a 
+precision score of 97.7 per cent when tested on a dataset with 
+complicated image backgrounds. In comparison to other 
+models, such as CNN (87.6%), DCNN (88.9%), KNN 
+(79.56%), and SVM (92.63%), the CRNN-RCNN model 
+achieves an outstanding accuracy of 98% on the banana 
+dataset. This study provides important information for 
+farmers by demonstrating a reliable technique for fast and 
+precise disease detection in banana plants [15]. Banana 
+plants are very vulnerable to a wide range of illnesses, which 
+makes disease identification a major difficulty and ultimately 
+leads to huge losses for farmers. This study seeks to remedy 
+the situation by presenting state-of-the-art image-processing 
+techniques that may improve the early detection of diseases 
+in banana leaves. In order to prepare the images for 
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 16:00:42 UTC from IEEE Xplore.  Restrictions apply. 
+segmentation, to use a median filter and a histogram pixel 
+localization method. Using convolutional recurrent neural 
+networks (CRNNs) and Gabor-based binary patterns, the 
+research introduces a new integrated approach for feature 
+extraction. The last step improves diagnosis accuracy by 
+using a region-based convolutional neural network (RCNN) 
+to extract and categorise information, allowing for exact 
+disease area identification. Outstanding performance is 
+demonstrated by the proposed CRNN-RCNN classifier, 
+which achieved a recall score of 97.7 per cent, a sensitivity 
+score of 98.69 per cent, and a precision score of 97.7 per cent 
+when tested on a dataset with complicated image 
+backgrounds. In comparison to other models, such as CNN 
+(87.6%), DCNN (88.9%), KNN (79.56%), and SVM 
+(92.63%), the CRNN-RCNN model achieves an outstanding 
+accuracy of 98% on the banana dataset. This study provides 
+important information for farmers by demonstrating a 
+reliable technique for fast and precise disease detection in 
+banana plants [16]  
+III. METHODOLOGY 
+The methodology portion of this study explains in great 
+depth how the research was conducted. To take on the 
+problem of illness categorization in banana leaves by 
+combining Federated Learning (FL) with Convolutional 
+Neural Networks (CNN). The detailed stages, along with an 
+explanation of each, are provided below, as illustrated in 
+Figure 1. 
+ 
+Fig1. Configuration of Technique 
+A. Data Scrubbing, Procurement, and Amplification: 
+Given the variety of banana leaf diseases, comprehensive 
+data collection is essential. To ensure that the dataset 
+included the varied presentations of these illnesses, to 
+gathered data from five unique customers for each of the five 
+disease classifications. Collaborated with customers to 
+collect photographs of banana leaves at varying levels of 
+disease severity to use as data sources.Labelling: Assisted 
+domain specialists in categorizing photos into illness 
+groups.Data Augmentation: used methods like rotation, 
+zooming, and flipping to artificially increase the dataset and 
+guarantee that the CNN is resilient to fluctuations, as shown 
+in Figure 2. 
+ 
+ 
+Fig 2. Unhealthy images of banana leaf diseases. 
+ 
+B. Federated_Learning_CNN_Model 
+To facilitate CNN convergence, normalize pictures by 
+transforming their pixel values to a uniform range, generally 
+[0, 1]. The Convolutional Neural Network (CNN) forms the 
+foundation of the approach because of its proven success in 
+picture categorization. Convolutional layers, pooling layers, 
+and fully linked layers were included in the model's layer 
+design. Rectified Linear Unit (ReLU) activation functions 
+were used for the hidden layers, while softmax activation 
+functions were used for the output layer, guaranteeing a 
+uniform 
+distribution 
+of 
+illness 
+classes.Dropout 
+and 
+Regularisation: Dropout layers were included to reduce the 
+likelihood of overfitting, while L2 regularisation was used to 
+penalize too complicated models.Using the FL paradigm, to 
+could implement decentralized training without requiring the 
+exchange of raw data. Each of the 25 clients (5 for each 
+condition) used the global model's weights to initialize their 
+local CNN model. Customers trained their models using data 
+available to them locally. Clients aggregated their model 
+weights by sending them to a centralized server when local 
+training was complete. Weighted averaging of the models 
+was carried out by the centralized server in order to update 
+the global model. The original contribution is improving the 
+averaging method that guarantees more stable global model 
+updates. Client Contribution Evaluation: Assessed the 
+accuracy of each client's changes by measuring how well 
+they were validated.By assigning clients different weights 
+depending on the value of their input, to can ensure that more 
+informative updates have a more significant impact on the 
+overall model, as illustrated in Table 1. 
+TABLE I. CNN ARCHITECTURE WITH FEDERATED LEARNING 
+Layer Type 
+Output Size 
+Filter 
+Size 
+Stride Padding 
+No. of 
+Filters/Neurons 
+Input 
+354x354x3 
+- 
+- 
+- 
+- 
+Convolutional 1 
+352x352x32 
+3x3 
+1 
+0 
+32 
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 16:00:42 UTC from IEEE Xplore.  Restrictions apply. 
+Layer Type 
+Output Size 
+Filter 
+Size 
+Stride Padding 
+No. of 
+Filters/Neurons 
+Max-Pooling 1 
+176x176x32 
+2x2 
+2 
+0 
+- 
+Convolutional 2 
+174x174x64 
+3x3 
+1 
+0 
+64 
+Max-Pooling 2 
+87x87x64 
+2x2 
+2 
+0 
+- 
+Convolutional 3 
+85x85x128 
+3x3 
+1 
+0 
+128 
+Max-Pooling 3 
+42x42x128 
+2x2 
+2 
+0 
+- 
+Fully Connected 
+1 
+512 
+- 
+- 
+- 
+512 
+Fully Connected 
+2 
+12 
+- 
+- 
+- 
+12 
+ 
+The size of the first dataset image equals the size of the input 
+layer. The input to the model is a 354x354, three-channel 
+(likely RGB) picture. These layers, known as convolutional 
+layers, are crucial for feature extraction. Feature maps are 
+generated when filters iteratively pass over the input picture. 
+My filters are 3x3, and the depth (the number of filters) 
+increases with each successive layer. Spatial down-sampling 
+is achieved with the use of Max-Pooling Layers. Here, I've 
+assumed a pooling size of 2x2, halving the feature map's 
+dimensions on every iteration. Decisions are made by fully 
+connected layers, which receive the characteristics retrieved 
+by convolutional layers. There are 12 types of banana leaf 
+illnesses, hence 12 neurons in the last layer. In light of the 
+current model and data, If you have 2636 photos and want to 
+feed them into the model in batches, you may adjust the 
+batch size to match the capacity of your memory. If you 
+choose a batch size of 32, for example, you will end up with 
+around 82 batches (the final batch will be less than 32). After 
+each training batch, the model would recalculate its weights. 
+Please keep in mind that, due to a lack of information, the 
+assumptions upon which this table and explanation are 
+founded must be taken as such. It may be necessary to tune 
+hyperparameters, layer details, or even the depth of the 
+architecture to get the best results for a given set of banana 
+leaf diseases. 
+C. Model Validation and Training 
+Analysing the Model: After finishing all of the FL training 
+cycles, it is crucial to evaluate how well the global model is 
+doing. To gather a large test dataset broadly representative of 
+all illness types. Accuracy, precision, recall, F1 score, and 
+receiver operating characteristic (ROC) curve were used to 
+assess the model's performance to compare the strategy to 
+the status quo of centralized training to show how superior it 
+is. Machine learning relies on a foundation of constant 
+refinement, as described. As a result, loops were set up to 
+receive input and make incremental improvements to the 
+model. Client Insights Collected information from customers 
+concerning 
+misclassifications 
+or 
+discrepancies. 
+Improvements to the model were made by incorporating 
+training feedback into future iterations of FL's training 
+process. By combining the advantages of convolutional 
+neural networks (CNNs) with the privacy-focused Federated 
+Learning paradigm may effectively address the problem of 
+banana leaf disease classification. The methodology's steps 
+protect users' privacy while guaranteeing an accurate model, 
+bridging the gap between scientific progress and agricultural 
+difficulties. 
+IV. 
+RESULTS 
+A detailed examination of the data from five different clients 
+(pm_1 to pm_5) is crucial to understanding the effectiveness 
+of federated learning (FL) using convolutional neural 
+networks (CNN) in the context of banana leaf disease 
+classification. The precision, recall, F1-Score, support, and 
+total accuracy measures give detailed information about how 
+well the model works for five different types of banana leaf 
+diseases (ut-1 to ut-5). The comparison of these measures 
+offers a solid basis for a comparative analysis.ut-1: The 
+model demonstrates an impressive 86.38% accuracy, 
+accounting for 91.33% of real cases (recall). As a 
+consequence, the F1-Score is 88.79%, which exhibits a 
+pleasing harmony between memory and accuracy. There are 
+many instances in this class, as shown by the support 
+value.ut-2 to ut-5: The remaining classes demonstrate 
+consistent and dependable model performance, with similar 
+patterns of accuracy, recall, and F1-Score. For customer 
+pm_1, the total accuracy is a remarkable 95%.ut-1 to ut-5: 
+The model of client pm_2 exhibits strong performance in 
+every class, with consistently high values for accuracy, 
+recall, and F1-Score. The model's 95% overall accuracy 
+shows its dependability across a range of illness 
+classifications.ut-1 through ut-5: This client's model 
+performs well, achieving accuracy values as high as 93.75% 
+in ut-3, demonstrating a remarkable capacity to detect cases 
+of illnesses affecting banana leaves accurately. The model's 
+96% overall accuracy indicates its versatility across a range 
+of classes.ut-1 to ut-5: The precision numbers highlight the 
+model's capacity to reduce false positives, with values 
+noticeably high across all categories. The model's total 96% 
+accuracy rate validates its effectiveness in categorizing 
+illnesses affecting banana leaves.ut-1 to ut-5: The model of 
+client pm_5 exhibits a high degree of sensitivity and 
+specificity and strikes an impressive balance between 
+accuracy, recall, and F1-Score across all classes. The 
+robustness of the model is attested to by its 97% overall 
+accuracy. Precision ratings highlight the model's capacity to 
+reduce false positives, which is important in situations 
+involving the categorization of diseases. The model's 
+sensitivity is shown by recall values, which guarantee a few 
+false negatives. The harmonic mean of accuracy and recall, 
+or F1-Score, offers a thorough evaluation of the model's 
+overall performance. Support values help visualize the 
+model's practical effect by providing the number of instances 
+in each class. In addition to offering a thorough grasp of each 
+client's local model performance, this detailed analysis lays 
+the groundwork for a comprehensive comparison across 
+clients, highlighting Federated Learning with CNN's 
+potential to address the complex problems presented by 
+banana leaf diseases, as shown in Table 2.       
+TABLE II. SYNTHESIZING MODELS FROM DISTRIBUTED TRAINING 
+Clients 
+Class 
+Precision 
+Recall 
+F1-
+Score 
+Support 
+Accuracy 
+pm_1 
+ut-1 
+86.38 
+91.33 
+88.79 
+854 
+0.96 
+ ut-2 
+90.80 
+79.40 
+84.72 
+995 
+0.94 
+ut-3 
+88.20 
+86.77 
+87.48 
+922 
+0.95 
+ut-4 
+84.46 
+91.42 
+87.80 
+886 
+0.95 
+ut-5 
+87.42 
+89.13 
+88.27 
+920 
+0.95 
+pm_2 
+ut-1 
+90.50 
+83.85 
+87.05 
+966 
+0.95 
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 16:00:42 UTC from IEEE Xplore.  Restrictions apply. 
+ ut-2 
+89.91 
+82.25 
+85.91 
+997 
+0.94 
+ut-3 
+86.64 
+92.43 
+89.44 
+898 
+0.96 
+ut-4 
+85.37 
+87.32 
+86.33 
+962 
+0.94 
+ut-5 
+85.51 
+92.39 
+88.82 
+920 
+0.95 
+pm_3 
+ut-1 
+92.79 
+86.29 
+89.43 
+985 
+0.96 
+ ut-2 
+87.40 
+91.39 
+89.35 
+941 
+0.96 
+ut-3 
+93.75 
+92.06 
+92.90 
+945 
+0.97 
+ut-4 
+87.13 
+89.52 
+88.31 
+983 
+0.95 
+ut-5 
+89.27 
+90.72 
+89.99 
+981 
+0.96 
+pm_4 
+ut-1 
+86.96 
+93.31 
+90.02 
+986 
+0.96 
+ ut-2 
+92.26 
+83.63 
+87.74 
+1112 
+0.95 
+ut-3 
+89.44 
+91.62 
+90.52 
+1026 
+0.96 
+ut-4 
+92.14 
+88.79 
+90.43 
+1070 
+0.96 
+ut-5 
+90.14 
+94.21 
+92.13 
+1019 
+0.97 
+pm_5 
+ut-1 
+91.32 
+95.64 
+93.43 
+1056 
+0.97 
+ ut-2 
+94.62 
+89.71 
+92.10 
+1137 
+0.97 
+ut-3 
+90.91 
+91.15 
+91.03 
+1130 
+0.96 
+ut-4 
+92.69 
+91.39 
+92.04 
+1138 
+0.97 
+ut-5 
+91.30 
+93.09 
+92.19 
+1128 
+0.97 
+ 
+A detailed assessment of the model's performance is shown 
+by the result analysis of local data converted from global 
+data using Federated Averaging across five clients (pm_1 to 
+pm_5) in the context of classifying banana leaf diseases 
+using Federated Learning with CNN. Precision scores for all 
+customers vary from 87.45% to 92.17%, demonstrating the 
+model's capacity to reduce false positives and accurately 
+categorise cases of banana leaf illnesses. The recall numbers, 
+which range from 87.61% to 92.20%, highlight how 
+sensitive the model is at detecting genuine positives while 
+reducing false negatives. As a result, the F1-Score values, 
+which vary from 87.41% to 92.16%, show that recall and 
+accuracy are harmoniously balanced. Support values, which 
+represent the number of cases in each class, differ 
+significantly across clients but together demonstrate the 
+model's applicability to a wide range of illness presentations. 
+The overall accuracy results, which range from 95% to 97%, 
+indicate how well the Federated Averaging method combines 
+information from local models. 
+Interestingly, clients pm_4 and pm_5 have high recall, F1-
+Score, and accuracy values, showing their competence in 
+illness categorization. This conversion of global data back to 
+local data demonstrates Federated Learning's capacity for 
+teamwork. It offers a reliable and precise method for 
+classifying banana leaf disease across a dispersed client 
+network, as shown in Table 3. 
+TABLE III. COHESIVELY AGGREGATING LOCAL CLIENT DATA AVERAGES 
+GLOBALLY 
+Client 
+Precision 
+Recall 
+F1-
+Score 
+Support 
+Accuracy 
+pm_1 
+87.45 
+87.61 
+87.41 
+915.40 
+0.95 
+pm_2 
+87.59 
+87.65 
+87.51 
+948.60 
+0.95 
+pm_3 
+90.07 
+90.00 
+90.00 
+967.00 
+0.96 
+pm_4 
+90.19 
+90.31 
+90.17 
+1042.60 
+0.96 
+pm_5 
+92.17 
+92.20 
+92.16 
+1117.80 
+0.97 
+The computed averages across five clients (pm_1 to pm_5) 
+after federated averaging were used in the classification of 
+banana leaf disease using federated learning with CNN to 
+show the overall performance of the model. Precision, recall, 
+and F1-Score vary from 87.49% to 92.17% in the macro 
+average, indicating a fair evaluation that takes into account 
+each customer equally. In order to correct class imbalances, 
+the 
+weighted 
+average 
+reflects 
+comparable 
+values, 
+highlighting a strong model that manages differences in class 
+sizes among customers. The accuracy, recall, and F1-Score 
+values of the Micro average, which is computed by adding 
+up each client's true positives, false positives, and false 
+negatives, range from 87.39% to 92.15%. Together, these 
+averages demonstrate the model's reliability and efficiency in 
+identifying banana leaf illnesses, highlighting Federated 
+Averaging's power in offering a thorough and uniform 
+assessment across a dispersed client network. The model's 
+flexibility and efficacy were shown by the weighted averages 
+of macro and micro analyses, which revealed a consistent 
+and strong global model performance. In addition to 
+advancing disease classification techniques, this fusion of 
+technological 
+innovation and agricultural 
+imperatives 
+highlights FL's revolutionary potential with CNN in tackling 
+precision agriculture concerns. This paper lays out a roadmap 
+for the smooth integration of cutting-edge machine learning 
+methods for the benefit of resilient and sustainable 
+agricultural practices as agriculture continues to adopt data-
+driven approaches, as shown in Table 4. 
+TABLE IV. FEDERATED HYPER-PARAMETER AVERAGES FROM DISTRIBUTED 
+CLIENTS  
+Averages 
+pm_1 
+pm_2 
+pm_3 
+pm_4 
+pm_5 
+Macro 
+average 
+87.49 
+87.58 
+90.02 
+90.22 
+92.17 
+Weighted 
+average 
+87.43 
+87.53 
+90.00 
+90.18 
+92.16 
+Micro 
+average 
+87.39 
+87.50 
+89.97 
+90.16 
+92.15 
+V. 
+CONCLUSION 
+To sum up, this study aims to provide a thorough knowledge 
+of how Federated Learning (FL) and Convolutional Neural 
+Networks (CNN) are used in the field of banana leaf disease 
+classification, where precision agriculture necessitates data 
+privacy as well as accuracy. The localised performance for 
+five customers (pm_1 to pm_5) and five illness classes (ut-1 
+to ut-5) was examined in detail in the Result Analysis 
+section. The precision, recall, and F1-Score values varied 
+between 87.45% and 92.17%, 87.61% and 92.20%, and 
+87.41% and 92.16%, respectively. Further investigation into 
+federated averaging revealed a comprehensive assessment 
+including macro, micro, and weighted averages. The F1-
+Score, recall, and macro average accuracy were, in that 
+order, 87.49%, 87.58%, and 90.02%. After taking into 
+consideration any class imbalances, weighted averages 
+produced results of 87.43%, 87.53%, and 90.00%, in that 
+order. Microaverages that combined the parameters of each 
+client showed 87.39%, 87.50%, and 89.97% accuracy, recall, 
+and F1-Score, respectively. The study of using Federated 
+Averaging to transform local data into global data 
+highlighted the model's collaborative power, which goes 
+beyond individual client performances.  
+Authorized licensed use limited to: INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR. Downloaded on February 16,2026 at 16:00:42 UTC from IEEE Xplore.  Restrictions apply. 
