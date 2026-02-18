@@ -21,7 +21,7 @@ const String _IOS_SIMULATOR = "http://localhost:8000";
 const String _LAN_BACKEND = "http://192.168.1.100:8000";
 
 /// Set to true when deploying to production
-const bool IS_PRODUCTION = false;
+const bool IS_PRODUCTION = true;
 
 /// Get the appropriate backend URL based on platform
 String getBackendUrl() {

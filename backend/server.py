@@ -633,22 +633,36 @@ async def predict(request: Request):
     # Convert to probabilities (softmax for multi-class)
     probs = F.softmax(logits, dim=-1).cpu().numpy().ravel().tolist()
     pred_class = int(np.argmax(probs))
-    mask = [1 if i == pred_class else 0 for i in range(NUM_LABELS)]
-    # Also flag high secondary probabilities
-    for i, p in enumerate(probs):
-        if p > 0.3:
-            mask[i] = 1
+    threshold = 0.2
+    mask = [1 if p > threshold else 0 for p in probs]
+
+    # Build all_scores and active_labels in frontend-expected format
+    all_scores = []
+    active_labels = []
+    for i, lab in enumerate(ISSUE_LABELS):
+        entry = {"label": lab, "prob": float(probs[i]), "threshold": threshold, "active": bool(mask[i])}
+        all_scores.append(entry)
+        if mask[i] == 1:
+            active_labels.append(entry)
+
+    advice = advisor_from_mask(mask)
 
     return JSONResponse({
         "client_id": client_id,
         "text_used": combined,
+        "result": {
+            "all_scores": all_scores,
+            "active_labels": active_labels,
+            "predicted": ISSUE_LABELS[pred_class],
+            "raw_probs": probs,
+            "model": MODEL_TYPE,
+        },
+        "advice": advice,
         "labels": ISSUE_LABELS,
         "probs": probs,
         "predicted_class": ISSUE_LABELS[pred_class],
-        "predicted_display": DISPLAY_NAMES.get(ISSUE_LABELS[pred_class], ISSUE_LABELS[pred_class]),
         "confidence": float(probs[pred_class]),
         "mask": mask,
-        "advice": advisor_from_mask(mask),
         "model_type": MODEL_TYPE,
         "model_info": CURRENT_MODEL_INFO,
     })
