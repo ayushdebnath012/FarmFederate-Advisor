@@ -123,80 +123,100 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
 
   Future<Map<String, dynamic>> _callAPI(String text, Uint8List? imageBytes) async {
     final uri = Uri.parse('${widget.apiBase}/predict');
-    
+
     if (imageBytes != null) {
       // Multipart request with image
       final request = http.MultipartRequest('POST', uri);
       request.fields['text'] = text;
+      request.fields['client_id'] = 'mobile_client';
       request.files.add(http.MultipartFile.fromBytes(
         'image',
         imageBytes,
         filename: _imageName ?? 'image.jpg',
       ));
-      
-      final streamedResponse = await request.send();
-      final response = await http.Response.fromStream(streamedResponse);
-      
+
+      final streamedResponse = await request.send().timeout(const Duration(seconds: 30));
+      final response = await http.Response.fromStream(streamedResponse).timeout(const Duration(seconds: 30));
+
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else {
-        throw Exception('API error: ${response.statusCode}');
+        throw Exception('API error: ${response.statusCode} - ${response.body}');
       }
     } else {
       // JSON request without image
       final response = await http.post(
         uri,
         headers: {'Content-Type': 'application/json'},
-        body: json.encode({'text': text}),
-      );
-      
+        body: json.encode({'text': text, 'client_id': 'mobile_client'}),
+      ).timeout(const Duration(seconds: 30));
+
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else {
-        throw Exception('API error: ${response.statusCode}');
+        throw Exception('API error: ${response.statusCode} - ${response.body}');
       }
     }
   }
 
   String _formatAIResponse(Map<String, dynamic> response) {
     final result = response['result'] as Map<String, dynamic>?;
-    final advice = response['advice'] as String? ?? result?['advice'] as String? ?? 'Analysis complete.';
-    
+    final advice = response['advice'] as String? ??
+        result?['advice'] as String? ??
+        'Analysis complete.';
+
     String formatted = '🌾 Analysis Results:\n\n';
-    
+
     if (result != null) {
-      // Check for active_labels
+      // Check for active_labels (can be List<String> or List<Map>)
       final activeLabels = result['active_labels'] as List?;
-      final allScores = result['all_scores'] as List?;
-      
+      // Backend uses 'all_scores' key
+      final allScores = (result['all_scores'] ?? result['scores']) as List?;
+
       if (activeLabels != null && activeLabels.isNotEmpty) {
         formatted += '⚠️ Active Issues Detected:\n';
         for (var issue in activeLabels) {
-          final label = issue['label'] ?? 'Unknown';
-          final prob = ((issue['prob'] ?? 0.0) * 100);
+          String label;
+          double prob = 0.0;
+          if (issue is String) {
+            label = issue;
+          } else if (issue is Map) {
+            label = (issue['label'] ?? issue['name'] ?? 'Unknown').toString();
+            final rawProb = issue['prob'];
+            if (rawProb is num) prob = rawProb.toDouble();
+            if (prob > 1.0) prob /= 100.0;
+          } else {
+            label = issue.toString();
+          }
           final emoji = _getIssueEmoji(label);
-          formatted += '  $emoji ${_formatLabel(label)}: ${prob.toStringAsFixed(1)}%\n';
+          final probStr = prob > 0 ? ': ${(prob * 100).toStringAsFixed(1)}%' : '';
+          formatted += '  $emoji ${_formatLabel(label)}$probStr\n';
         }
         formatted += '\n';
       } else if (allScores != null && allScores.isNotEmpty) {
         formatted += '📊 Risk Assessment:\n';
-        // Show top 3 risks
-        final sortedScores = List<Map<String, dynamic>>.from(allScores);
-        sortedScores.sort((a, b) => (b['prob'] ?? 0.0).compareTo(a['prob'] ?? 0.0));
-        
+        final sortedScores = List<Map<String, dynamic>>.from(
+            allScores.whereType<Map>().map((e) => Map<String, dynamic>.from(e)));
+        sortedScores.sort((a, b) {
+          final pa = (a['prob'] is num) ? (a['prob'] as num).toDouble() : 0.0;
+          final pb = (b['prob'] is num) ? (b['prob'] as num).toDouble() : 0.0;
+          return pb.compareTo(pa);
+        });
+
         for (int i = 0; i < sortedScores.length && i < 3; i++) {
           final score = sortedScores[i];
-          final label = score['label'] ?? 'Unknown';
-          final prob = ((score['prob'] ?? 0.0) * 100);
+          final label = (score['label'] ?? score['name'] ?? 'Unknown').toString();
+          double prob = (score['prob'] is num) ? (score['prob'] as num).toDouble() : 0.0;
+          if (prob > 1.0) prob /= 100.0;
           final emoji = _getIssueEmoji(label);
-          formatted += '  $emoji ${_formatLabel(label)}: ${prob.toStringAsFixed(1)}%\n';
+          formatted += '  $emoji ${_formatLabel(label)}: ${(prob * 100).toStringAsFixed(1)}%\n';
         }
         formatted += '\n';
       }
     }
-    
+
     formatted += '💡 Recommendations:\n$advice';
-    
+
     return formatted;
   }
 
@@ -475,7 +495,8 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
     final result = analysis['result'] as Map<String, dynamic>?;
     if (result == null) return const SizedBox.shrink();
 
-    final scores = result['scores'] as List?;
+    // Backend uses 'all_scores' key, fallback to 'scores'
+    final scores = (result['all_scores'] ?? result['scores']) as List?;
     if (scores == null || scores.isEmpty) return const SizedBox.shrink();
 
     return Wrap(

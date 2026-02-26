@@ -31,38 +31,38 @@
   },
   "image_datasets": {
     "PlantVillage (Real)": {
-      "f1_macro": 0.13487179487179485,
-      "accuracy": 0.18,
+      "f1_macro": 0.19820046620046622,
+      "accuracy": 0.24,
       "samples": 500,
       "source": "real_plantvillage"
     },
     "Beans (Real)": {
-      "f1_macro": 0.15649122807017543,
-      "accuracy": 0.2,
+      "f1_macro": 0.14222222222222222,
+      "accuracy": 0.18,
       "samples": 500,
       "source": "real_beans"
     },
     "Synthetic": {
-      "f1_macro": 0.36563503827514404,
-      "accuracy": 0.4033333333333333,
+      "f1_macro": 0.3388412936967777,
+      "accuracy": 0.38166666666666665,
       "samples": 3000,
       "source": "synthetic_images"
     },
     "PlantVillage-style": {
-      "f1_macro": 0.4169790570492621,
-      "accuracy": 0.45555555555555555,
+      "f1_macro": 0.5072881131929619,
+      "accuracy": 0.5088888888888888,
       "samples": 4500,
       "source": "plantvillage_style"
     },
     "PlantDoc-style": {
-      "f1_macro": 0.3906973610604673,
-      "accuracy": 0.42333333333333334,
+      "f1_macro": 0.3408141416942663,
+      "accuracy": 0.39,
       "samples": 1500,
       "source": "plantdoc_style"
     },
     "IP102-style": {
-      "f1_macro": 0.3905847540140429,
-      "accuracy": 0.405,
+      "f1_macro": 0.3956955005706205,
+      "accuracy": 0.4216666666666667,
       "samples": 3000,
       "source": "ip102_style"
     }
@@ -79,66 +79,66 @@
     },
     "image_analysis": {
       "best_dataset": "PlantVillage-style",
-      "best_f1": 0.4169790570492621,
-      "mean_f1": 0.3092098722234811,
-      "std_f1": 0.11674532701002319,
-      "range": 0.28210726217746723,
+      "best_f1": 0.5072881131929619,
+      "mean_f1": 0.32051028959621913,
+      "std_f1": 0.12112897487472488,
+      "range": 0.3650658909707396,
       "num_datasets": 6
     }
   },
   "inter_comparison": {
     "cross_modal_combinations": {
       "Agriculture QA (SQUAD) + PlantVillage-style": {
-        "f1_macro": 0.915,
+        "f1_macro": 0.815,
         "text_dataset": "Agriculture QA (SQUAD)",
         "image_dataset": "PlantVillage-style",
         "samples": 3000
       },
-      "Agriculture QA (SQUAD) + PlantDoc-style": {
-        "f1_macro": 0.41,
+      "Agriculture QA (SQUAD) + IP102-style": {
+        "f1_macro": 0.8766666666666667,
         "text_dataset": "Agriculture QA (SQUAD)",
-        "image_dataset": "PlantDoc-style",
-        "samples": 1500
+        "image_dataset": "IP102-style",
+        "samples": 3000
       },
       "PubMed Agriculture + PlantVillage-style": {
-        "f1_macro": 0.8133333333333334,
+        "f1_macro": 0.8616666666666667,
         "text_dataset": "PubMed Agriculture",
         "image_dataset": "PlantVillage-style",
         "samples": 3000
       },
-      "PubMed Agriculture + PlantDoc-style": {
-        "f1_macro": 0.38666666666666666,
+      "PubMed Agriculture + IP102-style": {
+        "f1_macro": 0.8716666666666667,
         "text_dataset": "PubMed Agriculture",
-        "image_dataset": "PlantDoc-style",
-        "samples": 1500
+        "image_dataset": "IP102-style",
+        "samples": 3000
       }
     },
     "best_combination": {
-      "name": "Agriculture QA (SQUAD) + PlantVillage-style",
+      "name": "Agriculture QA (SQUAD) + IP102-style",
       "text_dataset": "Agriculture QA (SQUAD)",
-      "image_dataset": "PlantVillage-style",
-      "f1_macro": 0.915,
+      "image_dataset": "IP102-style",
+      "f1_macro": 0.8766666666666667,
       "samples": 3000
     },
     "modality_impact": {
       "text_impact": {
         "Agriculture QA (SQUAD)": {
-          "mean": 0.6625,
-          "std": 0.2525
+          "mean": 0.8458333333333333,
+          "std": 0.03083333333333338
         },
         "PubMed Agriculture": {
-          "mean": 0.6,
-          "std": 0.21333333333333335
+          "mean": 0.8666666666666667,
+          "std": 0.0050000000000000044
         }
       },
       "image_impact": {
         "PlantVillage-style": {
-          "mean": 0.8641666666666667,
-          "std": 0.05083333333333334
+          "mean": 0.8383333333333334,
+          "std": 0.023333333333333373
         },
-        "PlantDoc-style": {
-          "mean": 0.3983333333333333,
-          "std": 0.011666666666666659
+        "IP102-style": {
+          "mean": 0.8741666666666668,
+          "std": 0.0025000000000000022
         }
       }
     }

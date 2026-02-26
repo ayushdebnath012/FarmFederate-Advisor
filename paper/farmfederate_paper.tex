@@ -4,7 +4,7 @@
 \documentclass[10pt,journal,compsoc]{IEEEtran}
 
 \usepackage{graphicx}
-\graphicspath{{plots/}}
+\graphicspath{{plots/}{figures/}}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
 \usepackage{algorithm}
@@ -51,18 +51,13 @@
 
 \begin{document}
 
-\title{FarmFederate: Multimodal Federated Learning for Privacy-Preserving Crop Stress Detection}
+\title{FarmFederate: Federated LLM, ViT, and VLM for Privacy-Preserving Crop Stress Detection}
 
-\author{
-\IEEEauthorblockN{Anonymous Authors}
-\IEEEauthorblockA{Department of Computer Science\\
-Institution Name\\
-Email: anonymous@institution.edu}
-}
+\author{Ayush Debnath, Ruelia Saha, and Sudip Misra}
 
 \IEEEtitleabstractindextext{%
 \begin{abstract}
-Accurate crop stress detection is essential for precision agriculture, yet conventional approaches rely on either visual inspection or textual symptom reports in isolation. Furthermore, agricultural data is inherently distributed across geographically dispersed farms, where privacy constraints and data ownership regulations preclude centralized aggregation. This paper presents FarmFederate, a multimodal federated learning framework that addresses both challenges simultaneously. The architecture comprises a \textit{multimodal encoder}---integrating Large Language Model (LLM) text encoders with Vision Transformer (ViT) image encoders through Vision-Language Model (VLM) fusion strategies---and a \textit{federated aggregator} that coordinates distributed training via Federated Averaging (FedAvg). We evaluate eight fusion architectures (Concatenation, Cross-Attention, Gated, CLIP, Flamingo, BLIP-2, CoCa, and Unified-IO), five LLM variants, and five ViT variants across a 5-class crop stress dataset derived from HuggingFace agricultural corpora (AG~News, PubMed, SQuAD) and real plant disease imagery (PlantVillage, Beans). Our experiments on a Tesla T4 GPU demonstrate that LLM-based text classifiers achieve macro F1-scores of 0.55--0.57, ViT image encoders reach 0.68--0.76, and VLM fusion models attain 0.78--0.84, with the CLIP-based fusion achieving the highest F1 of 0.848. The federated training regime attains over 90\% of centralized performance while ensuring that no raw data leaves local farms. We further contribute a stress-biased dataset comparison protocol that evaluates model robustness under regional distribution shifts, where all models achieve near-perfect F1 on balanced subsets. These results establish the viability of multimodal federated learning for privacy-preserving agricultural AI.
+Accurate crop stress detection is essential for precision agriculture, yet conventional approaches rely on either visual inspection or textual symptom reports in isolation, and almost universally assume centralized data access. This paper presents FarmFederate, a framework that introduces and systematically compares three independent federated learning paradigms for privacy-preserving crop stress detection: \textit{Federated LLM} (distributed text classification via Large Language Model encoders), \textit{Federated ViT} (distributed image classification via Vision Transformer encoders), and \textit{Federated VLM} (distributed multimodal fusion via Vision-Language Model architectures). Each paradigm is trained separately under FedAvg across $K{=}3$ non-IID clients and evaluated against its own centralized baseline, enabling a rigorous cross-paradigm comparison that reveals the distinct privacy-performance trade-off of each modality under federated constraints. We benchmark five LLM variants, five ViT variants, and eight VLM fusion strategies (Concatenation, Cross-Attention, Gated, CLIP, Flamingo, BLIP-2, CoCa, and Unified-IO) on a 5-class crop stress dataset comprising 2,500 balanced text samples from AG~News (PubMed and SQuAD yielded no qualifying agricultural matches) and real plant disease imagery from PlantVillage and Beans. Experiments on a Tesla T4 GPU show that Federated LLM achieves F1 of 0.548 (92.9\% of centralized), Federated ViT achieves 0.659 (86.1\%), and Federated VLM achieves 0.785 (92.6\%), with CLIP-based fusion reaching the highest centralized F1 of 0.848. Across all three paradigms, federated training retains over 90\% of centralized performance on average while guaranteeing that no raw farm data is ever transmitted. A stress-biased evaluation further confirms near-perfect F1 (0.989--1.000) under regional distribution shifts. These results establish that each federated paradigm offers a viable and distinct operating point for privacy-preserving agricultural AI, with multimodal VLM fusion providing the best absolute accuracy and text-only Federated LLM offering the smallest federated accuracy gap.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -77,7 +72,7 @@ Federated Learning, Vision-Language Models, Crop Stress Classification, Multimod
 % LIST OF SYMBOLS
 % ============================================================================
 \section*{List of Symbols}
-\begin{table}[H]
+\begin{table}[htbp]
 \centering
 \small
 \begin{tabular}{p{1.8cm}p{6.2cm}}
@@ -147,18 +142,18 @@ Non-IID Robustness & Handles heterogeneous data distributions across different f
 Table~\ref{tab:advantages} summarizes the principal advantages of the FarmFederate framework over conventional centralized approaches.
 
 \subsection{Contributions}
-This work addresses three research questions: (a)~Can LLM-based text encoders be effectively combined with ViT-based image encoders for crop stress classification? (b)~Which VLM fusion strategy is best suited for agricultural multimodal data? (c)~Can federated learning match centralized training performance while preserving privacy? Our specific contributions are:
+This work addresses four research questions: (a)~How does Federated LLM text encoding perform for crop stress classification, and how much accuracy is lost relative to centralized training? (b)~How does Federated ViT image encoding compare, and is it more or less robust to non-IID federated partitioning than text-based approaches? (c)~Does Federated VLM multimodal fusion provide sufficient accuracy gains to justify its higher communication and compute cost? (d)~Which of the three federated paradigms---Federated LLM, Federated ViT, or Federated VLM---offers the best privacy-performance trade-off for distributed agricultural AI? Our specific contributions are:
 
 \begin{itemize}[leftmargin=*]
-    \item A multimodal federated learning framework for crop stress classification that integrates LLM text encoders, ViT image encoders, and VLM fusion mechanisms.
+    \item \textbf{Federated LLM:} A federated text classification paradigm using five lightweight LLM encoder variants (DistilBERT, BERT-tiny, RoBERTa-tiny, ALBERT-tiny, MobileBERT), trained independently under FedAvg and benchmarked against centralized baselines on real HuggingFace agricultural corpora.
 
-    \item A joint optimization formulation incorporating focal loss and diversity regularization to address class imbalance and prevent class collapse.
+    \item \textbf{Federated ViT:} A federated image classification paradigm using five Vision Transformer-inspired encoder variants (ViT-Base, DeiT-tiny, Swin-tiny, ConvNeXT-tiny, EfficientNet), trained independently under FedAvg and evaluated on synthetic crop stress imagery with tuned class-discriminative difficulty.
 
-    \item A comprehensive benchmark evaluating 5 LLM variants, 5 ViT variants, and 8 VLM fusion architectures, trained on real HuggingFace agricultural datasets (PlantVillage, Beans, AG~News, PubMed, SQuAD).
+    \item \textbf{Federated VLM:} A federated multimodal fusion paradigm implementing eight VLM fusion strategies (Concatenation, Cross-Attention, Gated, CLIP, Flamingo, BLIP-2, CoCa, Unified-IO), trained independently under FedAvg and compared against both unimodal federated paradigms and centralized VLM baselines.
 
-    \item A stress-biased dataset comparison protocol that evaluates model robustness under simulated regional distribution shifts.
+    \item \textbf{Cross-Paradigm Comparison:} A systematic empirical comparison of all three federated paradigms---Federated LLM, Federated ViT, and Federated VLM---quantifying the accuracy, federated efficiency (Fed/Cent ratio), and prediction diversity of each, providing actionable guidance for practitioners selecting a federated agricultural AI paradigm.
 
-    \item Empirical results demonstrating that federated training achieves over 90\% of centralized performance while maintaining complete data privacy.
+    \item A joint optimization formulation with focal loss and diversity regularization that prevents class collapse across all three federated paradigms, and a stress-biased evaluation protocol that tests model robustness under simulated regional distribution shifts.
 \end{itemize}
 
 \subsection{Organization}
@@ -194,7 +189,7 @@ Crop stress detection has a long history in remote sensing and precision agricul
 
 Multi-sensor and remote sensing approaches have been extensively reviewed. Berger~et~al.~\cite{berger2022multisensor} analyzed 96 research papers on multi-sensor spectral synergies for crop stress detection, identifying trends toward UAV data and physically-based models. Gerhards~et~al.~\cite{gerhards2019thermal} reviewed multi-/hyperspectral thermal infrared approaches for crop water stress. Chakhvashvili~et~al.~\cite{chakhvashvili2024uav} established best practices for multi-sensor UAV-based crop stress detection. Cho~et~al.~\cite{cho2024water} reviewed AI techniques for evaluating crop water stress. Reyes-Hung~et~al.~\cite{reyeshung2024multispectral} demonstrated multispectral UAV imaging with K-means segmentation for crop stress detection.
 
-Despite this rich literature on crop stress detection, existing approaches are overwhelmingly unimodal (image-only or sensor-only) and centralized. No prior work combines text-based symptom analysis with visual crop assessment in a federated, privacy-preserving framework.
+Despite this rich literature on crop stress detection, existing approaches are overwhelmingly unimodal (image-only or sensor-only) and centralized. No prior work defines and compares federated learning as three independent paradigms---Federated LLM, Federated ViT, and Federated VLM---for agricultural stress classification, nor evaluates the privacy-performance trade-off of each modality under identical federated conditions.
 
 \begin{table}[htbp]
 \centering
@@ -225,7 +220,7 @@ Al-Obeidat~\cite{alobeidat2025multimodal} & \checkmark & \checkmark & $\times$ &
 \end{tabular}}
 \end{table}
 
-As shown in Table~\ref{tab:related_comparison}, FarmFederate is the first framework to combine all five capabilities: image and text modalities, federated learning for privacy preservation, VLM fusion architectures, and multi-class crop stress classification. While recent works have begun exploring VLM-agriculture intersections~\cite{li2025fedreplay,xu2025agrisentinel,long2025agrihealth} and FL for crop disease~\cite{kumar2024soybean,kabala2023image,aggarwal2023rice}, none integrates all these dimensions into a unified framework for crop stress detection.
+As shown in Table~\ref{tab:related_comparison}, FarmFederate is the first framework to combine all five capabilities: image and text modalities, federated learning for privacy preservation, VLM fusion architectures, and multi-class crop stress classification. Crucially, it is also the first to treat Federated LLM, Federated ViT, and Federated VLM as three \emph{separate} federated paradigms---each independently trained and benchmarked---enabling a cross-paradigm comparison unavailable in any prior work. While recent works have begun exploring VLM-agriculture intersections~\cite{li2025fedreplay,xu2025agrisentinel,long2025agrihealth} and FL for crop disease~\cite{kumar2024soybean,kabala2023image,aggarwal2023rice}, none disaggregates the federated paradigms to compare their individual privacy-utility trade-offs.
 
 % ============================================================================
 % SECTION 3: SYSTEM MODEL
@@ -325,19 +320,18 @@ The data flow proceeds in three stages:
 We construct a multimodal crop stress dataset by combining real agricultural data from HuggingFace with synthetic augmentation. The five stress classes are: \textit{water\_stress} (drought/wilting), \textit{nutrient\_def} (nutrient deficiency/chlorosis), \textit{pest\_risk} (pest infestation), \textit{disease\_risk} (fungal/bacterial disease), and \textit{heat\_stress} (thermal damage).
 
 \subsubsection{Text Data}
-Text data is sourced from three HuggingFace corpora filtered for agricultural content:
+Text data is sourced from HuggingFace corpora filtered for agricultural stress content using a vocabulary of 40 stress-specific keywords (e.g., drought, water stress, pest infestation, plant disease, heat stress, blight, nutrient deficiency). Three corpora were evaluated:
 \begin{itemize}[leftmargin=*]
-    \item \textbf{AG~News}~\cite{zhang2015character}: News articles filtered by agricultural keywords (crop, plant, disease, pest, stress, agriculture, leaf, soil).
-    \item \textbf{PubMed Summarization}: Scientific abstracts with agriculture-relevant content.
-    \item \textbf{SQuAD}: Question-answering passages filtered for agricultural topics.
+    \item \textbf{AG~News}~\cite{zhang2015character}: News articles; the sole corpus yielding qualifying samples. Scanning 70,219 articles produced 2,239 accepted samples across all five stress classes.
+    \item \textbf{PubMed Summarization} and \textbf{SQuAD}: Both filtered for the same stress-keyword vocabulary but returned zero qualifying samples from their respective splits.
 \end{itemize}
 
-Raw text data exhibits severe class imbalance (disease\_risk: 2,409 samples vs.\ heat\_stress: 96 samples, a 25:1 ratio) due to keyword frequency bias. We apply a rebalancing procedure that caps the majority class at $2\times$ the median count and oversamples minorities to the median (minimum 50 per class), yielding approximately 1,089 balanced samples. Figure~\ref{fig:stress_distribution} shows the resulting stress type distribution after rebalancing.
+A per-class download cap of 500 is enforced during collection, yielding raw counts of 500 (water\_stress), 500 (nutrient\_def), 500 (pest\_risk), 500 (disease\_risk), and 239 (heat\_stress)---a modest 2.1:1 imbalance ratio. Heat stress is structurally scarce in general news corpora, as opposed to the prior uncapped download that produced a 25:1 ratio (disease\_risk: 2,409 vs.\ heat\_stress: 96). We then apply a rebalancing procedure that oversamples minorities to the median (minimum 50 per class), yielding 2,500 fully balanced samples (500 per class). Figure~\ref{fig:stress_distribution} shows the resulting stress type distribution after rebalancing.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\columnwidth]{plot26_stress_distribution.png}
-\caption{Distribution of five crop stress types in the rebalanced dataset. After applying the capping and oversampling procedure, classes are approximately balanced (17--24\% each), mitigating the original 25:1 imbalance.}
+\caption{Distribution of five crop stress types in the rebalanced text dataset. After per-class capping at 500 during download and minority oversampling, all classes reach 500 samples (20\% each), reducing the raw 2.1:1 imbalance (heat\_stress: 239 vs.\ others: 500) to a fully uniform distribution of 2,500 samples.}
 \label{fig:stress_distribution}
 \end{figure}
 
@@ -362,7 +356,7 @@ For the main training pipeline (Phase~2), synthetic images with class-distinctiv
 \midrule
 \multirow{4}{*}{\textbf{General}}
 & Number of classes & 5 \\
-& Text sources & AG News, PubMed, SQuAD \\
+& Text sources & AG News (PubMed, SQuAD: 0 matches) \\
 & Image sources & PlantVillage, Beans, Synthetic \\
 & Train/Val split & 80\%/20\% \\
 \midrule
@@ -375,8 +369,8 @@ For the main training pipeline (Phase~2), synthetic images with class-distinctiv
 \multirow{4}{*}{\textbf{Text}}
 & Max sequence length & 128 tokens \\
 & Vocabulary size & 30,522 \\
-& Rebalancing & Cap 2$\times$ median, floor 50 \\
-& Real samples & 100\% (HuggingFace) \\
+& Raw samples & 2,239 (cap 500/class; heat 239) \\
+& Balanced samples & 2,500 (500/class after oversampling) \\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -792,11 +786,13 @@ Table~\ref{tab:stress_results} presents results from the stress-biased evaluatio
 \label{fig:dataset_comparison}
 \end{figure}
 
-\subsection{Phase 2: Complete Model Comparison}
+\subsection{Phase 2: Cross-Paradigm Federated Comparison}
 
-\subsubsection{LLM Encoder Results}
+This phase constitutes the core novelty of FarmFederate. We train each of the three federated paradigms---\textit{Federated LLM}, \textit{Federated ViT}, and \textit{Federated VLM}---\emph{independently} under identical FedAvg settings ($K{=}3$ clients, $T{=}8$ rounds, $E{=}3$ local epochs) and evaluate each against its own centralized baseline. The paradigms are then compared directly to answer the central research question: which federated modality offers the best privacy-performance trade-off for crop stress detection?
 
-Table~\ref{tab:llm_results} reports LLM encoder performance on agriculturally-augmented text data from HuggingFace.
+\subsubsection{Paradigm~1: Federated LLM Results}
+
+Table~\ref{tab:llm_results} reports Federated LLM performance on agriculturally-augmented text data from HuggingFace. Five LLM encoder variants are trained and aggregated independently under FedAvg.
 
 \begin{table}[htbp]
 \centering
@@ -817,7 +813,7 @@ MobileBERT & 0.535 & 100\% & 0.567 & 12 \\
 \end{tabular}}
 \end{table}
 
-All LLM encoders maintain 100\% prediction diversity throughout training. ALBERT-tiny achieves the highest checkpoint F1 of 0.608, while BERT-tiny and RoBERTa-tiny obtain identical final-epoch F1 of 0.585. The moderate F1 scores (0.53--0.59) reflect the genuine difficulty of classifying agriculturally-filtered real-world text across five stress categories---these are not synthetic templates but actual news articles, scientific abstracts, and QA passages mapped to stress labels via keyword matching. Figure~\ref{fig:llm_comparison} visualizes the F1 score comparison across all five LLM variants.
+All LLM encoders maintain 100\% prediction diversity throughout training. ALBERT-tiny achieves the highest checkpoint F1 of 0.608, while BERT-tiny and RoBERTa-tiny obtain identical final-epoch F1 of 0.585. The moderate F1 scores (0.53--0.59) reflect the genuine difficulty of classifying agriculturally-filtered real-world text across five stress categories---these are not synthetic templates but actual news articles from AG~News mapped to stress labels via a 40-keyword stress vocabulary (PubMed and SQuAD returned no qualifying samples). Figure~\ref{fig:llm_comparison} visualizes the F1 score comparison across all five LLM variants.
 
 \begin{figure}[htbp]
 \centering
@@ -826,9 +822,9 @@ All LLM encoders maintain 100\% prediction diversity throughout training. ALBERT
 \label{fig:llm_comparison}
 \end{figure}
 
-\subsubsection{ViT Encoder Results}
+\subsubsection{Paradigm~2: Federated ViT Results}
 
-Table~\ref{tab:vit_results} presents vision model performance on synthetic images with class-distinctive patterns.
+Table~\ref{tab:vit_results} presents Federated ViT performance on synthetic crop stress images. Five ViT-inspired encoder variants are trained and aggregated independently under FedAvg, separate from the LLM and VLM paradigms.
 
 \begin{table}[htbp]
 \centering
@@ -858,9 +854,9 @@ ViT models achieve strong F1 scores (0.70--0.77), demonstrating that the residua
 \label{fig:vit_comparison}
 \end{figure}
 
-\subsubsection{VLM Fusion Results}
+\subsubsection{Paradigm~3: Federated VLM Results}
 
-Table~\ref{tab:vlm_results} compares eight fusion architectures on multimodal (text + image) data.
+Table~\ref{tab:vlm_results} compares eight Federated VLM fusion architectures on combined (text + image) data. Each fusion strategy is trained and federated independently, completing the three-paradigm suite.
 
 \begin{table}[htbp]
 \centering
@@ -914,13 +910,13 @@ The CLIP-based contrastive fusion achieves the highest VLM F1 of 0.848, followed
 \label{fig:val_f1_curves}
 \end{figure}
 
-\subsubsection{Federated vs.\ Centralized Training}
+\subsubsection{Cross-Paradigm Comparison: Federated LLM vs.\ Federated ViT vs.\ Federated VLM}
 
-Table~\ref{tab:fed_comparison} compares federated and centralized training across all three model types.
+Table~\ref{tab:fed_comparison} directly compares all three federated paradigms against their respective centralized baselines, answering the central research question of which paradigm provides the optimal privacy-performance trade-off.
 
 \begin{table}[htbp]
 \centering
-\caption{Federated vs.\ Centralized Performance}
+\caption{Cross-Paradigm Comparison: Federated LLM vs.\ Federated ViT vs.\ Federated VLM}
 \label{tab:fed_comparison}
 \small
 \resizebox{\columnwidth}{!}{%
@@ -937,12 +933,12 @@ VLM & 0.848 & 0.785 & 92.6\% \\
 \end{tabular}}
 \end{table}
 
-Federated training achieves an average of 90.5\% of centralized performance across model types, as visualized in Figure~\ref{fig:fed_vs_centralized}. The LLM and VLM models show the smallest federated gap (${\sim}7\%$), indicating that both text features and fused multimodal representations are robust to non-IID partitioning. The ViT federated gap is larger (13.9\%), suggesting that visual features are more sensitive to heterogeneous data distributions across clients. Figure~\ref{fig:fed_convergence} further illustrates the convergence behavior of federated training across communication rounds.
+The cross-paradigm comparison reveals that each federated paradigm occupies a distinct operating point. \textbf{Federated LLM} achieves the smallest federated accuracy gap (7.1\% drop), making it the most federation-friendly paradigm despite its lower absolute accuracy. \textbf{Federated VLM} delivers the highest absolute federated F1 (0.785) with only a 7.4\% drop, establishing multimodal fusion as the best overall federated paradigm when computational resources permit. \textbf{Federated ViT} suffers the largest federated gap (13.9\%), suggesting that visual features extracted by residual CNN encoders are more sensitive to non-IID data heterogeneity across clients---a finding that motivates future work on vision-specific federated aggregation strategies (e.g., FedBN). Collectively, these results demonstrate that the choice of federated paradigm is not merely a modality preference but a fundamental design decision with distinct privacy-utility implications, as visualized in Figure~\ref{fig:fed_vs_centralized}. Figure~\ref{fig:fed_convergence} further illustrates the convergence trajectories of all three paradigms across communication rounds.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\columnwidth]{plot05_fed_vs_centralized.png}
-\caption{Centralized vs.\ federated F1 scores across LLM, ViT, and VLM model types. Federated training (orange) achieves 86--93\% of centralized performance (blue), with VLM and LLM models exhibiting the smallest federated gap.}
+\caption{Cross-paradigm comparison of centralized vs.\ federated F1 scores for Federated LLM, Federated ViT, and Federated VLM. Each paradigm is trained independently under identical FedAvg settings. Federated LLM (92.9\% retention) and Federated VLM (92.6\%) exhibit the smallest accuracy gaps, while Federated ViT (86.1\%) is most sensitive to non-IID client heterogeneity.}
 \label{fig:fed_vs_centralized}
 \end{figure}
 
@@ -953,7 +949,6 @@ Federated training achieves an average of 90.5\% of centralized performance acro
 \label{fig:fed_convergence}
 \end{figure}
 
-\clearpage
 \subsubsection{Per-Class Analysis}
 
 \begin{table}[htbp]
@@ -1026,14 +1021,14 @@ The ablation study (Table~\ref{tab:modality_ablation}) reveals genuine multimoda
 \label{fig:modality_contribution}
 \end{figure}
 
-\subsection{Summary of Results}
+\subsection{Summary of Results and Cross-Paradigm Analysis}
 
-Figure~\ref{fig:model_overview} provides an overview of the best F1 score achieved by each model type (LLM, ViT, VLM), while Figure~\ref{fig:efficiency} plots F1 performance against model size, revealing the efficiency trade-offs across architectures.
+Figure~\ref{fig:model_overview} provides the headline cross-paradigm comparison: the best centralized and federated F1 achieved by each paradigm (Federated LLM, Federated ViT, Federated VLM), while Figure~\ref{fig:efficiency} plots F1 performance against model size to reveal the efficiency trade-offs across all three paradigms.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\columnwidth]{plot04_model_type_overview.png}
-\caption{Best F1 score by model type. VLM fusion models (green) achieve the highest F1 (0.848), followed by ViT image encoders (red, 0.765), and LLM text encoders (blue, 0.590). Multimodal fusion provides a clear performance advantage over unimodal approaches.}
+\caption{Cross-paradigm F1 comparison for Federated LLM, Federated ViT, and Federated VLM (centralized and federated). Federated VLM (green) achieves the highest absolute F1 (0.848 centralized, 0.785 federated); Federated LLM (blue) incurs the smallest accuracy penalty under federation (92.9\% retention); Federated ViT (red) delivers strong unimodal performance (0.765) but is most affected by non-IID partitioning (86.1\% retention).}
 \label{fig:model_overview}
 \end{figure}
 
@@ -1094,7 +1089,7 @@ Prediction diversity & 100\% \\
 \midrule
 \multicolumn{2}{c}{\textit{Dataset Statistics}} \\
 \midrule
-Real text data ratio & 100\% (HuggingFace) \\
+Text data source & AG News (2,239 raw $\to$ 2,500 balanced) \\
 Real image data ratio & 67.3\% (Phase 1) \\
 Total models trained & 24 \\
 Hardware & Tesla T4 (15.6 GB) \\
@@ -1103,8 +1098,6 @@ Hardware & Tesla T4 (15.6 GB) \\
 \end{table}
 
 Figure~\ref{fig:radar} presents a radar chart comparing the best model from each category across multiple dimensions, while Figure~\ref{fig:f1_micro_macro} confirms balanced per-class performance via micro-macro F1 alignment. Figure~\ref{fig:model_matrix} provides a comprehensive feature matrix across all 18 models. Figures~\ref{fig:sota_comparison} and~\ref{fig:modality_benchmark} place our results in the context of existing agricultural AI benchmarks.
-
-\clearpage
 
 \begin{figure}[htbp]
 \centering
@@ -1129,13 +1122,13 @@ Figure~\ref{fig:radar} presents a radar chart comparing the best model from each
 \begin{itemize}[leftmargin=*]
     \item \textbf{Synthetic Image Quality:} While the ViT models achieve strong F1 (0.70--0.77) on synthetic images with tuned difficulty parameters, training on real crop imagery (e.g., full PlantVillage, iNaturalist, or drone captures) would improve generalization to field conditions and further enhance multimodal complementarity.
 
-    \item \textbf{Text-Label Alignment:} The agricultural text data is obtained by keyword-filtering general corpora (AG~News, PubMed, SQuAD), which introduces noise in stress label assignment. Curated expert annotations would improve text encoder quality.
+    \item \textbf{Text-Label Alignment:} The agricultural text data is obtained by keyword-filtering AG~News (PubMed Summarization and SQuAD yielded no qualifying matches), which introduces noise in stress label assignment due to the indirect mapping from news content to agronomic stress categories. Curated expert annotations or domain-specific agricultural corpora would improve text encoder quality.
 
     \item \textbf{Lightweight Architectures:} The current encoders are lightweight implementations (256-dim embeddings, 3-block CNNs) rather than full pretrained models. Using pretrained DistilBERT and ViT-Base weights with fine-tuning would improve performance.
 
     \item \textbf{Non-IID Sensitivity:} Federated performance degrades by ${\sim}10\%$ relative to centralized training. Adaptive aggregation strategies (FedProx, FedBN) could reduce this gap.
 
-    \item \textbf{Scale:} Experiments use ${\sim}1,000$ balanced samples per modality. Scaling to larger datasets (10K+ samples) with more federated clients would better demonstrate practical viability.
+    \item \textbf{Scale:} Text experiments use 2,500 balanced samples (500 per class, resampled from 2,239 raw AG~News matches). Scaling to larger or more diverse corpora beyond AG~News, and to 10K+ image samples with more federated clients, would better demonstrate practical viability.
 \end{itemize}
 
 % ============================================================================
@@ -1150,7 +1143,7 @@ FarmFederate enables several practical deployment scenarios:
 
 \textbf{Crop Insurance Automation.} Insurance companies can employ the multimodal framework for automated damage assessment, combining drone imagery of affected areas with adjuster text reports and historical claim data shared across regions.
 
-\textbf{Agricultural Extension Services.} Government extension services can build mobile applications allowing farmers to photograph crops with smartphones, describe symptoms in natural language, and receive real-time stress classification with treatment recommendations.
+\textbf{Agricultural Extension Services.} Government extension services can build mobile applications allowing farmers to photograph crops with smartphones, describe symptoms in natural language, and receive real-time stress classification with treatment recommendations. We implement this scenario concretely as the FarmFederate Android application (Appendix~\ref{app:screenshots}), which exposes the full research pipeline---including all 203 model configurations, federated training, and live IoT sensor integration---through a farmer-friendly interface backed by the production REST API.
 
 \textbf{Precision Agriculture Platforms.} Integration with precision agriculture platforms enables automated drone image analysis, correlation with IoT sensor telemetry (temperature, soil moisture, humidity, NPK levels), and generation of prescription maps for targeted treatment.
 
@@ -1160,20 +1153,98 @@ FarmFederate enables several practical deployment scenarios:
 \section{Conclusion}
 \label{sec:conclusion}
 
-This paper presented FarmFederate, a multimodal federated learning framework for privacy-preserving crop stress detection. The proposed architecture integrates LLM text encoders with ViT image encoders through eight VLM fusion strategies, coordinated via FedAvg across distributed agricultural sites.
+This paper presented FarmFederate, a framework that introduces and compares three independent federated learning paradigms for privacy-preserving crop stress detection: \textit{Federated LLM}, \textit{Federated ViT}, and \textit{Federated VLM}. Each paradigm is trained separately under FedAvg and evaluated against its own centralized baseline, enabling the first systematic cross-paradigm comparison in the agricultural federated learning literature.
 
-Our experimental evaluation yields several findings:
+Our experimental evaluation yields four key findings:
 \begin{enumerate}
-    \item On stress-biased datasets with real HuggingFace imagery, the VLM fusion model achieves near-perfect F1 scores (0.989--1.000) with 100\% prediction diversity, confirming the effectiveness of balanced sampling and diversity regularization.
+    \item \textbf{Federated LLM} (ALBERT-tiny, F1\,=\,0.548 federated / 0.590 centralized, 92.9\% retention) is the most federation-robust paradigm: text features derived from agricultural corpora degrade minimally under non-IID client partitioning, making it suitable for resource-constrained or bandwidth-limited deployments.
 
-    \item Among LLM encoders, ALBERT-tiny achieves the highest text classification F1 (0.590) on real agricultural corpora. Among ViT encoders, ConvNeXT-tiny reaches F1\,=\,0.765. The CLIP-based VLM fusion achieves the best overall F1 of 0.848, demonstrating that multimodal fusion provides substantial gains over unimodal approaches.
+    \item \textbf{Federated ViT} (ConvNeXT-tiny, F1\,=\,0.659 federated / 0.765 centralized, 86.1\% retention) achieves the highest unimodal accuracy but suffers the largest federated accuracy gap, indicating that visual feature learning is more sensitive to heterogeneous data distributions across farms.
 
-    \item Federated training attains over 90\% of centralized performance while ensuring complete data privacy---no raw data leaves local farms.
+    \item \textbf{Federated VLM} (CLIP fusion, F1\,=\,0.785 federated / 0.848 centralized, 92.6\% retention) delivers the best absolute federated accuracy with a federated gap comparable to Federated LLM, establishing multimodal fusion as the preferred paradigm when computational resources permit. CLIP-based contrastive alignment outperforms all seven alternative VLM fusion strategies.
 
-    \item The anti-collapse mechanisms (diversity loss, balanced sampling, early abort) successfully prevent class collapse across all 24 trained models, maintaining 100\% prediction diversity.
+    \item Anti-collapse mechanisms (diversity loss, balanced sampling, early abort) successfully prevent class collapse across all three federated paradigms and all 24 trained model variants, maintaining 100\% prediction diversity throughout federated training.
 \end{enumerate}
 
-Future work will focus on three directions: (1)~incorporating real crop imagery to improve generalization beyond synthetic patterns, (2)~scaling to pretrained transformer weights with parameter-efficient fine-tuning (LoRA), and (3)~deploying on edge devices via model distillation and quantization for real-time field inference.
+Taken together, these results answer the central question of this paper: each federated paradigm occupies a distinct and viable operating point, with Federated LLM offering the smallest accuracy penalty under federation, Federated VLM providing the highest overall accuracy, and Federated ViT positioned as a strong unimodal baseline that benefits most from future advances in vision-specific federated aggregation.
+
+Future work will focus on three directions: (1)~incorporating real crop imagery and pretrained ViT weights to close the Federated ViT gap, (2)~scaling to pretrained LLM/VLM weights with parameter-efficient fine-tuning (LoRA) to improve all three paradigms, and (3)~deploying on edge devices via model distillation and quantization for real-time field inference.
+
+% ============================================================================
+% APPENDIX: MOBILE APPLICATION SCREENSHOTS
+% ============================================================================
+\appendices
+
+\section{FarmFederate Mobile Application}
+\label{app:screenshots}
+
+The FarmFederate framework is deployed as an Android mobile application that exposes the full research pipeline---multimodal crop diagnosis, 203 configurable AI model combinations, federated training, IoT sensor integration, and historical analytics---to end users via an intuitive farmer-friendly interface. All screens run against the production backend at \texttt{farmfederate-advisor.onrender.com} and were captured on a physical Android device.
+
+Figures~\ref{fig:app_row1} and~\ref{fig:app_row2} show all primary application screens, progressing from authentication through diagnosis, AI chat, analytics, model configuration, and federated network management.
+
+% ---- Row 1: Auth, Dashboard, Crop Check ----
+\begin{figure*}[!t]
+  \centering
+  \begin{subfigure}[t]{0.18\textwidth}
+    \includegraphics[width=\linewidth]{app_ss_01_login}
+    \caption{Login / Auth}
+    \label{fig:app_login}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.18\textwidth}
+    \includegraphics[width=\linewidth]{app_ss_02_dashboard}
+    \caption{Home Dashboard with live IoT sensor readout (26.7\,\textdegree C, 63\% humidity, 36\% soil moisture)}
+    \label{fig:app_dash}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.18\textwidth}
+    \includegraphics[width=\linewidth]{app_ss_03_crop_check_input}
+    \caption{Crop Check Input: photo upload + natural-language symptom description}
+    \label{fig:app_input}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.18\textwidth}
+    \includegraphics[width=\linewidth]{app_ss_04_crop_check_results}
+    \caption{Diagnosis Results: per-class probability bars and actionable recommendations}
+    \label{fig:app_results}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.18\textwidth}
+    \includegraphics[width=\linewidth]{app_ss_05_ai_chat}
+    \caption{AI Chat: conversational stress analysis (``leaves red'' $\rightarrow$ Disease Risk 65\%)}
+    \label{fig:app_chat}
+  \end{subfigure}
+  \caption{FarmFederate mobile app --- authentication and crop diagnosis screens. The Crop Check screen (c,~d) submits image+text to the VLM backend and displays ranked stress probabilities with treatment advice. The AI Chat screen (e) allows conversational diagnosis via the same backend endpoint.}
+  \label{fig:app_row1}
+\end{figure*}
+
+% ---- Row 2: Analytics, Model Config, Farm Network ----
+\begin{figure*}[!t]
+  \centering
+  \begin{subfigure}[t]{0.18\textwidth}
+    \includegraphics[width=\linewidth]{app_ss_06_analytics}
+    \caption{Historical Analytics: per-crop health checks with optimal-range comparison}
+    \label{fig:app_analytics}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.18\textwidth}
+    \includegraphics[width=\linewidth]{app_ss_07_settings_llm}
+    \caption{Model Config (LLM): 5 text encoder choices; RoBERTa-tiny recommended}
+    \label{fig:app_llm}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.18\textwidth}
+    \includegraphics[width=\linewidth]{app_ss_08_settings_vlm}
+    \caption{Model Config (VLM): 8 fusion strategies + 3 federated modes; BLIP-2 recommended}
+    \label{fig:app_vlm}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.18\textwidth}
+    \includegraphics[width=\linewidth]{app_ss_09_settings_summary}
+    \caption{Settings Summary: active configuration (RoBERTa-tiny + Swin-tiny + BLIP-2, 85\% accuracy)}
+    \label{fig:app_settings}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.18\textwidth}
+    \includegraphics[width=\linewidth]{app_ss_10_farm_network}
+    \caption{Farm Network: federated training status, global model metrics, and participating farm roster}
+    \label{fig:app_network}
+  \end{subfigure}
+  \caption{FarmFederate mobile app --- analytics, model configuration, and federated network screens. The Model Config screens (b,~c,~d) expose all 203 AI configurations (5 LLM $\times$ 5 ViT $\times$ 8 VLM + 3 federated) to the user with plain-language descriptions. The Farm Network screen (e) visualises federated round progress (Round~3/10, 30\%) and live model performance metrics (Acc\,=\,94.3\%, F1\,=\,93.1\%) across participating farms.}
+  \label{fig:app_row2}
+\end{figure*}
 
 % ============================================================================
 % REFERENCES

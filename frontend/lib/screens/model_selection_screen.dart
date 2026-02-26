@@ -56,33 +56,29 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
           children: [
             _buildInfoCard(),
             const SizedBox(height: 20),
-            _buildSectionTitle('How We Read Your Description', Icons.text_fields),
+            _buildSectionTitle('Federated LLM  —  Text Analysis', Icons.text_fields,
+                subtitle: 'ALBERT-tiny · Fed F1 0.548 · 92.9% retention'),
             const SizedBox(height: 8),
             _buildModelCards(LLM_ENCODERS, _selectedLlm, (v) {
               setState(() => _selectedLlm = v);
             }),
             const SizedBox(height: 20),
-            _buildSectionTitle('How We Check Your Photo', Icons.image),
+            _buildSectionTitle('Federated ViT  —  Image Analysis', Icons.image,
+                subtitle: 'ConvNeXT-tiny · Fed F1 0.659 · 86.1% retention'),
             const SizedBox(height: 8),
             _buildModelCards(VIT_ENCODERS, _selectedVit, (v) {
               setState(() => _selectedVit = v);
             }),
             const SizedBox(height: 20),
-            _buildSectionTitle('How We Combine Everything', Icons.merge_type),
+            _buildSectionTitle('Federated VLM  —  Multimodal Fusion', Icons.merge_type,
+                subtitle: 'CLIP fusion · Fed F1 0.785 · 92.6% retention'),
             const SizedBox(height: 8),
             _buildModelCards(VLM_FUSIONS, _selectedFusion, (v) {
               setState(() => _selectedFusion = v);
             }),
             const SizedBox(height: 20),
-            _buildSectionTitle('Federated Learning (Privacy-Safe)', Icons.people),
-            const SizedBox(height: 4),
-            const Padding(
-              padding: EdgeInsets.only(left: 28),
-              child: Text(
-                'Your data never leaves your phone - the AI learns from all farmers together',
-                style: TextStyle(color: Colors.white54, fontSize: 12),
-              ),
-            ),
+            _buildSectionTitle('Active Federated Paradigm', Icons.people,
+                subtitle: 'K=3 clients · T=8 rounds · FedAvg · no raw data shared'),
             const SizedBox(height: 8),
             _buildModelCards(FEDERATED_MODES, _selectedFederated ?? '', (v) {
               setState(() {
@@ -115,7 +111,7 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
           SizedBox(width: 12),
           Expanded(
             child: Text(
-              'Choose how your crops are analyzed. The recommended settings work best for most farmers.',
+              'Three federated paradigms: Federated LLM (text), Federated ViT (image), Federated VLM (text+image). BEST badges show the top performer from the paper.',
               style: TextStyle(color: Colors.white70),
             ),
           ),
@@ -124,19 +120,34 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
     );
   }
 
-  Widget _buildSectionTitle(String title, IconData icon) {
-    return Row(
+  Widget _buildSectionTitle(String title, IconData icon, {String? subtitle}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: AppTheme.primaryGreen, size: 20),
-        const SizedBox(width: 8),
-        Text(
-          title,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
+        Row(
+          children: [
+            Icon(icon, color: AppTheme.primaryGreen, size: 20),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ],
         ),
+        if (subtitle != null)
+          Padding(
+            padding: const EdgeInsets.only(left: 28, top: 2),
+            child: Text(
+              subtitle,
+              style: const TextStyle(color: Colors.white38, fontSize: 11),
+            ),
+          ),
       ],
     );
   }
@@ -271,12 +282,12 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
             ),
           ),
           const SizedBox(height: 12),
-          _buildConfigRow('Description Reader', _getFriendlyName(_selectedLlm)),
-          _buildConfigRow('Photo Scanner', _getFriendlyName(_selectedVit)),
-          _buildConfigRow('Combination Method', _getFriendlyName(_selectedFusion)),
+          _buildConfigRow('Federated LLM', _getFriendlyName(_selectedLlm)),
+          _buildConfigRow('Federated ViT', _getFriendlyName(_selectedVit)),
+          _buildConfigRow('Federated VLM', _getFriendlyName(_selectedFusion)),
           if (_selectedFederated != null)
             _buildConfigRow(
-                'Federated Mode', _getFriendlyName(_selectedFederated!)),
+                'Active Paradigm', _getFriendlyName(_selectedFederated!)),
           const SizedBox(height: 12),
           if (isRecommended)
             Container(
@@ -291,7 +302,7 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
                   Icon(Icons.check_circle, color: AppTheme.primaryGreen, size: 16),
                   SizedBox(width: 6),
                   Text(
-                    'Recommended settings - 85% accuracy',
+                    'Best paradigm config — VLM Fed F1 = 0.785',
                     style: TextStyle(color: AppTheme.primaryGreen, fontSize: 12),
                   ),
                 ],
@@ -372,21 +383,21 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
           ),
           const SizedBox(height: 12),
           _buildFeatureItem(
-            Icons.photo_camera,
-            'Multimodal AI (Photo + Text)',
-            'Unlike Plantix or Agrio (photo-only), FarmFederate analyzes both your crop photo AND your text description together for 12% higher accuracy',
+            Icons.text_fields,
+            'Federated LLM — Text Paradigm',
+            'ALBERT-tiny achieves Fed F1 = 0.548 with 92.9% retention. Most robust to non-IID data — ideal for bandwidth-limited farms.',
           ),
           const SizedBox(height: 8),
           _buildFeatureItem(
-            Icons.lock,
-            'Federated Learning (Privacy-First)',
-            'No other farming app uses federated learning. Your data never leaves your phone - the AI learns from all farmers collectively without sharing raw data',
+            Icons.image,
+            'Federated ViT — Image Paradigm',
+            'ConvNeXT-tiny achieves Fed F1 = 0.659 with 86.1% retention. Highest unimodal accuracy; most sensitive to data heterogeneity across farms.',
           ),
           const SizedBox(height: 8),
           _buildFeatureItem(
-            Icons.tune,
-            '203 AI Configurations',
-            'Most apps are a black box. FarmFederate lets you choose from 5 LLM + 5 ViT + 8 fusion + 3 federated model combinations for your specific crop and region',
+            Icons.merge_type,
+            'Federated VLM — Multimodal Paradigm',
+            'CLIP fusion achieves Fed F1 = 0.785 with 92.6% retention. Best overall — contrastive alignment outperforms Q-Former architectures.',
           ),
           const SizedBox(height: 8),
           _buildFeatureItem(

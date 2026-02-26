@@ -1810,6 +1810,175 @@ def download_kaggle_dataset(kaggle_id: str, out_dir: Path) -> bool:
         return False
 
 
+def load_hf_real_images(
+    target_labels: List[List[int]],
+    img_size: int = 224,
+) -> Tuple[List, List]:
+    """Load real crop-stress images from HuggingFace (PlantVillage + Beans) and
+    return tensors matched to *target_labels*.
+
+    Sources (same as Phase 1 evaluation):
+      - BrandonFors/Plant-Diseases-PlantVillage-Dataset : 54,303 images across
+        38 plant disease classes, mapped via DISEASE_TO_STRESS.
+      - beans : 1,295 images (angular_leaf_spot → disease_risk,
+                               bean_rust → disease_risk, healthy → skipped).
+
+    Class names from each dataset are lower-cased and matched against
+    DISEASE_TO_STRESS tokens. Any stress category with no matched real images
+    is filled with synthetic images so the returned list always has exactly
+    len(target_labels) entries.
+
+    Returns
+    -------
+    images : List[torch.Tensor]  shape (3, img_size, img_size), ImageNet-normalised
+    labels : List[List[int]]     same as target_labels
+    """
+    mean = torch.tensor([0.485, 0.456, 0.406]).view(3, 1, 1)
+    std  = torch.tensor([0.229, 0.224, 0.225]).view(3, 1, 1)
+
+    def _pil_to_tensor(pil_img) -> torch.Tensor:
+        img = pil_img.convert('RGB').resize((img_size, img_size))
+        t = torch.from_numpy(np.array(img) / 255.0).permute(2, 0, 1).float()
+        return (t - mean) / std
+
+    def _class_name_to_stress(name: str) -> Optional[int]:
+        """Map a dataset class label string to a STRESS_LABELS index."""
+        n = name.lower().replace('___', '_').replace(',', '').replace(' ', '_')
+        for token, stress_name in DISEASE_TO_STRESS.items():
+            if token in n and stress_name is not None:
+                return STRESS_LABELS.index(stress_name)
+        return None
+
+    # ------------------------------------------------------------------
+    # 1. Build a pool: stress_idx -> [tensor, ...]
+    # ------------------------------------------------------------------
+    pool: Dict[int, List[torch.Tensor]] = {i: [] for i in range(len(STRESS_LABELS))}
+
+    try:
+        from datasets import load_dataset
+    except ImportError:
+        print("  [HF] datasets library not available; falling back to synthetic.")
+        return generate_synthetic_image_data(len(target_labels), img_size=img_size,
+                                             target_labels=target_labels)
+
+    # --- PlantVillage ---
+    try:
+        print("  [HF] Loading PlantVillage (BrandonFors/Plant-Diseases-PlantVillage-Dataset)...")
+        pv_ds = load_dataset('BrandonFors/Plant-Diseases-PlantVillage-Dataset',
+                             split='train', streaming=True)
+        # Determine label column and names from the first batch features
+        label_col, label_names = None, None
+        for item in pv_ds.take(1):
+            for col in ['labels', 'label', 'class']:
+                if col in item:
+                    label_col = col
+                    break
+            break
+        # Try to get class names from features
+        try:
+            pv_full = load_dataset('BrandonFors/Plant-Diseases-PlantVillage-Dataset',
+                                   split='train', streaming=False)
+            if label_col and hasattr(pv_full.features[label_col], 'names'):
+                label_names = pv_full.features[label_col].names
+            del pv_full
+        except Exception:
+            label_names = None
+
+        pv_count = 0
+        for item in pv_ds:
+            try:
+                img = item.get('image') or item.get('img')
+                if img is None or not hasattr(img, 'convert'):
+                    continue
+                # Map label to stress
+                raw_lbl = item.get(label_col) if label_col else None
+                stress_idx = None
+                if raw_lbl is not None and label_names is not None:
+                    try:
+                        class_name = label_names[int(raw_lbl)]
+                        stress_idx = _class_name_to_stress(class_name)
+                    except Exception:
+                        pass
+                if stress_idx is None:
+                    continue  # skip unmapped (e.g. healthy)
+                pool[stress_idx].append(_pil_to_tensor(img))
+                pv_count += 1
+            except Exception:
+                continue
+        per = {STRESS_LABELS[i]: len(v) for i, v in pool.items()}
+        print(f"  [HF] PlantVillage loaded: {pv_count} images → {per}")
+    except Exception as e:
+        print(f"  [HF] PlantVillage failed: {e}")
+
+    # --- Beans ---
+    try:
+        print("  [HF] Loading Beans dataset...")
+        beans_ds = load_dataset('beans', split='train')
+        # Beans labels: 0=angular_leaf_spot, 1=bean_rust, 2=healthy
+        beans_label_names = None
+        if hasattr(beans_ds.features.get('labels', beans_ds.features.get('label')), 'names'):
+            col = 'labels' if 'labels' in beans_ds.features else 'label'
+            beans_label_names = beans_ds.features[col].names
+
+        beans_count = 0
+        for item in beans_ds:
+            try:
+                img = item.get('image') or item.get('img')
+                if img is None or not hasattr(img, 'convert'):
+                    continue
+                col = 'labels' if 'labels' in item else 'label'
+                raw_lbl = item.get(col)
+                stress_idx = None
+                if beans_label_names is not None and raw_lbl is not None:
+                    class_name = beans_label_names[int(raw_lbl)]
+                    stress_idx = _class_name_to_stress(class_name)
+                if stress_idx is None:
+                    continue  # skip healthy
+                pool[stress_idx].append(_pil_to_tensor(img))
+                beans_count += 1
+            except Exception:
+                continue
+        per = {STRESS_LABELS[i]: len(v) for i, v in pool.items()}
+        print(f"  [HF] Beans loaded: {beans_count} images → {per}")
+    except Exception as e:
+        print(f"  [HF] Beans failed: {e}")
+
+    total_real = sum(len(v) for v in pool.values())
+    if total_real == 0:
+        print("  [HF] No real images loaded; falling back to fully synthetic.")
+        return generate_synthetic_image_data(len(target_labels), img_size=img_size,
+                                             target_labels=target_labels)
+
+    for idx in pool:
+        random.shuffle(pool[idx])
+    counters = {i: 0 for i in range(len(STRESS_LABELS))}
+
+    # ------------------------------------------------------------------
+    # 2. Build output list matched to target_labels
+    # ------------------------------------------------------------------
+    images: List[torch.Tensor] = []
+    out_labels: List[List[int]] = []
+    synthetic_needed = 0
+
+    for lbl in target_labels:
+        stress_idx = lbl[0] if isinstance(lbl, list) else int(lbl)
+        bucket = pool[stress_idx]
+        if bucket:
+            t = bucket[counters[stress_idx] % len(bucket)]
+            counters[stress_idx] += 1
+            images.append(t)
+        else:
+            syn, _ = generate_synthetic_image_data(1, img_size=img_size,
+                                                    target_labels=[[stress_idx]])
+            images.append(syn[0])
+            synthetic_needed += 1
+        out_labels.append([stress_idx])
+
+    real_count = len(images) - synthetic_needed
+    print(f"  [HF] Final: {real_count} real + {synthetic_needed} synthetic fill = {len(images)} images")
+    return images, out_labels
+
+
 def clone_github_repo(repo: str, out_dir: Path) -> bool:
     """Clone a GitHub repo (full or partial) into out_dir; repo can be owner/name"""
     import subprocess
@@ -6293,15 +6462,18 @@ def run_training(config: Config, allow_short: bool = False, skip_download: bool 
             print(f"  [Fallback] Real text download failed: {text_e}. Using synthetic text.")
             text_df = generate_synthetic_text_data(config.max_samples_per_class * len(STRESS_LABELS))
 
-        # FIX: Generate images matching text count AND using text labels for patterns.
-        # After rebalancing, text_df may have far fewer samples than the original request.
+        # Load real images from Kaggle (falls back to synthetic per-slot if unavailable).
         # Images must match text count so stratified_split indices are valid for both.
-        # CRITICAL: Pass text labels so image[i] has the visual pattern for its actual label,
-        # not i%5 (which would mismatch with text labels and make ViT train on random images).
+        # CRITICAL: Pass text labels so image[i] has the visual pattern for its actual label.
         n_image_samples = len(text_df)
         text_labels_for_images = text_df['labels'].tolist()
-        images, _ = generate_synthetic_image_data(n_image_samples, target_labels=text_labels_for_images)
-        print(f"  Images: {n_image_samples} synthetic (matched to text count and labels)")
+        try:
+            images, _ = load_hf_real_images(text_labels_for_images, img_size=config.image_size)
+            print(f"  Images: {n_image_samples} (PlantVillage+Beans real, matched to text labels)")
+        except Exception as img_e:
+            print(f"  [Fallback] HuggingFace image load failed ({img_e}); using synthetic images.")
+            images, _ = generate_synthetic_image_data(n_image_samples, target_labels=text_labels_for_images)
+            print(f"  Images: {n_image_samples} synthetic (matched to text count and labels)")
 
         # FIX: Use stratified split to maintain class distribution and prevent overfitting
         # This ensures validation set has same class ratios as training set
@@ -6325,10 +6497,14 @@ def run_training(config: Config, allow_short: bool = False, skip_download: bool 
         print(f"  [Error] Self-contained data generation failed: {e}")
         print(f"  [Fallback] Generating minimal synthetic data...")
 
-        # Generate minimal synthetic data as fallback
+        # Generate minimal data as fallback (real Kaggle images where possible)
         n_samples = config.max_samples_per_class * len(STRESS_LABELS)
         text_df = generate_synthetic_text_data(n_samples)
-        images, image_labels = generate_synthetic_image_data(n_samples, target_labels=text_df['labels'].tolist())
+        fallback_labels = text_df['labels'].tolist()
+        try:
+            images, image_labels = load_hf_real_images(fallback_labels, img_size=config.image_size)
+        except Exception:
+            images, image_labels = generate_synthetic_image_data(n_samples, target_labels=fallback_labels)
 
         text_labels = text_df['labels'].tolist()
         (train_data, label_train), (val_data, label_val), _ = stratified_split(

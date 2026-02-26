@@ -92,11 +92,11 @@ const int EPOCHS = 30;
 const String OPTIMIZER = "AdamW";
 const double WEIGHT_DECAY = 0.01;
 
-/// Federated parameters
-const int NUM_CLIENTS = 5;
-const int FEDERATED_ROUNDS = 50;
+/// Federated parameters (K=3 clients, T=8 rounds, E=3 local epochs — paper §4)
+const int NUM_CLIENTS = 3;
+const int FEDERATED_ROUNDS = 8;
 const int LOCAL_EPOCHS = 3;
-const double NON_IID_ALPHA = 0.5;
+const double NON_IID_ALPHA = 1.0;
 
 /// Loss parameters
 const double FOCAL_GAMMA = 2.0;
@@ -177,20 +177,35 @@ const List<String> FEDERATED_MODES = [
 const int TOTAL_CONFIGURATIONS = 203;
 
 // ============================================================
-// BEST CONFIGURATION (Table 22)
+// BEST CONFIGURATION — from paper cross-paradigm comparison
 // ============================================================
 
-const String BEST_LLM = 'roberta_tiny';
-const String BEST_VIT = 'swin_tiny';
-const String BEST_FUSION = 'blip2';
+// Best per paradigm (paper Table 2)
+const String BEST_LLM = 'albert_tiny';      // Fed F1 = 0.548, retention 92.9%
+const String BEST_VIT = 'convnext_tiny';    // Fed F1 = 0.659, retention 86.1%
+const String BEST_FUSION = 'clip';          // Fed F1 = 0.785, retention 92.6%
 
-const double BEST_MACRO_F1_CENTRALIZED = 0.847;
-const double BEST_MACRO_F1_FEDERATED = 0.798;
-const double BEST_ACCURACY = 0.874;
+// Per-paradigm federated F1 scores
+const double FED_F1_LLM = 0.548;
+const double FED_F1_VIT = 0.659;
+const double FED_F1_VLM = 0.785;
 
-const double MULTIMODAL_IMPROVEMENT = 12.3; // % over unimodal
-const double SOTA_IMPROVEMENT = 5.7; // % over SOTA
-const double FED_CENTRALIZED_RATIO = 94.2; // %
+// Per-paradigm centralized F1 scores
+const double CENT_F1_LLM = 0.590;
+const double CENT_F1_VIT = 0.765;
+const double CENT_F1_VLM = 0.848;
+
+// Per-paradigm federation retention (Fed/Cent %)
+const double RETENTION_LLM = 92.9;
+const double RETENTION_VIT = 86.1;
+const double RETENTION_VLM = 92.6;
+
+const double BEST_MACRO_F1_CENTRALIZED = 0.848;   // VLM-CLIP centralized
+const double BEST_MACRO_F1_FEDERATED = 0.785;     // VLM-CLIP federated
+const double BEST_ACCURACY = 0.848;
+
+const double MULTIMODAL_IMPROVEMENT = 23.7; // VLM Fed F1 vs best LLM Fed F1
+const double FED_CENTRALIZED_RATIO = 90.5;  // avg across 3 paradigms
 const double COMMUNICATION_REDUCTION = 67.0; // %
 
 const int BEST_MODEL_PARAMETERS_M = 213;
@@ -225,8 +240,8 @@ const Map<String, String> LLM_FRIENDLY_NAMES = {
 const Map<String, String> LLM_FRIENDLY_DESCRIPTIONS = {
   'distilbert': 'Fast & light text reader - great for quick scans of your crop description',
   'bert_tiny': 'Compact text reader - runs smoothly even on basic phones',
-  'roberta_tiny': 'Accurate text reader - best at understanding what you describe',
-  'albert_tiny': 'Memory-saver text reader - uses very little phone storage',
+  'roberta_tiny': 'Accurate text reader - strong understanding of symptom descriptions',
+  'albert_tiny': 'Best fed. F1 (0.548) — most robust across farms with 92.9% privacy retention',
   'mobilebert': 'Phone-optimized reader - built for mobile farming use',
 };
 
@@ -242,8 +257,8 @@ const Map<String, String> VIT_FRIENDLY_NAMES = {
 const Map<String, String> VIT_FRIENDLY_DESCRIPTIONS = {
   'vit_base': 'Standard photo scanner - reliable for most crop photos',
   'deit_tiny': 'Quick photo scanner - faster results when you are in a hurry',
-  'swin_tiny': 'Sharp-eye scanner - best at spotting small disease spots & pest marks',
-  'convnext_tiny': 'Modern scanner - strong all-around for leaves, fruits & stems',
+  'swin_tiny': 'Sharp-eye scanner - great at spotting small disease spots & pest marks',
+  'convnext_tiny': 'Best fed. F1 (0.659) — highest unimodal accuracy across crop images',
   'efficientnet': 'Battery-saver scanner - uses less power on your phone',
 };
 
@@ -263,24 +278,24 @@ const Map<String, String> FUSION_FRIENDLY_DESCRIPTIONS = {
   'concat': 'Puts your photo and description side by side - quick & simple',
   'attention': 'Focuses on the most important parts of both photo & text',
   'gated': 'Smartly balances how much weight to give photo vs text',
-  'clip': 'Matches your words to what it sees in the photo',
+  'clip': 'Best fed. F1 (0.785) — contrastive alignment outperforms Q-Former architectures',
   'flamingo': 'Advanced AI that reads your text while looking at the photo',
-  'blip2': 'Deep analysis - most thorough combination of photo + text',
+  'blip2': 'Deep analysis - thorough Q-Former combination of photo + text',
   'coca': 'Learns hidden connections between what you say and what it sees',
   'unified_io': 'Universal method - handles any combination of inputs well',
 };
 
-/// Friendly names for federated learning modes
+/// Friendly names for federated learning modes (paper paradigm terminology)
 const Map<String, String> FEDERATED_FRIENDLY_NAMES = {
-  'fed_llm': 'Community Text AI',
-  'fed_vit': 'Community Photo AI',
-  'fed_vlm': 'Community Full AI',
+  'fed_llm': 'Federated LLM',
+  'fed_vit': 'Federated ViT',
+  'fed_vlm': 'Federated VLM',
 };
 
 const Map<String, String> FEDERATED_FRIENDLY_DESCRIPTIONS = {
-  'fed_llm': 'Text model trained across many farms - your data never leaves your phone',
-  'fed_vit': 'Photo model trained across many farms - learns from everyone privately',
-  'fed_vlm': 'Full multimodal AI trained across farms - best community accuracy',
+  'fed_llm': 'Text-only paradigm — ALBERT-tiny, Fed F1 = 0.548, 92.9% retention. Lowest compute, most robust to non-IID data.',
+  'fed_vit': 'Image-only paradigm — ConvNeXT-tiny, Fed F1 = 0.659, 86.1% retention. Highest unimodal accuracy; sensitive to data heterogeneity.',
+  'fed_vlm': 'Text + Image paradigm — CLIP fusion, Fed F1 = 0.785, 92.6% retention. Best overall; dual-modality when compute is available.',
 };
 
 // ============================================================

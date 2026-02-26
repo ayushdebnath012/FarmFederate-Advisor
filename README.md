@@ -42,6 +42,6 @@ f1_score = checkpoint['f1_score']
 - 8 VLM fusion architectures (concat, attention, gated, CLIP, Flamingo, BLIP2, CoCa, Unified-IO)
 - Centralized and Federated variants
 
-Generated: 2026-02-17 15:51:21
+Generated: 2026-02-26 06:01:45
 Total Files: 79
-Package Size: 1047.7 MB
+Package Size: 1047.5 MB

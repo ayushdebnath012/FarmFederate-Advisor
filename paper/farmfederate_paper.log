@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.1) (preloaded format=pdflatex 2026.2.18)  18 FEB 2026 01:59
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.1) (preloaded format=pdflatex 2026.2.18)  20 FEB 2026 18:45
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1143,57 +1143,58 @@ Package hyperref Info: Link coloring OFF on input line 52.
 Package pgfplots notification 'compat/show suggested version=true': you might b
 enefit from \pgfplotsset{compat=1.18} (current compat level: 1.17).
 
-LaTeX Font Info:    Trying to load font information for OT1+phv on input line 7
-3.
+LaTeX Font Info:    Trying to load font information for OT1+phv on input line 6
+8.
 (C:\Users\USER_HP\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1phv.fd
 File: ot1phv.fd 2020/03/25 scalable font definitions for OT1/phv.
 )
 LaTeX Font Info:    Font shape `OT1/phv/m/it' in size <8.03> not available
-(Font)              Font shape `OT1/phv/m/sl' tried instead on input line 73.
-LaTeX Font Info:    Calculating math sizes for size <11.04124> on input line 73
-.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 73.
+(Font)              Font shape `OT1/phv/m/sl' tried instead on input line 68.
+LaTeX Font Info:    Calculating math sizes for size <8.03> on input line 68.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 68.
 
 
 (C:\Users\USER_HP\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 73.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 68.
 
 
 (C:\Users\USER_HP\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Trying to load font information for U+pzd on input line 73.
+LaTeX Font Info:    Calculating math sizes for size <11.04124> on input line 68
+.
+LaTeX Font Info:    Trying to load font information for U+pzd on input line 68.
 
 
 (C:\Users\USER_HP\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\upzd.fd
 File: upzd.fd 2001/06/04 font definitions for U/pzd.
 )
-LaTeX Font Info:    Calculating math sizes for size <9.03374> on input line 83.
+LaTeX Font Info:    Calculating math sizes for size <9.03374> on input line 78.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 136--136
+Underfull \hbox (badness 10000) in paragraph at lines 131--131
 []|\OT1/ppl/m/n/9.03374 Multimodal
  []
 
 
-Underfull \hbox (badness 3724) in paragraph at lines 136--137
+Underfull \hbox (badness 3724) in paragraph at lines 131--132
 \OT1/ppl/m/n/9.03374 tex-tual symp-tom de-scrip-tions for
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 140--141
+Underfull \hbox (badness 10000) in paragraph at lines 135--136
 []|\OT1/ppl/m/n/9.03374 Transmits only model gra-di-ents
  []
 
 
-Underfull \hbox (badness 1412) in paragraph at lines 140--141
+Underfull \hbox (badness 1412) in paragraph at lines 135--136
 \OT1/ppl/m/n/9.03374 rather than raw im-age files; 67%
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 142--142
+Underfull \hbox (badness 10000) in paragraph at lines 137--137
 []|\OT1/ppl/m/n/9.03374 Non-IID
  []
 
@@ -1202,245 +1203,447 @@ USER_HP/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}
 
 
 ]
-LaTeX Font Info:    Calculating math sizes for size <9.53561> on input line 152
+LaTeX Font Info:    Calculating math sizes for size <9.53561> on input line 147
 .
 
-Underfull \hbox (badness 1859) in paragraph at lines 175--176
+Underfull \hbox (badness 7099) in paragraph at lines 152--153
+[]\OT1/ppl/b/n/9.53561 Federated VLM: \OT1/ppl/m/n/9.53561 A fed-er-ated mul-ti
+-modal fu-sion
+ []
+
+
+Underfull \hbox (badness 1859) in paragraph at lines 170--171
 \OT1/ppl/m/n/9.53561 pi-o-neered CNN-based plant dis-ease de-tec-tion on the
  []
 
-[2]
-LaTeX Font Info:    Calculating math sizes for size <7.02625> on input line 264
+[2] [3]
+LaTeX Font Info:    Calculating math sizes for size <7.02625> on input line 259
 .
-LaTeX Font Info:    Calculating math sizes for size <5.01874> on input line 282
+LaTeX Font Info:    Calculating math sizes for size <5.01874> on input line 277
 .
 
 
 LaTeX Font Warning: Font shape `OT1/cmr/m/n' in size <2.50937> not available
-(Font)              size <5> substituted on input line 282.
+(Font)              size <5> substituted on input line 277.
 
 
 LaTeX Font Warning: Font shape `OML/cmm/m/it' in size <2.50937> not available
-(Font)              size <5> substituted on input line 282.
+(Font)              size <5> substituted on input line 277.
 
 
 LaTeX Font Warning: Font shape `OMS/cmsy/m/n' in size <2.50937> not available
-(Font)              size <5> substituted on input line 282.
+(Font)              size <5> substituted on input line 277.
 
 
 LaTeX Font Warning: Font shape `OT1/cmr/bx/n' in size <2.50937> not available
-(Font)              size <5> substituted on input line 282.
+(Font)              size <5> substituted on input line 277.
 
 
-Underfull \hbox (badness 1975) in paragraph at lines 325--326
+Underfull \hbox (badness 1975) in paragraph at lines 320--321
 \OT1/ppl/m/n/9.53561 bin-ing real agri-cul-tural data from Hug-ging-Face with
  []
 
 
-Underfull \hbox (badness 2119) in paragraph at lines 325--326
+Underfull \hbox (badness 2119) in paragraph at lines 320--321
 \OT1/ppl/m/it/9.53561 ter[]stress \OT1/ppl/m/n/9.53561 (drought/wilting), \OT1/
 ppl/m/it/9.53561 nu-tri-ent[]def \OT1/ppl/m/n/9.53561 (nu-tri-ent de-fi-
  []
 
-[3]
 LaTeX Font Info:    Font shape `OT1/phv/m/it' in size <9.53561> not available
-(Font)              Font shape `OT1/phv/m/sl' tried instead on input line 327.
+(Font)              Font shape `OT1/phv/m/sl' tried instead on input line 322.
 
-Underfull \hbox (badness 7362) in paragraph at lines 331--332
+Underfull \hbox (badness 7362) in paragraph at lines 326--327
 []\OT1/ppl/b/n/9.53561 PubMed Sum-ma-riza-tion\OT1/ppl/m/n/9.53561 : Sci-en-tif
 ic ab-stracts with
  []
 
-<plots/plot26_stress_distribution.png, id=341, 722.7pt x 433.62pt>
+<plots/plot26_stress_distribution.png, id=339, 722.7pt x 433.62pt>
 File: plots/plot26_stress_distribution.png Graphic file (type png)
 <use plots/plot26_stress_distribution.png>
 Package pdftex.def Info: plots/plot26_stress_distribution.png  used on input li
-ne 339.
+ne 334.
 (pdftex.def)             Requested size: 252.94499pt x 151.76265pt.
-[4 <./plots/plot26_stress_distribution.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 503--504
+[4]
+Underfull \hbox (badness 10000) in paragraph at lines 498--499
 []|$\OT1/cmr/bx/n/9 h[] \OT1/cmr/m/n/9 =
  []
 
 
-Underfull \hbox (badness 3547) in paragraph at lines 509--510
+Underfull \hbox (badness 3547) in paragraph at lines 504--505
 []|$\OT1/cmr/bx/n/9 z \OT1/cmr/m/n/9 = [](\OT1/cmr/bx/n/9 h[]\OT1/cmr/m/n/9 )$\
 OT1/ppl/m/n/9.03374 , $\OT1/cmr/bx/n/9 h[] \OT1/cmr/m/n/9 =
  []
 
+[5 <./plots/plot26_stress_distribution.png>]
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 655.
+put line 650.
 LaTeX Font Info:    Trying to load font information for OMS+ppl on input line 6
-66.
+61.
+
 (C:\Users\USER_HP\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omsppl.fd
 File: omsppl.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ppl/m/n' in size <9.53561> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 666.
-
-[5]
-<plots/plot08_params.png, id=384, 1156.32pt x 433.62pt>
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 661.
+<plots/plot08_params.png, id=388, 1156.32pt x 433.62pt>
 File: plots/plot08_params.png Graphic file (type png)
 <use plots/plot08_params.png>
-Package pdftex.def Info: plots/plot08_params.png  used on input line 710.
+Package pdftex.def Info: plots/plot08_params.png  used on input line 705.
 (pdftex.def)             Requested size: 252.94499pt x 94.85414pt.
- [6]
-<plots/dataset_comparison_combined.png, id=409, 1148.6112pt x 445.9059pt>
+
+[6]
+<plots/dataset_comparison_combined.png, id=414, 1148.6112pt x 445.9059pt>
 File: plots/dataset_comparison_combined.png Graphic file (type png)
 <use plots/dataset_comparison_combined.png>
 Package pdftex.def Info: plots/dataset_comparison_combined.png  used on input l
-ine 790.
+ine 785.
 (pdftex.def)             Requested size: 252.94499pt x 98.19485pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 799--800
-\OT1/ppl/m/n/9.53561 Table []10[] re-ports LLM en-coder per-for-mance on
+Underfull \hbox (badness 10000) in paragraph at lines 796--797
+\OT1/ppl/m/n/9.53561 Table []10[] re-ports Fed-er-ated LLM per-for-mance on
  []
 
-<plots/plot01_llm_comparison.png, id=412, 867.24pt x 433.62pt>
+
+Underfull \hbox (badness 2057) in paragraph at lines 796--797
+\OT1/ppl/m/n/9.53561 agriculturally-augmented text data from Hug-ging-Face.
+ []
+
+[7 <./plots/plot08_params.png> <./plots/dataset_comparison_combined.png>]
+<plots/plot01_llm_comparison.png, id=428, 867.24pt x 433.62pt>
 File: plots/plot01_llm_comparison.png Graphic file (type png)
 <use plots/plot01_llm_comparison.png>
 Package pdftex.def Info: plots/plot01_llm_comparison.png  used on input line 82
-4.
+1.
 (pdftex.def)             Requested size: 252.94499pt x 126.46777pt.
-[7 <./plots/plot08_params.png> <./plots/dataset_comparison_combined.png>]
-<plots/plot02_vit_comparison.png, id=426, 867.24pt x 433.62pt>
+<plots/plot02_vit_comparison.png, id=431, 867.24pt x 433.62pt>
 File: plots/plot02_vit_comparison.png Graphic file (type png)
 <use plots/plot02_vit_comparison.png>
 Package pdftex.def Info: plots/plot02_vit_comparison.png  used on input line 85
-6.
+3.
 (pdftex.def)             Requested size: 252.94499pt x 126.46777pt.
-<plots/plot03_vlm_fusion_comparison.png, id=432, 1011.78pt x 433.62pt>
+<plots/plot03_vlm_fusion_comparison.png, id=437, 1011.78pt x 433.62pt>
 File: plots/plot03_vlm_fusion_comparison.png Graphic file (type png)
 <use plots/plot03_vlm_fusion_comparison.png>
 Package pdftex.def Info: plots/plot03_vlm_fusion_comparison.png  used on input 
-line 891.
+line 888.
 (pdftex.def)             Requested size: 252.94499pt x 108.40472pt.
-<plots/plot13_heatmap.png, id=433, 867.24pt x 578.16pt>
+<plots/plot13_heatmap.png, id=438, 867.24pt x 578.16pt>
 File: plots/plot13_heatmap.png Graphic file (type png)
 <use plots/plot13_heatmap.png>
-Package pdftex.def Info: plots/plot13_heatmap.png  used on input line 898.
+Package pdftex.def Info: plots/plot13_heatmap.png  used on input line 895.
 (pdftex.def)             Requested size: 252.94499pt x 168.6237pt.
-<plots/plot06_training_loss.png, id=434, 867.24pt x 433.62pt>
+<plots/plot06_training_loss.png, id=439, 867.24pt x 433.62pt>
 File: plots/plot06_training_loss.png Graphic file (type png)
 <use plots/plot06_training_loss.png>
-Package pdftex.def Info: plots/plot06_training_loss.png  used on input line 905
+Package pdftex.def Info: plots/plot06_training_loss.png  used on input line 902
 .
 (pdftex.def)             Requested size: 252.94499pt x 126.46777pt.
-<plots/plot07_val_f1_curves.png, id=435, 867.24pt x 433.62pt>
+<plots/plot07_val_f1_curves.png, id=440, 867.24pt x 433.62pt>
 File: plots/plot07_val_f1_curves.png Graphic file (type png)
 <use plots/plot07_val_f1_curves.png>
-Package pdftex.def Info: plots/plot07_val_f1_curves.png  used on input line 912
+Package pdftex.def Info: plots/plot07_val_f1_curves.png  used on input line 909
 .
 (pdftex.def)             Requested size: 252.94499pt x 126.46777pt.
+
+Underfull \hbox (badness 1418) in paragraph at lines 914--914
+ \OT1/phv/m/sl/9.53561 5.3.4 Cross-Paradigm Com-par-i-son: Fed-er-ated LLM vs.
+ []
+
+
+Underfull \hbox (badness 1540) in paragraph at lines 937--938
+\OT1/ppl/b/n/9.53561 er-ated LLM \OT1/ppl/m/n/9.53561 achieves the small-est fe
+d-er-ated ac-cu-racy
+ []
 
 [8 <./plots/plot01_llm_comparison.png> <./plots/plot02_vit_comparison.png> <./p
 lots/plot03_vlm_fusion_comparison.png>]
-<plots/plot05_fed_vs_centralized.png, id=455, 867.24pt x 433.62pt>
+<plots/plot05_fed_vs_centralized.png, id=460, 867.24pt x 433.62pt>
 File: plots/plot05_fed_vs_centralized.png Graphic file (type png)
 <use plots/plot05_fed_vs_centralized.png>
 Package pdftex.def Info: plots/plot05_fed_vs_centralized.png  used on input lin
-e 944.
+e 941.
 (pdftex.def)             Requested size: 252.94499pt x 126.46777pt.
-<plots/plot27_fed_convergence.png, id=456, 867.24pt x 433.62pt>
+<plots/plot27_fed_convergence.png, id=461, 867.24pt x 433.62pt>
 File: plots/plot27_fed_convergence.png Graphic file (type png)
 <use plots/plot27_fed_convergence.png>
 Package pdftex.def Info: plots/plot27_fed_convergence.png  used on input line 9
-51.
+48.
 (pdftex.def)             Requested size: 252.94499pt x 126.46777pt.
  [9 <./plots/plot13_heatmap.png> <./plots/plot06_training_loss.png> <./plots/pl
-ot07_val_f1_curves.png> <./plots/plot05_fed_vs_centralized.png> <./plots/plot27
-_fed_convergence.png>]
-<plots/plot10b_confusion_matrix.png, id=471, 722.7pt x 578.16pt>
+ot07_val_f1_curves.png> <./plots/plot05_fed_vs_centralized.png>]
+<plots/plot10b_confusion_matrix.png, id=477, 722.7pt x 578.16pt>
 File: plots/plot10b_confusion_matrix.png Graphic file (type png)
 <use plots/plot10b_confusion_matrix.png>
 Package pdftex.def Info: plots/plot10b_confusion_matrix.png  used on input line
- 983.
+ 979.
 (pdftex.def)             Requested size: 252.94499pt x 202.3502pt.
-<plots/plot10c_confusion_matrix_normalized.png, id=472, 722.7pt x 578.16pt>
+<plots/plot10c_confusion_matrix_normalized.png, id=478, 722.7pt x 578.16pt>
 File: plots/plot10c_confusion_matrix_normalized.png Graphic file (type png)
 <use plots/plot10c_confusion_matrix_normalized.png>
 Package pdftex.def Info: plots/plot10c_confusion_matrix_normalized.png  used on
- input line 990.
+ input line 986.
 (pdftex.def)             Requested size: 252.94499pt x 202.3502pt.
-<plots/plot09_precision_recall_curves.png, id=473, 867.24pt x 578.16pt>
+<plots/plot09_precision_recall_curves.png, id=479, 867.24pt x 578.16pt>
 File: plots/plot09_precision_recall_curves.png Graphic file (type png)
 <use plots/plot09_precision_recall_curves.png>
 Package pdftex.def Info: plots/plot09_precision_recall_curves.png  used on inpu
-t line 997.
+t line 993.
 (pdftex.def)             Requested size: 252.94499pt x 168.6237pt.
- [10
 
- <./plots/plot10b_confusion_matrix.png> <./plots/plot10c_confusion_matrix_norma
-lized.png> <./plots/plot09_precision_recall_curves.png>]
-<plots/plot10d_modality_contribution.png, id=488, 722.7pt x 578.16pt>
+Underfull \hbox (badness 1609) in paragraph at lines 1016--1017
+\OT1/ppl/m/n/9.53561 The ab-la-tion study (Ta-ble []15[]) re-veals gen-uine mul
+-ti-
+ []
+
+[10 <./plots/plot27_fed_convergence.png> <./plots/plot10b_confusion_matrix.png>
+ <./plots/plot10c_confusion_matrix_normalized.png> <./plots/plot09_precision_re
+call_curves.png>]
+<plots/plot10d_modality_contribution.png, id=494, 722.7pt x 578.16pt>
 File: plots/plot10d_modality_contribution.png Graphic file (type png)
 <use plots/plot10d_modality_contribution.png>
 Package pdftex.def Info: plots/plot10d_modality_contribution.png  used on input
- line 1024.
+ line 1020.
 (pdftex.def)             Requested size: 215.00478pt x 172.00252pt.
-<plots/plot04_model_type_overview.png, id=491, 722.7pt x 433.62pt>
+<plots/plot04_model_type_overview.png, id=497, 722.7pt x 433.62pt>
 File: plots/plot04_model_type_overview.png Graphic file (type png)
 <use plots/plot04_model_type_overview.png>
 Package pdftex.def Info: plots/plot04_model_type_overview.png  used on input li
-ne 1035.
+ne 1031.
 (pdftex.def)             Requested size: 252.94499pt x 151.76265pt.
-<plots/plot14_efficiency.png, id=492, 867.24pt x 578.16pt>
+<plots/plot14_efficiency.png, id=498, 867.24pt x 578.16pt>
 File: plots/plot14_efficiency.png Graphic file (type png)
 <use plots/plot14_efficiency.png>
-Package pdftex.def Info: plots/plot14_efficiency.png  used on input line 1042.
+Package pdftex.def Info: plots/plot14_efficiency.png  used on input line 1038.
 (pdftex.def)             Requested size: 252.94499pt x 168.6237pt.
-<plots/plot12_radar.png, id=493, 722.7pt x 722.7pt>
+<plots/plot12_radar.png, id=499, 722.7pt x 722.7pt>
 File: plots/plot12_radar.png Graphic file (type png)
 <use plots/plot12_radar.png>
-Package pdftex.def Info: plots/plot12_radar.png  used on input line 1049.
+Package pdftex.def Info: plots/plot12_radar.png  used on input line 1045.
 (pdftex.def)             Requested size: 252.94499pt x 252.93776pt.
-<plots/plot10_f1_micro_macro.png, id=494, 722.7pt x 433.62pt>
+<plots/plot10_f1_micro_macro.png, id=500, 722.7pt x 433.62pt>
 File: plots/plot10_f1_micro_macro.png Graphic file (type png)
 <use plots/plot10_f1_micro_macro.png>
 Package pdftex.def Info: plots/plot10_f1_micro_macro.png  used on input line 10
-56.
+52.
 (pdftex.def)             Requested size: 252.94499pt x 151.76265pt.
-<plots/plot25_model_matrix.png, id=495, 722.7pt x 578.16pt>
+<plots/plot25_model_matrix.png, id=501, 722.7pt x 578.16pt>
 File: plots/plot25_model_matrix.png Graphic file (type png)
 <use plots/plot25_model_matrix.png>
-Package pdftex.def Info: plots/plot25_model_matrix.png  used on input line 1063
+Package pdftex.def Info: plots/plot25_model_matrix.png  used on input line 1059
 .
 (pdftex.def)             Requested size: 252.94499pt x 202.3502pt.
  [11 <./plots/plot10d_modality_contribution.png> <./plots/plot04_model_type_ove
-rview.png> <./plots/plot14_efficiency.png> <./plots/plot12_radar.png>] [12 <./p
-lots/plot10_f1_micro_macro.png> <./plots/plot25_model_matrix.png>]
-<plots/plot44_sota_comparison.png, id=524, 1011.78pt x 722.7pt>
+rview.png> <./plots/plot14_efficiency.png> <./plots/plot12_radar.png>]
+<plots/plot44_sota_comparison.png, id=519, 1011.78pt x 722.7pt>
 File: plots/plot44_sota_comparison.png Graphic file (type png)
 <use plots/plot44_sota_comparison.png>
 Package pdftex.def Info: plots/plot44_sota_comparison.png  used on input line 1
-111.
+105.
 (pdftex.def)             Requested size: 252.94499pt x 180.67455pt.
 
-Underfull \hbox (badness 2384) in paragraph at lines 1112--1112
+Underfull \hbox (badness 2384) in paragraph at lines 1106--1106
 \OT1/ppl/m/n/9.53561 agri-cul-tural stress de-tec-tion. FarmFed-er-ate's VLM fu
 -
  []
 
-<plots/plot45_modality_benchmark.png, id=525, 867.24pt x 578.16pt>
+<plots/plot45_modality_benchmark.png, id=520, 867.24pt x 578.16pt>
 File: plots/plot45_modality_benchmark.png Graphic file (type png)
 <use plots/plot45_modality_benchmark.png>
 Package pdftex.def Info: plots/plot45_modality_benchmark.png  used on input lin
-e 1118.
+e 1112.
 (pdftex.def)             Requested size: 252.94499pt x 168.6237pt.
-[13
+[12 <./plots/plot10_f1_micro_macro.png> <./plots/plot25_model_matrix.png> <./pl
+ots/plot44_sota_comparison.png>]
+Underfull \hbox (badness 1622) in paragraph at lines 1161--1162
+\OT1/ppl/m/n/9.53561 / 0.590 cen-tral-ized, 92.9% re-ten-tion) is the most
+ []
 
- <./plots/plot44_sota_comparison.png> <./plots/plot45_modality_benchmark.png>]
-Underfull \hbox (badness 1910) in paragraph at lines 1297--1298
+
+Underfull \hbox (badness 1466) in paragraph at lines 1167--1168
+[]\OT1/ppl/m/n/9.53561 Anti-collapse mech-a-nisms (di-ver-sity loss, bal-anced
+ []
+
+[13 <./plots/plot45_modality_benchmark.png>]
+LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 1
+182.
+
+(C:\Users\USER_HP\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1pcr.fd
+File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
+)
+Underfull \hbox (badness 7667) in paragraph at lines 1182--1183
+\OT1/ppl/m/n/9.53561 back-end at \OT1/pcr/m/n/9.53561 farmfederate-advisor.onre
+nder.com
+ []
+
+<figures/app_ss_01_login.jpg, id=546, 719.68875pt x 1606.0pt>
+File: figures/app_ss_01_login.jpg Graphic file (type jpg)
+<use figures/app_ss_01_login.jpg>
+Package pdftex.def Info: figures/app_ss_01_login.jpg  used on input line 1190.
+(pdftex.def)             Requested size: 93.2245pt x 208.02765pt.
+<figures/app_ss_02_dashboard.jpg, id=547, 719.68875pt x 1606.0pt>
+File: figures/app_ss_02_dashboard.jpg Graphic file (type jpg)
+<use figures/app_ss_02_dashboard.jpg>
+Package pdftex.def Info: figures/app_ss_02_dashboard.jpg  used on input line 11
+95.
+(pdftex.def)             Requested size: 93.2245pt x 208.02765pt.
+LaTeX Font Info:    Trying to load font information for TS1+ppl on input line 1
+196.
+(C:\Users\USER_HP\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ppl.fd
+File: ts1ppl.fd 2001/06/04 font definitions for TS1/ppl.
+)
+Underfull \hbox (badness 1478) in paragraph at lines 1196--1196
+[]\OT1/ppl/m/n/9.03374 (b) |Home Dash-board
+ []
+
+
+Underfull \hbox (badness 1728) in paragraph at lines 1196--1196
+\OT1/ppl/m/n/9.03374 with live IoT sen-sor
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1196--1196
+\OT1/ppl/m/n/9.03374 hu-mid-ity, 36% soil
+ []
+
+<figures/app_ss_03_crop_check_input.jpg, id=548, 719.68875pt x 1606.0pt>
+File: figures/app_ss_03_crop_check_input.jpg Graphic file (type jpg)
+<use figures/app_ss_03_crop_check_input.jpg>
+Package pdftex.def Info: figures/app_ss_03_crop_check_input.jpg  used on input 
+line 1200.
+(pdftex.def)             Requested size: 93.2245pt x 208.02765pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 1201--1201
+\OT1/ppl/m/n/9.03374 photo up-load +
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1201--1201
+\OT1/ppl/m/n/9.03374 natural-language
+ []
+
+<figures/app_ss_04_crop_check_results.jpg, id=549, 719.68875pt x 1606.0pt>
+File: figures/app_ss_04_crop_check_results.jpg Graphic file (type jpg)
+<use figures/app_ss_04_crop_check_results.jpg>
+Package pdftex.def Info: figures/app_ss_04_crop_check_results.jpg  used on inpu
+t line 1205.
+(pdftex.def)             Requested size: 93.2245pt x 208.02765pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 1206--1206
+\OT1/ppl/m/n/9.03374 per-class prob-a-bil-ity
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1206--1206
+\OT1/ppl/m/n/9.03374 bars and ac-tion-able
+ []
+
+<figures/app_ss_05_ai_chat.jpg, id=550, 719.68875pt x 1606.0pt>
+File: figures/app_ss_05_ai_chat.jpg Graphic file (type jpg)
+<use figures/app_ss_05_ai_chat.jpg>
+Package pdftex.def Info: figures/app_ss_05_ai_chat.jpg  used on input line 1210
+.
+(pdftex.def)             Requested size: 93.2245pt x 208.02765pt.
+
+Underfull \hbox (badness 1917) in paragraph at lines 1211--1211
+[]\OT1/ppl/m/n/9.03374 (e) |AI Chat: con-ver-
+ []
+
+<figures/app_ss_06_analytics.jpg, id=551, 719.68875pt x 1606.0pt>
+File: figures/app_ss_06_analytics.jpg Graphic file (type jpg)
+<use figures/app_ss_06_analytics.jpg>
+Package pdftex.def Info: figures/app_ss_06_analytics.jpg  used on input line 12
+22.
+(pdftex.def)             Requested size: 93.2245pt x 208.02765pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 1223--1223
+[]\OT1/ppl/m/n/9.03374 (a) |His-tor-i-cal
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1223--1223
+\OT1/ppl/m/n/9.03374 An-a-lyt-ics: per-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1223--1223
+\OT1/ppl/m/n/9.03374 crop health checks
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1223--1223
+\OT1/ppl/m/n/9.03374 with optimal-range
+ []
+
+<figures/app_ss_07_settings_llm.jpg, id=552, 719.68875pt x 1606.0pt>
+File: figures/app_ss_07_settings_llm.jpg Graphic file (type jpg)
+<use figures/app_ss_07_settings_llm.jpg>
+Package pdftex.def Info: figures/app_ss_07_settings_llm.jpg  used on input line
+ 1227.
+(pdftex.def)             Requested size: 93.2245pt x 208.02765pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 1228--1228
+[]\OT1/ppl/m/n/9.03374 (b) |Model Con-fig
+ []
+
+<figures/app_ss_08_settings_vlm.jpg, id=553, 719.68875pt x 1606.0pt>
+File: figures/app_ss_08_settings_vlm.jpg Graphic file (type jpg)
+<use figures/app_ss_08_settings_vlm.jpg>
+Package pdftex.def Info: figures/app_ss_08_settings_vlm.jpg  used on input line
+ 1232.
+(pdftex.def)             Requested size: 93.2245pt x 208.02765pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 1233--1233
+[]\OT1/ppl/m/n/9.03374 (c) |Model Con-fig
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1233--1233
+\OT1/ppl/m/n/9.03374 (VLM): 8 fu-sion
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1233--1233
+\OT1/ppl/m/n/9.03374 modes; BLIP-2
+ []
+
+<figures/app_ss_09_settings_summary.jpg, id=554, 719.68875pt x 1606.0pt>
+File: figures/app_ss_09_settings_summary.jpg Graphic file (type jpg)
+<use figures/app_ss_09_settings_summary.jpg>
+Package pdftex.def Info: figures/app_ss_09_settings_summary.jpg  used on input 
+line 1237.
+(pdftex.def)             Requested size: 93.2245pt x 208.02765pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 1238--1238
+\OT1/ppl/m/n/9.03374 ac-tive con-fig-u-ra-tion
+ []
+
+
+Underfull \hbox (badness 4531) in paragraph at lines 1238--1238
+\OT1/ppl/m/n/9.03374 tiny + BLIP-2, 85%
+ []
+
+<figures/app_ss_10_farm_network.jpg, id=555, 719.68875pt x 1606.0pt>
+File: figures/app_ss_10_farm_network.jpg Graphic file (type jpg)
+<use figures/app_ss_10_farm_network.jpg>
+Package pdftex.def Info: figures/app_ss_10_farm_network.jpg  used on input line
+ 1242.
+(pdftex.def)             Requested size: 93.2245pt x 208.02765pt.
+[14 <./figures/app_ss_01_login.jpg> <./figures/app_ss_02_dashboard.jpg> <./figu
+res/app_ss_03_crop_check_input.jpg> <./figures/app_ss_04_crop_check_results.jpg
+> <./figures/app_ss_05_ai_chat.jpg>]
+Underfull \hbox (badness 1910) in paragraph at lines 1369--1370
 []\OT1/ppl/m/n/8.03 Z. Long and M. Rao, ``Mul-ti-modal large lan-guage model
  []
 
 
-Underfull \hbox (badness 3735) in paragraph at lines 1297--1298
+Underfull \hbox (badness 3735) in paragraph at lines 1369--1370
 \OT1/ppl/m/n/8.03 for in-tel-li-gent di-ag-no-sis and man-age-ment of crop nu-t
 ri-
  []
 
-[14] [15
+[15 <./figures/app_ss_06_analytics.jpg> <./figures/app_ss_07_settings_llm.jpg> 
+<./figures/app_ss_08_settings_vlm.jpg> <./figures/app_ss_09_settings_summary.jp
+g> <./figures/app_ss_10_farm_network.jpg>] [16
 
 ] (farmfederate_paper.aux)
  ***********
@@ -1452,17 +1655,20 @@ L3 programming layer <2026-01-19>
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 2.49063pt have occurred.
 
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
 Package rerunfilecheck Info: File `farmfederate_paper.out' has not changed.
-(rerunfilecheck)             Checksum: 98E54B18F060F789D89CDE5A5AEABF88;6454.
+(rerunfilecheck)             Checksum: A0AFE163A3445D84772017816414FE03;7387.
  ) 
 Here is how much of TeX's memory you used:
- 37605 strings out of 467866
- 889826 string characters out of 5417357
- 1441017 words of memory out of 5000000
- 65683 multiletter control sequences out of 15000+600000
- 690436 words of font info for 187 fonts, out of 8000000 for 9000
+ 37867 strings out of 467866
+ 896882 string characters out of 5417357
+ 1435947 words of memory out of 5000000
+ 65929 multiletter control sequences out of 15000+600000
+ 693426 words of font info for 200 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,15n,94p,1850b,924s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,15n,94p,2130b,924s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/USER_HP/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/c
 m/cmbx10.pfb><C:/Users/USER_HP/AppData/Local/Programs/MiKTeX/fonts/type1/public
 /amsfonts/cm/cmbx5.pfb><C:/Users/USER_HP/AppData/Local/Programs/MiKTeX/fonts/ty
@@ -1474,31 +1680,34 @@ _HP/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/
 Users/USER_HP/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi
 6.pfb><C:/Users/USER_HP/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfon
 ts/cm/cmmi7.pfb><C:/Users/USER_HP/AppData/Local/Programs/MiKTeX/fonts/type1/pub
-lic/amsfonts/cm/cmmi9.pfb><C:/Users/USER_HP/AppData/Local/Programs/MiKTeX/fonts
-/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/USER_HP/AppData/Local/Programs/Mi
-KTeX/fonts/type1/public/amsfonts/cm/cmr5.pfb><C:/Users/USER_HP/AppData/Local/Pr
-ograms/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/USER_HP/AppData
-/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/USER_H
-P/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Use
-rs/USER_HP/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.
-pfb><C:/Users/USER_HP/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts
-/cm/cmsy5.pfb><C:/Users/USER_HP/AppData/Local/Programs/MiKTeX/fonts/type1/publi
-c/amsfonts/cm/cmsy7.pfb><C:/Users/USER_HP/AppData/Local/Programs/MiKTeX/fonts/t
-ype1/public/amsfonts/cm/cmsy9.pfb><C:/Users/USER_HP/AppData/Local/Programs/MiKT
-eX/fonts/type1/public/amsfonts/symbols/msam10.pfb><C:/Users/USER_HP/AppData/Loc
-al/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb><C:/Users/USE
-R_HP/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm7.pf
-b><C:/Users/USER_HP/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvb
-8a.pfb><C:/Users/USER_HP/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic
-/uhvr8a.pfb><C:/Users/USER_HP/AppData/Local/Programs/MiKTeX/fonts/type1/urw/hel
-vetic/uhvro8a.pfb><C:/Users/USER_HP/AppData/Local/Programs/MiKTeX/fonts/type1/u
-rw/palatino/uplb8a.pfb><C:/Users/USER_HP/AppData/Local/Programs/MiKTeX/fonts/ty
-pe1/urw/palatino/uplr8a.pfb><C:/Users/USER_HP/AppData/Local/Programs/MiKTeX/fon
-ts/type1/urw/palatino/uplri8a.pfb><C:/Users/USER_HP/AppData/Local/Programs/MiKT
-eX/fonts/type1/urw/zapfding/uzdr.pfb>
-Output written on farmfederate_paper.pdf (15 pages, 4633290 bytes).
+lic/amsfonts/cm/cmmi8.pfb><C:/Users/USER_HP/AppData/Local/Programs/MiKTeX/fonts
+/type1/public/amsfonts/cm/cmmi9.pfb><C:/Users/USER_HP/AppData/Local/Programs/Mi
+KTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/USER_HP/AppData/Local/P
+rograms/MiKTeX/fonts/type1/public/amsfonts/cm/cmr5.pfb><C:/Users/USER_HP/AppDat
+a/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/USER_
+HP/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Us
+ers/USER_HP/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.p
+fb><C:/Users/USER_HP/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/
+cm/cmr9.pfb><C:/Users/USER_HP/AppData/Local/Programs/MiKTeX/fonts/type1/public/
+amsfonts/cm/cmsy10.pfb><C:/Users/USER_HP/AppData/Local/Programs/MiKTeX/fonts/ty
+pe1/public/amsfonts/cm/cmsy5.pfb><C:/Users/USER_HP/AppData/Local/Programs/MiKTe
+X/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/USER_HP/AppData/Local/Prog
+rams/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy9.pfb><C:/Users/USER_HP/AppData/
+Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msam10.pfb><C:/Users/
+USER_HP/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm1
+0.pfb><C:/Users/USER_HP/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfon
+ts/symbols/msbm7.pfb><C:/Users/USER_HP/AppData/Local/Programs/MiKTeX/fonts/type
+1/urw/courier/ucrr8a.pfb><C:/Users/USER_HP/AppData/Local/Programs/MiKTeX/fonts/
+type1/urw/helvetic/uhvb8a.pfb><C:/Users/USER_HP/AppData/Local/Programs/MiKTeX/f
+onts/type1/urw/helvetic/uhvr8a.pfb><C:/Users/USER_HP/AppData/Local/Programs/MiK
+TeX/fonts/type1/urw/helvetic/uhvro8a.pfb><C:/Users/USER_HP/AppData/Local/Progra
+ms/MiKTeX/fonts/type1/urw/palatino/uplb8a.pfb><C:/Users/USER_HP/AppData/Local/P
+rograms/MiKTeX/fonts/type1/urw/palatino/uplr8a.pfb><C:/Users/USER_HP/AppData/Lo
+cal/Programs/MiKTeX/fonts/type1/urw/palatino/uplri8a.pfb><C:/Users/USER_HP/AppD
+ata/Local/Programs/MiKTeX/fonts/type1/urw/zapfding/uzdr.pfb>
+Output written on farmfederate_paper.pdf (16 pages, 5442640 bytes).
 PDF statistics:
- 712 PDF objects out of 1000 (max. 8388607)
- 178 named destinations out of 1000 (max. 500000)
- 523 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 754 PDF objects out of 1000 (max. 8388607)
+ 184 named destinations out of 1000 (max. 500000)
+ 581 words of extra memory for PDF output out of 10000 (max. 10000000)
 
