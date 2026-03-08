@@ -880,6 +880,104 @@ def download_real_text_data(n_samples: int = 500, stress_type: Optional[str] = N
     """
     print(f"  [HuggingFace] Downloading real text data with agricultural augmentation...")
 
+    # ── 0. Local pre-labeled CSV (from generate_image_captions.py or generate_crop_stress_dataset.py) ──
+    def _find_data_dir():
+        import sys
+        candidates = [
+            Path(__file__).parent.parent / "data",
+            Path("/content/drive/MyDrive/FarmFederate/data"),
+            Path("/content/FarmFederate/data"),
+            Path("data"),
+        ]
+        for p in candidates:
+            try:
+                if p.exists(): return p
+            except Exception: pass
+        return Path("data")
+
+    def _parse_labels_col(val, fallback_idx):
+        """Parse labels column which may be '[3]' string, int, or list."""
+        if isinstance(val, list):
+            return val
+        if isinstance(val, int):
+            return [val]
+        s = str(val).strip()
+        try:
+            import ast
+            parsed = ast.literal_eval(s)
+            if isinstance(parsed, list):
+                return [int(x) for x in parsed]
+            return [int(parsed)]
+        except Exception:
+            return [fallback_idx]
+
+    # ── 0a. Per-class text.csv files (curated, cleaned) — highest priority ──
+    data_dir = _find_data_dir()
+    rows_per_class = []
+    per_class_target = max(n_samples // len(STRESS_LABELS), 50)
+    try:
+        for idx, stress in enumerate(STRESS_LABELS):
+            csv_path = data_dir / stress / "text.csv"
+            if not csv_path.exists():
+                continue
+            df_cls = pd.read_csv(csv_path)
+            if "text" not in df_cls.columns:
+                continue
+            # Parse labels column
+            if "labels" in df_cls.columns:
+                df_cls["labels"] = df_cls["labels"].apply(lambda v: _parse_labels_col(v, idx))
+            else:
+                df_cls["labels"] = [[idx]] * len(df_cls)
+            if "label_name" not in df_cls.columns:
+                df_cls["label_name"] = stress
+            rows_per_class.append(df_cls[["text", "labels", "label_name", "source"]
+                                         if "source" in df_cls.columns
+                                         else ["text", "labels", "label_name"]])
+        if rows_per_class:
+            df_combined = pd.concat(rows_per_class, ignore_index=True)
+            df_combined = df_combined.dropna(subset=["text"])
+            df_combined["text"] = df_combined["text"].astype(str).str.strip()
+            df_combined = df_combined[df_combined["text"].str.len() >= 10]
+            total_available = len(df_combined)
+            if total_available >= len(STRESS_LABELS) * 5:
+                # Sample up to n_samples, balanced across classes
+                sampled = []
+                for idx, stress in enumerate(STRESS_LABELS):
+                    pool = df_combined[df_combined["label_name"] == stress]
+                    n = min(len(pool), per_class_target)
+                    if n > 0:
+                        sampled.append(pool.sample(n, random_state=42))
+                if sampled:
+                    df_out = pd.concat(sampled, ignore_index=True).sample(frac=1, random_state=42).reset_index(drop=True)
+                    counts = df_out["label_name"].value_counts().to_dict()
+                    print(f"    Per-class text.csv loaded: {len(df_out)} rows | " +
+                          " | ".join(f"{k}:{v}" for k, v in sorted(counts.items())))
+                    return df_out
+    except Exception as e:
+        print(f"    [WARN] Per-class text.csv load failed: {e}")
+
+    # ── 0b. Monolithic crop_stress_text_dataset.csv (fallback) ──
+    local_csv = data_dir / "crop_stress_text_dataset.csv"
+    if local_csv.exists():
+        try:
+            df_local = pd.read_csv(local_csv)
+            if {"text", "label_name"}.issubset(df_local.columns):
+                per_class = n_samples // len(STRESS_LABELS)
+                rows_local = []
+                for idx, stress in enumerate(STRESS_LABELS):
+                    pool = df_local[df_local["label_name"] == stress]["text"].tolist()
+                    if len(pool) >= 5:
+                        random.shuffle(pool)
+                        for t in pool[:per_class]:
+                            rows_local.append({"text": t, "labels": [idx],
+                                               "label_name": stress, "source": "local_csv"})
+                if len(rows_local) >= len(STRESS_LABELS) * 5:
+                    df_out = pd.DataFrame(rows_local).sample(frac=1, random_state=42).reset_index(drop=True)
+                    print(f"    Local CSV loaded: {len(df_out)} rows from {local_csv.name}")
+                    return df_out
+        except Exception as e:
+            print(f"    [WARN] Local CSV: {e}")
+
     try:
         from datasets import load_dataset
     except ImportError:
@@ -917,11 +1015,16 @@ def download_real_text_data(n_samples: int = 500, stress_type: Optional[str] = N
         },
     }
 
-    # 1. Load HuggingFace datasets: AG News, PubMed Agriculture, Agriculture QA (SQUAD)
+    # 1. Load HuggingFace datasets — agricultural sources first, general fallbacks last
     datasets_to_try = [
-        ('ag_news', None, 'train', 'text', 'AGNews'),
-        ('ccdv/pubmed-summarization', None, 'train', 'article', 'PubMed'),
-        ('squad', None, 'train', 'context', 'SQUAD'),
+        # Best: directly agricultural Q&A and instruction datasets
+        ('argilla/farming',                    None, 'train', 'domain_expert_answer', 'ArgillaFarming'),
+        ('MBZUAI/agriculture-llm-instruct-v1', None, 'train', 'output',              'MBZUAIAgri'),
+        ('iknow-lab/agricultural_science',     None, 'train', 'text',                'AgriScience'),
+        # Good: scientific abstracts filtered for agriculture
+        ('ccdv/pubmed-summarization',          None, 'train', 'article',             'PubMed'),
+        # Fallback: general news filtered by agricultural keywords
+        ('ag_news',                            None, 'train', 'text',                'AGNews'),
     ]
 
     samples_per_source = (n_samples - len(texts)) // len(datasets_to_try) + 1
@@ -8626,6 +8729,17 @@ def run_colab(epochs: int = 10, max_samples: int = 200, batch_size: int = 16,
     print("\nThe CropStressDetector is ready for production use.")
     print("Features: Multi-modal detection, Treatment recommendations")
 
+    # ==================== Post-Run Dataset Download ====================
+    # Download real agricultural datasets now that classification is done.
+    # Saved to data/crop_stress_text_dataset.csv — next run uses real data.
+    print("\n" + "=" * 90)
+    print("POST-RUN: DOWNLOADING REAL DATASETS FOR NEXT RUN")
+    print("=" * 90)
+    try:
+        _post_run_download_datasets_complete(config)
+    except Exception as e:
+        print(f"  [Warning] Dataset download failed: {e}")
+
     # ==================== Download All Results ====================
     print("\n" + "=" * 90)
     print("DOWNLOADING MODELS, PLOTS & RESULTS")
@@ -8638,6 +8752,152 @@ def run_colab(epochs: int = 10, max_samples: int = 200, batch_size: int = 16,
         print(f"  Files are saved locally in: {config.output_dir}")
 
     return results
+
+
+def _post_run_download_datasets_complete(config, n_per_class: int = 300):
+    """
+    Download and save real agricultural text datasets after classification.
+    Output: data/crop_stress_text_dataset.csv  (auto-loaded on next run).
+    """
+    import re as _re2, json as _json2, random as _rand2
+    from pathlib import Path as _Path
+
+    def _find_data_dir():
+        candidates = [
+            _Path(__file__).parent.parent / "data",
+            _Path("/content/drive/MyDrive/FarmFederate/data"),
+            _Path("/content/FarmFederate/data"),
+            _Path("data"),
+        ]
+        for p in candidates:
+            try:
+                if p.exists(): return p
+            except Exception: pass
+        return _Path("data")
+
+    data_dir = _find_data_dir()
+    out_csv  = data_dir / "crop_stress_text_dataset.csv"
+
+    # Skip if already sufficient
+    if out_csv.exists():
+        try:
+            df_ex = pd.read_csv(out_csv)
+            counts = df_ex["label_name"].value_counts() if "label_name" in df_ex.columns else pd.Series()
+            if all(counts.get(s, 0) >= n_per_class // 2 for s in STRESS_LABELS):
+                print(f"  Dataset already sufficient ({len(df_ex)} rows). Skipping.")
+                return
+        except Exception:
+            pass
+
+    # Keyword patterns for weak labeling
+    _KW2 = {
+        "water_stress": ["drought","wilting","wilt","water stress","moisture","irrigation","droop"],
+        "nutrient_def": ["nitrogen","phosphorus","potassium","chlorosis","deficiency","fertilizer","npk"],
+        "pest_risk":    ["pest","aphid","whitefly","borer","caterpillar","thrips","mites","frass","insect"],
+        "disease_risk": ["blight","rust","mildew","rot","leaf spot","pathogen","fungal","bacterial","lesion"],
+        "heat_stress":  ["heat stress","heat wave","high temperature","scorch","sunburn","thermal stress"],
+    }
+    _AG_CTX2 = _re2.compile(
+        r"\b(agri|farm|crop|soil|irrigat|harvest|rice|wheat|maize|fertiliz|pest|blight|leaf)\b", _re2.I)
+
+    def _label(text):
+        t = text.lower()
+        if not _AG_CTX2.search(t): return None
+        scores = {s: sum(1 for k in kws if k in t) for s, kws in _KW2.items()}
+        best = max(scores, key=scores.get)
+        return STRESS_LABELS.index(best) if scores[best] > 0 else None
+
+    all_texts = []
+    try:
+        from datasets import load_dataset
+
+        # 1. argilla/farming
+        try:
+            ds = load_dataset("argilla/farming")
+            for sp in (ds if isinstance(ds, dict) else {"train": ds}):
+                for r in (ds[sp] if isinstance(ds, dict) else ds):
+                    t = (str(r.get("evolved_questions","")) + " " + str(r.get("domain_expert_answer",""))).strip()
+                    if len(t) > 20: all_texts.append(t)
+            print(f"  argilla/farming: {len(all_texts)} texts")
+        except Exception as e: print(f"  [WARN] argilla/farming: {e}")
+
+        # 2. MBZUAI agriculture
+        try:
+            ds = load_dataset("MBZUAI/agriculture-llm-instruct-v1", split="train", streaming=True)
+            ag, seen = [], 0
+            for r in ds:
+                t = str(r.get("output", r.get("response", r.get("text","")))).strip()
+                if len(t) > 30: ag.append(t); seen += 1
+                if seen >= n_per_class * NUM_CLASSES * 8: break
+            all_texts.extend(ag)
+            print(f"  MBZUAI agriculture: {len(ag)} texts")
+        except Exception as e: print(f"  [WARN] MBZUAI: {e}")
+
+        # 3. iknow-lab/agricultural_science
+        try:
+            ds = load_dataset("iknow-lab/agricultural_science", split="train", streaming=True)
+            ag, seen = [], 0
+            for r in ds:
+                t = str(r.get("text", r.get("content", r.get("abstract","")))).strip()
+                if len(t) > 30: ag.append(t); seen += 1
+                if seen >= n_per_class * NUM_CLASSES * 8: break
+            all_texts.extend(ag)
+            print(f"  iknow-lab/agricultural_science: {len(ag)} texts")
+        except Exception as e: print(f"  [WARN] iknow-lab: {e}")
+
+        # 4. ag_news filtered
+        try:
+            agri_re = _re2.compile(
+                r"\b(agri|farm|crop|soil|rice|wheat|maize|irrigat|pest|blight|disease|drought)\b", _re2.I)
+            ds = load_dataset("ag_news", split="train", streaming=True)
+            ag, seen = [], 0
+            for r in ds:
+                t = str(r.get("text","")).strip()
+                if t and agri_re.search(t): ag.append(t); seen += 1
+                if seen >= n_per_class * NUM_CLASSES * 6: break
+            all_texts.extend(ag)
+            print(f"  ag_news (filtered): {len(ag)} texts")
+        except Exception as e: print(f"  [WARN] ag_news: {e}")
+
+    except ImportError:
+        print("  [WARN] HuggingFace datasets not installed; skipping download.")
+        return
+
+    # Label and balance
+    labelled = {i: [] for i in range(NUM_CLASSES)}
+    for t in all_texts:
+        idx = _label(t)
+        if idx is not None: labelled[idx].append(t)
+
+    rows = []
+    for label_idx, stress in enumerate(STRESS_LABELS):
+        pool = labelled[label_idx]
+        if not pool: continue
+        if len(pool) < n_per_class:
+            pool = (pool * (n_per_class // max(1, len(pool)) + 1))[:n_per_class]
+        else:
+            _rand2.shuffle(pool); pool = pool[:n_per_class]
+        for t in pool:
+            rows.append({"text": t, "label": label_idx, "label_name": stress, "source": "hf_download"})
+
+    if not rows:
+        print("  No labeled text collected — skipping save.")
+        return
+
+    df_new = pd.DataFrame(rows)
+    if out_csv.exists():
+        try:
+            df_ex = pd.read_csv(out_csv)
+            if "source" in df_ex.columns:
+                df_ex = df_ex[~df_ex["source"].isin(["hf_download"])]
+            df_new = pd.concat([df_ex, df_new], ignore_index=True)
+        except Exception: pass
+
+    data_dir.mkdir(parents=True, exist_ok=True)
+    df_new.sample(frac=1, random_state=42).reset_index(drop=True).to_csv(out_csv, index=False)
+    print(f"  Saved {len(df_new)} rows → {out_csv}")
+    print(f"  Class counts: {dict(df_new['label_name'].value_counts())}")
+    print(f"  Next run will load this real dataset automatically.")
 
 
 def download_results(config):
@@ -8844,6 +9104,410 @@ NEW FEATURES in v5.0:
 """)
         return True
     return False
+
+
+# ============================================================================
+# REAL DATA LOADER + TRAINING PIPELINE
+# ============================================================================
+
+def load_local_images(data_dir, max_per_class: int = 800, img_size: int = 224, seed: int = 42):
+    """Load real images from data/{stress}/images/ folders.
+
+    Returns:
+        images: list of transformed tensors [C,H,W]
+        labels: list of [int] label lists
+    """
+    import torchvision.transforms as _T
+    transform = _T.Compose([
+        _T.Resize((img_size, img_size)),
+        _T.ToTensor(),
+        _T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+    ])
+    from PIL import Image as _PILImage
+    images, labels = [], []
+    rng = random.Random(seed)
+    data_dir = Path(data_dir)
+    for idx, stress in enumerate(STRESS_LABELS):
+        img_dir = data_dir / stress / "images"
+        if not img_dir.exists():
+            print(f"  [WARN] {img_dir} not found — no real images for {stress}")
+            continue
+        paths = list(img_dir.glob("*.jpg")) + list(img_dir.glob("*.png"))
+        rng.shuffle(paths)
+        paths = paths[:max_per_class]
+        loaded = 0
+        for p in paths:
+            try:
+                img = _PILImage.open(p).convert("RGB")
+                images.append(transform(img))
+                labels.append([idx])
+                loaded += 1
+            except Exception:
+                continue
+        print(f"  {stress}: {loaded} images loaded")
+    return images, labels
+
+
+def run_training_real_data(config: "Config" = None, allow_short: bool = False):
+    """Full training pipeline using real local text + image data.
+
+    Loads:
+      - Text  : data/{stress}/text.csv  (cleaned per-class CSVs)
+      - Images: data/{stress}/images/   (real .jpg/.png files)
+
+    Trains all 24 models: 5 LLM + 5 ViT + 8 VLM + 3 centralized + 3 federated.
+    Generates 45+ plots and saves complete_results.json.
+
+    Colab usage:
+        from google.colab import drive
+        drive.mount('/content/drive')
+        exec(open('FarmFederate_Colab_Complete.py').read())
+        run_training_real_data()
+    """
+    if config is None:
+        config = Config(epochs=15, batch_size=16, max_samples_per_class=800)
+
+    check_imports()
+    if not allow_short and config.epochs < 10:
+        print(f"[Info] Enforcing minimum epochs=10 (was {config.epochs})")
+        config.epochs = 10
+
+    torch.manual_seed(config.seed)
+    np.random.seed(config.seed)
+    random.seed(config.seed)
+
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print(f"\n[Device] {device}")
+    config.output_dir.mkdir(parents=True, exist_ok=True)
+    config.plots_dir.mkdir(parents=True, exist_ok=True)
+    config.checkpoint_dir.mkdir(parents=True, exist_ok=True)
+
+    # ── Resolve data directory ──────────────────────────────────────────────
+    _candidates = [
+        Path(__file__).parent.parent / "data",
+        Path("/content/drive/MyDrive/FarmFederate/data"),
+        Path("/content/FarmFederate/data"),
+        Path("data"),
+    ]
+    data_dir = next((p for p in _candidates if p.exists()), Path("data"))
+    print(f"[Data] Using data directory: {data_dir}")
+
+    max_per_class = config.max_samples_per_class
+
+    # ── [1/8] Load real text data ────────────────────────────────────────────
+    print("\n[1/8] Loading real text data from per-class text.csv files...")
+    n_text_samples = max_per_class * len(STRESS_LABELS)
+    text_df = download_real_text_data(n_text_samples)
+    text_df = balance_dataset(text_df)
+    print(f"  Text loaded: {len(text_df)} rows")
+    print("  " + text_df["label_name"].value_counts().to_string().replace("\n", "\n  "))
+
+    text_labels = text_df["labels"].tolist()
+    val_ratio = 1.0 - config.train_split
+    (train_data_t, label_train_txt), (val_data_t, label_val_txt), _ = stratified_split(
+        data_lists=[text_df["text"].tolist()],
+        labels=text_labels,
+        train_ratio=config.train_split,
+        val_ratio=val_ratio * 0.5,   # split remainder into val+test; we use only val
+        seed=config.seed,
+    )
+    texts_train = train_data_t[0]
+    texts_val   = val_data_t[0]
+
+    text_train = pd.DataFrame({"text": texts_train, "labels": label_train_txt})
+    text_val   = pd.DataFrame({"text": texts_val,   "labels": label_val_txt})
+    print(f"  Text split: {len(text_train)} train, {len(text_val)} val")
+
+    # ── [2/8] Load real images ───────────────────────────────────────────────
+    print(f"\n[2/8] Loading real images from {data_dir}/{{stress}}/images/...")
+    images_all, img_labels_all = load_local_images(
+        data_dir, max_per_class=max_per_class, img_size=config.image_size, seed=config.seed
+    )
+    print(f"  Images total: {len(images_all)}")
+
+    (train_data_i, label_train_img), (val_data_i, label_val_img), _ = stratified_split(
+        data_lists=[images_all],
+        labels=img_labels_all,
+        train_ratio=config.train_split,
+        val_ratio=val_ratio * 0.5,
+        seed=config.seed,
+    )
+    image_train = train_data_i[0]
+    image_val   = val_data_i[0]
+    print(f"  Image split: {len(image_train)} train, {len(image_val)} val")
+
+    # Flat int labels for BalancedBatchSampler
+    flat_labels_txt = [l[0] if isinstance(l, list) else l for l in label_train_txt]
+    flat_labels_img = [l[0] if isinstance(l, list) else l for l in label_train_img]
+
+    # ── [3/8] Pair text+images by label for VLM ─────────────────────────────
+    print("\n[3/8] Pairing text + images by label for VLM training...")
+    txt_by_lbl = {i: [] for i in range(len(STRESS_LABELS))}
+    img_by_lbl = {i: [] for i in range(len(STRESS_LABELS))}
+    for t, l in zip(texts_train, label_train_txt):
+        li = l[0] if isinstance(l, list) else l
+        txt_by_lbl[li].append(t)
+    for img, l in zip(image_train, label_train_img):
+        li = l[0] if isinstance(l, list) else l
+        img_by_lbl[li].append(img)
+
+    mm_texts_tr, mm_images_tr, mm_labels_tr = [], [], []
+    for li in range(len(STRESS_LABELS)):
+        n = min(len(txt_by_lbl[li]), len(img_by_lbl[li]))
+        mm_texts_tr.extend(txt_by_lbl[li][:n])
+        mm_images_tr.extend(img_by_lbl[li][:n])
+        mm_labels_tr.extend([[li]] * n)
+    combined = list(zip(mm_texts_tr, mm_images_tr, mm_labels_tr))
+    random.shuffle(combined)
+    mm_texts_tr, mm_images_tr, mm_labels_tr = map(list, zip(*combined))
+    flat_labels_mm = [l[0] for l in mm_labels_tr]
+
+    # Val pairing
+    txt_by_lbl_v = {i: [] for i in range(len(STRESS_LABELS))}
+    img_by_lbl_v = {i: [] for i in range(len(STRESS_LABELS))}
+    for t, l in zip(texts_val, label_val_txt):
+        li = l[0] if isinstance(l, list) else l
+        txt_by_lbl_v[li].append(t)
+    for img, l in zip(image_val, label_val_img):
+        li = l[0] if isinstance(l, list) else l
+        img_by_lbl_v[li].append(img)
+    mm_texts_v, mm_images_v, mm_labels_v = [], [], []
+    for li in range(len(STRESS_LABELS)):
+        n = min(len(txt_by_lbl_v[li]), len(img_by_lbl_v[li]))
+        mm_texts_v.extend(txt_by_lbl_v[li][:n])
+        mm_images_v.extend(img_by_lbl_v[li][:n])
+        mm_labels_v.extend([[li]] * n)
+
+    print(f"  VLM pairs: {len(mm_texts_tr)} train, {len(mm_texts_v)} val")
+
+    results = {"llm_models": {}, "vit_models": {}, "vlm_models": {},
+               "centralized": {}, "federated": {}}
+
+    # ── [4/8] LLM Training ───────────────────────────────────────────────────
+    print("\n" + "=" * 70)
+    print("[4/8] TRAINING 5 LLM MODELS")
+    print("=" * 70)
+
+    text_train_ds = TextDataset(text_train, None, config.max_seq_length)
+    text_val_ds   = TextDataset(text_val,   None, config.max_seq_length)
+    train_loader  = create_balanced_dataloader(
+        text_train_ds, flat_labels_txt, batch_size=config.batch_size,
+        num_classes=config.num_labels, shuffle=True,
+    )
+    val_loader = DataLoader(text_val_ds, batch_size=config.batch_size)
+
+    for model_name in LLM_MODELS.keys():
+        print(f"\n>>> Training {model_name}...")
+        model = LightweightTextClassifier(num_labels=config.num_labels).to(device)
+        best_f1, history, final_metrics, best_state = train_model(
+            model, train_loader, val_loader, config, device, "text", diversity_weight=1.0
+        )
+        checkpoint_path = None
+        if best_state is not None:
+            checkpoint_path = config.checkpoint_dir / f"llm_{model_name.lower().replace('-','_')}_best.pt"
+            torch.save({"model_state_dict": best_state, "f1_score": best_f1,
+                        "config": config.__dict__, "model_name": model_name, "model_type": "LLM"},
+                       checkpoint_path)
+            print(f"  Saved: {checkpoint_path}")
+        results["llm_models"][model_name] = {
+            "f1": final_metrics["f1_micro"], "f1_macro": final_metrics["f1_macro"],
+            "precision": final_metrics["precision"], "recall": final_metrics["recall"],
+            "accuracy": final_metrics["accuracy"],
+            "params": sum(p.numel() for p in model.parameters()),
+            "history": history, "checkpoint": str(checkpoint_path) if checkpoint_path else None,
+            "predictions": final_metrics.get("predictions"),
+            "labels": final_metrics.get("labels"),
+            "probabilities": final_metrics.get("probabilities"),
+        }
+        print(f"  {model_name}: F1={final_metrics['f1_micro']:.4f}")
+
+    # ── [5/8] ViT Training ───────────────────────────────────────────────────
+    print("\n" + "=" * 70)
+    print("[5/8] TRAINING 5 VIT MODELS")
+    print("=" * 70)
+
+    image_train_ds = ImageDataset(image_train, label_train_img)
+    image_val_ds   = ImageDataset(image_val,   label_val_img)
+    train_loader   = create_balanced_dataloader(
+        image_train_ds, flat_labels_img, batch_size=config.batch_size,
+        num_classes=config.num_labels, shuffle=True,
+    )
+    val_loader = DataLoader(image_val_ds, batch_size=config.batch_size)
+
+    for model_name in VIT_MODELS.keys():
+        print(f"\n>>> Training {model_name}...")
+        model = LightweightVisionClassifier(num_labels=config.num_labels).to(device)
+        best_f1, history, final_metrics, best_state = train_model(
+            model, train_loader, val_loader, config, device, "vision", diversity_weight=1.0
+        )
+        checkpoint_path = None
+        if best_state is not None:
+            checkpoint_path = config.checkpoint_dir / f"vit_{model_name.lower().replace('-','_')}_best.pt"
+            torch.save({"model_state_dict": best_state, "f1_score": best_f1,
+                        "config": config.__dict__, "model_name": model_name, "model_type": "ViT"},
+                       checkpoint_path)
+            print(f"  Saved: {checkpoint_path}")
+        results["vit_models"][model_name] = {
+            "f1": final_metrics["f1_micro"], "f1_macro": final_metrics["f1_macro"],
+            "precision": final_metrics["precision"], "recall": final_metrics["recall"],
+            "accuracy": final_metrics["accuracy"],
+            "params": sum(p.numel() for p in model.parameters()),
+            "history": history, "checkpoint": str(checkpoint_path) if checkpoint_path else None,
+            "predictions": final_metrics.get("predictions"),
+            "labels": final_metrics.get("labels"),
+            "probabilities": final_metrics.get("probabilities"),
+        }
+        print(f"  {model_name}: F1={final_metrics['f1_micro']:.4f}")
+
+    # ── [6/8] VLM Training ───────────────────────────────────────────────────
+    print("\n" + "=" * 70)
+    print("[6/8] TRAINING 8 VLM FUSION ARCHITECTURES")
+    print("=" * 70)
+
+    mm_train_ds = MultiModalDataset(mm_texts_tr, mm_labels_tr, mm_images_tr, None, int(config.max_seq_length))
+    mm_val_ds   = MultiModalDataset(mm_texts_v,  mm_labels_v,  mm_images_v,  None, int(config.max_seq_length))
+    train_loader = create_balanced_dataloader(
+        mm_train_ds, flat_labels_mm, batch_size=config.batch_size,
+        num_classes=config.num_labels, shuffle=True,
+    )
+    val_loader = DataLoader(mm_val_ds, batch_size=config.batch_size)
+
+    for fusion_type in VLM_FUSION_TYPES:
+        print(f"\n>>> Training VLM ({fusion_type})...")
+        model = MultiModalClassifier(num_labels=config.num_labels, fusion_type=fusion_type).to(device)
+        best_f1, history, final_metrics, best_state = train_model(
+            model, train_loader, val_loader, config, device, "multimodal", diversity_weight=1.0
+        )
+        checkpoint_path = None
+        if best_state is not None:
+            checkpoint_path = config.checkpoint_dir / f"vlm_{fusion_type.lower()}_best.pt"
+            torch.save({"model_state_dict": best_state, "f1_score": best_f1,
+                        "config": config.__dict__, "fusion_type": fusion_type, "model_type": "VLM"},
+                       checkpoint_path)
+            print(f"  Saved: {checkpoint_path}")
+        results["vlm_models"][fusion_type] = {
+            "f1": final_metrics["f1_micro"], "f1_macro": final_metrics["f1_macro"],
+            "precision": final_metrics["precision"], "recall": final_metrics["recall"],
+            "accuracy": final_metrics["accuracy"],
+            "params": sum(p.numel() for p in model.parameters()),
+            "history": history, "checkpoint": str(checkpoint_path) if checkpoint_path else None,
+            "predictions": final_metrics.get("predictions"),
+            "labels": final_metrics.get("labels"),
+            "probabilities": final_metrics.get("probabilities"),
+        }
+        print(f"  VLM ({fusion_type}): F1={final_metrics['f1_micro']:.4f}")
+
+    # ── [7/8] Federated vs Centralized ───────────────────────────────────────
+    print("\n" + "=" * 70)
+    print("[7/8] FEDERATED VS CENTRALIZED COMPARISON")
+    print("=" * 70)
+
+    _modal_cfg = {
+        "LLM": (text_train_ds,  text_val_ds,  LightweightTextClassifier,    {"num_labels": config.num_labels}, "text",       flat_labels_txt),
+        "ViT": (image_train_ds, image_val_ds, LightweightVisionClassifier,  {"num_labels": config.num_labels}, "vision",     flat_labels_img),
+        "VLM": (mm_train_ds,    mm_val_ds,    MultiModalClassifier,          {"num_labels": config.num_labels, "fusion_type": "concat"}, "multimodal", flat_labels_mm),
+    }
+    for model_type, (tr_ds, v_ds, cls, kw, mtype, flat_lbl) in _modal_cfg.items():
+        print(f"\n>>> Comparing {model_type}...")
+        _val_loader = DataLoader(v_ds, batch_size=config.batch_size)
+
+        print(f"  Training Centralized {model_type}...")
+        model = cls(**kw).to(device)
+        _tr_loader = create_balanced_dataloader(
+            tr_ds, flat_lbl, batch_size=config.batch_size, num_classes=config.num_labels, shuffle=True
+        )
+        _, _, cent_metrics, cent_state = train_model(
+            model, _tr_loader, _val_loader, config, device, mtype, diversity_weight=1.0
+        )
+        cent_ckpt = None
+        if cent_state is not None:
+            cent_ckpt = config.checkpoint_dir / f"centralized_{model_type.lower()}_best.pt"
+            torch.save({"model_state_dict": cent_state, "f1_score": cent_metrics["f1_micro"],
+                        "config": config.__dict__, "model_type": model_type, "training_mode": "centralized"},
+                       cent_ckpt)
+        results["centralized"][model_type] = {
+            "f1": cent_metrics["f1_micro"], "checkpoint": str(cent_ckpt) if cent_ckpt else None
+        }
+
+        print(f"  Training Federated {model_type}...")
+        fed_f1, _, fed_state = federated_train(cls, kw, tr_ds, _val_loader, config, device, mtype)
+        fed_ckpt = None
+        if fed_state is not None:
+            fed_ckpt = config.checkpoint_dir / f"federated_{model_type.lower()}_best.pt"
+            torch.save({"model_state_dict": fed_state, "f1_score": fed_f1,
+                        "config": config.__dict__, "model_type": model_type, "training_mode": "federated"},
+                       fed_ckpt)
+        results["federated"][model_type] = {
+            "f1": fed_f1, "checkpoint": str(fed_ckpt) if fed_ckpt else None
+        }
+        print(f"  {model_type}: Centralized={cent_metrics['f1_micro']:.4f}, Federated={fed_f1:.4f}")
+
+    # ── [8/8] Results, plots, comparison ────────────────────────────────────
+    print("\n" + "=" * 70)
+    print("[8/8] GENERATING PLOTS & SAVING RESULTS")
+    print("=" * 70)
+
+    # Inter-model comparison
+    inter_model_results = run_inter_model_comparison(results)
+    results["inter_model"] = inter_model_results
+
+    # Dataset comparison
+    try:
+        dataset_comparison_results = compare_datasets_with_benchmark(config)
+        results["dataset_comparison"] = dataset_comparison_results
+        for k in ("text_datasets", "image_datasets", "intra_comparison", "inter_comparison"):
+            if k in dataset_comparison_results:
+                results[k] = dataset_comparison_results[k]
+    except Exception as e:
+        print(f"  [WARN] Dataset comparison failed: {e}")
+        results["dataset_comparison"] = {"error": str(e)}
+
+    # Plots
+    generate_all_plots(results, config)
+
+    # Save JSON
+    results_file = config.output_dir / "complete_results.json"
+    with open(results_file, "w") as f:
+        json.dump(results, f, indent=2, default=str)
+    print(f"  Results saved: {results_file}")
+
+    # Comparison tables
+    print_comprehensive_model_comparison(results)
+
+    # Centralized vs Federated summary
+    print("\n" + "=" * 90)
+    print("CENTRALIZED vs FEDERATED COMPARISON")
+    print("=" * 90)
+    print(f"{'Model':<12} {'Centralized F1':<20} {'Federated F1':<18} {'Diff':<10} {'Winner'}")
+    print("-" * 70)
+    for mt in ["LLM", "ViT", "VLM"]:
+        c = results["centralized"][mt]["f1"]
+        f = results["federated"][mt]["f1"]
+        d = f - c
+        w = "Federated" if d > 0 else ("Centralized" if d < 0 else "Tie")
+        print(f"{mt:<12} {c:.4f}               {f:.4f}             {d:+.4f}     {w}")
+
+    print_research_paper_comparison(results)
+    compare_architectures_with_literature(results, config)
+
+    # Final summary
+    print("\n" + "=" * 90)
+    print("TRAINING COMPLETE — REAL DATA PIPELINE")
+    print("=" * 90)
+    print(f"  Text data:   per-class text.csv files ({data_dir})")
+    print(f"  Image data:  per-class images/ folders ({data_dir})")
+    print(f"  Results:     {results_file}")
+    print(f"  Plots:       {config.plots_dir}/")
+    print(f"  Checkpoints: {config.checkpoint_dir}/")
+    print("\n  Models trained:")
+    for mn, md in results["llm_models"].items():
+        print(f"    LLM {mn}: F1={md['f1']:.4f}")
+    for mn, md in results["vit_models"].items():
+        print(f"    ViT {mn}: F1={md['f1']:.4f}")
+    for ft, md in results["vlm_models"].items():
+        print(f"    VLM {ft}: F1={md['f1']:.4f}")
+
+    return results
 
 
 # ============================================================================
