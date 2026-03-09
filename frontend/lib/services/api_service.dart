@@ -120,6 +120,47 @@ class ApiService {
     );
   }
 
+  /// Fetch RAG evaluation metrics from /rag/metrics
+  Future<Map<String, dynamic>> getRagMetrics() async {
+    try {
+      final uri = Uri.parse("$baseUrl/rag/metrics");
+      final resp = await http.get(uri).timeout(const Duration(seconds: 10));
+      return json.decode(resp.body) as Map<String, dynamic>;
+    } catch (_) {
+      return {
+        "classification": {"macro_f1": 1.0, "micro_f1": 1.0},
+        "retrieval": {"recall_at_5": 0.129, "mrr": 0.100, "ndcg_at_5": 0.172, "kb_coverage": 1.0},
+        "robustness": {"embedding_drift": 0.156},
+        "demo_mode": true,
+      };
+    }
+  }
+
+  /// Fetch all available models from /models
+  Future<List<Map<String, dynamic>>> fetchModels() async {
+    try {
+      final uri = Uri.parse("$baseUrl/models");
+      final resp = await http.get(uri).timeout(const Duration(seconds: 10));
+      final data = json.decode(resp.body) as Map<String, dynamic>;
+      final models = data['models'] as List?;
+      if (models != null) {
+        return models.whereType<Map<String, dynamic>>().toList();
+      }
+    } catch (_) {}
+    return [];
+  }
+
+  /// Health check — returns the health payload from /health
+  Future<Map<String, dynamic>> healthCheck() async {
+    try {
+      final uri = Uri.parse("$baseUrl/health");
+      final resp = await http.get(uri).timeout(const Duration(seconds: 8));
+      return json.decode(resp.body) as Map<String, dynamic>;
+    } catch (_) {
+      return {"status": "unreachable"};
+    }
+  }
+
   /// Demo: populate Qdrant with demo points
   Future<Map<String, dynamic>> demoPopulate({int n = 3, String? collection}) async {
     final collParam = collection != null ? '&collection_name=$collection' : '';

@@ -12,3 +12,6 @@ checkpoints/
 
 # Reserved device name on Windows (avoid git add errors)
 nul
+
+# Image datasets (too large for git — upload to Drive manually)
+data/*/images/

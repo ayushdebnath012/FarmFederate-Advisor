@@ -54,6 +54,8 @@ const String PREDICT_PATH = "/predict";
 const String HEALTH_PATH = "/health";
 const String MODELS_PATH = "/models";
 const String SENSORS_PATH = "/sensors/latest";
+const String RAG_PATH = "/rag";
+const String RAG_METRICS_PATH = "/rag/metrics";
 
 // ============================================================
 // MQTT CONFIGURATION (IoT Sensors)
@@ -97,6 +99,26 @@ const int NUM_CLIENTS = 3;
 const int FEDERATED_ROUNDS = 8;
 const int LOCAL_EPOCHS = 3;
 const double NON_IID_ALPHA = 1.0;
+
+// ============================================================
+// RAG CONFIGURATION (paper §6)
+// ============================================================
+const int RAG_TRAINING_ROUNDS = 10;
+const int RAG_TOP_K = 5;
+const int RAG_QUERY_DIM = 128;
+const double RAG_EMA_MU = 0.9;
+const int RAG_SAMPLES_PER_FARM = 400;
+const double RAG_NON_IID_ALPHA = 0.5;
+
+/// RAG evaluation results (from rag_results.json)
+const double RAG_MACRO_F1 = 1.000;
+const double RAG_MICRO_F1 = 1.000;
+const double RAG_RECALL_AT_5 = 0.129;
+const double RAG_MRR = 0.100;
+const double RAG_NDCG_AT_5 = 0.172;
+const double RAG_KB_COVERAGE = 1.000;
+const double RAG_EMBEDDING_DRIFT = 0.156;
+const int RAG_KB_SIZE = 15; // 15 knowledge-base documents (3 per class)
 
 /// Loss parameters
 const double FOCAL_GAMMA = 2.0;
@@ -180,32 +202,32 @@ const int TOTAL_CONFIGURATIONS = 203;
 // BEST CONFIGURATION — from paper cross-paradigm comparison
 // ============================================================
 
-// Best per paradigm (paper Table 2)
-const String BEST_LLM = 'albert_tiny';      // Fed F1 = 0.548, retention 92.9%
-const String BEST_VIT = 'convnext_tiny';    // Fed F1 = 0.659, retention 86.1%
-const String BEST_FUSION = 'clip';          // Fed F1 = 0.785, retention 92.6%
+// Best per paradigm (paper cross-paradigm comparison)
+const String BEST_LLM = 'mobilebert';       // Fed F1 = 0.636, retention 100.8%
+const String BEST_VIT = 'vit_base';         // Fed F1 = 0.857, retention 98.9%
+const String BEST_FUSION = 'concat';        // Fed F1 = 0.848, retention 97.9%
 
-// Per-paradigm federated F1 scores
-const double FED_F1_LLM = 0.548;
-const double FED_F1_VIT = 0.659;
-const double FED_F1_VLM = 0.785;
+// Per-paradigm federated F1 scores (best model in each paradigm)
+const double FED_F1_LLM = 0.636;
+const double FED_F1_VIT = 0.857;
+const double FED_F1_VLM = 0.848;
 
-// Per-paradigm centralized F1 scores
-const double CENT_F1_LLM = 0.590;
-const double CENT_F1_VIT = 0.765;
-const double CENT_F1_VLM = 0.848;
+// Per-paradigm centralized F1 scores (cross-paradigm table)
+const double CENT_F1_LLM = 0.604;
+const double CENT_F1_VIT = 0.825;
+const double CENT_F1_VLM = 0.857;
 
 // Per-paradigm federation retention (Fed/Cent %)
-const double RETENTION_LLM = 92.9;
-const double RETENTION_VIT = 86.1;
-const double RETENTION_VLM = 92.6;
+const double RETENTION_LLM = 100.8;
+const double RETENTION_VIT = 98.9;
+const double RETENTION_VLM = 97.9;
 
-const double BEST_MACRO_F1_CENTRALIZED = 0.848;   // VLM-CLIP centralized
-const double BEST_MACRO_F1_FEDERATED = 0.785;     // VLM-CLIP federated
-const double BEST_ACCURACY = 0.848;
+const double BEST_MACRO_F1_CENTRALIZED = 0.857;   // VLM-Concat centralized
+const double BEST_MACRO_F1_FEDERATED = 0.848;     // VLM-Concat federated
+const double BEST_ACCURACY = 0.857;
 
-const double MULTIMODAL_IMPROVEMENT = 23.7; // VLM Fed F1 vs best LLM Fed F1
-const double FED_CENTRALIZED_RATIO = 90.5;  // avg across 3 paradigms
+const double MULTIMODAL_IMPROVEMENT = 33.3; // VLM best (0.848) vs LLM best (0.636) Fed F1
+const double FED_CENTRALIZED_RATIO = 99.2;  // avg across 3 paradigms
 const double COMMUNICATION_REDUCTION = 67.0; // %
 
 const int BEST_MODEL_PARAMETERS_M = 213;
@@ -241,8 +263,8 @@ const Map<String, String> LLM_FRIENDLY_DESCRIPTIONS = {
   'distilbert': 'Fast & light text reader - great for quick scans of your crop description',
   'bert_tiny': 'Compact text reader - runs smoothly even on basic phones',
   'roberta_tiny': 'Accurate text reader - strong understanding of symptom descriptions',
-  'albert_tiny': 'Best fed. F1 (0.548) — most robust across farms with 92.9% privacy retention',
-  'mobilebert': 'Phone-optimized reader - built for mobile farming use',
+  'albert_tiny': 'Compact shared-param reader — F1 0.544 federated',
+  'mobilebert': 'Best fed. F1 (0.636) — top LLM, 100.8% retention; marginally exceeds centralized baseline',
 };
 
 /// Friendly names for image analysis options (ViT encoders)
@@ -255,11 +277,11 @@ const Map<String, String> VIT_FRIENDLY_NAMES = {
 };
 
 const Map<String, String> VIT_FRIENDLY_DESCRIPTIONS = {
-  'vit_base': 'Standard photo scanner - reliable for most crop photos',
-  'deit_tiny': 'Quick photo scanner - faster results when you are in a hurry',
-  'swin_tiny': 'Sharp-eye scanner - great at spotting small disease spots & pest marks',
-  'convnext_tiny': 'Best fed. F1 (0.659) — highest unimodal accuracy across crop images',
-  'efficientnet': 'Battery-saver scanner - uses less power on your phone',
+  'vit_base': 'Best fed. F1 (0.857) — top ViT, 98.9% retention; highest unimodal accuracy',
+  'deit_tiny': 'Quick photo scanner — F1 0.853 federated, fast and reliable',
+  'swin_tiny': 'Sharp-eye scanner — F1 0.853, great at spotting spots & pest marks',
+  'convnext_tiny': 'Modern ConvNet scanner — F1 0.848 federated',
+  'efficientnet': 'Battery-saver scanner — F1 0.853, uses less power on your phone',
 };
 
 /// Friendly names for fusion strategies
@@ -275,14 +297,14 @@ const Map<String, String> FUSION_FRIENDLY_NAMES = {
 };
 
 const Map<String, String> FUSION_FRIENDLY_DESCRIPTIONS = {
-  'concat': 'Puts your photo and description side by side - quick & simple',
-  'attention': 'Focuses on the most important parts of both photo & text',
-  'gated': 'Smartly balances how much weight to give photo vs text',
-  'clip': 'Best fed. F1 (0.785) — contrastive alignment outperforms Q-Former architectures',
-  'flamingo': 'Advanced AI that reads your text while looking at the photo',
-  'blip2': 'Deep analysis - thorough Q-Former combination of photo + text',
-  'coca': 'Learns hidden connections between what you say and what it sees',
-  'unified_io': 'Universal method - handles any combination of inputs well',
+  'concat': 'Best fed. F1 (0.848) — top VLM, 97.9% retention; simple join outperforms all complex fusions',
+  'attention': 'Smart Focus — F1 0.788 federated; focuses on most important parts of photo & text',
+  'gated': 'Balanced Mix — F1 0.811 federated; smartly weights photo vs text signal',
+  'clip': 'CLIP Match — F1 0.797 federated; contrastive alignment of image and text features',
+  'flamingo': 'Flamingo AI — F1 0.802 federated; perceiver-based cross-attention',
+  'blip2': 'BLIP-2 Deep — F1 0.802 federated; Q-Former combination of photo + text',
+  'coca': 'CoCa Link — F1 0.797 federated; dual contrastive-captioning head',
+  'unified_io': 'Unified IO — F1 0.783 federated; universal transformer encoder fusion',
 };
 
 /// Friendly names for federated learning modes (paper paradigm terminology)
@@ -293,9 +315,9 @@ const Map<String, String> FEDERATED_FRIENDLY_NAMES = {
 };
 
 const Map<String, String> FEDERATED_FRIENDLY_DESCRIPTIONS = {
-  'fed_llm': 'Text-only paradigm — ALBERT-tiny, Fed F1 = 0.548, 92.9% retention. Lowest compute, most robust to non-IID data.',
-  'fed_vit': 'Image-only paradigm — ConvNeXT-tiny, Fed F1 = 0.659, 86.1% retention. Highest unimodal accuracy; sensitive to data heterogeneity.',
-  'fed_vlm': 'Text + Image paradigm — CLIP fusion, Fed F1 = 0.785, 92.6% retention. Best overall; dual-modality when compute is available.',
+  'fed_llm': 'Text-only paradigm — MobileBERT, Fed F1 = 0.636, 100.8% retention. Marginally exceeds centralized baseline; lightest compute footprint.',
+  'fed_vit': 'Image-only paradigm — ViT-Base, Fed F1 = 0.857, 98.9% retention. Highest unimodal accuracy; minimal 1.1% federated gap.',
+  'fed_vlm': 'Text + Image paradigm — Concatenation, Fed F1 = 0.848, 97.9% retention. Best multimodal; simple concat outperforms all 7 complex fusions.',
 };
 
 // ============================================================

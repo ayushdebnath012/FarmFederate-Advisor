@@ -57,21 +57,21 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
             _buildInfoCard(),
             const SizedBox(height: 20),
             _buildSectionTitle('Federated LLM  —  Text Analysis', Icons.text_fields,
-                subtitle: 'ALBERT-tiny · Fed F1 0.548 · 92.9% retention'),
+                subtitle: 'MobileBERT · Fed F1 0.636 · 100.8% retention'),
             const SizedBox(height: 8),
             _buildModelCards(LLM_ENCODERS, _selectedLlm, (v) {
               setState(() => _selectedLlm = v);
             }),
             const SizedBox(height: 20),
             _buildSectionTitle('Federated ViT  —  Image Analysis', Icons.image,
-                subtitle: 'ConvNeXT-tiny · Fed F1 0.659 · 86.1% retention'),
+                subtitle: 'ViT-Base · Fed F1 0.857 · 98.9% retention'),
             const SizedBox(height: 8),
             _buildModelCards(VIT_ENCODERS, _selectedVit, (v) {
               setState(() => _selectedVit = v);
             }),
             const SizedBox(height: 20),
             _buildSectionTitle('Federated VLM  —  Multimodal Fusion', Icons.merge_type,
-                subtitle: 'CLIP fusion · Fed F1 0.785 · 92.6% retention'),
+                subtitle: 'Concatenation · Fed F1 0.848 · 97.9% retention'),
             const SizedBox(height: 8),
             _buildModelCards(VLM_FUSIONS, _selectedFusion, (v) {
               setState(() => _selectedFusion = v);
@@ -111,7 +111,7 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
           SizedBox(width: 12),
           Expanded(
             child: Text(
-              'Three federated paradigms: Federated LLM (text), Federated ViT (image), Federated VLM (text+image). BEST badges show the top performer from the paper.',
+              'Three federated paradigms: Federated LLM (text), Federated ViT (image), Federated VLM (text+image). All retain >97% of centralized performance. BEST badges show the top performer from the paper.',
               style: TextStyle(color: Colors.white70),
             ),
           ),
@@ -302,7 +302,7 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
                   Icon(Icons.check_circle, color: AppTheme.primaryGreen, size: 16),
                   SizedBox(width: 6),
                   Text(
-                    'Best paradigm config — VLM Fed F1 = 0.785',
+                    'Best paradigm config — VLM Fed F1 = 0.848 · avg retention 99.2%',
                     style: TextStyle(color: AppTheme.primaryGreen, fontSize: 12),
                   ),
                 ],
@@ -385,19 +385,25 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
           _buildFeatureItem(
             Icons.text_fields,
             'Federated LLM — Text Paradigm',
-            'ALBERT-tiny achieves Fed F1 = 0.548 with 92.9% retention. Most robust to non-IID data — ideal for bandwidth-limited farms.',
+            'MobileBERT achieves Fed F1 = 0.636 with 100.8% retention — marginally exceeds its centralized baseline via non-IID regularization. Lightest deployment option.',
           ),
           const SizedBox(height: 8),
           _buildFeatureItem(
             Icons.image,
             'Federated ViT — Image Paradigm',
-            'ConvNeXT-tiny achieves Fed F1 = 0.659 with 86.1% retention. Highest unimodal accuracy; most sensitive to data heterogeneity across farms.',
+            'ViT-Base achieves Fed F1 = 0.857 with 98.9% retention. Highest single-model accuracy; only 1.1% federated gap vs centralized.',
           ),
           const SizedBox(height: 8),
           _buildFeatureItem(
             Icons.merge_type,
             'Federated VLM — Multimodal Paradigm',
-            'CLIP fusion achieves Fed F1 = 0.785 with 92.6% retention. Best overall — contrastive alignment outperforms Q-Former architectures.',
+            'Concatenation fusion achieves Fed F1 = 0.848 with 97.9% retention. Simple concat outperforms all 7 complex fusions (CLIP, BLIP-2, Flamingo, etc.).',
+          ),
+          const SizedBox(height: 8),
+          _buildFeatureItem(
+            Icons.manage_search,
+            'Federated RAG — Advisory Layer',
+            'Privacy-preserving retrieval: per-farm FAISS stores never leave the device. 100% KB coverage; generates natural-language treatment recommendations.',
           ),
           const SizedBox(height: 8),
           _buildFeatureItem(

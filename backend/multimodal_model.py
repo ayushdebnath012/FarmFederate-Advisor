@@ -184,6 +184,7 @@ class MultiModalModel(nn.Module):
         attention_mask: torch.Tensor,
         pixel_values: Optional[torch.Tensor] = None,
         return_attention: bool = False,
+        return_features: bool = False,
     ) -> SimpleNamespace:
         """
         Enhanced forward with cross-modal attention and attention weights.
@@ -239,13 +240,15 @@ class MultiModalModel(nn.Module):
             fused_input = torch.cat([t_feat.squeeze(1), i_feat.squeeze(1)], dim=-1)  # [B, 512*2=1024]
 
         # Fusion and classification
-        fused = self.fusion(fused_input)  # [B, 512]
+        fused = self.fusion(fused_input)  # [B, 512]  — h_f used by RAG query builder
         logits = self.classifier(fused)  # [B, num_labels]
 
         result = SimpleNamespace(logits=logits)
+        if return_features:
+            result.fused_features = fused   # h_f [B, 512]
         if return_attention:
             result.attention_weights = attention_weights
-        
+
         return result
 
     # explicit helper used by server fallback
