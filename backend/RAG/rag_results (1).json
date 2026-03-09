@@ -1,0 +1,94 @@
+{
+  "mode": "standard",
+  "config": {
+    "num_farms": 3,
+    "fed_rounds": 5,
+    "local_epochs": 2,
+    "samples_per_farm": 400,
+    "rag_rounds": 10,
+    "top_k": 5
+  },
+  "classification": {
+    "macro_f1": 1.0,
+    "micro_f1": 1.0,
+    "per_class": {
+      "water_stress": 1.0,
+      "nutrient_def": 1.0,
+      "pest_risk": 1.0,
+      "disease_risk": 1.0,
+      "heat_stress": 1.0
+    }
+  },
+  "retrieval": {
+    "recall_at_5": 0.7327272727272728,
+    "mrr": 0.8,
+    "ndcg_at_5": 0.8936363131994763,
+    "kb_coverage": 1.0
+  },
+  "robustness": {
+    "embedding_drift": 0.7380135655403137
+  },
+  "training": [
+    {
+      "cls": 0.07827845567202471,
+      "ret": 0.0,
+      "gen": 0.0,
+      "round": 1
+    },
+    {
+      "cls": 0.019096814438946928,
+      "ret": 1.8451980638660883,
+      "gen": 0.6574653546444904,
+      "round": 2
+    },
+    {
+      "cls": 0.00545706058320482,
+      "ret": 1.5490839869941686,
+      "gen": 0.5613597007211587,
+      "round": 3
+    },
+    {
+      "cls": 0.0014162558874891158,
+      "ret": 1.331234996890962,
+      "gen": 0.4689235873333643,
+      "round": 4
+    },
+    {
+      "cls": 0.000537557343499826,
+      "ret": 1.2193225912731094,
+      "gen": 0.38125512480997203,
+      "round": 5
+    },
+    {
+      "cls": 0.0002674503924694669,
+      "ret": 1.1872504624470432,
+      "gen": 0.29902639615356474,
+      "round": 6
+    },
+    {
+      "cls": 0.000168304741050166,
+      "ret": 1.163237696798299,
+      "gen": 0.22610456615751773,
+      "round": 7
+    },
+    {
+      "cls": 0.00013318596070679094,
+      "ret": 1.1763066751112168,
+      "gen": 0.16311638365338618,
+      "round": 8
+    },
+    {
+      "cls": 0.00012057372366410375,
+      "ret": 1.164698930349864,
+      "gen": 0.11722409539508229,
+      "round": 9
+    },
+    {
+      "cls": 0.00011740305024746582,
+      "ret": 1.0993318031763746,
+      "gen": 0.08157918732940105,
+      "round": 10
+    }
+  ],
+  "example_advisory": "[OFFLINE] Set GOOGLE_API_KEY for real LLM advisory.\n\nBased on the diagnosis: Apply the recommended treatment for the identified stress type. Monitor crop response over 3\u20135 days and adjust management accordingly. Consult local agronomist if symptoms persist."
+}

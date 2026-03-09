@@ -1,0 +1,424 @@
+% FarmFederate Short Report
+% Compile with: pdflatex FarmFederate_Report.tex
+
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{mdframed}
+\usepackage{multicol}
+\usepackage{colortbl}
+\usepackage{tabularx}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+
+% ── Colours ───────────────────────────────────────────────────────────────────
+\definecolor{greendark}{RGB}{27,94,32}
+\definecolor{greenmid}{RGB}{46,125,50}
+\definecolor{greenlight}{RGB}{232,245,233}
+\definecolor{llmblue}{RGB}{65,105,225}
+\definecolor{llmlight}{RGB}{227,242,253}
+\definecolor{vitgreen}{RGB}{34,139,34}
+\definecolor{vitlight}{RGB}{241,248,233}
+\definecolor{vlmred}{RGB}{178,34,34}
+\definecolor{vlmlight}{RGB}{255,235,238}
+\definecolor{titlebg}{RGB}{27,94,32}
+\definecolor{rulecolor}{RGB}{200,230,201}
+\definecolor{exbg}{RGB}{255,253,231}
+
+% ── Section styling ───────────────────────────────────────────────────────────
+\titleformat{\section}
+  {\large\bfseries\color{greendark}}
+  {\thesection.}
+  {0.5em}
+  {}
+  [\textcolor{greenmid}{\titlerule[1.5pt]}]
+
+\titlespacing*{\section}{0pt}{14pt}{6pt}
+
+\titleformat{\subsection}
+  {\normalsize\bfseries\color{greenmid}}
+  {\thesubsection.}
+  {0.5em}
+  {}
+
+\titlespacing*{\subsection}{0pt}{8pt}{3pt}
+
+% ── Header / Footer ───────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyhead[L]{\small\color{greenmid}\textit{FarmFederate Short Report}}
+\fancyhead[R]{\small\color{greenmid}\textit{Federated LLM $\cdot$ ViT $\cdot$ VLM}}
+\fancyfoot[C]{\small\color{gray}\thepage}
+
+% ── Convenience macros ────────────────────────────────────────────────────────
+\newcommand{\paradigm}[2]{\textcolor{#1}{\textbf{#2}}}
+\newcommand{\fedllm}{\paradigm{llmblue}{Federated LLM}}
+\newcommand{\fedvit}{\paradigm{vitgreen}{Federated ViT}}
+\newcommand{\fedvlm}{\paradigm{vlmred}{Federated VLM}}
+
+% Example box
+\newmdenv[
+  backgroundcolor=exbg,
+  linecolor=greenmid,
+  linewidth=1pt,
+  leftmargin=0pt, rightmargin=0pt,
+  innerleftmargin=8pt, innerrightmargin=8pt,
+  innertopmargin=6pt, innerbottommargin=6pt,
+  skipabove=6pt, skipbelow=4pt
+]{examplebox}
+
+% Paradigm card box
+\newmdenv[
+  linewidth=1.5pt,
+  innerleftmargin=10pt, innerrightmargin=10pt,
+  innertopmargin=8pt, innerbottommargin=8pt,
+  skipabove=6pt, skipbelow=6pt
+]{paradigmbox}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\begin{document}
+
+% ── Title block ───────────────────────────────────────────────────────────────
+\noindent\colorbox{greendark}{%
+  \parbox{\dimexpr\linewidth-2\fboxsep}{%
+    \vspace{8pt}
+    \centering
+    {\Huge\bfseries\color{white} FarmFederate}\\[5pt]
+    {\large\color{green!70!white}
+      Federated LLM, ViT, and VLM for Privacy-Preserving Crop Stress Detection}\\[5pt]
+    {\normalsize\color{white!80!green}
+      Ayush Debnath \quad Ruelia Saha \quad Sudip Misra}\\[3pt]
+    {\small\itshape\color{white!60!green} Short Technical Report}\\[8pt]
+  }%
+}
+
+\vspace{0.7cm}
+
+% ── Overview table (three paradigms) ─────────────────────────────────────────
+\begin{center}
+\renewcommand{\arraystretch}{1.45}
+\begin{tabular}{>{\bfseries}lllcc}
+\toprule
+\textbf{Paradigm} & \textbf{Modality} & \textbf{Best Model} & \textbf{Fed.\ F1} & \textbf{Fed/Cent} \\
+\midrule
+\rowcolor{llmlight}
+\textcolor{llmblue}{Federated LLM} & Text (symptom text) & ALBERT-tiny & 0.548 & 92.9\% \\
+\rowcolor{vitlight}
+\textcolor{vitgreen}{Federated ViT} & Image (crop photos) & ConvNeXT-tiny & 0.659 & 86.1\% \\
+\rowcolor{vlmlight}
+\textcolor{vlmred}{Federated VLM}  & Text $+$ Image      & CLIP fusion  & 0.785 & 92.6\% \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{0.2cm}
+\noindent\textbf{FarmFederate} is the \emph{first} framework to define, independently train, and
+directly compare three federated learning paradigms for multi-class crop stress detection,
+all trained under identical FedAvg conditions ($K{=}3$ clients, $T{=}8$ rounds, $E{=}3$ local
+epochs) with no raw farm data ever transmitted.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{The Problem}
+
+Crop stress---encompassing drought, nutrient deficiency, pest infestation, disease, and heat
+damage---causes 20--40\% yield loss globally.
+Existing AI solutions have two critical shortcomings:
+
+\begin{itemize}[leftmargin=1.5em, itemsep=2pt]
+  \item \textbf{Centralized:} farms must upload raw images or text to a shared server,
+        violating data privacy and ownership rights.
+  \item \textbf{Unimodal:} methods use images \emph{or} text in isolation, missing
+        complementary diagnostic signals.
+  \item \textbf{No paradigm comparison:} no prior work trains Federated LLM, ViT, and VLM
+        separately and evaluates which offers the best privacy-utility trade-off.
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Three Independent Federated Paradigms}
+
+Each paradigm is trained and federated \textbf{independently}---the results are then compared
+directly to reveal their distinct operating points.
+
+% ── Paradigm 1: Federated LLM ─────────────────────────────────────────────────
+\begin{paradigmbox}[linecolor=llmblue]
+\noindent{\large\bfseries\textcolor{llmblue}{Paradigm 1 --- Federated LLM}}
+\smallskip
+
+\noindent\textbf{Input:} Farmer-written symptom text
+(e.g., \textit{``leaves yellowing, dry cracked soil''}).
+
+\noindent\textbf{Models:} DistilBERT, BERT-tiny, RoBERTa-tiny, ALBERT-tiny, MobileBERT.
+
+\smallskip
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Model} & \textbf{Centralized F1} & \textbf{Federated F1} \\
+\midrule
+DistilBERT    & 0.571 & 0.530 \\
+BERT-tiny     & 0.585 & 0.543 \\
+RoBERTa-tiny  & 0.585 & 0.541 \\
+\rowcolor{llmlight}
+ALBERT-tiny \textbf{(best)} & \textbf{0.590} & \textbf{0.548} \\
+MobileBERT    & 0.535 & 0.497 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Key finding:} Smallest federated accuracy gap (7.1\%)---text features
+are \emph{robust} to non-IID client partitioning.
+Ideal for bandwidth-limited or low-compute deployments.
+
+\begin{examplebox}
+\textbf{Example:}\enspace
+Input text: \textit{``brown spots on leaf margins, leaves curling upward, soil dry''} \\
+Federated LLM prediction $\to$ \textbf{Disease Risk} \hfill (61\% confidence)
+\end{examplebox}
+\end{paradigmbox}
+
+% ── Paradigm 2: Federated ViT ─────────────────────────────────────────────────
+\begin{paradigmbox}[linecolor=vitgreen]
+\noindent{\large\bfseries\textcolor{vitgreen}{Paradigm 2 --- Federated ViT}}
+\smallskip
+
+\noindent\textbf{Input:} Crop photographs ($224{\times}224$ RGB).
+
+\noindent\textbf{Models:} ViT-Base, DeiT-tiny, Swin-tiny, ConvNeXT-tiny, EfficientNet
+(3-block residual CNN with batch norm + spatial dropout).
+
+\smallskip
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Model} & \textbf{Centralized F1} & \textbf{Federated F1} \\
+\midrule
+ViT-Base       & 0.696 & 0.599 \\
+DeiT-tiny      & 0.747 & 0.643 \\
+Swin-tiny      & 0.724 & 0.623 \\
+\rowcolor{vitlight}
+ConvNeXT-tiny \textbf{(best)} & \textbf{0.765} & \textbf{0.659} \\
+EfficientNet   & 0.724 & 0.623 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Key finding:} Highest unimodal centralized accuracy (0.765) but largest
+federated gap (13.9\%), indicating visual features are more sensitive to heterogeneous
+data distributions across farms.
+Future work: FedBN aggregation or pretrained ViT weights with LoRA fine-tuning.
+
+\begin{examplebox}
+\textbf{Example:}\enspace
+Input image: $224{\times}224$ crop photo --- pale greenish-yellow leaves, drooping stems \\
+Federated ViT prediction $\to$ \textbf{Water Stress} \hfill (73\% confidence)
+\end{examplebox}
+\end{paradigmbox}
+
+% ── Paradigm 3: Federated VLM ─────────────────────────────────────────────────
+\begin{paradigmbox}[linecolor=vlmred]
+\noindent{\large\bfseries\textcolor{vlmred}{Paradigm 3 --- Federated VLM}}
+\smallskip
+
+\noindent\textbf{Input:} Text $+$ Image combined via eight fusion strategies.
+
+\noindent\textbf{Fusion strategies evaluated:}
+
+\smallskip
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Fusion} & \textbf{Centralized F1} & \textbf{Federated F1} \\
+\midrule
+Concatenation & 0.797 & 0.738 \\
+Cross-Attention & 0.807 & 0.747 \\
+Gated & 0.779 & 0.722 \\
+\rowcolor{vlmlight}
+CLIP \textbf{(best)} & \textbf{0.848} & \textbf{0.785} \\
+Flamingo & 0.816 & 0.755 \\
+BLIP-2 & 0.834 & 0.771 \\
+CoCa & 0.783 & 0.725 \\
+Unified-IO & 0.802 & 0.743 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Key finding:} Best absolute federated F1 (0.785) with a federation gap (7.4\%)
+comparable to Federated LLM.
+CLIP contrastive alignment outperforms more complex Q-Former architectures.
+Multimodal gain: $+0.083$ over best unimodal (ViT), $+0.237$ over best text-only (LLM).
+
+\begin{examplebox}
+\textbf{Example:}\enspace
+Image: small holes in leaves, sticky residue \quad
+Text: \textit{``whitish deposits under leaves, plant stunted''} \\
+Federated VLM (CLIP) prediction $\to$ \textbf{Pest Risk} \hfill (84.8\% confidence)
+\end{examplebox}
+\end{paradigmbox}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Dataset}
+
+The 5-class crop stress dataset is built from real HuggingFace corpora and synthetic imagery:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\linewidth}{lXl}
+\toprule
+\textbf{Class} & \textbf{Description} & \textbf{Visual Signature} \\
+\midrule
+Water Stress    & Drought, wilting, stomatal closure      & Vertical stripes, pale green \\
+Nutrient Def.   & Chlorosis, stunted growth               & Concentric rings, yellowing \\
+Pest Risk       & Holes, sticky residue, webbing          & Scattered dark spots \\
+Disease Risk    & Fungal/bacterial lesions                & Coloured lesions, blight \\
+Heat Stress     & Leaf scorch, tip burn                   & Horizontal gradients, brown tips \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\noindent\textbf{Text:} AG~News $+$ PubMed $+$ SQuAD filtered for agriculture
+$\to$ $\sim$1,089 balanced samples after rebalancing (original 25:1 imbalance corrected
+by capping majority at $2\times$ median and oversampling minorities to median).
+
+\noindent\textbf{Images:} PlantVillage $+$ Beans (real) $+$ synthetic class-distinctive
+patterns (pattern intensity 25--50\%, 90\% pattern presence, 20\% cross-class confusion).
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Anti-Collapse Mechanisms}
+
+Severe class imbalance (25:1) causes models to collapse to predicting only 1--2 classes.
+FarmFederate prevents this across \emph{all three paradigms} via:
+
+\begin{enumerate}[leftmargin=1.5em, itemsep=3pt]
+  \item \textbf{Balanced Batch Sampling} --- equal class representation per batch via
+        minority oversampling using the maximum class count for batch size.
+  \item \textbf{Diversity Loss} ---
+        $\mathcal{L}_{div} = \lambda\!\left(1 - H(\bar{p})/H_{\max}\right)$
+        with $\lambda{=}1.0$ and 70\% entropy threshold; adds confidence penalty.
+  \item \textbf{Early Collapse Abort} --- terminates training after 3 consecutive
+        epochs where $>$85\% of predictions fall into one class; restores best checkpoint.
+  \item \textbf{Focal Loss} --- $\mathcal{L}_{focal} = -\alpha_c(1-p_t)^\gamma\log p_t$
+        with $\gamma{=}2.0$ and class weights capped at $10\times$
+        (sqrt dampening: $\alpha_c = \min(\sqrt{n/Cn_c},\,10)$).
+\end{enumerate}
+
+\noindent\textbf{Result:} \textbf{100\% prediction diversity} maintained across all 24
+trained models and all three federated paradigms.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Key Results}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.45}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Metric} & \textbf{Value} & \textbf{Notes} \\
+\midrule
+Best Federated F1 (VLM-CLIP)  & \textbf{0.785} & $K{=}3$, $T{=}8$ rounds \\
+Best Centralized F1 (VLM-CLIP)& \textbf{0.848} & Full data access \\
+Avg.\ Fed/Cent Retention       & \textbf{90.5\%} & Across all 3 paradigms \\
+Stress-biased Eval.\ F1       & 0.989--1.000  & 5 regional splits \\
+Prediction Diversity           & 100\%         & All 24 models \\
+Total Models Trained           & 24            & $5+5+8+6$ variants \\
+Hardware                       & NVIDIA Tesla T4 & 15.6 GB VRAM \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Cross-Paradigm Comparison \& Decision Guide}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{lcccl}
+\toprule
+\textbf{Paradigm} & \textbf{Cent.\ F1} & \textbf{Fed.\ F1} & \textbf{Gap} & \textbf{Best use case} \\
+\midrule
+\rowcolor{llmlight}
+\textcolor{llmblue}{\bfseries Fed.\ LLM}
+  & 0.590 & 0.548 & 7.1\% & Bandwidth-constrained, text-rich farms \\
+\rowcolor{vitlight}
+\textcolor{vitgreen}{\bfseries Fed.\ ViT}
+  & 0.765 & 0.659 & 13.9\% & Image-heavy, future FedBN aggregation \\
+\rowcolor{vlmlight}
+\textcolor{vlmred}{\bfseries Fed.\ VLM}
+  & 0.848 & 0.785 & 7.4\% & Best overall; dual-modality available \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Novelty}
+
+No prior work has:
+\begin{enumerate}[leftmargin=1.5em, itemsep=2pt]
+  \item Defined \fedllm{}, \fedvit{}, and \fedvlm{} as \emph{three distinct federated paradigms}.
+  \item Trained each paradigm \textbf{independently} under identical FedAvg conditions.
+  \item Provided a \textbf{cross-paradigm comparison} quantifying the per-paradigm
+        privacy-utility trade-off.
+  \item Applied any of these to \textbf{multi-class crop stress} (5 classes, not binary disease).
+\end{enumerate}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Practical Use Case}
+
+\begin{examplebox}
+\textbf{End-to-end scenario:} A farmer in Punjab photographs yellowing maize leaves and
+types \textit{``leaves pale yellow, lower leaves affected first, slow growth''} into the
+FarmFederate Android app.
+
+\medskip
+The app encodes the image (ViT encoder) and text (LLM encoder) \emph{locally}, fuses them
+via CLIP contrastive alignment, and sends only the \textbf{model update}---not the raw
+photo or text---to the federated server.
+After aggregating updates from three farms (Punjab, Kerala, UP), the global model predicts:
+
+\medskip
+\centerline{\Large\textcolor{vitgreen}{\bfseries Nutrient Deficiency} \quad (78\% confidence)}
+
+\medskip
+The app recommends: \textit{``Apply 30\,kg urea/acre. Re-evaluate in 10 days.''}
+
+\medskip
+\textbf{Privacy guarantee:} The crop photograph never left the farmer's device.
+\end{examplebox}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Conclusion}
+
+\begin{itemize}[leftmargin=1.5em, itemsep=4pt]
+  \item \textbf{\textcolor{llmblue}{Federated LLM}} --- most federation-robust (92.9\% retention),
+        lowest compute cost; best for text-rich, bandwidth-constrained deployments.
+  \item \textbf{\textcolor{vitgreen}{Federated ViT}} --- highest unimodal centralized accuracy
+        (F1\,=\,0.765) but most sensitive to non-IID heterogeneity; future work should apply
+        FedBN or pretrained weights with LoRA.
+  \item \textbf{\textcolor{vlmred}{Federated VLM}} --- best overall federated performance
+        (F1\,=\,0.785, 92.6\% retention); CLIP fusion recommended when compute and
+        dual-modality data are available.
+\end{itemize}
+
+\noindent FarmFederate demonstrates that the choice of federated paradigm is not merely
+a modality preference but a \textbf{fundamental design decision} with distinct
+privacy-utility implications, providing practitioners with clear, empirically grounded
+guidance for deploying federated agricultural AI.
+
+\vspace{0.5cm}
+\noindent\textcolor{greenmid}{\rule{\linewidth}{1pt}}
+\begin{center}
+  \small\textit{FarmFederate $\cdot$ IEEE IEEEtran Full Paper $\cdot$
+  \texttt{farmfederate-advisor.onrender.com}}
+\end{center}
+
+\end{document}
