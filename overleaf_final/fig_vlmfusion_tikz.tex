@@ -1,0 +1,256 @@
+% REQUIRES: (nothing beyond arrows.meta, positioning, fit -- already loaded by the wrapper preamble)
+% NOTE: math uses \tfrac -> master document must load amsmath.
+% Assumes these document colors are already defined in the preamble; if not, add:
+%   \definecolor{llmblue}{RGB}{174,210,225}   \definecolor{vitgreen}{RGB}{181,215,168}
+%   \definecolor{vlmred}{RGB}{234,153,153}    \definecolor{fedorange}{RGB}{255,229,153}
+%   \definecolor{outyyellow}{RGB}{255,242,204}\definecolor{smallgray}{RGB}{220,220,220}
+%   \definecolor{headblue}{RGB}{60,90,180}
+% GEOMETRY: cells are 6.4 x 5.4 cm, column gutter 0.8 cm, row gutter 0.9 cm.
+%   Column centers x = 3.2, 10.4, 17.6, 24.8; top row center y = 9.0, bottom row y = 2.7.
+%   The absolute coordinates of the bus lines below (6.65/6.95/21.05/21.35, y = 5.85)
+%   are derived from these numbers -- keep them in sync if cell sizes change.
+\begin{tikzpicture}[
+  font=\scriptsize,
+  >={Stealth[length=2.2mm,width=1.9mm]},
+  stgpanel/.style={rounded corners=5pt, draw=black, thin},
+  cellp/.style={stgpanel, minimum width=6.4cm, minimum height=5.4cm},
+  stagetitle/.style={font=\scriptsize\bfseries, inner sep=1pt},
+  eqbox/.style={draw=black, thin, fill=white, inner sep=5pt, font=\footnotesize},
+  ceq/.style={eqbox, font=\scriptsize, align=center, inner sep=3.5pt,
+              minimum width=4.9cm, minimum height=0.85cm},
+  ltag/.style={draw=black, thin, rounded corners=2pt, fill=outyyellow,
+               font=\scriptsize, inner xsep=4pt, inner ysep=2pt},
+  opglyph/.style={circle, draw=headblue, line width=0.9pt, fill=white, inner sep=0.5pt,
+                  minimum size=0.44cm, font=\scriptsize\bfseries, text=headblue},
+  ilab/.style={font=\scriptsize, align=center, inner sep=1.5pt},
+  mlab/.style={anchor=west, font=\scriptsize, inner sep=1pt},
+  % mini fusion-module glyph: small white rounded box for MHA / norm / Perceiver / etc.
+  fbox/.style={draw=black, thin, rounded corners=1.5pt, fill=white, align=center,
+               font=\scriptsize, inner xsep=3.5pt, inner ysep=2.5pt, minimum height=0.42cm},
+  % small square input glyphs: outyyellow = text embedding h_t, llmblue = image embedding h_v
+  tsq/.style={draw=black, thin, fill=outyyellow, minimum size=0.28cm, inner sep=0pt},
+  vsq/.style={draw=black, thin, fill=llmblue,   minimum size=0.28cm, inner sep=0pt},
+  qsq/.style={draw=black, thin, fill=white,     minimum size=0.28cm, inner sep=0pt},
+  flow/.style={->, thin, rounded corners=2pt},
+  bus/.style={->, thin, rounded corners=3pt}
+]
+
+%=====================================================================
+% 4 x 2 grid of fusion-module cells (fixed footprint, relative placement)
+%=====================================================================
+\node[cellp, fill=llmblue!25]                       (c1) at (3.2,9.0) {};
+\node[cellp, fill=vlmred!25,    right=0.8cm of c1]  (c2) {};
+\node[cellp, fill=fedorange!40, right=0.8cm of c2]  (c3) {};
+\node[cellp, fill=vitgreen!30,  right=0.8cm of c3]  (c4) {};
+\node[cellp, fill=outyyellow,   below=0.9cm of c1]  (c5) {};
+\node[cellp, fill=smallgray!40, right=0.8cm of c5]  (c6) {};
+\node[cellp, fill=llmblue!40,   right=0.8cm of c6]  (c7) {};
+\node[cellp, fill=vlmred!40,    right=0.8cm of c7]  (c8) {};
+
+%---------------------------------------------------------------------
+% Cell 1: Concat  --  h_t, h_v merge in a circled C
+%---------------------------------------------------------------------
+\begin{scope}[shift={(c1.north)}]
+  \node[stagetitle] at (0,-0.35) {Concat};
+  \node[tsq, label={[ilab]left:$h_t$}]  (c1t) at (-1.4,-0.95) {};
+  \node[vsq, label={[ilab]right:$h_v$}] (c1v) at ( 1.4,-0.95) {};
+  \node[opglyph] (c1C) at (0,-2.35) {C};
+  \draw[flow] (c1t.south) -- (c1C);
+  \draw[flow] (c1v.south) -- (c1C);
+  \node[ceq]  (c1e) at (0,-3.9) {$h_f=[h_t;h_v]$};
+  \draw[flow] (c1C) -- (c1e.north);
+  \node[ltag] (c1f) at (0,-4.85) {$h_f$};
+  \draw[flow] (c1e.south) -- (c1f.north);
+\end{scope}
+
+%---------------------------------------------------------------------
+% Cell 2: Cross-Attn  --  h_v through MHA (h_t as query), then + with h_t
+%---------------------------------------------------------------------
+\begin{scope}[shift={(c2.north)}]
+  \node[stagetitle] at (0,-0.35) {Cross-Attn};
+  \node[tsq, label={[ilab]left:$h_t$}]  (c2t) at (-1.4,-0.95) {};
+  \node[vsq, label={[ilab]right:$h_v$}] (c2v) at ( 1.4,-0.95) {};
+  \node[fbox]    (c2m) at (1.1,-1.95) {MHA};
+  \node[opglyph] (c2p) at (0,-2.9)  {$+$};
+  \draw[flow] (c2v.south) -- (c2m.north);
+  \draw[flow] (c2t.south) -- (-1.4,-2.9) -- (c2p);
+  \fill (-1.4,-1.95) circle (1.2pt);
+  \draw[flow] (-1.4,-1.95) -- (c2m.west);
+  \draw[flow] (c2m.south) -- (1.1,-2.9) -- (c2p);
+  \node[ceq]  (c2e) at (0,-3.9)
+    {$h_f=\tfrac{1}{2}(h_t+\mathrm{MHA}(h_t,W_vh_v,W_vh_v))$};
+  \draw[flow] (c2p) -- (c2e.north);
+  \node[ltag] (c2f) at (0,-4.85) {$h_f$};
+  \draw[flow] (c2e.south) -- (c2f.north);
+\end{scope}
+
+%---------------------------------------------------------------------
+% Cell 3: Gated  --  sigma gate g, circled odot on h_v, then + with h_t
+%---------------------------------------------------------------------
+\begin{scope}[shift={(c3.north)}]
+  \node[stagetitle] at (0,-0.35) {Gated};
+  \node[tsq, label={[ilab]left:$h_t$}]  (c3t) at (-1.4,-0.95) {};
+  \node[vsq, label={[ilab]right:$h_v$}] (c3v) at ( 1.4,-0.95) {};
+  \node[fbox]    (c3s) at (0,-1.7)    {$\sigma$};
+  \node[opglyph] (c3g) at (1.4,-2.4)  {$\odot$};
+  \node[opglyph] (c3p) at (0,-3.0)    {$+$};
+  \draw[flow] (c3t.south) -- (-1.4,-3.0) -- (c3p);
+  \fill (-1.4,-1.4) circle (1.2pt);
+  \draw[flow] (-1.4,-1.4) -- (c3s);
+  \draw[flow] (c3v.south) -- (c3g.north);
+  \fill (1.4,-1.4) circle (1.2pt);
+  \draw[flow] (1.4,-1.4) -- (c3s);
+  \draw[flow] (c3s.south) -- node[ilab, midway, above=0.5pt] {$g$} (c3g.west);
+  \draw[flow] (c3g.south) -- (1.4,-3.0) -- (c3p);
+  \node[ceq]  (c3e) at (0,-3.9)
+    {$g=\sigma([h_t;h_v])$\\[-1pt] $h_f=h_t+g\odot W_vh_v$};
+  \draw[flow] (c3p) -- (c3e.north);
+  \node[ltag] (c3f) at (0,-4.85) {$h_f$};
+  \draw[flow] (c3e.south) -- (c3f.north);
+\end{scope}
+
+%---------------------------------------------------------------------
+% Cell 4: CLIP  --  both branches normalized, then circled C
+%---------------------------------------------------------------------
+\begin{scope}[shift={(c4.north)}]
+  \node[stagetitle] at (0,-0.35) {CLIP};
+  \node[tsq, label={[ilab]left:$h_t$}]  (c4t) at (-1.4,-0.95) {};
+  \node[vsq, label={[ilab]right:$h_v$}] (c4v) at ( 1.4,-0.95) {};
+  \node[fbox]    (c4n1) at (-1.4,-1.9) {norm};
+  \node[fbox]    (c4n2) at ( 1.4,-1.9) {norm};
+  \node[opglyph] (c4C)  at (0,-2.9)    {C};
+  \draw[flow] (c4t.south)   -- (c4n1.north);
+  \draw[flow] (c4v.south)   -- (c4n2.north);
+  \draw[flow] (c4n1.south)  -- (c4C);
+  \draw[flow] (c4n2.south)  -- (c4C);
+  \node[ceq]  (c4e) at (0,-3.9)
+    {$h_f=[\mathrm{norm}(P_th_t);\mathrm{norm}(P_vh_v)]$};
+  \draw[flow] (c4C) -- (c4e.north);
+  \node[ltag] (c4f) at (0,-4.85) {$h_f$};
+  \draw[flow] (c4e.south) -- (c4f.north);
+\end{scope}
+
+%---------------------------------------------------------------------
+% Cell 5: Flamingo  --  Perceiver resampler on h_v, then gated x-attention
+%---------------------------------------------------------------------
+\begin{scope}[shift={(c5.north)}]
+  \node[stagetitle] at (0,-0.35) {Flamingo};
+  \node[tsq, label={[ilab]left:$h_t$}]  (c5t) at (-1.4,-0.95) {};
+  \node[vsq, label={[ilab]right:$h_v$}] (c5v) at ( 1.4,-0.95) {};
+  \node[fbox] (c5pc) at (1.4,-1.8)  {Perceiver};
+  \node[fbox] (c5gx) at (0,-2.85)   {GatedXAttn};
+  \draw[flow] (c5v.south)  -- (c5pc.north);
+  \draw[flow] (c5pc.south) -- node[ilab, midway, right=1pt] {$z$} (c5gx);
+  \draw[flow] (c5t.south)  -- (-1.4,-2.85) -- (c5gx);
+  \node[ceq]  (c5e) at (0,-3.9)
+    {$z=\mathrm{Perceiver}(h_v)$\\[-1pt] $h_f=\mathrm{GatedXAttn}(h_t,z)$};
+  \draw[flow] (c5gx.south) -- (c5e.north);
+  \node[ltag] (c5f) at (0,-4.85) {$h_f$};
+  \draw[flow] (c5e.south) -- (c5f.north);
+\end{scope}
+
+%---------------------------------------------------------------------
+% Cell 6: BLIP-2  --  learned queries Q attend to h_v, mean-pooled q, + with h_t
+%---------------------------------------------------------------------
+\begin{scope}[shift={(c6.north)}]
+  \node[stagetitle] at (0,-0.35) {BLIP-2};
+  \node[tsq, label={[ilab]left:$h_t$}]  (c6t) at (-1.4,-0.95) {};
+  \node[vsq, label={[ilab]right:$h_v$}] (c6v) at ( 1.4,-0.95) {};
+  \node[fbox]    (c6m) at (1.1,-1.9) {MHA};
+  \node[qsq, label={[ilab]left:$Q$}]    (c6q) at (-0.1,-1.9) {};
+  \node[opglyph] (c6p) at (0,-2.9)   {$+$};
+  \draw[flow] (c6v.south) -- (c6m.north);
+  \draw[flow] (c6q.east)  -- (c6m.west);
+  \draw[flow] (c6m.south) -- (1.1,-2.9) -- (c6p);
+  \node[ilab] at (0.66,-2.71) {$q$};
+  \draw[flow] (c6t.south) -- (-1.4,-2.9) -- (c6p);
+  \node[ceq]  (c6e) at (0,-3.9)
+    {$q=\mathrm{mean}(\mathrm{MHA}(Q,W_vh_v,W_vh_v))$\\[-1pt] $h_f=h_t+W_qq$};
+  \draw[flow] (c6p) -- (c6e.north);
+  \node[ltag] (c6f) at (0,-4.85) {$h_f$};
+  \draw[flow] (c6e.south) -- (c6f.north);
+\end{scope}
+
+%---------------------------------------------------------------------
+% Cell 7: CoCa  --  CLIP-style dual norm branches + third MHA branch, triple C
+%---------------------------------------------------------------------
+\begin{scope}[shift={(c7.north)}]
+  \node[stagetitle] at (0,-0.35) {CoCa};
+  \node[tsq, label={[ilab]left:$h_t$}]  (c7t) at (-1.4,-0.95) {};
+  \node[vsq, label={[ilab]right:$h_v$}] (c7v) at ( 1.4,-0.95) {};
+  \node[fbox]    (c7n1) at (-1.4,-1.9) {norm};
+  \node[fbox]    (c7m)  at ( 0.0,-1.9) {MHA};
+  \node[fbox]    (c7n2) at ( 1.4,-1.9) {norm};
+  \node[opglyph] (c7C)  at (0,-2.95)   {C};
+  \draw[flow] (c7t.south) -- (c7n1.north);
+  \fill (-1.4,-1.35) circle (1.2pt);
+  \draw[flow] (-1.4,-1.35) -- (c7m);
+  \draw[flow] (c7v.south) -- (c7n2.north);
+  \fill (1.4,-1.35) circle (1.2pt);
+  \draw[flow] (1.4,-1.35) -- (c7m);
+  \draw[flow] (c7n1.south) -- (c7C);
+  \draw[flow] (c7m.south)  -- (c7C);
+  \draw[flow] (c7n2.south) -- (c7C);
+  \node[ceq]  (c7e) at (0,-3.9)
+    {$h_f=[\mathrm{norm}(P_th_t);\mathrm{norm}(P_vh_v);$\\[-1pt]
+     $\mathrm{MHA}(h_t,W_vh_v,W_vh_v)]$};
+  \draw[flow] (c7C) -- (c7e.north);
+  \node[ltag] (c7f) at (0,-4.85) {$h_f$};
+  \draw[flow] (c7e.south) -- (c7f.north);
+\end{scope}
+
+%---------------------------------------------------------------------
+% Cell 8: Unified-IO  --  position embeddings added, concat, transformer encoder
+%---------------------------------------------------------------------
+\begin{scope}[shift={(c8.north)}]
+  \node[stagetitle] at (0,-0.35) {Unified-IO};
+  \node[tsq, label={[ilab]left:$h_t$}]  (c8t) at (-1.4,-0.95) {};
+  \node[vsq, label={[ilab]right:$h_v$}] (c8v) at ( 1.4,-0.95) {};
+  \node[fbox]    (c8e1) at (-1.4,-1.6) {${+}\,e_t$};
+  \node[fbox]    (c8e2) at ( 1.4,-1.6) {${+}\,e_v$};
+  \node[opglyph] (c8C)  at (0,-2.2)    {C};
+  \node[fbox]    (c8te) at (0,-2.95)   {TransEnc};
+  \draw[flow] (c8t.south)  -- (c8e1.north);
+  \draw[flow] (c8v.south)  -- (c8e2.north);
+  \draw[flow] (c8e1.south) -- (c8C);
+  \draw[flow] (c8e2.south) -- (c8C);
+  \draw[flow] (c8C) -- (c8te.north);
+  \node[ceq]  (c8e) at (0,-3.9)
+    {$h_f=\mathrm{TransEnc}([h_t{+}e_t;h_v{+}e_v])$};
+  \draw[flow] (c8te.south) -- (c8e.north);
+  \node[ltag] (c8f) at (0,-4.85) {$h_f$};
+  \draw[flow] (c8e.south) -- (c8f.north);
+\end{scope}
+
+%=====================================================================
+% Shared downstream classifier (spans the grid width)
+%=====================================================================
+\node[stgpanel, fill=vitgreen!45, minimum width=27cm, minimum height=0.95cm,
+      font=\scriptsize\bfseries] (clf) at (14.0,-1.35)
+  {Shared Classification Head (5-way)};
+
+% bottom-row cells: straight drop from each h_f tag into the classifier
+\draw[bus] (c5f.south) -- ( 3.2,-0.87);
+\draw[bus] (c6f.south) -- (10.4,-0.87);
+\draw[bus] (c7f.south) -- (17.6,-0.87);
+\draw[bus] (c8f.south) -- (24.8,-0.87);
+
+% top-row cells: routed down the column gutters (no line crossings)
+\draw[bus] (c1f.south) -- ( 3.2,5.85) -- ( 6.65,5.85) -- ( 6.65,-0.87);
+\draw[bus] (c2f.south) -- (10.4,5.85) -- ( 6.95,5.85) -- ( 6.95,-0.87);
+\draw[bus] (c3f.south) -- (17.6,5.85) -- (21.05,5.85) -- (21.05,-0.87);
+\draw[bus] (c4f.south) -- (24.8,5.85) -- (21.35,5.85) -- (21.35,-0.87);
+
+%=====================================================================
+% Legend (operator glyph conventions)
+%=====================================================================
+\node[opglyph] (lgC) at ( 8.6,-2.65) {C};
+\node[mlab]   (lgCt) at ( 8.9,-2.65) {concatenation};
+\node[opglyph] (lgP) at (12.2,-2.65) {$+$};
+\node[mlab]   (lgPt) at (12.5,-2.65) {elementwise sum};
+\node[opglyph] (lgO) at (16.1,-2.65) {$\odot$};
+\node[mlab]   (lgOt) at (16.4,-2.65) {gated elementwise product};
+\node[draw=black!50, thin, rounded corners=3pt, inner sep=5pt,
+      fit=(lgC)(lgCt)(lgP)(lgPt)(lgO)(lgOt)] {};
+
+\end{tikzpicture}

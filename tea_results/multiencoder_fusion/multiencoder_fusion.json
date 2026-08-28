@@ -1,0 +1,1021 @@
+{
+  "_meta": {
+    "protocol": "frozen encoders, per-dimension standardization, closed-form ridge; penalty and configuration chosen on validation only; test scored once",
+    "split_audit": {
+      "crops": {
+        "train": 222,
+        "validation": 74,
+        "test": 75
+      },
+      "source_groups": {
+        "train": 122,
+        "validation": 40,
+        "test": 38
+      },
+      "blocked_tokens": 45,
+      "split_seed": 42,
+      "pairing": "exact (photograph, box) crop-note linkage"
+    },
+    "text_encoder": "BERT-small",
+    "baseline": "ViT-Base + BERT-small",
+    "configurations": 62,
+    "test_crops": 75,
+    "one_crop_accuracy": 0.013333333333333334
+  },
+  "baseline": {
+    "ridge_alpha": 100.0,
+    "validation_accuracy": 0.918918918918919,
+    "validation_macro_f1": 0.8801796945193171,
+    "test_accuracy": 0.8,
+    "test_macro_f1": 0.6637845117845118,
+    "test_micro_f1": 0.8,
+    "encoders": [
+      "ViT-Base"
+    ],
+    "n_encoders": 1,
+    "with_text": true,
+    "dim": 1280
+  },
+  "validation_selected": {
+    "ridge_alpha": 100.0,
+    "validation_accuracy": 0.8648648648648649,
+    "validation_macro_f1": 0.8963325563325564,
+    "test_accuracy": 0.7733333333333333,
+    "test_macro_f1": 0.6343536089972149,
+    "test_micro_f1": 0.7733333333333333,
+    "encoders": [
+      "DeiT-tiny"
+    ],
+    "n_encoders": 1,
+    "with_text": true,
+    "dim": 704
+  },
+  "rows": [
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.9054054054054054,
+      "validation_macro_f1": 0.7344159544159543,
+      "test_accuracy": 0.7333333333333333,
+      "test_macro_f1": 0.6147712759781725,
+      "test_micro_f1": 0.7333333333333333,
+      "encoders": [
+        "ViT-Base"
+      ],
+      "n_encoders": 1,
+      "with_text": false,
+      "dim": 768
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.918918918918919,
+      "validation_macro_f1": 0.8801796945193171,
+      "test_accuracy": 0.8,
+      "test_macro_f1": 0.6637845117845118,
+      "test_micro_f1": 0.8,
+      "encoders": [
+        "ViT-Base"
+      ],
+      "n_encoders": 1,
+      "with_text": true,
+      "dim": 1280
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.7567567567567568,
+      "validation_macro_f1": 0.6150019434727081,
+      "test_accuracy": 0.6933333333333334,
+      "test_macro_f1": 0.5452541781935606,
+      "test_micro_f1": 0.6933333333333334,
+      "encoders": [
+        "DeiT-tiny"
+      ],
+      "n_encoders": 1,
+      "with_text": false,
+      "dim": 192
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.8648648648648649,
+      "validation_macro_f1": 0.8963325563325564,
+      "test_accuracy": 0.7733333333333333,
+      "test_macro_f1": 0.6343536089972149,
+      "test_micro_f1": 0.7733333333333333,
+      "encoders": [
+        "DeiT-tiny"
+      ],
+      "n_encoders": 1,
+      "with_text": true,
+      "dim": 704
+    },
+    {
+      "ridge_alpha": 10.0,
+      "validation_accuracy": 0.581081081081081,
+      "validation_macro_f1": 0.4858161350844278,
+      "test_accuracy": 0.6,
+      "test_macro_f1": 0.507230890464933,
+      "test_micro_f1": 0.6,
+      "encoders": [
+        "Swin-tiny"
+      ],
+      "n_encoders": 1,
+      "with_text": false,
+      "dim": 768
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.7972972972972973,
+      "validation_macro_f1": 0.8203130203130202,
+      "test_accuracy": 0.7333333333333333,
+      "test_macro_f1": 0.597026455026455,
+      "test_micro_f1": 0.7333333333333333,
+      "encoders": [
+        "Swin-tiny"
+      ],
+      "n_encoders": 1,
+      "with_text": true,
+      "dim": 1280
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.7837837837837838,
+      "validation_macro_f1": 0.6415726195699868,
+      "test_accuracy": 0.56,
+      "test_macro_f1": 0.4926666666666667,
+      "test_micro_f1": 0.56,
+      "encoders": [
+        "ConvNeXT-tiny"
+      ],
+      "n_encoders": 1,
+      "with_text": false,
+      "dim": 768
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.8243243243243243,
+      "validation_macro_f1": 0.8020451671183378,
+      "test_accuracy": 0.72,
+      "test_macro_f1": 0.5920877742946707,
+      "test_micro_f1": 0.72,
+      "encoders": [
+        "ConvNeXT-tiny"
+      ],
+      "n_encoders": 1,
+      "with_text": true,
+      "dim": 1280
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.7162162162162162,
+      "validation_macro_f1": 0.568378500451671,
+      "test_accuracy": 0.68,
+      "test_macro_f1": 0.5614835164835166,
+      "test_micro_f1": 0.68,
+      "encoders": [
+        "EfficientNet"
+      ],
+      "n_encoders": 1,
+      "with_text": false,
+      "dim": 1280
+    },
+    {
+      "ridge_alpha": 10.0,
+      "validation_accuracy": 0.7297297297297297,
+      "validation_macro_f1": 0.7195162070633769,
+      "test_accuracy": 0.68,
+      "test_macro_f1": 0.5602842930200896,
+      "test_micro_f1": 0.68,
+      "encoders": [
+        "EfficientNet"
+      ],
+      "n_encoders": 1,
+      "with_text": true,
+      "dim": 1792
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.9054054054054054,
+      "validation_macro_f1": 0.7374331179209228,
+      "test_accuracy": 0.72,
+      "test_macro_f1": 0.6038744062673492,
+      "test_micro_f1": 0.72,
+      "encoders": [
+        "ViT-Base",
+        "DeiT-tiny"
+      ],
+      "n_encoders": 2,
+      "with_text": false,
+      "dim": 960
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.8918918918918919,
+      "validation_macro_f1": 0.8600155400155401,
+      "test_accuracy": 0.7733333333333333,
+      "test_macro_f1": 0.6415038759689923,
+      "test_micro_f1": 0.7733333333333333,
+      "encoders": [
+        "ViT-Base",
+        "DeiT-tiny"
+      ],
+      "n_encoders": 2,
+      "with_text": true,
+      "dim": 1472
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.8918918918918919,
+      "validation_macro_f1": 0.7239359081464345,
+      "test_accuracy": 0.7866666666666666,
+      "test_macro_f1": 0.6571206111578782,
+      "test_micro_f1": 0.7866666666666666,
+      "encoders": [
+        "ViT-Base",
+        "Swin-tiny"
+      ],
+      "n_encoders": 2,
+      "with_text": false,
+      "dim": 1536
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.8648648648648649,
+      "validation_macro_f1": 0.8351241351241351,
+      "test_accuracy": 0.7333333333333333,
+      "test_macro_f1": 0.6095063936924403,
+      "test_micro_f1": 0.7333333333333333,
+      "encoders": [
+        "ViT-Base",
+        "Swin-tiny"
+      ],
+      "n_encoders": 2,
+      "with_text": true,
+      "dim": 2048
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.8648648648648649,
+      "validation_macro_f1": 0.7086693334277319,
+      "test_accuracy": 0.7066666666666667,
+      "test_macro_f1": 0.5811316343231236,
+      "test_micro_f1": 0.7066666666666667,
+      "encoders": [
+        "ViT-Base",
+        "ConvNeXT-tiny"
+      ],
+      "n_encoders": 2,
+      "with_text": false,
+      "dim": 1536
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.8918918918918919,
+      "validation_macro_f1": 0.8577827352765794,
+      "test_accuracy": 0.72,
+      "test_macro_f1": 0.6028398268398268,
+      "test_micro_f1": 0.72,
+      "encoders": [
+        "ViT-Base",
+        "ConvNeXT-tiny"
+      ],
+      "n_encoders": 2,
+      "with_text": true,
+      "dim": 2048
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.8513513513513513,
+      "validation_macro_f1": 0.691158267020336,
+      "test_accuracy": 0.7466666666666667,
+      "test_macro_f1": 0.6244662213771471,
+      "test_micro_f1": 0.7466666666666667,
+      "encoders": [
+        "ViT-Base",
+        "EfficientNet"
+      ],
+      "n_encoders": 2,
+      "with_text": false,
+      "dim": 2048
+    },
+    {
+      "ridge_alpha": 0.01,
+      "validation_accuracy": 0.7702702702702703,
+      "validation_macro_f1": 0.7625707559079575,
+      "test_accuracy": 0.7066666666666667,
+      "test_macro_f1": 0.6007041290675417,
+      "test_micro_f1": 0.7066666666666667,
+      "encoders": [
+        "ViT-Base",
+        "EfficientNet"
+      ],
+      "n_encoders": 2,
+      "with_text": true,
+      "dim": 2560
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.7432432432432432,
+      "validation_macro_f1": 0.5961231422841043,
+      "test_accuracy": 0.7066666666666667,
+      "test_macro_f1": 0.581925925925926,
+      "test_micro_f1": 0.7066666666666667,
+      "encoders": [
+        "DeiT-tiny",
+        "Swin-tiny"
+      ],
+      "n_encoders": 2,
+      "with_text": false,
+      "dim": 960
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.8513513513513513,
+      "validation_macro_f1": 0.8773992673992674,
+      "test_accuracy": 0.76,
+      "test_macro_f1": 0.6155294117647059,
+      "test_micro_f1": 0.76,
+      "encoders": [
+        "DeiT-tiny",
+        "Swin-tiny"
+      ],
+      "n_encoders": 2,
+      "with_text": true,
+      "dim": 1472
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.8108108108108109,
+      "validation_macro_f1": 0.674941724941725,
+      "test_accuracy": 0.64,
+      "test_macro_f1": 0.550604718483138,
+      "test_micro_f1": 0.64,
+      "encoders": [
+        "DeiT-tiny",
+        "ConvNeXT-tiny"
+      ],
+      "n_encoders": 2,
+      "with_text": false,
+      "dim": 960
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.8513513513513513,
+      "validation_macro_f1": 0.8259658580413298,
+      "test_accuracy": 0.7066666666666667,
+      "test_macro_f1": 0.592625560862643,
+      "test_micro_f1": 0.7066666666666667,
+      "encoders": [
+        "DeiT-tiny",
+        "ConvNeXT-tiny"
+      ],
+      "n_encoders": 2,
+      "with_text": true,
+      "dim": 1472
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.7837837837837838,
+      "validation_macro_f1": 0.6374976657329599,
+      "test_accuracy": 0.7066666666666667,
+      "test_macro_f1": 0.5910408432147563,
+      "test_micro_f1": 0.7066666666666667,
+      "encoders": [
+        "DeiT-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 2,
+      "with_text": false,
+      "dim": 1472
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.7837837837837838,
+      "validation_macro_f1": 0.7595459722713168,
+      "test_accuracy": 0.72,
+      "test_macro_f1": 0.5996160039638301,
+      "test_micro_f1": 0.72,
+      "encoders": [
+        "DeiT-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 2,
+      "with_text": true,
+      "dim": 1984
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.7702702702702703,
+      "validation_macro_f1": 0.6275769944341374,
+      "test_accuracy": 0.5466666666666666,
+      "test_macro_f1": 0.47237048665620096,
+      "test_micro_f1": 0.5466666666666666,
+      "encoders": [
+        "Swin-tiny",
+        "ConvNeXT-tiny"
+      ],
+      "n_encoders": 2,
+      "with_text": false,
+      "dim": 1536
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.8108108108108109,
+      "validation_macro_f1": 0.7692711732711733,
+      "test_accuracy": 0.68,
+      "test_macro_f1": 0.5695056689342404,
+      "test_micro_f1": 0.68,
+      "encoders": [
+        "Swin-tiny",
+        "ConvNeXT-tiny"
+      ],
+      "n_encoders": 2,
+      "with_text": true,
+      "dim": 2048
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.7567567567567568,
+      "validation_macro_f1": 0.6044175084175084,
+      "test_accuracy": 0.72,
+      "test_macro_f1": 0.5893586836443979,
+      "test_micro_f1": 0.72,
+      "encoders": [
+        "Swin-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 2,
+      "with_text": false,
+      "dim": 2048
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.7432432432432432,
+      "validation_macro_f1": 0.7127033885654575,
+      "test_accuracy": 0.7466666666666667,
+      "test_macro_f1": 0.5978461538461538,
+      "test_micro_f1": 0.7466666666666667,
+      "encoders": [
+        "Swin-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 2,
+      "with_text": true,
+      "dim": 2560
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.7837837837837838,
+      "validation_macro_f1": 0.6275898422792118,
+      "test_accuracy": 0.7466666666666667,
+      "test_macro_f1": 0.6175789537491665,
+      "test_micro_f1": 0.7466666666666667,
+      "encoders": [
+        "ConvNeXT-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 2,
+      "with_text": false,
+      "dim": 2048
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.7972972972972973,
+      "validation_macro_f1": 0.6483418803418803,
+      "test_accuracy": 0.7466666666666667,
+      "test_macro_f1": 0.6164579606440072,
+      "test_micro_f1": 0.7466666666666667,
+      "encoders": [
+        "ConvNeXT-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 2,
+      "with_text": true,
+      "dim": 2560
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.918918918918919,
+      "validation_macro_f1": 0.7463935309973045,
+      "test_accuracy": 0.7466666666666667,
+      "test_macro_f1": 0.623481597767312,
+      "test_micro_f1": 0.7466666666666667,
+      "encoders": [
+        "ViT-Base",
+        "DeiT-tiny",
+        "Swin-tiny"
+      ],
+      "n_encoders": 3,
+      "with_text": false,
+      "dim": 1728
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.8513513513513513,
+      "validation_macro_f1": 0.8226632559291811,
+      "test_accuracy": 0.7333333333333333,
+      "test_macro_f1": 0.6002130558652298,
+      "test_micro_f1": 0.7333333333333333,
+      "encoders": [
+        "ViT-Base",
+        "DeiT-tiny",
+        "Swin-tiny"
+      ],
+      "n_encoders": 3,
+      "with_text": true,
+      "dim": 2240
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.8648648648648649,
+      "validation_macro_f1": 0.7086693334277319,
+      "test_accuracy": 0.7466666666666667,
+      "test_macro_f1": 0.6261623325453113,
+      "test_micro_f1": 0.7466666666666667,
+      "encoders": [
+        "ViT-Base",
+        "DeiT-tiny",
+        "ConvNeXT-tiny"
+      ],
+      "n_encoders": 3,
+      "with_text": false,
+      "dim": 1728
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.8783783783783784,
+      "validation_macro_f1": 0.8495850815850815,
+      "test_accuracy": 0.72,
+      "test_macro_f1": 0.5980712788259959,
+      "test_micro_f1": 0.72,
+      "encoders": [
+        "ViT-Base",
+        "DeiT-tiny",
+        "ConvNeXT-tiny"
+      ],
+      "n_encoders": 3,
+      "with_text": true,
+      "dim": 2240
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.8378378378378378,
+      "validation_macro_f1": 0.6845325325325325,
+      "test_accuracy": 0.7333333333333333,
+      "test_macro_f1": 0.6178406708595388,
+      "test_micro_f1": 0.7333333333333333,
+      "encoders": [
+        "ViT-Base",
+        "DeiT-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 3,
+      "with_text": false,
+      "dim": 2240
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.8648648648648649,
+      "validation_macro_f1": 0.7051698978528247,
+      "test_accuracy": 0.76,
+      "test_macro_f1": 0.632938775510204,
+      "test_micro_f1": 0.76,
+      "encoders": [
+        "ViT-Base",
+        "DeiT-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 3,
+      "with_text": true,
+      "dim": 2752
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.8783783783783784,
+      "validation_macro_f1": 0.7216288617043334,
+      "test_accuracy": 0.7466666666666667,
+      "test_macro_f1": 0.6187830687830688,
+      "test_micro_f1": 0.7466666666666667,
+      "encoders": [
+        "ViT-Base",
+        "Swin-tiny",
+        "ConvNeXT-tiny"
+      ],
+      "n_encoders": 3,
+      "with_text": false,
+      "dim": 2304
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.8783783783783784,
+      "validation_macro_f1": 0.8462449447545135,
+      "test_accuracy": 0.64,
+      "test_macro_f1": 0.5314814814814814,
+      "test_micro_f1": 0.64,
+      "encoders": [
+        "ViT-Base",
+        "Swin-tiny",
+        "ConvNeXT-tiny"
+      ],
+      "n_encoders": 3,
+      "with_text": true,
+      "dim": 2816
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.8648648648648649,
+      "validation_macro_f1": 0.7005247828574401,
+      "test_accuracy": 0.7733333333333333,
+      "test_macro_f1": 0.6419191919191919,
+      "test_micro_f1": 0.7733333333333333,
+      "encoders": [
+        "ViT-Base",
+        "Swin-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 3,
+      "with_text": false,
+      "dim": 2816
+    },
+    {
+      "ridge_alpha": 0.01,
+      "validation_accuracy": 0.7162162162162162,
+      "validation_macro_f1": 0.7147705627705628,
+      "test_accuracy": 0.68,
+      "test_macro_f1": 0.5638974358974359,
+      "test_micro_f1": 0.68,
+      "encoders": [
+        "ViT-Base",
+        "Swin-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 3,
+      "with_text": true,
+      "dim": 3328
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.8783783783783784,
+      "validation_macro_f1": 0.7126323968429231,
+      "test_accuracy": 0.7333333333333333,
+      "test_macro_f1": 0.6046106067845198,
+      "test_micro_f1": 0.7333333333333333,
+      "encoders": [
+        "ViT-Base",
+        "ConvNeXT-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 3,
+      "with_text": false,
+      "dim": 2816
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.8783783783783784,
+      "validation_macro_f1": 0.7184254309887075,
+      "test_accuracy": 0.7066666666666667,
+      "test_macro_f1": 0.5859819959198841,
+      "test_micro_f1": 0.7066666666666667,
+      "encoders": [
+        "ViT-Base",
+        "ConvNeXT-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 3,
+      "with_text": true,
+      "dim": 3328
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.8243243243243243,
+      "validation_macro_f1": 0.6808769973987365,
+      "test_accuracy": 0.6,
+      "test_macro_f1": 0.5104557823129252,
+      "test_micro_f1": 0.6,
+      "encoders": [
+        "DeiT-tiny",
+        "Swin-tiny",
+        "ConvNeXT-tiny"
+      ],
+      "n_encoders": 3,
+      "with_text": false,
+      "dim": 1728
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.8243243243243243,
+      "validation_macro_f1": 0.8095207980425372,
+      "test_accuracy": 0.6533333333333333,
+      "test_macro_f1": 0.5586149068322981,
+      "test_micro_f1": 0.6533333333333333,
+      "encoders": [
+        "DeiT-tiny",
+        "Swin-tiny",
+        "ConvNeXT-tiny"
+      ],
+      "n_encoders": 3,
+      "with_text": true,
+      "dim": 2240
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.7297297297297297,
+      "validation_macro_f1": 0.5867710422462314,
+      "test_accuracy": 0.7733333333333333,
+      "test_macro_f1": 0.631394375932191,
+      "test_micro_f1": 0.7733333333333333,
+      "encoders": [
+        "DeiT-tiny",
+        "Swin-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 3,
+      "with_text": false,
+      "dim": 2240
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.8108108108108109,
+      "validation_macro_f1": 0.8476923076923077,
+      "test_accuracy": 0.7333333333333333,
+      "test_macro_f1": 0.5827087935472103,
+      "test_micro_f1": 0.7333333333333333,
+      "encoders": [
+        "DeiT-tiny",
+        "Swin-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 3,
+      "with_text": true,
+      "dim": 2752
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.8108108108108109,
+      "validation_macro_f1": 0.6543915343915344,
+      "test_accuracy": 0.6666666666666666,
+      "test_macro_f1": 0.5621905327787681,
+      "test_micro_f1": 0.6666666666666666,
+      "encoders": [
+        "DeiT-tiny",
+        "ConvNeXT-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 3,
+      "with_text": false,
+      "dim": 2240
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.8378378378378378,
+      "validation_macro_f1": 0.682512999195926,
+      "test_accuracy": 0.72,
+      "test_macro_f1": 0.6025703819989534,
+      "test_micro_f1": 0.72,
+      "encoders": [
+        "DeiT-tiny",
+        "ConvNeXT-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 3,
+      "with_text": true,
+      "dim": 2752
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.7702702702702703,
+      "validation_macro_f1": 0.6210557029177719,
+      "test_accuracy": 0.72,
+      "test_macro_f1": 0.5958856885543815,
+      "test_micro_f1": 0.72,
+      "encoders": [
+        "Swin-tiny",
+        "ConvNeXT-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 3,
+      "with_text": false,
+      "dim": 2816
+    },
+    {
+      "ridge_alpha": 10.0,
+      "validation_accuracy": 0.7837837837837838,
+      "validation_macro_f1": 0.7632378219580515,
+      "test_accuracy": 0.6933333333333334,
+      "test_macro_f1": 0.5654950091924882,
+      "test_micro_f1": 0.6933333333333334,
+      "encoders": [
+        "Swin-tiny",
+        "ConvNeXT-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 3,
+      "with_text": true,
+      "dim": 3328
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.8648648648648649,
+      "validation_macro_f1": 0.7132880143112701,
+      "test_accuracy": 0.7466666666666667,
+      "test_macro_f1": 0.6231292517006802,
+      "test_micro_f1": 0.7466666666666667,
+      "encoders": [
+        "ViT-Base",
+        "DeiT-tiny",
+        "Swin-tiny",
+        "ConvNeXT-tiny"
+      ],
+      "n_encoders": 4,
+      "with_text": false,
+      "dim": 2496
+    },
+    {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.8918918918918919,
+      "validation_macro_f1": 0.8581859842015674,
+      "test_accuracy": 0.6533333333333333,
+      "test_macro_f1": 0.543472041967254,
+      "test_micro_f1": 0.6533333333333333,
+      "encoders": [
+        "ViT-Base",
+        "DeiT-tiny",
+        "Swin-tiny",
+        "ConvNeXT-tiny"
+      ],
+      "n_encoders": 4,
+      "with_text": true,
+      "dim": 3008
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.8648648648648649,
+      "validation_macro_f1": 0.7005247828574401,
+      "test_accuracy": 0.7866666666666666,
+      "test_macro_f1": 0.655993179880648,
+      "test_micro_f1": 0.7866666666666666,
+      "encoders": [
+        "ViT-Base",
+        "DeiT-tiny",
+        "Swin-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 4,
+      "with_text": false,
+      "dim": 3008
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.8513513513513513,
+      "validation_macro_f1": 0.6924786324786324,
+      "test_accuracy": 0.7866666666666666,
+      "test_macro_f1": 0.6488627450980392,
+      "test_micro_f1": 0.7866666666666666,
+      "encoders": [
+        "ViT-Base",
+        "DeiT-tiny",
+        "Swin-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 4,
+      "with_text": true,
+      "dim": 3520
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.8918918918918919,
+      "validation_macro_f1": 0.7251208251208251,
+      "test_accuracy": 0.7466666666666667,
+      "test_macro_f1": 0.6255217062670478,
+      "test_micro_f1": 0.7466666666666667,
+      "encoders": [
+        "ViT-Base",
+        "DeiT-tiny",
+        "ConvNeXT-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 4,
+      "with_text": false,
+      "dim": 3008
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.8918918918918919,
+      "validation_macro_f1": 0.729740810228615,
+      "test_accuracy": 0.72,
+      "test_macro_f1": 0.5980769230769232,
+      "test_micro_f1": 0.72,
+      "encoders": [
+        "ViT-Base",
+        "DeiT-tiny",
+        "ConvNeXT-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 4,
+      "with_text": true,
+      "dim": 3520
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.8783783783783784,
+      "validation_macro_f1": 0.717008547008547,
+      "test_accuracy": 0.76,
+      "test_macro_f1": 0.6336849715731703,
+      "test_micro_f1": 0.76,
+      "encoders": [
+        "ViT-Base",
+        "Swin-tiny",
+        "ConvNeXT-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 4,
+      "with_text": false,
+      "dim": 3584
+    },
+    {
+      "ridge_alpha": 10.0,
+      "validation_accuracy": 0.7837837837837838,
+      "validation_macro_f1": 0.7737781036168133,
+      "test_accuracy": 0.68,
+      "test_macro_f1": 0.5669734489113372,
+      "test_micro_f1": 0.68,
+      "encoders": [
+        "ViT-Base",
+        "Swin-tiny",
+        "ConvNeXT-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 4,
+      "with_text": true,
+      "dim": 4096
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.8108108108108109,
+      "validation_macro_f1": 0.6575122382523559,
+      "test_accuracy": 0.7333333333333333,
+      "test_macro_f1": 0.6106666666666667,
+      "test_micro_f1": 0.7333333333333333,
+      "encoders": [
+        "DeiT-tiny",
+        "Swin-tiny",
+        "ConvNeXT-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 4,
+      "with_text": false,
+      "dim": 3008
+    },
+    {
+      "ridge_alpha": 0.01,
+      "validation_accuracy": 0.7972972972972973,
+      "validation_macro_f1": 0.769813387423935,
+      "test_accuracy": 0.72,
+      "test_macro_f1": 0.5999455782312925,
+      "test_micro_f1": 0.72,
+      "encoders": [
+        "DeiT-tiny",
+        "Swin-tiny",
+        "ConvNeXT-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 4,
+      "with_text": true,
+      "dim": 3520
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.9054054054054054,
+      "validation_macro_f1": 0.7367521367521368,
+      "test_accuracy": 0.76,
+      "test_macro_f1": 0.6336849715731703,
+      "test_micro_f1": 0.76,
+      "encoders": [
+        "ViT-Base",
+        "DeiT-tiny",
+        "Swin-tiny",
+        "ConvNeXT-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 5,
+      "with_text": false,
+      "dim": 3776
+    },
+    {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.8783783783783784,
+      "validation_macro_f1": 0.7175824175824175,
+      "test_accuracy": 0.6933333333333334,
+      "test_macro_f1": 0.5740205446727186,
+      "test_micro_f1": 0.6933333333333334,
+      "encoders": [
+        "ViT-Base",
+        "DeiT-tiny",
+        "Swin-tiny",
+        "ConvNeXT-tiny",
+        "EfficientNet"
+      ],
+      "n_encoders": 5,
+      "with_text": true,
+      "dim": 4288
+    }
+  ]
+}

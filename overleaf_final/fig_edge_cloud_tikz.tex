@@ -1,0 +1,104 @@
+% Edge/cloud division of labour in one FedAvg round -- pictorial version.
+% REQUIRES: TikZ libraries arrows.meta, positioning, fit, shapes.geometric,
+%           shapes.symbols; package fontawesome5. Colours from the main preamble.
+%
+% Layout note: the client panel is kept narrow enough (tiles 3.42cm text width,
+% 3.771cm pitch) and the cloud pushed far enough right that the "weights only"
+% callout sits entirely in the gap between the trainable core and the cloud.
+% Keep >= 0.3cm clearance on both sides of that badge when editing.
+\begin{tikzpicture}[
+  font=\normalsize,
+  >={Stealth[length=3.4mm,width=2.6mm]},
+  tile/.style={draw=black!45, rounded corners=5pt, very thick, align=center,
+               inner sep=3pt, text width=3.42cm, minimum height=2.15cm, fill=white},
+  badge/.style={draw=black!35, rounded corners=3pt, fill=white, font=\small,
+                inner xsep=4pt, inner ysep=2pt, align=center},
+  hdr/.style={font=\small\bfseries, draw=black!45, rounded corners=4pt,
+              inner xsep=5pt, inner ysep=2.5pt},
+  stepbadge/.style={circle, fill=black!80, text=white, minimum size=5.8mm,
+                    inner sep=0pt, font=\small\bfseries},
+  flow/.style={->, very thick, draw=black!60},
+  upl/.style={->, ultra thick, draw=orange!85!black, rounded corners=6pt},
+  dnl/.style={->, ultra thick, dashed, draw=headblue, rounded corners=6pt}
+]
+
+%---------------------------------------------------------------- client stack
+\draw[rounded corners=8pt, draw=black!25, fill=black!4, very thick]
+  (0.55,-0.05) rectangle (16.15,4.05);
+\draw[rounded corners=8pt, draw=black!30, fill=black!7, very thick]
+  (0.30,0.10) rectangle (15.90,4.20);
+
+%---------------------------------------------------------------- edge device
+\node[draw=black!55, rounded corners=8pt, line width=1.1pt, fill=vitgreen!12,
+      minimum width=15.60cm, minimum height=4.30cm] (dev) at (7.80,2.20) {};
+
+\node[tile, fill=vitgreen!45] (t1) at (2.24,2.72)
+  {{\huge\color{green!45!black}\faLeaf}\,{\huge\color{black!55}\faStickyNote}\\[1pt]
+   {\small\bfseries Linked record}\\
+   {\scriptsize\color{black!70} leaf photo $+$ its own note}};
+
+\node[tile, fill=vitgreen!45] (t2) at (6.01,2.72)
+  {{\huge\color{black!55}\faCrop}\,{\huge\color{black!55}\faFilter}\\[1pt]
+   {\small\bfseries Crop \& mask}\\
+   {\scriptsize\color{black!70} $224^2$ $\cdot$ 178-token filter}};
+
+\node[tile, fill=smallgray!70] (t3) at (9.78,2.72)
+  {{\huge\color{headblue}\faSnowflake}\,{\huge\color{black!55}\faLayerGroup}\\[1pt]
+   {\small\bfseries Frozen ResNet-50}\\
+   {\scriptsize\color{black!70} 23.5\,M $\cdot$ no gradients}};
+
+\node[tile, fill=fedorange!80] (t4) at (13.55,2.72)
+  {{\huge\color{vlmred!70!black}\faBrain}\,{\huge\color{black!55}\faCogs}\\[1pt]
+   {\small\bfseries Trainable core}\\
+   {\scriptsize\color{black!70} 8.69\,M $\cdot$ one local epoch}};
+
+\draw[flow] (t1) -- (t2);
+\draw[flow] (t2) -- (t3);
+\draw[flow] (t3) -- (t4);
+
+%---- data-locality strip inside the device
+\node[badge, fill=green!8, draw=green!45!black, minimum width=14.30cm,
+      minimum height=0.58cm] at (7.80,0.85)
+  {{\color{green!35!black}\faLock}~\textbf{photos $\cdot$ notes $\cdot$ boxes never leave the device}};
+
+\node[hdr, fill=vitgreen!60, anchor=west] at (0.55,4.20)
+  {\faMobile~(a) Edge device --- client $k$};
+\node[badge, anchor=east] at (15.05,4.20)
+  {\faSitemap~$\times\,K$ clients ($K=2,3,5,8$)};
+
+%---------------------------------------------------------------- boundary
+\draw[densely dotted, black!55, line width=1.1pt] (17.40,-0.45) -- (17.40,4.55);
+\node[fill=white, inner sep=2pt, text=black!65, font=\small\bfseries]
+  at (17.40,4.72) {\faUserShield~privacy boundary};
+
+%---------------------------------------------------------------- cloud
+\node[cloud, draw=headblue, line width=1.1pt, fill=llmblue!45, aspect=2.0,
+      cloud puffs=13, cloud puff arc=115, minimum width=7.4cm,
+      minimum height=3.55cm, align=center] (cl) at (23.10,2.30)
+  {{\LARGE\color{headblue}\faServer}\\[-2pt]
+   {\small\bfseries FedAvg}\\[1pt]
+   $\displaystyle\theta^{t+1}=\sum_{k=1}^{K}\frac{n_k}{n}\,\theta_k^{t+1}$\\[1pt]
+   {\scriptsize\color{black!70} $T=8$ rounds $\cdot$ warm start}};
+
+\node[hdr, fill=llmblue!70, anchor=west] at (19.55,4.52)
+  {\faCloud~(b) Cloud --- coordination only};
+
+\node[badge, fill=vlmred!20, draw=vlmred!80] at (23.10,0.05)
+  {{\color{vlmred!60!black}\faBan}~\textbf{no raw data received}};
+
+%---------------------------------------------------------------- traffic
+\draw[upl] (t4.east) -- (19.95,2.72);
+\node[badge, fill=orange!10, draw=orange!70!black, anchor=south]
+  at (17.40,2.98) {{\color{orange!70!black}\faUpload}~\textbf{weights only:} $\theta_k^{t+1}$};
+
+\draw[dnl] (cl.-35) |- (16.15,-0.90) -| (t4.south);
+\node[badge, fill=blue!5, draw=headblue, anchor=south]
+  at (11.80,-0.78) {{\color{headblue}\faSatelliteDish}~broadcast $\theta^{t+1}$};
+
+\node[stepbadge] at (0.82,3.52) {1};
+\node[stepbadge] at (12.02,3.52) {2};
+\node[stepbadge] at (20.35,2.20) {3};
+\node[stepbadge] at (21.05,3.20) {4};
+\node[stepbadge] at (15.60,-0.90) {5};
+
+\end{tikzpicture}

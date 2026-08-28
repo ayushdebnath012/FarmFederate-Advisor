@@ -1,0 +1,78 @@
+{
+  "name": "FarmFederate Tea Leaf Disease Dataset",
+  "version": "1.0",
+  "description": "Hybrid dataset for multimodal federated learning on tea leaf stress detection. Combines 200 field-collected images (669 labeled instances) from tea gardens with images sourced from the Kaggle Tea Leaf Disease dataset (Mamun et al., 2023). Training uses a balanced 600-samples/class cap (3,000 total).",
+  "classes": {
+    "gray_blight": {
+      "id": 0
+    },
+    "helopeltis": {
+      "id": 1
+    },
+    "algal_leaf_spot": {
+      "id": 2
+    },
+    "brown_blight": {
+      "id": 3
+    },
+    "red_leaf_spot": {
+      "id": 4
+    }
+  },
+  "splits": {
+    "train": {
+      "total": 2400,
+      "per_class": {
+        "gray_blight": 480,
+        "helopeltis": 480,
+        "algal_leaf_spot": 480,
+        "brown_blight": 480,
+        "red_leaf_spot": 480
+      }
+    },
+    "val": {
+      "total": 600,
+      "per_class": {
+        "gray_blight": 120,
+        "helopeltis": 120,
+        "algal_leaf_spot": 120,
+        "brown_blight": 120,
+        "red_leaf_spot": 120
+      }
+    }
+  },
+  "total_images": 3000,
+  "source_breakdown": {
+    "field_collected": 0,
+    "kaggle": 3000,
+    "field_collected_raw": 200,
+    "field_labeled_instances": 669
+  },
+  "text_corpus": {
+    "total_samples": 2000,
+    "per_class": 400,
+    "train": 1600,
+    "val": 400,
+    "template_types": {
+      "class_specific": "40%",
+      "cross_class": "60%"
+    }
+  },
+  "field_collected_raw": {
+    "total_images": 200,
+    "labeled_instances": 669,
+    "annotation": "multi-label",
+    "location": "field_collected/"
+  },
+  "federated_setup": {
+    "clients": 5,
+    "rounds": 8,
+    "local_epochs": 3,
+    "aggregation": "FedAvg",
+    "data_distribution": "non-IID Dirichlet alpha=1.0"
+  },
+  "citations": [
+    "Mamun et al. (2023). Tea Leaf Disease Dataset. Kaggle.",
+    "FarmFederate: Multimodal Federated Learning for Tea Crop Stress Detection. 2026."
+  ]
+}

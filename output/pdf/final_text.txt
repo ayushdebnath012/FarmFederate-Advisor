@@ -1,0 +1,709 @@
+         Multimodal Federated Tea Disease Diagnosis
+           Ayush Debnath                 Ruelia Saha                 Sudip Misra              Damodhara R. Mailapalli
+
+
+   Abstract—Tea pest and disease diagnosis benefits from lesion       changes the scientific question from “can a model memorise
+imagery and field notes, while federated adaptation can keep both     a disease description?” to “does each modality contribute on
+records on-site. Small agricultural corpora, however, make multi-     unseen source leaves?”
+modal and privacy claims easy to overstate. Our proposed model
+is a leakage-controlled five-class vision-language system with          Contributions.
+source-grouped splitting, exact image-box/text linkage, missing-        • We link every crop to one annotation by its (photograph,
+modality tests, reliability-aware fusion, and measured FedAvg              box index) key and keep source-image groups mutually
+adaptation. The corpus contains 371 crops from 200 photographs,            exclusive across train, validation, and test.
+split into 222/74/75 train/validation/test crops from 122/40/38
+disjoint sources; all 371 text records link to the exact box,           • We fit a target-pure vocabulary on training text only, then
+and a training-fitted filter masks 178 target-shortcut tokens.             evaluate paired, text-only, image-only, and mismatched-
+On the identical 75-crop internal support under deterministic              text conditions on the same 75 examples in the same label
+50%-retention notes, frozen DistilBERT text-only, frozen ViT-              order.
+tiny image-only, the raw ResNet–Transformer VLM, a new                  • We compare the incumbent ResNet–Transformer VLM
+frozen ViT-tiny–DistilBERT VLM, and the proposed router
+obtain 65.33%, 66.67%, 77.33%, 82.67%, and 81.33% accuracy.                with a genuine ViT-tiny–DistilBERT VLM on the same
+Architecture selection is validation-only: the candidate’s 82.43%          222/74/75 split. Both validation accuracy (89.19% ver-
+validation accuracy remains below the incumbent’s 89.19%, so               sus 82.43%) and macro F1 retain the incumbent before
+ResNet-50 and the compact text Transformer are retained before             candidate test embeddings and predictions are computed.
+candidate test inference. The candidate’s one-crop internal-test        • We add a reliability-aware sparse-note rule that gains
+edge is non-significant (exact McNemar p = 1.0), although its
+macro F1 is higher (0.8192 versus 0.6679). A separate same-                three correct crops and four accuracy points over the raw
+checkpoint diagnostic reaches 92.00% with paired input but                 VLM, we keep its lower macro F1 in the report, and
+33.33% after class-mismatching the text, demonstrating align-              we identify the optional five-expert visual gate separately
+ment sensitivity; its compact Transformer and ResNet paths                 from a pure ViT baseline.
+are not relabelled as independent PLM and ViT baselines.                • We measure federated adaptation rather than assume it:
+In validation-only federated adaptation, final macro F1 over
+K ∈ {2, 3, 5, 8} clients ranges from 0.8924 to 0.9099 versus a             a three-seed, validation-only FedAvg sweep over 2–8
+0.9099 centralized initialization. Client identities are simulated         label-skew clients and eight rounds retains 98.1–100.0%
+rather than real estates, the test was observed during iterative           of the initialization’s macro F1, and we preserve the
+development, and multi-site validation is required before privacy,         centralized locked-test ablation while labelling simulated
+deployment, or category-best claims.                                       client ownership, internal routing, and missing multi-
+   Index Terms—Federated Learning, Vision-Language Models,
+Tea Pest and Disease Classification, Multimodal Learning, Eval-            estate evidence explicitly.
+uation Protocol, Data Leakage, Precision Agriculture
+                                                                                            II. R ELATED W ORK
+                       I. I NTRODUCTION                                  Tea disease detection. Tea-disease research progressed
+                                                                      from standard backbone comparisons toward lightweight,
+T    EA (Camellia sinensis) is a vital cash crop for millions
+     of smallholder farmers across South Asia, East Africa,
+and East Asia. Five visually confusable stress classes — leaf
+                                                                      attention-guided models. Deng and Photong compared
+                                                                      VGG16, ResNet50, and DenseNet169 [3]. Yang et al. then
+blight, leaf hoppers, leaf rust, looper caterpillars, and mosquito    combined wavelet denoising, MobileNetV3 features, channel–
+bug — reduce yield and leaf quality across major growing              spatial attention, and focal loss in WaveLiteNet, and reported
+regions [1], [2]. Recent diagnostic systems improve field             98.70% accuracy with 3.16M parameters [1]. Hu et al. simi-
+deployment through lightweight CNNs, attention modules, and           larly combined segmentation with multiscale group attention
+edge-oriented pipelines [1]–[3], [5], [6], [8], but nearly all        and reported 97.43% [2]. Beyond tea, Joseph et al. constructed
+begin and end with the photograph. That is not how tea diag-          a real-time plant-disease dataset [5], Maurya et al. developed
+nosis is recorded on the ground, where staff note lesion shape,       a lightweight meta-ensemble [6], and Shovon et al. combined
+flush condition, weather history, and pest pressure alongside         multiple models in PlantDet [7]. Al-Shahari et al. extended
+the image. Meanwhile, sending every high-resolution image             diagnosis toward IoT-assisted crop management [8], while
+and field note to a central repository is unattractive for estates    Shafik et al. synthesized the wider field [9]. This line remained
+with limited connectivity and proprietary records. Federated          image-only and centrally trained, and it did not report a source-
+Learning [15] addresses the second problem, but existing FL           photograph-disjoint audit comparable to ours.
+work on tea pathology has not integrated the visual and textual          Federated learning in agriculture. A parallel line of
+evidence used in real inspections.                                    work moved training from a central server toward distributed
+   A second, methodological motivation became dominant                agricultural devices. McMahan et al. established FedAvg as the
+during this study. One source photograph may contain several          basic aggregation method [15]. Later systems added different
+annotated regions, so crop-level random splits place near-            deployment properties: Tahir et al. incorporated explainabil-
+identical leaf context on both sides of the boundary. Text can        ity [10]; Devaraj et al. organized sensor and crop-health
+leak the target even more directly when disease names or              models hierarchically in RuralAI [11]; Ding et al. added
+class-pure terms remain in descriptions. We therefore group           blockchain coordination through Bc2FL [12]; Caminha and
+by source image, link text at the exact box level, and learn          Oliveira used a cloud-driven design [13]; and Thonglek and
+the blocked vocabulary from training annotations only. This           Rattanatamrong evaluated decentralized edge learning [14].
+              TABLE I: Comparison with Related Work.                                 Exact pairing. The annotation table has one row per crop
+Work                                              Image Text FL VLM Leak. audit   with a photograph identifier, a box index, a class id, a disease
+Yang et al. [1], Hu et al. [2], Deng et al. [3]    ✓    ×    ×     ×      ×       name, and text. Thus 371/371 records are linked by the exact
+Joseph et al. [5], Maurya et al. [6]               ✓    ×    ×     ×      ×
+Tahir et al. [10], Devaraj et al. [11]             ✓    ×    ✓     ×      ×       (photograph, box index) key; train, validation, and test pairing
+Ding et al. [12], Caminha et al. [13]              ✓    ×    ✓     ×      ×       coverage are all 100%. This corrects the label-aligned proxy
+Wang et al. [27]                                   ✓    ✓    ×     ✓      ×
+Li et al. [28]                                     ✓    ✓    ✓     ✓      ×       pairing used in the earlier draft.
+This work                                          ✓    ✓    ✓     ✓      ✓          Text construction and leakage control. After selecting
+           TABLE II: Source-grouped paired-data audit                             a class, the annotation workflow samples manually written
+ Split         Sources     Crops      Blight      Hoppers   Rust   Looper/Mosq.   symptom, observation, condition, and indicator phrases; some
+                                                                                  rows substitute cross-class distractors. It inserts them into
+ Train              122        222         77           5    40           61/39
+ Validation          40         74         26           2    14           20/12   a class-neutral sentence template and stores the result with
+ Test                38         75         26           2    13           21/13   the class id/name and exact photograph–box key. No LLM
+ Total              200        371       129            9    67          102/64   generates these rows, and they are templated annotations rather
+                                                                                  than independent farmer notes. From training text only, we
+These systems distributed image or sensor learning, but did                       mask tokens appearing at least three times with class purity
+not federate exactly paired image–text records.                                   at least 0.95; the resulting 178-token vocabulary is fixed for
+   Vision-language models. A third research direction con-                        validation and test.
+nected visual evidence with language. Radford et al. aligned                         Image-data scope. All 371 exact image–text pairs used
+image and text embeddings through contrastive pre-training                        for fitting, model selection, and reporting come from the
+in CLIP [22]. Li et al. introduced Q-Former alignment in                          curated IIT Kharagpur tea-garden corpus, its YOLO box
+BLIP-2 [23], Alayrac et al. used gated cross-attention in                         annotations, and the corresponding linked text records; no
+Flamingo [24], and Yu et al. combined contrastive and cap-                        external tea-disease images are pooled. A separate proxy
+tioning objectives in CoCa [25]. Agricultural work began to                       bundle is excluded from this diagnostic experiment. ImageNet
+adopt this idea: Wang et al. applied a multimodal LLM to crop                     contributes pretrained ResNet/ViT weights only, not additional
+disease identification [27], while Li et al. combined frozen                      tea samples.
+CLIP features with federated transfer learning in FedReplay
+[28]. The unresolved question was whether these multimodal                        B. Model Variants and Objective
+benefits persisted on small, source-grouped, estate-scale data.                      Text branch. A 192-d token and positional embedding
+   In Table I, this work was the only entry that reported a                       feeds two pre-norm Transformer layers (four heads, 576-
+group-disjoint leakage audit beside its scores.                                   d feed-forward block), followed by a 256-d projection and
+                                                                                  masked mean pooling. Hashing is stable across machines and
+                     III. S YSTEM M ODEL                                          does not require a mutable vocabulary file.
+   Figure 1 shows the deployment architecture. Each estate                           Vision branch. An ImageNet-pretrained ResNet-50 [4] is
+holds leaf photographs and agronomist annotations locally.                        frozen through the selected training run. Its 2048-channel
+The controlled test ablations use one centrally selected base                     feature map is projected to 256 channels and adaptively pooled
+checkpoint; a separate experiment then performs FedAvg                            to 7×7, preserving 49 spatial tokens for lesion-level attention.
+adaptation of its trainable multimodal states while the visual                    The complete model has 32.20M parameters, of which 8.69M
+backbone remains frozen. Text is tokenized by a determin-                         are trainable.
+istic 30 522-id hashed vocabulary at a maximum length of                             Cross-modal branch. One pooled summary from each
+128. Photographs are resized to 224×224 and ImageNet-                             modality queries the other modality through separate eight-
+normalized. The text branch produces token features and                           head attention layers. A learned reliability network produces
+pooled ht , the vision branch produces a 7×7 spatial token                        (rt , rv ) with rt + rv = 1 over available modalities. The
+map and pooled hv , and bidirectional attention forms the joint                   fusion head receives the weighted parent features, both cross-
+representation.                                                                   attended summaries, their absolute difference and element-
+                                                                                  wise product, and the modality-presence mask. Two linear
+A. Dataset and Leakage Audit                                                      expert heads then re-enter its logits zf as a fixed reliability-
+   The audited corpus contains 200 field photographs col-                         weighted residual, z = zf +2(rt zt +rv zv ), each expert zeroed
+lected from the IIT Kharagpur tea garden and annotated                            when its modality is absent. The residual is active at test time,
+with YOLO oriented bounding boxes. One crop is ex-                                so every reported multimodal score includes it.
+tracted per valid box with 10% context padding, giving                               Independent comparison models. The requested fam-
+371 examples across LEAF BLIGHT (129), LEAF HOPPERS                               ily comparison does not alter or rename these core
+(9), LEAF RUST (67), LOOPER CATERPILLARS (102), and                               branches. Its text-only pretrained language model (PLM) is
+MOSQUITO BUG (64). Classes are the raw YOLO identifiers                           a frozen distilbert-base-uncased encoder [33] with
+under the supplied annotation schema. Neither their names nor                     masked-mean embeddings and a validation-selected class-
+the accompanying templated notes have been independently                          weighted ridge head. Its image-only model is a frozen
+reviewed by a plant pathologist, so class semantics remain                        vit-tiny-patch16-224 encoder [17] with a validation-
+unverified.                                                                       selected ridge head. The image+text VLM is the unchanged
+   Source isolation. Splitting is performed once with seed                        raw bidirectional cross-attention output, before any post-hoc
+42 over source filenames, not crops. Pairwise source overlap                      class gate; the proposed row is that same core plus the ex-
+across the three partitions is zero, every crop appears exactly                   isting reliability-aware router. A direct replacement candidate
+once, and the locked internal test therefore contains 75 crops                    combines the frozen ViT and DistilBERT encoders, train-fitted
+from 38 unseen photographs. The nine-example leaf-hopper                          64-component projections, and a class-weighted linear fusion
+class is the main statistical bottleneck: only two examples                       head. Its 360 configurations use validation only; test embed-
+occur in validation and two in test.                                              dings are extracted after freezing the choice. DistilBERT is
+                                                                                                                      privacy boundary
+                                      Tea-garden client 1                            local device
+
+                                                    Linked local record
+                                                    leaf photograph + templated field note
+
+                                                    local multimodal update
+                                                                     raw records remain on-site
+                                                                                                                                                 Federated aggregation server
+                                                                                                                                                        FedAvg over received model states
+
+
+                                      Tea-garden client 2                            local device            1 upload ∆θk
+                                                                                                                                                                                 K
+                                                                                                                                                                       t+1
+                                                                                                                                                                                 X nk         t+1
+                                                    Linked local record                                                                                            θ         =              θk
+                                                    leaf photograph + templated field note                                                                                              n
+                                                                                                                                                                                 k=1
+                                                    local multimodal update
+                                                                     raw records remain on-site
+                                                                                                             2 broadcast θ t+1
+
+                                                                                                                                                   weight updates only; no image or note upload
+
+                                                                                                                                                    simulated ownership partitions in this study
+                                      Tea-garden client 3                            local device
+
+                                                    Linked local record
+                                                    leaf photograph + templated field note
+
+                                                    local multimodal update
+                                                                     raw records remain on-site
+
+
+
+
+Fig. 1: Federated deployment workflow using representative corpus photographs. Each simulated tea-garden client keeps linked
+photographs and field notes on-site; only model updates ∆θk cross the explicit privacy boundary, and the FedAvg server returns
+θt+1 .
+
+                             Offline leakage controls                                                                               Validation-only architecture selection
+               source-group split exact box key 178-token mask                                        incumbent accuracy 89.19%      > frozen ViT-tiny + DistilBERT late-concat alternative 82.43%
+
+
+        Leaf crop
+                                           selected image branch
+                                                                                                                                    Vision head
+                                                                                                                                        zv
+                                      Frozen ResNet-50
+                                    7×7×2048 → 49×256                                                                                                                                                      Five-class head
+                                                                                                     Bidirectional
+                                                                                                    cross-attention                                         Reliability fusion                             p(y | x, t)
+    RGB 224×224
+                                                                                                     Ht → H v                                                rt + r v = 1
+                                                                                                     Hv → H t                                                 paired mean
+   Templated field note
+                                                                                                                                                             0.575/0.425
+
+                                                                                                                                                   fusion hf + residual logits
+                                                                                                       8 heads
+    scattered spots                                                                                                                                                                                          class probabilities
+    powdery texture
+                                  Compact text Transformer
+    tip region affected           2 layers, 4 heads → Ht , ht
+                                                                                                                                     Text head
+                                                                                                                                        zt
+                                       selected text branch; trainable
+  hashed tokens, L≤128
+
+Fig. 2: Active inference architecture with a real corpus crop and a representative templated note. The dashed blue boxes
+separate offline leakage controls and validation-only system selection from runtime inference. The selected ResNet–compact-
+Transformer core uses bidirectional cross-attention; dashed runtime paths are explicit unimodal expert heads that re-enter the
+fusion logits. The pooled ViT–DistilBERT alternative is screened separately and is not drawn as token-level cross-attention.
+therefore described precisely as a PLM, not as an instruction-            TABLE III: Implemented model blueprint
+tuned generative LLM. The proposed architecture remains                                                                Block                          Specification                                 Output / training state
+the ResNet-50, compact text Transformer, cross-attention, and                                                          Text encoder                   192-d embedding; 2 Trans-                     256-d pooled vector; trainable
+                                                                                                                                                      former layers; 4 heads
+router shown in Figs. 2 and 3.                                                                                         Vision encoder                 ImageNet ResNet-50; 2242                      49×256 tokens; frozen back-
+  For one-hot label y, training uses class-weighted, label-                                                                                           input                                         bone
+smoothed cross entropy with auxiliary parent losses and su-                                                            Cross-attention                Two directional layers; 8                     text-to-image and image-to-text
+                                                                                                                                                      heads                                         summaries
+pervised cross-modal alignment:                                                                                        Reliability fusion             normalized (rt , rv ) plus                    5-way trainable classifier
+                                                                                                                                                      interaction features
+              L = Lf + 0.20Lt + 1.25Lv + 0.05Lalign .                                                      (1)         Expert residual                linear text and vision heads;
+                                                                                                                                                      fixed λ = 2
+                                                                                                                                                                                                    added to the fusion logits at
+                                                                                                                                                                                                    train and test
+                                                                                                                       Complete model                 32.20M parameters                             8.69M trainable parameters
+The visual weight is deliberately larger because image-only
+learning is the harder path. Modality dropout samples image-                                                                          IV. P ROPOSED F RAMEWORK
+only, text-only, and paired batches with probabilities 0.50,                                                         A. Base Cross-Modal Checkpoint
+0.10, and 0.40. Checkpoint selection uses 0.65F1,paired +
+0.35F1,image on validation.                                                                                             The base checkpoint trains for 15 epochs with AdamW
+   For K clients, the same local objective is aggregated with                                                        (batch 16, peak learning rate 10−4 , weight decay 10−4 , two-
+FedAvg [15],                                                                                                         step gradient accumulation). Two independently augmented
+                              K                                                                                      frozen-ResNet feature views (crop/orientation/colour perturba-
+                             X  nk t+1                                                                               tions) are cached per training crop. Hence 222 × 2 = 444
+                     θt+1 =         θ ,                   (2)
+                                 n k                                                                                 cached training views represent 222 unique crops, not 444
+                                           k=1
+                                                                                                                     independently collected leaves; the complete corpus remains
+where nk is client k’s sample count. Our federated experiment                                                        371 unique crops. Validation and test remain 74 and 75 crops.
+initializes from the selected base state, freezes ResNet-50, and                                                     The six-view test-time expert below averages predictions for
+averages every remaining multimodal parameter and floating                                                           one crop and does not enlarge the test set. The first four epochs
+buffer after one local epoch. This is federated adaptation, not                                                      emphasize image-only warm-up, while the confidence override
+training from scratch; its validation curves do not relabel the                                                      used in an earlier draft is disabled. The selected epoch is fixed
+centralized 75-crop test result.
+TABLE IV: Class-wise visual experts selected on validation             TABLE V: Validation-only multimodal FedAvg adaptation.
+              Base class            Selected expert   Test recall      Values are means over three client-partition seeds.
+              Leaf blight            Deep feature          0.692                       K Final F1 Best F1 Retained Label TV
+              Leaf hoppers          Calibrated base        0.500
+              Leaf rust              Frozen ViT            0.615                        2   0.8924   0.9099    98.1%   0.139
+              Looper caterpillars     Base TTA             0.714                        3   0.9046   0.9237    99.4%   0.217
+              Mosquito bug           Frozen ViT            0.923                        5   0.9099   0.9297   100.0%   0.270
+                                                                                        8   0.9099   0.9099   100.0%   0.300
+before the 75-crop test is evaluated, and the checkpoint reloads       E. Advisory Module
+with strict key matching.
+                                                                          The framework includes a Classify–Retrieve–Advise mod-
+B. Enhanced Image-Only Inference                                       ule: a query is encoded by Sentence-BERT [35], FAISS [34]
+   The direct image path is the main weakness, so we retain            returns top-k passages from a per-estate treatment base, fusion
+the base checkpoint but construct an optional visual inference         features re-rank them, and the top passage becomes the
+system from five independent experts:                                  recommendation [36]. A companion visualizer overlays class-
+   1) direct base image-only prediction;                               coloured OBB polygons on uploaded or retrieved reference
+   2) six-view deterministic test-time augmentation;                   photographs.
+   3) a frozen ResNet deep-feature specialist;                            Earlier drafts left this module unevaluated because that run’s
+   4) validation-fitted class calibration; and                         corpus was empty. We now supply one from the bundled
+   5) a frozen ImageNet-pretrained ViT-tiny specialist.                symptom-text collection, which carries the same five class
+                                                                       identifiers but is a different corpus from the 371 crop-linked
+For base predicted class c, a gate gc selects one expert.              notes used for diagnosis: it is templated, unlinked to any
+All 55 = 3125 gates are scored on the 74-crop validation               photograph, and evaluated on its own support, so no number
+partition using 0.6F1 + 0.4 accuracy. The selected vector              here is comparable to the 75-crop test and the two are never
+g = [2, 3, 4, 1, 4] is frozen before test inference. It raises         pooled. Its 3,000 annotations collapse to 673 distinct observa-
+validation accuracy from 66.22% for the direct image path              tions built from 131 sentences, 43 of which appear under more
+to 85.14%; Section V reports the held-out result.                      than one class. After deduplication we hold out 30% of each
+C. Reliability-Aware Sparse-Note Rule                                  class, leaving a 472-passage base and 201 queries sharing no
+                                                                       observation. Queries are encoded with all-MiniLM-L6-v2
+   To study incomplete field notes, each non-special text token        and scored by exact inner product over unit vectors, which is
+is retained by a stable hash with probability 0.50; the same           what a FAISS IndexFlatIP computes, so the index adds
+record always receives the same mask. The late-fusion baseline         no approximation. A passage is correct only if it carries the
+starts from the paired cross-attention prediction and uses the         query’s class, since a wrong-class passage is wrong treatment
+enhanced image expert for base-predicted leaf-hopper and               advice.
+mosquito-bug cases, the validation-selected gate [0, 1, 0, 0, 1].
+The proposed rule is more conservative: when raw fusion                               V. P ERFORMANCE E VALUATION
+confidence is below 0.60, only base-predicted leaf-rust cases          A. Protocol
+route to the sparse-text expert; all other cases retain late fusion.
+This rule is observable, deterministic, and does not inspect test         The base checkpoint was trained in PyTorch [37] for at
+labels.                                                                most 15 epochs. All crops from a source photograph remain
+   This experiment has a stricter limitation than the standard         in one partition. Model selection and the five-expert visual
+ablation. Candidate sparsity families and routing constraints          gate use only the 74-crop validation partition; every number
+were refined after observing the internal partition, so the final      below uses the same 75-crop, 38-source internal test support.
+75-crop result is exploratory and non-pristine. It demon-              Accuracy is accompanied by macro F1 because the class
+strates a mechanism and supplies an internal development               distribution is imbalanced. Source-group bootstrap intervals
+metric; it is not unbiased external validation.                        (5,000 replicates) resample source photographs rather than
+                                                                       treating multiple crops from one photograph as independent
+D. Multimodal Federated Adaptation                                     observations.
+   The federated track starts from the validation-selected base           Four evidence tracks are kept separate. (i) The standard
+checkpoint, keeps the 23.51M-parameter ResNet-50 encoder               same-checkpoint ablation uses the compact in-model Trans-
+fixed, and adapts the remaining 8.69M multimodal parameters.           former and ResNet paths with original paired descriptions;
+Training crops are partitioned per class with a Dirichlet draw         these paths are not independent PLM or ViT baselines. (ii)
+(α = 1); full participation and sample-count weighting are             The current family comparison evaluates actual frozen Dis-
+used for one local epoch per round. We sweep K = {2, 3, 5, 8}          tilBERT, frozen ViT-tiny, raw cross-attention VLM, the new
+for eight rounds over client-partition seeds 42, 123, and 2026.        ViT–DistilBERT VLM, and unchanged proposed predictions
+Every curve is evaluated on the 74-crop, 40-source validation          on identical validation and test label sequences under the
+partition; the 75-crop locked test is not queried.                     deterministic 50%-retention note mask. The replacement con-
+   The clients are simulated ownership partitions because the          figuration is frozen on validation before test embedding; the
+corpus has no estate identifier. The experiment measures               comparison remains exploratory and non-pristine. (iii) The
+optimization stability of multimodal FedAvg adaptation, not            federated sweep varies clients and rounds on validation only.
+real cross-estate privacy, communication security, or general-         (iv) The earlier within-family screen compares candidates only
+ization. The visual ensemble and sparse-note router remain             inside its text, vision, or proxy-fusion panel because those
+centralized inference layers and are not silently included in          panels use 15 template groups, 30 source images, and 30
+the federated score.                                                   unlinked label-aligned pairs, respectively.
+               Validation-only rule fitting: enhanced-image gate for hopper / mosquito-bug predictions; sparse-text override only for low-confidence rust; threshold 0.60
+
+
+
+
+                             Enhanced image expert
+                             five-expert class gate
+
+                                                                                                                          base class          no
+                                                                                                                                                         pmax < 0.60
+                                                                                                                                                                                                                                           rule frozen before internal inference
+                            Sparse-text expert                                                                          hopper / bug?                      and rust?
+
+
+
+
+                                                                     candidate routes
+                            50% stable token retention
+
+                      Late fusion                                                                                               yes                                  yes
+                      paired score plus class-wise image gate
+                                                                                                                                                                                         no                                                    Selected five-class
+                             Raw cross-modal score                                                           use enhanced image route                    use sparse-text route                    otherwise retain late / raw score               probability
+                             base paired checkpoint                                                                                                                                                                                        deterministic; no test labels
+
+
+
+     Fig. 3: Reliability-aware sparse-note routing as an explicit decision flow. Four available prediction routes feed a deterministic
+     class/confidence rule selected on validation. Blue arrows show the frozen decisions; the router does not read test labels, and
+     the reported internal result remains exploratory and non-pristine.
+
+                                   Centralized 0.910            Best-round mean
+                                                                                                                                                                                                                                                                         0.300
+
+
+
+
+                                                                                                                                                                                              Mean label TV
+                                                                                                                                        K=2        K=3              K=5              K=8
+Validation macro-F1
+
+
+
+
+                                   FedAvg final mean                                                                                                                                                          0.3
+                                                                                                  Validation macro-F1
+                                                                                                                                                                                                                                                      0.270
+                                                                                                                        0.96                                                                                                          0.217
+                      0.95                                                                                              0.95
+                                                                                                                        0.94
+                                                                                                                        0.93
+                                                                                                                                                                                                              0.2        0.139
+                      0.90                                                                                              0.92
+                                                      0.910                             0.910                           0.91                                                                                  0.1
+                           0.892 0.905                                                                                  0.90
+                      0.85                                                                                              0.89
+                                                                                                                        0.88                                                                                  0.0
+                             2 3                         5                                8                                       1       2   3     4        5         6         7   8                                       2         3                  5                  8
+                                Number of federated clients, K                                                                            Communication round                                                        Number of federated clients, K
+       (a) Client count versus final and best-round performance.                                       (b) Communication rounds; the deployed K = 3 trace is (c) Realized label skew actually induced at each client
+                                                                                                       emphasized.                                           count.
+     Fig. 4: Measured multimodal FedAvg adaptation on the source-disjoint tea validation split. Points are mean macro F1 over
+     three client-partition seeds; 222 training crops, 74 validation crops, α = 1, one local epoch, full participation, and a frozen
+     ResNet-50 are fixed. The dotted line in (a) is the 0.9099 initialization, and (c) is the realized label total variation, so (a) is
+     read against measured rather than assumed skew. The 75-crop test is not used, and client ownership is simulated rather than
+     estate-derived.
+     TABLE VI: Standard same-checkpoint ablation. These are in- experiment does not support a claim that standard fusion
+     ternal core paths, not the independent PLM/ViT/VLM systems beats its strongest parent. Replacing each image’s description
+     in Fig. 5.                                                        with a description from another class drops accuracy from
+                          Condition                             Accuracy                Correct        Macro F1                         ECE             92.00% to 33.33% and macro F1 from 0.8753 to 0.2804.
+                          Core image path (ResNet)                0.6133                 46/75                     0.5431 0.1135                        The checkpoint therefore uses cross-modal association, but
+                          Core text path (compact Tr.)            0.9600                 72/75                     0.9049 0.1463
+                          Base paired VLM                         0.9200                 69/75                     0.8753 0.2648                        not in a way that improves over the unusually informative
+                          Mismatched-pair VLM                     0.3333                 25/75                     0.2804 0.2193                        annotation-derived text. The independent family comparison
+                                                                                                                                                        instead applies the common sparse-note condition and actual
+     B. Federated Client and Round Scaling                                                                                                              DistilBERT/ViT implementations, so its lower scores answer
+        Figure 4 and Table V answer the two federated scaling                                                                                           a different, harder question and are not contradictory.
+     questions directly. Final-round macro F1 ranges from 0.8924
+     to 0.9099 and is never perfect. At the predeclared K = 3                                                                                           D. Raising Image-Only Accuracy
+     setting, the final mean is 0.9046, or 99.4% of the 0.9099                                                                                             The optional five-expert visual gate combines the direct
+     initialization. Round-wise means stay between 0.8924 and                                                                                           base path, deterministic test-time augmentation, a deep-feature
+     0.9216; the highest transient mean occurs for K = 5 at                                                                                             specialist, calibration, and ViT-tiny. Validation-only selection
+     round 4, but it is reported as a validation peak rather than                                                                                       over 3,125 class gates raises image accuracy from 61.33%
+     the final model. Increasing K raises realized label-distribution                                                                                   (46/75) to 72.00% (54/75), with macro F1 0.6759 and source-
+     total variation from 0.139 to 0.300 without a monotone final-                                                                                      group bootstrap intervals 60.23–85.14% and 0.5365–0.8256.
+     score penalty.                                                                                                                                     This is an ensemble result, not the pure ViT baseline (66.67%).
+        This stability result is useful but narrow. Every run begins                                                                                    Its gains concentrate in leaf blight and looper caterpillars,
+     from the same centrally selected checkpoint, so it supports                                                                                        while only two leaf-hopper crops make rare-class behavior
+     federated adaptation of the multimodal core, not superior-                                                                                         unstable.
+     ity over training from scratch. Three partition seeds mea-
+     sure ownership-split variability, not full checkpoint-training                                                                                     E. Actual Model-Family and Inter-Model Comparison
+     variance, and simulated clients cannot establish estate-level                                                                                         DistilBERT is frozen (66.36M parameters); validation se-
+     privacy.                                                                                                                                           lects masked-mean L2 features, ridge α = 0.1, and class-
+                                                                                                                                                        weight power 1 from 90 candidates before test embeddings
+     C. Standard Same-Checkpoint Ablation                                                                                                               are extracted. ViT-tiny is independently pretrained and frozen,
+       Table VI is the primary controlled comparison. The paired                                                                                        with its CLS-feature ridge head also selected on validation.
+     model is realistic rather than perfect: it predicts 69 of 75                                                                                       The raw VLM row is the unchanged paired bidirectional
+     crops correctly. Text only is higher at 72 of 75, so this                                                                                          cross-attention prediction under the same 50%-retention note
+                       (a)                                                                        (b)                                                                           (c)
+          DistilBERT                                0.867              ViT-Base                                                         0.602                     Concat                           0.511
+                                                                                                                                                               Attention                        0.429
+           BERT-tiny                         0.717                    DeiT-tiny                                                         0.598                      Gated                        0.447
+                                                                                                                                                               CLIP-style                        0.461
+          BERT-mini                          0.723               Swin-tiny ★                                             0.503                            Flamingo-style                    0.309
+                                                                                                                                                             BLIP-2-style                          0.509
+                                                                                                                                                              CoCa-style                              0.610
+         BERT-small                           0.741              ConvNeXT-tiny                                                           0.640                 Unified-IO                 0.261
+                                                                                                                                                  Flexible cross-attn ★                                        0.888
+  BERT-medium ★                   0.863                            EfficientNet                                                 0.557               Pretrained late fusion                                     0.888
+              0.00 0.25 0.50 0.75 1.00                                        0.00                      0.25 0.50 0.75                            1.00                   0.00          0.25 0.50 0.75 1.00
+                             Held-out macro-F1                                                          Held-out macro-F1                                                              Held-out macro-F1
+             (a)
+         Text-only
+                                                                                                                   (b)
+               PLM                      Accuracy 65.3/67.3
+                                                        Macro-F1
+
+
+
+
+                                                                                                                  Validation macro-F1
+       Image-only                                   66.7/58.3                                                                           0.91
+                ViT                                                                                                                                                             0.910                         0.910
+  Raw image+text                                                            77.3/71.5                                                   0.90             0.905
+               VLM
+          ViT+PLM                                                                                 82.7/81.9                             0.89
+        alternative                                                                                                                              0.892
+        Retained                                  81.3/66.8                                                                             0.88                                    Centralized initialization (0.910)
+      incumbent                                                                                                                                                                 FedAvg final mean
+               0.50 0.55 0.60 0.65 0.70 0.75 0.80 0.85                                                                                            2        3                       5                            8
+                        Locked-test score (accuracy / macro-F1 labels)                                                                                     Number of federated clients, K
+                      (a)                                                                   (b)                                                                           (c)
+                                                                                                                                                                          1.0
+                                                                      Image-only accuracy
+
+      DistilBERT → ViT +1, -0.090                                                           0.8
+        ViT → raw VLM      +8, +0.133                                                                                  68.0 66.7 69.3 72.0                                                                    92.0
+                                                                                                   61.3 61.3 62.7
+                                                                                            0.6
+
+
+
+
+                                                                                                                                                               Accuracy
+  Raw VLM → proposed +3, -0.048                                                                                                                                           0.8
+    Direct → enhanced      +8, +0.133                                                                                                                                                            72.0
+       Image → paired               +23, +0.332                                             0.4
+         Paired → text +3, +0.030                                                                                                                                         0.6          61.3
+                                                                                            0.2
+    Mismatch → paired                           +44, +0.595
+                                                                                            0.0
+                        0      20     40       60           80 ect TA ep lib. ViT -exp. -exp.        Direct Enhanced Paired
+                              Accuracy points gained        Dir T De Ca           4 5                image image standard
+Fig. 5: Model comparisons without changing the proposed core. Upper: earlier within-family screening by held-out macro F1: (a)
+five text PLMs on 15 template groups, (b) five visual backbones on 30 source-disjoint images, and (c) ten fusion-rule surrogates
+on 30 label-aligned proxy pairs. Stars mark the validation-selected representative; supports differ across panels, so no cross-
+panel ranking is valid. Middle: (a) actual DistilBERT, ViT-tiny, raw cross-attention VLM, pooled ViT–DistilBERT alternative,
+and unchanged proposed model on the same ordered 75 crops under sparse notes; (b) centralized proposed initialization versus
+final multimodal FedAvg adaptation on 74 validation crops. Lower: fixed 75-crop decompositions — (a) every pairwise contrast
+as accuracy points gained, annotated with the correct-crop change and ∆macro F1, where red bars mark the two contrasts that
+gain accuracy while losing macro F1; (b) the image-only ladder, in which each stage adds a component rather than retraining;
+and (c) source-group bootstrap accuracy over 5,000 replicates, whose two image intervals overlap. Accuracy is in percent labels
+while the plotted scale is 0–1. Plot titles are omitted to maximize legibility.
+TABLE VII: Common-support encoder selection. Architecture             Consequently, the comparable accuracy hierarchy is
+choice uses validation only; test metrics are reported after
+selection.                                                                      65.33%PLM < 66.67%ViT < 77.33%raw
+           Actual system        Val. acc. Test acc. Test F1                       < 81.33%proposed < 82.67%ViT+PLM .
+            Text PLM (DistilBERT)          0.6757     0.6533      0.6732                                      The candidate later predicts one more internal-test crop cor-
+            Image ViT (ViT-tiny)           0.7973     0.6667      0.5830
+            Raw ResNet+compact VLM         0.8378     0.7733      0.7155                                      rectly than the retained model, but this cannot retroactively
+            ViT+DistilBERT VLM             0.8243     0.8267      0.8192
+            Proposed ResNet+compact        0.8919     0.8133      0.6679                                      change a validation-only choice. The paired discordance is 11
+                                                                                                              candidate-only versus 10 incumbent-only correct (exact two-
+mask and no post-hoc class gate. Ordered labels, predictions,                                                 sided McNemar p = 1.0). Macro F1 is also higher for the
+support, and recomputed metrics are checked to be identical                                                   candidate, 0.8192 versus 0.6679. Figure 5 therefore separates
+across all rows. The replacement VLM uses two reproducible                                                    the selection result from descriptive internal-test outcomes.
+augmented training views, frozen ViT-tiny and DistilBERT                                                         Within-family screens. The upper row of Fig. 5 sup-
+embeddings, 64 train-fitted components per modality, and                                                      plies the requested model-level comparisons. In the earlier
+a validation-selected class-weighted ridge head (α = 100,                                                     text screen, DistilBERT, BERT-tiny/mini/small, and validation-
+weight power 0.5). Among 360 predeclared configurations,                                                      selected BERT-medium are compared on 15 held-out tem-
+it reaches 82.43% validation accuracy and 0.6892 macro F1,                                                    plate groups. The visual screen compares ViT-Base, DeiT-
+below the incumbent’s 89.19% and 0.8541. The ResNet–                                                          tiny, Swin-tiny, ConvNeXT-tiny, and EfficientNet on 30 source
+compact-Transformer architecture is therefore retained before                                                 images; Swin is the validation selection although ConvNeXT
+candidate test features and predictions are computed. This                                                    has the higher held-out macro F1. The fusion screen compares
+candidate is pooled late feature fusion; it does not use token–                                               ten implemented fusion-rule surrogates on 30 label-aligned
+patch cross-attention.                                                                                        proxy pairs; “CLIP-”, “Flamingo-”, “BLIP-2-”, and related
+                                                                                                              labels indicate fusion styles rather than deployments of those
+                                          Run A (CPU)   Run B (H100)
+                        (a)
+    lightweight CNN vision
+                                                                                                   (b)
+                                                                              lightweight CNN vision
+                                                                                                                                                 I. Reproducibility Manifest
+             Proposed (full)                                                       no expert residual
+         no expert residual                                                         no alignment loss                                               The updated bundle records data identity, checkpoint state,
+          no alignment loss
+      text encoder: 1 layer
+                                                                                text encoder: 1 layer
+                                                                                    no reliability gate
+                                                                                                                                                 every federated round, and each realized client partition. Ta-
+          no reliability gate
+         no cross-attention                                                        no cross-attention                                            ble VIII separates mechanically verified controls from proper-
+                                                                                 no interaction feats.
+       no interaction feats.
+         no auxiliary losses                                                       no auxiliary losses                     5 of 8 reverse sign
+                                                                                                                                                 ties outside the evidence. Deterministic grouping, strict reload,
+                                0.75   0.80     0.85    0.90    0.95
+                                       Locked 75-crop test accuracy
+                                                                       1.00                               −10     −5       0        5
+                                                                                                          Accuracy points vs. full model
+                                                                                                                                            10   and validation-only adaptation are reproducible; external estate
+Fig. 6: Single-seed architecture ablations on the locked 75-                                                                                     transfer is not inferred from them.
+                                                                                                                                                   TABLE VIII: Reproducibility manifest for the updated run
+crop test. Run A uses CPU/PyTorch 2.13 and Run B uses
+H100/PyTorch 2.11. The 4.00-point mean absolute gap and                                                                                           Control                  Recorded value               Status
+five of eight effect-sign reversals preclude a stable component                                                                                   Source split             seed 42; 122/40/38 sources   fixed
+                                                                                                                                                  Cross-split overlap      0 source photographs         verified
+ranking.                                                                                                                                          Crop–text pairing        371/371 exact box keys       verified
+                                                                                                                                                  Shortcut vocabulary      178 tokens; train fitted     fixed
+pretrained systems. These three supports are not linked obser-                                                                                    Checkpoint reload        strict key match             passed
+                                                                                                                                                  Architecture ablation    9 variants; CPU/H100 re-     single seed each
+vations, so only within-panel comparisons are valid and they                                                                                                               runs
+are not mixed with Table VII.                                                                                                                     DistilBERT selection     90 candidates; validation    fixed before test em-
+                                                                                                                                                                           only                         bed.
+                                                                                                                                                  ViT+PLM VLM screen       360 candidates; validation   incumbent retained
+F. Cross-Modal Analysis and Evidence Boundary                                                                                                                              accuracy
+                                                                                                                                                  Visual gate search       3,125 gates on validation    completed
+   Under paired input the learned mean reliability weights                                                                                        Internal test support    75 crops / 38 sources        common
+are 0.5749 for text and 0.4251 for image. Mismatching text                                                                                        FedAvg adaptation        K = 2, 3, 5, 8; 8 rounds     completed
+                                                                                                                                                  FL repetitions           seeds 42/123/2026            partition seeds
+causes a 58.67-point accuracy drop and a 0.5949 macro-                                                                                            FL evaluation            74 validation crops          test untouched
+F1 drop, confirming that the cross-attention path is sensitive
+to alignment. Retrieval analysis is more restrained: exact                                                                                       J. Class-Level Error Accounting
+text-to-image recall@1 is 1.33%, while class-level text-to-                                                                                         Figure 8 resolves the 75 crops by class, with the diagonals
+image and image-to-text recall@1 are 0.6000 and 0.6133. The                                                                                      summing to the 46, 54, and 61 correct crops of the three
+model organizes class evidence better than exact crop identity,                                                                                  systems. The enhanced gate’s net gain of eight is concentrated
+consistent with descriptions that encode disease labels more                                                                                     in leaf blight (+5), leaf hoppers (+1), and looper caterpillars
+strongly than instance-specific appearance.                                                                                                      (+4), partly offset by one fewer correct rust and mosquito-bug
+G. Architecture Component Ablation                                                                                                               crop. Relative to the direct image model, the exploratory router
+                                                                                                                                                 adds 15 correct predictions overall: +7 blight, +1 rust, and +8
+   Each run retrains all nine variants from scratch for 15                                                                                       looper, offset by one mosquito-bug error and no leaf-hopper
+epochs. On the H100, the unchanged model is best at 94.67%                                                                                       recovery. The off-diagonal cells locate the residual failure: leaf
+accuracy (71/75) and 0.8957 macro F1. Removing cross-                                                                                            blight is confused with rust and looper rather than scattered,
+attention or the auxiliary parent losses lowers accuracy to                                                                                      and the leaf-hopper crops fall into looper, one of which only
+81.33% (61/75); removing interaction features gives 82.67%                                                                                       the enhanced gate recovers. This accounting explains why
+(62/75). However, the CPU rerun favors the lightweight CNN                                                                                       aggregate accuracy rises while rare-class behavior remains
+and reverses five of eight measured effect signs. Thus the                                                                                       unstable.
+full configuration wins in one controlled rerun, but this small
+single-seed test cannot establish a reproducible component                                                                                       K. Uncertainty Facts
+ranking.                                                                                                                                            Source-group bootstrap interval widths are 27.11 points for
+H. Advisory Retrieval Results                                                                                                                    the direct image model, 24.91 for the enhanced image gate,
+                                                                                                                                                 and 12.51 for standard paired input. The corresponding error
+   Retrieval alone returns a correct-class passage for 90.05%                                                                                    counts are 29, 21, and 6 of 75; the exploratory router makes 14
+of queries (95% CI 85.57–94.03) against a 20.01% chance                                                                                          errors. These intervals describe uncertainty under resampling
+rate, with precision@5 93.23%, MRR 0.9469, and NDCG@5                                                                                            of the 38 source photographs and do not replace a paired test
+0.9621. The classify stage raises this to 95.52% (95% CI                                                                                         of model differences. They also cannot quantify estate shift
+92.54–98.01), but that second number is the classifier’s accu-                                                                                   because every crop comes from the same audited corpus.
+racy: retrieval restricted to one predicted class can only return
+that class, so routing rather than ranking decides correctness.                                                                                  L. Threats to Validity
+Fig. 7(b) locates the failure. On the 65.67% of queries carrying                                                                                    The internal test contains only 38 source photographs and 75
+a class-unique sentence open retrieval is near-saturated at                                                                                      crops, with two leaf-hopper crops; bootstrap uncertainty and
+99.24%; on the rest it falls to 72.46%, which routing lifts to                                                                                   per-class instability are therefore substantial. The descriptions
+89.86%. Per class it is weakest on looper caterpillars (77.50%),                                                                                 originate from the annotation workflow rather than indepen-
+whose vocabulary overlaps mosquito bug damage.                                                                                                   dent farmer notes, explaining the very strong text baseline
+   Three limits apply. The corpus is template-composed, so                                                                                       and limiting ecological validity. Although the visual gate is
+base and queries share sentence vocabulary even though no                                                                                        selected on validation data, choosing among five experts on 74
+observation is shared; these are upper bounds relative to free-                                                                                  validation crops can still overfit. The central checkpoint has
+form notes. The fusion re-ranker needs a fusion model on these                                                                                   one training seed; the three FL seeds vary client partitions,
+five classes and is still unevaluated, as are the OBB overlay                                                                                    not checkpoint initialization. Simulated clients lack estate
+and the agronomic correctness of the advice itself. This is a                                                                                    ownership, attack, communication, and privacy accounting.
+retrieval result, not evidence that the recommended treatment                                                                                    Most importantly, iterative sparse-note and routing develop-
+is right.                                                                                                                                        ment makes that test non-pristine. DistilBERT is a pretrained
+                                                                                                                                                 language-model baseline rather than an instruction-tuned gen-
+                                                                                                                                                 erative LLM; earlier fusion labels are implemented surrogates,
+                                                                                                                                                 and their differing supports forbid cross-panel ranking. A
+                         (a)                                                                                      (b)                                                                           (c)
+  Advisory precision@1
+
+
+
+
+                                                                                          Advisory precision@1
+                                                                                                                         Retrieve only             Classify then retrieve
+                                       90.0                           95.5                                                                                                           Blight (40)
+                         1.0                                                                                     1.2
+
+                                                                                                                       99.2
+                                                                                                                                                                                 Hoppers (40)
+                                                                                                                              98.5
+                                                                                                                 1.0
+                                                                                                                                                                      89.9             Rust (40)
+                         0.5
+                                                  chance 20%                                                     0.8                                           72.5                Looper (40)
+
+                         0.0                                                                                      0.6                                                           Mosq. bug (41)
+                                     Retrieve                   Classify then                                       Class-specific                           Generic only                     0.0          0.2         0.4        0.6     0.8      1.0
+                                       only                       retrieve                                       sentence (n = 132)                            (n = 69)                                     Advisory precision@1
+Fig. 7: Measured Classify–Retrieve–Advise quality on the templated symptom corpus: 472 passages, 201 queries, exact inner-
+product search. (a) Precision@1 with bootstrap intervals against chance; (b) split by whether the query holds a class-unique
+sentence; (c) per class. Same five classes as the diagnostic experiments, but a different corpus and support, never pooled with
+them.
+
+                                                         Direct image                                                                      Enhanced image                                                              Proposed router
+                               Blight (26)   13            2      8      3                                         Blight (26)       18                 1      7                                Blight (26)      20                 3      3
+
+                            Hoppers (2)                                  2                                        Hoppers (2)                    1             1                               Hoppers (2)                                 2
+
+                                                                  9                                                                                     8                                                                          10
+  True
+
+
+
+
+                                Rust (13)        1         2             1                                             Rust (13)       3         1             1                                  Rust (13)        2                       1
+
+                            Looper (21)          4         3      3     11                                         Looper (21)         4         2            15                               Looper (21)         2                      19
+                         Mosq. bug (13)                                        13                          Mosq. bug (13)              1                              12                   Mosq. bug (13)          1                             12
+                                                    ht           s
+                                                               er Rus
+                                                                     t
+                                                                           pe
+                                                                             r        g                                                   ht           s
+                                                                                                                                                     er Rus
+                                                                                                                                                           t
+                                                                                                                                                                 pe
+                                                                                                                                                                   r        g                                         ht           s
+                                                                                                                                                                                                                                 er Rus
+                                                                                                                                                                                                                                       t
+                                                                                                                                                                                                                                             pe
+                                                                                                                                                                                                                                               r        g
+                                                 lig                                bu                                                 lig                                bu                                       lig                                bu
+                                             B             o pp        Loo       q.                                                B             o pp        Loo       q.                                      B             o pp        Loo       q.
+                                                         H                     os                                                              H                     os                                                    H                     os
+                                                                             M                                                                                     M                                                                           M
+                                                               Predicted                                                                             Predicted                                                                 Predicted
+Fig. 8: Where the errors land on the fixed 75-crop test. Each matrix sums to 75; diagonals give the 46, 54, and 61 correct crops
+of the direct image path, the five-expert enhanced gate, and the exploratory router. All panels share one count colour scale,
+so shading is directly comparable. The off-diagonal cells are the part no count table records: leaf blight is confused with rust
+and looper rather than scattered, looper recovers most under the router, and the two leaf-hopper crops fall into looper except
+for one the enhanced gate recovers.
+prospective multi-estate set, independent field notes, more                                                                                       [10] H. A. Tahir, W. Alayed, and W. U. Hassan, “A federated explainable AI framework for smart
+                                                                                                                                                       agriculture,” IEEE Access, vol. 13, pp. 97567–97584, 2025.
+rare-class cases, repeated end-to-end training, and a from-                                                                                       [11] H. Devaraj et al., “RuralAI in tomato farming: Integrated sensor system, distributed computing,
+                                                                                                                                                       and hierarchical federated learning,” IEEE Sensors Lett., vol. 8, no. 5, pp. 1–4, 2024.
+scratch federated comparison are required before deployment                                                                                       [12] Q. Ding, X. Yue, Q. Zhang, Z. Xiong, J. Chang, and H. Zheng, “Bc2FL: Double-layer blockchain-
+                                                                                                                                                       driven federated learning for Agricultural IoT,” IEEE Internet Things J., vol. 12, no. 4, pp. 4362–
+claims.                                                                                                                                                4374, 2025.
+                                                                                                                                                  [13] P. V. Caminha and H. M. N. da S. Oliveira, “Cloud-driven federated learning for plant disease
+                                                                                                                                                       detection in agriculture,” in Proc. IEEE CloudNet, 2024, pp. 1–4.
+                      VI. C ONCLUSION                                                                                                             [14] K. Thonglek and P. Rattanatamrong, “Decentralized federated learning for agricultural plant
+                                                                                                                                                       diseases identification on edge devices,” in Proc. iSAI-NLP, 2023, pp. 1–6.
+                                                                                                                                                  [15] H. B. McMahan, E. Moore, D. Ramage, S. Hampson, and B. A. y Arcas, “Communication-
+   With 371 linked crop–text pairs from 200 source                                                                                                     efficient learning of deep networks from decentralized data,” in Proc. AISTATS, 2017, pp. 1273–
+                                                                                                                                                       1282.
+photographs, validation-only selection retains the ResNet-                                                                                        [16] A. Vaswani et al., “Attention is all you need,” in Proc. NeurIPS, 2017, pp. 5998–6008.
+                                                                                                                                                  [17] A. Dosovitskiy et al., “An image is worth 16x16 words: Transformers for image recognition at
+50–compact-Transformer router over the frozen ViT-tiny–                                                                                                scale,” in Proc. ICLR, 2021.
+                                                                                                                                                  [18] J. Devlin, M.-W. Chang, K. Lee, and K. Toutanova, “BERT: Pre-training of deep bidirectional
+DistilBERT candidate. The candidate is one crop higher on                                                                                              transformers for language understanding,” in Proc. NAACL, 2019, pp. 4171–4186.
+                                                                                                                                                  [19] I. Turc, M.-W. Chang, K. Lee, and K. Toutanova, “Well-read students learn better: On the
+the 75-crop test, but not significantly so (p = 1.0); paired                                                                                           importance of pre-training compact models,” arXiv:1908.08962, 2019.
+                                                                                                                                                  [20] C. Szegedy, V. Vanhoucke, S. Ioffe, J. Shlens, and Z. Wojna, “Rethinking the inception architec-
+CPU/H100 ablations also give no stable component ranking.                                                                                              ture for computer vision,” in Proc. CVPR, 2016, pp. 2818–2826.
+                                                                                                                                                  [21] T. Y. Lin, P. Goyal, R. Girshick, K. He, and P. Dollár, “Focal loss for dense object detection,”
+   Warm-start FedAvg retains 98.1–100.0% of initial validation                                                                                         IEEE TPAMI, vol. 42, no. 2, pp. 318–327, 2020.
+                                                                                                                                                  [22] A. Radford et al., “Learning transferable visual models from natural language supervision,” in
+macro F1 for 2–8 simulated clients, and mismatched text                                                                                                Proc. ICML, 2021, pp. 8748–8763.
+                                                                                                                                                  [23] J. Li, D. Li, S. Savarese, and S. Hoi, “BLIP-2: Bootstrapping language-image pre-training with
+confirms alignment sensitivity. These internal results do not                                                                                          frozen image encoders and large language models,” in Proc. ICML, 2023.
+                                                                                                                                                  [24] J.-B. Alayrac et al., “Flamingo: A visual language model for few-shot learning,” in Proc.
+establish category-best performance, privacy, or deployment                                                                                            NeurIPS, 2022.
+                                                                                                                                                  [25] J. Yu, Z. Wang, V. Vasudevan, L. Yeung, M. Seyedhosseini, and Y. Wu, “CoCa: Contrastive
+readiness. Next steps are locked multi-estate evaluation, inde-                                                                                        captioners are image-text foundation models,” TMLR, 2022.
+                                                                                                                                                  [26] J. Lu, C. Clark, R. Zellers, R. Mottaghi, and A. Kembhavi, “Unified-IO: A unified model for
+pendent notes, rare-class coverage, secure aggregation, com-                                                                                           vision, language, and multi-modal tasks,” in Proc. ICLR, 2023.
+                                                                                                                                                  [27] Y. Wang et al., “A large language model for multimodal identification of crop diseases and pests,”
+munication accounting, and repeated from-scratch training.                                                                                             Scientific Reports, vol. 15, art. 21959, 2025.
+                                                                                                                                                  [28] L. Li, J. Li, D. Chen, L. Pu, H. Yao, and Y. Huang, “FedReplay: A feature replay assisted federated
+                                                                                                                                                       transfer learning framework for smart agriculture,” arXiv:2511.00269, 2025.
+                                                               R EFERENCES                                                                        [29] H. Touvron, M. Cord, M. Douze, F. Massa, A. Sablayrolles, and H. Jégou, “Training data-efficient
+                                                                                                                                                       image transformers & distillation through attention,” in Proc. ICML, 2021, pp. 10347–10357.
+ [1] J. Yang, G. Xu, M. Yang, and Z. Lin, “Lightweight wavelet-CNN tea leaf disease detection,”                                                   [30] Z. Liu et al., “Swin Transformer: Hierarchical vision transformer using shifted windows,” in Proc.
+     PLOS ONE, vol. 20, no. 5, art. e0323322, 2025.                                                                                                    ICCV, 2021, pp. 10012–10022.
+ [2] Y. Hu, J. Tang, and J. Yang, “Introducing artificial intelligence technology to plant disease                                                [31] Z. Liu, H. Mao, C.-Y. Wu, C. Feichtenhofer, T. Darrell, and S. Xie, “A ConvNet for the 2020s,”
+     management for sustainable agriculture,” Crop Protection, vol. 184, art. 106764, 2024.                                                            in Proc. CVPR, 2022, pp. 11976–11986.
+ [3] X. Deng and C. Photong, “Evaluation of tea leaf disease identification based on CNNs VGG16,                                                  [32] M. Tan and Q. V. Le, “EfficientNet: Rethinking model scaling for convolutional neural networks,”
+     ResNet50, and DenseNet169,” in Proc. iEECON, 2024, pp. 1–4.                                                                                       in Proc. ICML, 2019, pp. 6105–6114.
+ [4] K. He, X. Zhang, S. Ren, and J. Sun, “Deep residual learning for image recognition,” in Proc.                                                [33] V. Sanh, L. Debut, J. Chaumond, and T. Wolf, “DistilBERT, a distilled version of BERT,”
+     IEEE Conf. Comput. Vis. Pattern Recognit., 2016, pp. 770–778.                                                                                     arXiv:1910.01108, 2019.
+ [5] D. S. Joseph, P. M. Pawar, and K. Chakradeo, “Real-time plant disease dataset development and                                                [34] J. Johnson, M. Douze, and H. Jégou, “Billion-scale similarity search with GPUs,” IEEE Trans.
+     detection of plant disease using deep learning,” IEEE Access, vol. 12, pp. 16310–16333, 2024.                                                     Big Data, vol. 7, no. 3, pp. 535–547, 2021.
+ [6] R. Maurya, S. Mahapatra, and L. Rajput, “A lightweight meta-ensemble approach for plant                                                      [35] N. Reimers and I. Gurevych, “Sentence-BERT: Sentence embeddings using Siamese BERT-
+     disease detection suitable for IoT-based environments,” IEEE Access, vol. 12, pp. 28096–28108,                                                    networks,” in Proc. EMNLP, 2019, pp. 3982–3992.
+     2024.                                                                                                                                        [36] P. Lewis et al., “Retrieval-augmented generation for knowledge-intensive NLP tasks,” in Proc.
+ [7] Md. S. H. Shovon et al., “PlantDet: A robust multi-model ensemble method based on deep                                                            NeurIPS, 2020, pp. 9459–9474.
+     learning for plant disease detection,” IEEE Access, vol. 11, pp. 34846–34859, 2023.                                                          [37] A. Paszke et al., “PyTorch: An imperative style, high-performance deep learning library,” in Proc.
+ [8] E. A. Al-Shahari et al., “Internet of Things assisted plant disease detection and crop management                                                 NeurIPS, 2019, pp. 8026–8037.
+     using deep learning for sustainable agriculture,” IEEE Access, vol. 13, pp. 3512–3520, 2025.
+ [9] W. Shafik, A. Tufail, A. Namoun, M. S. Abu Bakar, and R. A. A. H. M. Apong, “A systematic
+     literature review on plant disease detection,” IEEE Access, vol. 11, pp. 59174–59203, 2023.
+

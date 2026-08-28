@@ -1,0 +1,51 @@
+{
+  "bundle_version": "teasickness_studio_v1",
+  "domain": "studio",
+  "domain_description": "Detached single tea leaf photographed on a plain backdrop at 256x256. NOT the same imaging domain as the 200 in-situ field photographs.",
+  "usage_constraint": "TRAINING ONLY. Studio images must never enter validation or test; held-out evaluation stays field-only so the domain gap is measured rather than exploited.",
+  "source_dataset": "Kaggle rohitttdx/tea-sickness-dataset (Saikat Dutta tea)",
+  "mapping": {
+    "brown_blight": {
+      "target_class": "LEAF_BLIGHT",
+      "justification": "Brown blight is a foliar blight of tea (Colletotrichum spp.); same symptom category as the target class.",
+      "confidence": "solid",
+      "images": 867
+    },
+    "gray_blight": {
+      "target_class": "LEAF_BLIGHT",
+      "justification": "Gray blight (Pestalotiopsis spp.) is a foliar blight of tea; merged with brown blight into the single LEAF_BLIGHT target.",
+      "confidence": "solid",
+      "images": 1000
+    },
+    "helopeltis": {
+      "target_class": "MOSQUITO_BUG",
+      "justification": "Helopeltis theivora IS the tea mosquito bug. Same organism, different common name. Lesion morphology (dark punctate feeding wounds) matches the field MOSQUITO_BUG images.",
+      "confidence": "exact",
+      "images": 1000
+    },
+    "algal_spot": {
+      "target_class": "LEAF_RUST",
+      "justification": "Tea \"red rust\" is caused by the alga Cephaleuros, the same pathogen genus as algal leaf spot. Visual check confirmed matching morphology: discrete small tan/orange circular lesions scattered on the blade, as in the field LEAF_RUST images.",
+      "confidence": "defensible-with-caveat",
+      "images": 1000
+    }
+  },
+  "excluded_source_classes": {
+    "red_spot": "Presents as large-area whole-leaf reddening/browning, not the discrete small spots seen in field LEAF_RUST. Visually distinct; lumping it in would inflate the class with a different condition.",
+    "healthy": "No corresponding target class in the FarmFederate schema."
+  },
+  "schema_classes_without_studio_source": {
+    "LOOPER_CATERPILLARS": "No caterpillar/defoliation class in TeaSickness.",
+    "LEAF_HOPPERS": "Dropped from the benchmark; images show no leafhopper symptoms."
+  },
+  "per_target_counts": {
+    "LEAF_BLIGHT": 1867,
+    "MOSQUITO_BUG": 1000,
+    "LEAF_RUST": 1000
+  },
+  "source_groups": {
+    "LEAF_BLIGHT": 1862,
+    "MOSQUITO_BUG": 998,
+    "LEAF_RUST": 998
+  }
+}

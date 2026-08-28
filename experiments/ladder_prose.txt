@@ -1,0 +1,18 @@
+
+The same ladder is run for text and for text${+}$image on the identical
+222/74/75 crop--note support, so rows in Tables~\ref{tab:text_ladder}
+and~\ref{tab:mm_ladder} are comparable with each other and with the visual
+table. Two differences from the visual case are immediate. First, at complete
+notes both ladders are flat: a single-candidate path already reaches 0.987
+accuracy for text and 1.000 for fusion, and searching 3125 or 243 candidates
+adds at most one crop, whereas the visual ladder gains 0.107 accuracy across
+the same span. The binding constraint on the text side is therefore the corpus,
+not the pipeline. Second, the ladders separate once notes are degraded, and the
+ordering is stable: last-four-layer concatenation is the best text rung at both
+50\% and 75\% deletion, and deep-feature concatenation the best fusion rung, so
+representation depth is the choice that matters and is measurable only after
+the shortcut is removed. The gates behave as the visual table already warns:
+at 50\% deletion the three-expert gate has the joint-best validation accuracy
+(0.932) and the worst test accuracy (0.747), a 0.185 gap against roughly 0.03
+for the single models, which is the expected cost of fitting 243 routings on
+74 validation crops.

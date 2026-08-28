@@ -1,0 +1,46 @@
+\subsection{Unimodal and Multimodal Systems, Centralized and Federated}
+
+Tables~\ref{tab:unimodal_cent_fed} and~\ref{tab:multimodal_cent_fed} place a
+classical feature baseline, five frozen text encoders, five frozen vision
+encoders, and their fusions on the same 222/74/75 crop--note support, each
+scored centrally and again under FedAvg. Reading them in that order answers two
+separate questions: what each modality is worth on its own, and what combining
+them adds.
+
+\textbf{Unimodal.} With complete notes the text branch is already at the
+ceiling: frozen DistilBERT reaches 1.000 test accuracy and the image branch,
+whose best encoder is ViT-Base at 0.733, trails it by 0.267. Federating costs
+little on either side --- 1.000 to 0.987 for text and 0.733 to 0.667 for image,
+against a $\pm0.10$ Wilson half-width on 75 crops --- so the deployment mode is
+not what separates these systems; the modality is. The classical rows locate
+where pretraining actually earns its place. On images it is decisive: colour
+histograms with HOG reach 0.440 against ViT-Base's 0.733. On text it is not.
+TF-IDF with a linear SVM is the strongest text row at every note sparsity
+(1.000, 0.933, 0.733), beating all five transformer encoders, which is direct
+evidence that the note channel is carried by lexical form rather than by
+contextual meaning and is consistent with the leakage audit of
+Section~\ref{sec:dataset}. A bag of words also degrades gracefully when words
+are removed, whereas a mean-pooled contextual embedding does not.
+
+\textbf{Multimodal.} At complete notes fusion cannot demonstrate anything:
+ViT-Base with DistilBERT scores 1.000, the same as text alone, because there is
+no headroom above a saturated branch. The comparison becomes informative only
+once notes are incomplete, which is also the realistic field condition. At 75\%
+deletion the ordering separates and fusion leads outright --- 0.800 for
+ViT-Base with BERT-medium against 0.733 for the best image-only encoder and
+0.653 for the best text-only encoder --- and the same holds encoder-for-encoder
+at 50\% deletion, where ViT-Base with DistilBERT scores 0.800 against 0.707 for
+DistilBERT alone and 0.733 for ViT-Base alone. Tables~\ref{tab:unimodal_cent_fed}
+and~\ref{tab:multimodal_cent_fed} fuse by plain concatenation, which is the
+weakest rung of Table~\ref{tab:mm_ladder}; with the deep-feature and calibrated
+late-fusion rungs the same support gives 0.907 and 0.920 at 50\% deletion,
+above the best text rung (0.827) and the best single visual model (0.680).
+Federation preserves the ordering rather than creating it: at 75\% deletion the
+federated fusion holds 0.751 while federated text falls to 0.582.
+
+Figure~\ref{fig:clubbed_modality} summarizes both halves. Panel~(a) shows that
+the classical-versus-pretrained gap is modality-dependent, and panel~(b) that
+the three modalities are indistinguishable only while the notes are complete
+--- the text and fusion curves coincide exactly at 1.000 --- and fan out as
+notes are removed, with the image branch flat by construction and fusion the
+only branch that is never worst.

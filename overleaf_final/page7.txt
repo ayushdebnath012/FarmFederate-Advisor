@@ -1,0 +1,92 @@
+consistent with descriptions that encode disease labels more                             I. Class-Level Error Accounting
+strongly than instance-specific appearance.                                                 Figure ?? resolves the 75 crops by class, with the diagonals
+    TABLE IX: Claim ledger for the updated experiment.                                   summing to the 46, 54, and 61 correct crops of the three
+ Status                  Claim                                                           systems. The enhanced gate’s net gain of eight is concentrated
+ Supported               Source-group isolation and exact crop–text linkage;             in leaf blight (+5), leaf hoppers (+1), and looper caterpillars
+                         image-only ensemble improvement from 61.33% to                  (+4), partly offset by one fewer correct rust and mosquito-bug
+                         72.00%; the common-support actual-model test-accuracy
+                         order 65.33PLM < 66.67ViT < 77.33raw <                          crop. Relative to the direct image model, the exploratory router
+                         81.33proposed < 82.67ViT+PLM ; validation-only ar-              adds 15 correct predictions overall: +7 blight, +1 rust, and +8
+                         chitecture selection retains the incumbent (89.19% versus
+                         82.43%); FedAvg adaptation over K = 2–8 with 98.1–              looper, offset by one mosquito-bug error and no leaf-hopper
+                         100.0% final-score retention; advisory retrieval at 90.05%      recovery. The off-diagonal cells locate the residual failure: leaf
+                         precision@1, 95.52% once routed, on the templated symp-
+                         tom corpus.                                                     blight is confused with rust and looper rather than scattered,
+ Not supported           Test superiority of the selected architecture (the unselected   and the leaf-hopper crops fall into looper, one of which only
+                         candidate is one crop higher, McNemar p = 1.0);
+                         monotonic macro-F1 superiority (candidate 0.8192 versus         the enhanced gate recovers. This accounting explains why
+                         proposed 0.6679); comparison of earlier panels across           aggregate accuracy rises while rare-class behavior remains
+                         their different supports; category-best or external general-
+                         ization; any transfer of the advisory numbers to the crop-      unstable.
+                         linked notes or to free-form notes.
+ Not evaluated           Federated training from scratch; real-estate ownership,         J. Uncertainty Facts
+                         privacy budget, secure aggregation, and communication
+                         cost; federation of the visual ensemble/router; pathologist-       Source-group bootstrap interval widths are 27.11 points for
+                         verified semantics; advisory re-ranking, OBB localization,
+                         and agronomic correctness of the retrieved advice.              the direct image model, 24.91 for the enhanced image gate,
+                                                                                         and 12.51 for standard paired input. The corresponding error
+G. Advisory Retrieval Results                                                            counts are 29, 21, and 6 of 75; the exploratory router makes 14
+   Retrieval alone returns a correct-class passage for 90.05%                            errors. These intervals describe uncertainty under resampling
+of queries (95% CI 85.57–94.03) against a 20.01% chance                                  of the 38 source photographs and do not replace a paired test
+rate, with precision@5 93.23%, MRR 0.9469, and NDCG@5                                    of model differences. They also cannot quantify estate shift
+0.9621. The classify stage raises this to 95.52% (95% CI                                 because every crop comes from the same audited corpus.
+92.54–98.01), but that second number is the classifier’s accu-                           K. Threats to Validity
+racy: retrieval restricted to one predicted class can only return
+                                                                                            The internal test contains only 38 source photographs and 75
+that class, so routing rather than ranking decides correctness.
+                                                                                         crops, with two leaf-hopper crops; bootstrap uncertainty and
+Fig. ??(b) locates the failure. On the 65.67% of queries carry-
+                                                                                         per-class instability are therefore substantial. The descriptions
+ing a class-unique sentence open retrieval is near-saturated at
+                                                                                         originate from the annotation workflow rather than indepen-
+99.24%; on the rest it falls to 72.46%, which routing lifts to
+                                                                                         dent farmer notes, explaining the very strong text baseline
+89.86%. Per class it is weakest on looper caterpillars (77.50%),
+                                                                                         and limiting ecological validity. Although the visual gate is
+whose vocabulary overlaps mosquito bug damage.
+                                                                                         selected on validation data, choosing among five experts on 74
+   Three limits apply. The corpus is template-composed, so
+                                                                                         validation crops can still overfit. The central checkpoint has
+base and queries share sentence vocabulary even though no
+                                                                                         one training seed; the three FL seeds vary client partitions,
+observation is shared; these are upper bounds relative to free-
+                                                                                         not checkpoint initialization. Simulated clients lack estate
+form notes. The fusion re-ranker needs a fusion model on these
+                                                                                         ownership, attack, communication, and privacy accounting.
+five classes and is still unevaluated, as are the OBB overlay
+                                                                                         Most importantly, iterative sparse-note and routing develop-
+and the agronomic correctness of the advice itself. This is a
+                                                                                         ment makes that test non-pristine. DistilBERT is a pretrained
+retrieval result, not evidence that the recommended treatment
+                                                                                         language-model baseline rather than an instruction-tuned gen-
+is right.
+                                                                                         erative LLM; earlier fusion labels are implemented surrogates,
+H. Reproducibility Manifest                                                              and their differing supports forbid cross-panel ranking. A
+   The updated bundle records data identity, checkpoint state,                           prospective multi-estate set, independent field notes, more
+every federated round, and each realized client partition. Ta-                           rare-class cases, repeated end-to-end training, and a from-
+ble ?? separates mechanically verified controls from properties                          scratch federated comparison are required before deployment
+outside the evidence. Deterministic grouping, strict reload,                             claims.
+and validation-only adaptation are reproducible; external estate                                                 VI. C ONCLUSION
+transfer is not inferred from them.
+   TABLE X: Reproducibility manifest for the updated run                                     Our proposed model uses 371 exactly linked crop–text
+                                                                                         pairs from 200 source photographs with source-grouped par-
+ Control                         Recorded value                Status
+                                                                                         titions. A frozen ViT-tiny–DistilBERT late-fusion candidate is
+ Source split                    seed 42; 122/40/38 sources    fixed                     screened against the incumbent on the same split. Validation
+ Cross-split overlap             0 source photographs          verified
+ Crop–text pairing               371/371 exact box keys        verified                  accuracy favors the ResNet-50–compact-Transformer router
+ Shortcut vocabulary             178 tokens; train fitted      fixed
+ Checkpoint reload               strict key match              passed                    (89.19% versus 82.43%), so it is retained. On the common 75-
+ Family label arrays             75 identical ordered labels   verified                  crop internal test, the candidate is descriptively one crop higher
+ DistilBERT selection            90 candidates; validation     fixed before test em-
+                                 only                          bed.                      (82.67% versus 81.33%) and has higher macro F1 (0.8192
+ ViT+PLM VLM screen              360 candidates; validation    incumbent retained        versus 0.6679), but the paired difference is non-significant
+                                 accuracy
+ Visual gate search              3,125 gates on validation     completed                 (exact McNemar p = 1.0) and does not overturn validation-
+ Internal test support           75 crops / 38 sources         common                    only selection.
+ FedAvg adaptation               K = 2, 3, 5, 8; 8 rounds      completed
+ FL repetitions                  seeds 42/123/2026             partition seeds               Separately, warm-start FedAvg over the cross-modal core
+ FL evaluation                   74 validation crops           test untouched            retains 98.1–100.0% of initial validation macro F1 after eight
+                                                                                         rounds for 2–8 simulated clients; at K = 3, three partition
+                                                                                         seeds give 0.9046 ± 0.0075 versus the 0.9099 centralized
+

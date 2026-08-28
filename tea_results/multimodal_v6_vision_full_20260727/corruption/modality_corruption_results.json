@@ -1,0 +1,87 @@
+{
+  "experiment": "modality_corruption_locked_test",
+  "checkpoint": "/home/trishita/FarmFederate/tea_results/multimodal_v6_vision_full_20260727/models/best_vlm.pt",
+  "test_crops": 75,
+  "masked_training_fitted_tokens": 45,
+  "sparsity_seed": 20260727,
+  "corruption_seed": 20260827,
+  "conditions": [
+    {
+      "condition": "Clean",
+      "accuracy": 0.6266666666666667,
+      "macro_f1": 0.5163082607048125,
+      "flips": null,
+      "mean_text_weight": 0.26257091760635376
+    },
+    {
+      "condition": "Text deletion 25",
+      "accuracy": 0.6133333333333333,
+      "macro_f1": 0.5059836937256292,
+      "flips": 4,
+      "mean_text_weight": 0.267042875289917
+    },
+    {
+      "condition": "Text deletion 50",
+      "accuracy": 0.6266666666666667,
+      "macro_f1": 0.5244214721634076,
+      "flips": 7,
+      "mean_text_weight": 0.27301883697509766
+    },
+    {
+      "condition": "Text deletion 75",
+      "accuracy": 0.6,
+      "macro_f1": 0.5067962079726785,
+      "flips": 11,
+      "mean_text_weight": 0.2941921651363373
+    },
+    {
+      "condition": "Text deletion 100",
+      "accuracy": 0.36,
+      "macro_f1": 0.2902673796791444,
+      "flips": 41,
+      "mean_text_weight": 0.36137545108795166
+    },
+    {
+      "condition": "Image Gaussian $\\sigma{=}0.09$",
+      "accuracy": 0.64,
+      "macro_f1": 0.5233730701582958,
+      "flips": 13,
+      "mean_text_weight": 0.2568794786930084
+    },
+    {
+      "condition": "Image Gaussian $\\sigma{=}0.18$",
+      "accuracy": 0.64,
+      "macro_f1": 0.5307581307581308,
+      "flips": 16,
+      "mean_text_weight": 0.25757235288619995
+    },
+    {
+      "condition": "Image Gaussian $\\sigma{=}0.26$",
+      "accuracy": 0.6266666666666667,
+      "macro_f1": 0.5247427013598143,
+      "flips": 17,
+      "mean_text_weight": 0.26007893681526184
+    },
+    {
+      "condition": "Image Gaussian $\\sigma{=}0.35$",
+      "accuracy": 0.5866666666666667,
+      "macro_f1": 0.49055860934930695,
+      "flips": 25,
+      "mean_text_weight": 0.26879552006721497
+    },
+    {
+      "condition": "Image zeroed",
+      "accuracy": 0.37333333333333335,
+      "macro_f1": 0.16031189083820663,
+      "flips": 49,
+      "mean_text_weight": 0.29034069180488586
+    },
+    {
+      "condition": "Image uniform noise",
+      "accuracy": 0.28,
+      "macro_f1": 0.0875,
+      "flips": 61,
+      "mean_text_weight": 0.37987297773361206
+    }
+  ]
+}

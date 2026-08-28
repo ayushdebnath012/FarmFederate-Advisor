@@ -1,0 +1,137 @@
+{
+  "_meta": {
+    "crops": {
+      "train": 222,
+      "validation": 74,
+      "test": 75
+    },
+    "source_groups": {
+      "train": 122,
+      "validation": 40,
+      "test": 38
+    },
+    "blocked_tokens": 178,
+    "split_seed": 42,
+    "pairing": "exact (photograph, box) crop-note linkage",
+    "sparsities": [
+      0.0,
+      0.5,
+      0.75
+    ],
+    "selection": "74 validation crops only",
+    "note": "rungs mirror the visual pipeline table"
+  },
+  "ladder": {
+    "sparsity=0.0": {
+      "Direct CLS path": {
+        "candidates": 1,
+        "validation_accuracy": 0.9864864864864865,
+        "validation_macro_f1": 0.9253333333333333,
+        "test_accuracy": 0.9866666666666667,
+        "test_macro_f1": 0.929559748427673
+      },
+      "Masked-mean pooling": {
+        "candidates": 6,
+        "validation_accuracy": 0.9864864864864865,
+        "validation_macro_f1": 0.9253333333333333,
+        "test_accuracy": 1.0,
+        "test_macro_f1": 1.0
+      },
+      "Last-4-layer concat": {
+        "candidates": 24,
+        "validation_accuracy": 0.9864864864864865,
+        "validation_macro_f1": 0.9253333333333333,
+        "test_accuracy": 1.0,
+        "test_macro_f1": 1.0
+      },
+      "PCA-reduced head": {
+        "candidates": 30,
+        "validation_accuracy": 0.9864864864864865,
+        "validation_macro_f1": 0.9253333333333333,
+        "test_accuracy": 1.0,
+        "test_macro_f1": 1.0
+      },
+      "5-expert gate (not single model)": {
+        "candidates": 3125,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0,
+        "test_accuracy": 1.0,
+        "test_macro_f1": 1.0
+      }
+    },
+    "sparsity=0.5": {
+      "Direct CLS path": {
+        "candidates": 1,
+        "validation_accuracy": 0.7027027027027027,
+        "validation_macro_f1": 0.6935151515151515,
+        "test_accuracy": 0.7066666666666667,
+        "test_macro_f1": 0.5492706992706993
+      },
+      "Masked-mean pooling": {
+        "candidates": 6,
+        "validation_accuracy": 0.7972972972972973,
+        "validation_macro_f1": 0.7741019214703424,
+        "test_accuracy": 0.8133333333333334,
+        "test_macro_f1": 0.8422344322344323
+      },
+      "Last-4-layer concat": {
+        "candidates": 24,
+        "validation_accuracy": 0.8918918918918919,
+        "validation_macro_f1": 0.8409266409266409,
+        "test_accuracy": 0.8266666666666667,
+        "test_macro_f1": 0.7931384015594543
+      },
+      "PCA-reduced head": {
+        "candidates": 30,
+        "validation_accuracy": 0.7702702702702703,
+        "validation_macro_f1": 0.7480836052561954,
+        "test_accuracy": 0.7866666666666666,
+        "test_macro_f1": 0.7673010809852916
+      },
+      "5-expert gate (not single model)": {
+        "candidates": 3125,
+        "validation_accuracy": 0.8378378378378378,
+        "validation_macro_f1": 0.7976353276353276,
+        "test_accuracy": 0.76,
+        "test_macro_f1": 0.7945926236248816
+      }
+    },
+    "sparsity=0.75": {
+      "Direct CLS path": {
+        "candidates": 1,
+        "validation_accuracy": 0.4864864864864865,
+        "validation_macro_f1": 0.4798730158730159,
+        "test_accuracy": 0.52,
+        "test_macro_f1": 0.3968561584840654
+      },
+      "Masked-mean pooling": {
+        "candidates": 6,
+        "validation_accuracy": 0.581081081081081,
+        "validation_macro_f1": 0.4647736131934034,
+        "test_accuracy": 0.6,
+        "test_macro_f1": 0.46560131750497485
+      },
+      "Last-4-layer concat": {
+        "candidates": 24,
+        "validation_accuracy": 0.6081081081081081,
+        "validation_macro_f1": 0.6143290043290043,
+        "test_accuracy": 0.6533333333333333,
+        "test_macro_f1": 0.5078192090395481
+      },
+      "PCA-reduced head": {
+        "candidates": 30,
+        "validation_accuracy": 0.5945945945945946,
+        "validation_macro_f1": 0.597679749927355,
+        "test_accuracy": 0.5066666666666667,
+        "test_macro_f1": 0.3902156238953694
+      },
+      "5-expert gate (not single model)": {
+        "candidates": 3125,
+        "validation_accuracy": 0.5675675675675675,
+        "validation_macro_f1": 0.6566682241535059,
+        "test_accuracy": 0.5866666666666667,
+        "test_macro_f1": 0.43133366614628565
+      }
+    }
+  }
+}

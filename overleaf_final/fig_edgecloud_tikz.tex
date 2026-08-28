@@ -1,0 +1,160 @@
+% REQUIRES: \usetikzlibrary{arrows.meta,positioning,fit}
+% NOTE: no amssymb needed by this figure (plain \theta / \sum only).
+% Assumes these document colors are already defined in the preamble; if not, add:
+%   \definecolor{llmblue}{RGB}{174,210,225}   \definecolor{vitgreen}{RGB}{181,215,168}
+%   \definecolor{vlmred}{RGB}{234,153,153}    \definecolor{fedorange}{RGB}{255,229,153}
+%   \definecolor{outyyellow}{RGB}{255,242,204}\definecolor{smallgray}{RGB}{220,220,220}
+%   \definecolor{headblue}{RGB}{60,90,180}
+\begin{tikzpicture}[
+  font=\footnotesize,
+  >={Stealth[length=2.2mm,width=1.9mm]},
+  gpanel/.style={rounded corners=9pt, draw=black!40, thin, fill=smallgray!35},
+  stgpanel/.style={rounded corners=5pt, draw=black, thin},
+  strip/.style={draw=black, thin, rounded corners=2pt, inner xsep=6pt,
+                inner ysep=2.5pt, font=\footnotesize\bfseries, anchor=west},
+  stagetitle/.style={font=\footnotesize\bfseries, inner sep=1pt},
+  inbox/.style={draw=black, thin, rounded corners=2pt, fill=white,
+                minimum width=3.6cm, minimum height=0.72cm, inner sep=2pt},
+  minibox/.style={draw=black, thin, rounded corners=1.5pt, fill=white,
+                  minimum width=2.7cm, minimum height=0.46cm, inner sep=2pt},
+  tagbox/.style={draw=black, thin, rounded corners=3pt, fill=outyyellow,
+                 minimum width=3.4cm, minimum height=0.56cm, align=center, font=\scriptsize},
+  ltag/.style={draw=black, thin, rounded corners=2pt, fill=outyyellow,
+               font=\scriptsize, inner xsep=4pt, inner ysep=2pt},
+  eqbox/.style={draw=black, thin, fill=white, inner sep=5pt, font=\footnotesize},
+  opglyph/.style={circle, draw=headblue, line width=0.9pt, fill=white, inner sep=0.5pt,
+                  minimum size=0.44cm, font=\scriptsize\bfseries, text=headblue},
+  privacy/.style={densely dotted, draw=black!55, semithick, rounded corners=6pt},
+  upl/.style={->, semithick, rounded corners=3pt},
+  dnl/.style={->, dashed, draw=headblue, semithick, rounded corners=3pt},
+  ilab/.style={font=\scriptsize, align=center, inner sep=1.5pt},
+  mlab/.style={anchor=west, font=\scriptsize, inner sep=1pt},
+  fan/.style={draw=black!70, line width=0.4pt},
+  boundary/.style={dashed, draw=black!55, semithick},
+  pics/leafG/.style={code={%
+    \draw[black, line width=0.3pt, fill=vitgreen]
+      (0,-0.13) .. controls (0.12,-0.05) and (0.12,0.07) .. (0,0.14)
+                .. controls (-0.12,0.07) and (-0.12,-0.05) .. cycle;
+    \draw[black, line width=0.3pt] (0,-0.10) -- (0,0.10);}},
+  pics/docG/.style={code={%
+    \draw[black, line width=0.3pt, fill=white] (-0.09,-0.13) rectangle (0.09,0.13);
+    \foreach \yy in {0.06,0.00,-0.06}
+      \draw[black, line width=0.3pt] (-0.055,\yy) -- (0.055,\yy);}},
+  pics/gaugeG/.style={code={%
+    \draw[black, line width=0.3pt, fill=white] (0,0) circle (0.12);
+    \draw[headblue, line width=0.6pt] (0,0) -- (50:0.085);
+    \fill[headblue] (0,0) circle (0.6pt);}},
+  pics/lockG/.style={code={%
+    \draw[black, line width=0.4pt] (-0.07,0.02) -- (-0.07,0.09) arc (180:0:0.07) -- (0.07,0.02);
+    \draw[black, line width=0.3pt, fill=fedorange] (-0.12,-0.12) rectangle (0.12,0.02);
+    \fill[black] (0,-0.05) circle (0.018);}}
+]
+
+%=====================================================================
+% Privacy boundary: vertical dashed divider between edge and cloud
+%=====================================================================
+\draw[boundary] (17.3,3.35) -- (17.3,11.05);
+\pic at (16.15,11.28) {lockG};
+\node[font=\footnotesize\itshape, text=black!60, anchor=west] at (16.35,11.28)
+  {privacy boundary};
+
+%=====================================================================
+% Region (a): Tea-Garden Edge Layer  (left gray group)
+%=====================================================================
+\draw[gpanel] (0,3.45) rectangle (16.8,10.85);
+\node[font=\footnotesize\bfseries, anchor=west] at (0.30,10.47) {(a)};
+\node[strip, fill=llmblue!70] at (0.95,10.47) {Tea-Garden Edge Layer};
+
+% --- three client devices (same card pattern as the topology figure)
+\foreach \k/\cx in {1/3.1, 2/8.4, 3/13.7}{
+  \node[stgpanel, fill=llmblue!55, minimum width=3.3cm, minimum height=2.12cm] at (\cx,8.55) {};
+  \node[font=\scriptsize\bfseries] at (\cx,9.39) {Client \k};
+  \node[minibox] at (\cx+0.05,8.95) {};
+  \node[minibox] at (\cx+0.05,8.40) {};
+  \node[minibox] at (\cx+0.05,7.85) {};
+  \pic at (\cx-1.00,8.95) {leafG};
+  \pic at (\cx-1.00,8.40) {docG};
+  \pic at (\cx-1.00,7.85) {gaugeG};
+  \node[mlab] at (\cx-0.78,8.95) {Leaf Image};
+  \node[mlab] at (\cx-0.78,8.40) {Field Notes};
+  \node[mlab] at (\cx-0.78,7.85) {IoT Sensors};
+  % raw data feeds the shared on-device chain (solid = stays local)
+  \draw[->, semithick] (\cx,7.49) -- (\cx,6.78);
+}
+
+% --- on-device compute chain (white container, common to every client)
+\draw[gpanel, fill=white, rounded corners=6pt] (0.85,4.95) rectangle (16.45,6.75);
+\node[font=\scriptsize\itshape, text=black!70] at (8.65,6.48)
+  {on-device compute chain --- runs identically on every client};
+\node[stgpanel, fill=fedorange!80, align=center, font=\scriptsize,
+      minimum width=3.4cm, minimum height=1.05cm] (ch1) at (3.05,5.65)
+  {\textbf{Local Multimodal}\\[-1pt]\textbf{Training}\\[-1pt]{\tiny LLM + ViT + VLM}};
+\node[stgpanel, fill=llmblue!55, align=center, font=\scriptsize,
+      minimum width=3.0cm, minimum height=1.05cm, right=0.75cm of ch1] (ch2)
+  {\textbf{Local}\\[-1pt]\textbf{Classification}};
+\node[stgpanel, fill=vlmred!30, align=center, font=\scriptsize,
+      minimum width=2.9cm, minimum height=1.05cm, right=0.8cm of ch2] (ch3)
+  {\textbf{Local FAISS}\\[-1pt]\textbf{Retrieval}};
+\node[stgpanel, fill=outyyellow, align=center, font=\scriptsize,
+      minimum width=3.1cm, minimum height=1.05cm, right=0.7cm of ch3] (ch4)
+  {\textbf{Advisory}\\[-1pt]\textbf{Generation}};
+\draw[->, semithick] (ch1.east) -- (ch2.west);
+\draw[->, semithick] (ch2.east) -- (ch3.west);
+\draw[->, semithick] (ch3.east) -- (ch4.west);
+
+% --- data-locality note (padlock glyph + full-width strip)
+\node[tagbox, minimum width=15.6cm, minimum height=0.7cm] at (8.65,4.25) {};
+\pic at (4.30,4.25) {lockG};
+\node[mlab] at (4.60,4.25)
+  {Raw leaf images, field notes, and IoT readings never leave the device.};
+
+%=====================================================================
+% Region (b): Cloud Coordination Layer  (right gray group)
+%=====================================================================
+\draw[gpanel] (17.8,3.45) rectangle (26.6,10.85);
+\node[font=\footnotesize\bfseries, anchor=west] at (18.10,10.47) {(b)};
+\node[strip, fill=fedorange] at (18.75,10.47) {Cloud Coordination Layer};
+
+\node[stgpanel, fill=fedorange, align=center,
+      minimum width=4.4cm, minimum height=1.35cm] (agg) at (22.2,8.65)
+  {\textbf{FedAvg Aggregator}\\[1pt]
+   {\scriptsize $\theta^{t+1}=\textstyle\sum_k \frac{n_k}{n}\,\theta_k^{t+1}$}};
+\node[stgpanel, fill=llmblue!55, align=center,
+      minimum width=4.4cm, minimum height=0.95cm, below=0.5cm of agg] (gm)
+  {\textbf{Global Model} $\theta^{t}$};
+\draw[->, semithick] (agg.south) -- node[mlab] {broadcast} (gm.north);
+\node[tagbox, minimum width=6.9cm, minimum height=0.7cm, below=1.3cm of gm] (cnote)
+  {No raw farm data received --- coordination only.};
+
+%=====================================================================
+% Cross-boundary traffic (dashed blue = weights only; nothing solid
+% ever crosses the privacy boundary)
+%=====================================================================
+% --- per-client weight uploads into the aggregator
+\draw[dnl] ( 3.65,9.61) -- ( 3.65,10.06) -- (20.9,10.06) -- (20.9,9.33);
+\draw[dnl] ( 8.95,9.61) -- ( 8.95, 9.92) -- (21.5, 9.92) -- (21.5,9.33);
+\draw[dnl] (14.25,9.61) -- (14.25, 9.78) -- (22.1, 9.78) -- (22.1,9.33);
+\node[font=\scriptsize, text=headblue, anchor=east] at (20.6,9.52)
+  {$\theta_k^{t+1}$ upload};
+
+% --- global-model broadcast fanning back to every client
+\draw[dnl] (gm.west) -| (2.55,7.49);
+\draw[dnl] ( 7.85,7.00) -- ( 7.85,7.49);
+\draw[dnl] (13.15,7.00) -- (13.15,7.49);
+\fill[headblue] ( 7.85,7.00) circle (1.4pt);
+\fill[headblue] (13.15,7.00) circle (1.4pt);
+\node[font=\scriptsize, text=headblue, anchor=east] at (16.7,7.26)
+  {broadcast $\theta^{t}$};
+
+%=====================================================================
+% Legend (spans both regions, bottom of figure)
+%=====================================================================
+\node[inner sep=0pt] (legA) at (6.3,2.9) {};
+\draw[->, semithick] (6.35,2.9) -- (7.25,2.9);
+\node[mlab] (legAt) at (7.40,2.9) {local on-device computation};
+\draw[dnl] (12.4,2.9) -- (13.3,2.9);
+\node[mlab] (legBt) at (13.45,2.9) {federated weight traffic (crosses privacy boundary)};
+\node[draw=black!50, thin, rounded corners=3pt, inner sep=5pt,
+      fit=(legA)(legAt)(legBt)] {};
+
+\end{tikzpicture}

@@ -1,0 +1,7 @@
+model_a,model_b,a_only_correct,b_only_correct,discordant,delta_accuracy_a_minus_b,p_exact,p_holm
+unimodal_image,unimodal_text,2,9,11,-0.23333333333333334,0.06542968750000028,0.2617187500000011
+unimodal_image,standard_vlm_fusion,5,5,10,0.0,1.0,1.0
+unimodal_image,proposed_multimodal_vlm,2,9,11,-0.23333333333333334,0.06542968750000028,0.2617187500000011
+unimodal_text,standard_vlm_fusion,8,1,9,0.23333333333333334,0.039062499999999965,0.23437499999999978
+unimodal_text,proposed_multimodal_vlm,0,0,0,0.0,1.0,1.0
+standard_vlm_fusion,proposed_multimodal_vlm,1,8,9,-0.23333333333333334,0.039062499999999965,0.23437499999999978

@@ -1,0 +1,21 @@
+\begin{table}[t]
+\caption{Federated aggregation rules under \emph{matched} settings: same multimodal backbone, data, partition, local budget and hyperparameters, so the aggregation rule is the only variable. Mean\,$\pm$\,std over seeds.}
+\label{tab:baselines}
+\centering\footnotesize
+\setlength\tabcolsep{5pt}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Method} & $\alpha=0.1$ & $\alpha=1$\\
+\midrule
+Local only (no federation) & 0.279 & 0.607 \\
+\midrule
+FedAvg & 0.715\,$\pm$\,0.036 & 0.809\,$\pm$\,0.005 \\
+FedProx & 0.706\,$\pm$\,0.062 & 0.852\,$\pm$\,0.006 \\
+SCAFFOLD & 0.265\,$\pm$\,0.073 & 0.255\,$\pm$\,0.064 \\
+FedBN & 0.572\,$\pm$\,0.105 & 0.564\,$\pm$\,0.114 \\
+\bottomrule
+\end{tabular}
+\vspace{1pt}
+
+{\scriptsize Local-only is the mean over clients, each trained on its own shard alone at matched total local epochs. Every other row is the global model. Partitions use the class-wise Dirichlet splitter.}
+\end{table}

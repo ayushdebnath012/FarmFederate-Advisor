@@ -1,0 +1,3 @@
+[submodule "FarmFederate-Advisor"]
+    path = FarmFederate-Advisor
+    url = https://github.com/Solventerritory/FarmFederate-Advisor.git

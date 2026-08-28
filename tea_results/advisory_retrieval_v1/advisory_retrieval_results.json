@@ -1,0 +1,1294 @@
+{
+  "experiment": "advisory_classify_retrieve_advise",
+  "dataset": "data_final",
+  "encoder": "sentence-transformers/all-MiniLM-L6-v2",
+  "index": "exact inner product over unit vectors (FAISS IndexFlatIP equivalent)",
+  "class_order": [
+    "LEAF_BLIGHT",
+    "LEAF_HOPPERS",
+    "LEAF_RUST",
+    "LOOPER_CATERPILLARS",
+    "MOSQUITO_BUG"
+  ],
+  "seed": 42,
+  "top_k": 5,
+  "corpus_audit": {
+    "annotation_rows": 3000,
+    "unique_observations": 673,
+    "duplicate_rows_removed": 2327,
+    "distinct_sentences": 131,
+    "sentences_shared_across_classes": 43,
+    "class_counts_unique": {
+      "LEAF_HOPPERS": 132,
+      "MOSQUITO_BUG": 138,
+      "LEAF_RUST": 134,
+      "LEAF_BLIGHT": 135,
+      "LOOPER_CATERPILLARS": 134
+    }
+  },
+  "advisory_base": 472,
+  "queries": 201,
+  "chance_precision_at_1": 0.20005925021545531,
+  "per_query": [
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9378314454776733,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9375484392448121,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.8853501017713089,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9193940180526927,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9546678680398526,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9340248611265836,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9416964701632488,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9023401277788834,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.864554563895904,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9288151033058363,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.965156551897401,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9435554340512866,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9226264802587736,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9343200757312015,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9532297457884484,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9382206724722704,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9463376032611632,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9686402089771844,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9424826661221832,
+      "top1_correct": false
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9318347647710364,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9252980280675898,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9468778040949692,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9318535139378923,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9400520124860492,
+      "top1_correct": false
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9666768252050741,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.903015894781813,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9388355279763902,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9235111929467141,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.946713210887606,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.985573683521543,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9595092798361295,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9544869544485229,
+      "top1_correct": false
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.926730655370346,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9424511746679365,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9649166129003974,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9199727883725343,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9595106088746965,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9721083458485316,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9627584371606696,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9249824267611169,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9578841647233709,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9551141274793609,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.96797917991661,
+      "top1_correct": false
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.8973889863704085,
+      "top1_correct": false
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9424713130920865,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9061592927430994,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.953493329405493,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9291739577259308,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9157766630624119,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9557637696084815,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9306501610056321,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9341130700415656,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9270384754560176,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9395338183934822,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9715899011480364,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.8895074677268145,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9149177193339391,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9596109291252238,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9681621029083998,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9322960977297242,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9714360512613041,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9606334798959709,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9042758566106502,
+      "top1_correct": false
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9238679889030835,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9527397766005747,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9144841325167292,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9059971251484609,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9540949934031338,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9412283019701739,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9496730453412774,
+      "top1_correct": false
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9562915588602445,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.967343512565089,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9309613830880701,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9659890465445828,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.953513724815304,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9202330358806485,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9026509332607258,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9602320016132366,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9244218857303614,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9359687641750771,
+      "top1_correct": false
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9467567136299839,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9612870031781551,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9436039894880655,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9293470328514806,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9154943590602536,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9289769660794405,
+      "top1_correct": false
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9531511429095452,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9047242591968183,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9576094856147834,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.905550861244139,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9412207223547435,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9485821854339556,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9382461850519985,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9341958935483649,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9518387458926029,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9225255788885145,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9667350874039171,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9393231539885457,
+      "top1_correct": false
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9453777173207283,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9395838311560607,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.96061540353487,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9458860765039926,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9442116578633217,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9535860651776487,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.913590035516092,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9471585458810128,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9282865404724399,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9595744831054984,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9261673939536073,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.8956279726946572,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9558331941672956,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9490627548387277,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9204500171518648,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9506577149449214,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9466240383047038,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9151459107687785,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.949513424994327,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9316829975519173,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.938891252125605,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9605969720401564,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.950106482430011,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9626175087531953,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.8937352903741382,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.8971611932942272,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.8954508086865982,
+      "top1_correct": false
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9599561348809779,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9171197822739681,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.965855055036037,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9501125702344714,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9690852830761696,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.8901732158867911,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.929680277127366,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9489134127018888,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9264838947294907,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9424563888650506,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9541249576360965,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9517901817004937,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9586282899231221,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9561496383453666,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9427407461793057,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.8962257464181564,
+      "top1_correct": false
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9618611393598149,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9258583035115711,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9375317032361683,
+      "top1_correct": false
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.8785273692610895,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9503345387756881,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9359818424252817,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9403120033643453,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.8940464457623629,
+      "top1_correct": false
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9242534939128413,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9499660860174147,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9694041870419126,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9275886923594192,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9309028613554953,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9465060250041952,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9481958091114877,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9372150706036741,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9082783401898771,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9015642294858842,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9174861879926587,
+      "top1_correct": false
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.8746063802028896,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9583706922985102,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9738269744323487,
+      "top1_correct": false
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9508323438198447,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9611595898038214,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9336997355164576,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9345699448791986,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9676780790168467,
+      "top1_correct": false
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9651207405924542,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9218390652186224,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9208394369138005,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.946322773184685,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9662935345791923,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9600870052974166,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9712181987075982,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9175770074557591,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.8699833811936541,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9279592257506253,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9372510126861837,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9547604947468713,
+      "top1_correct": false
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9525461662702833,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9655325388616988,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9485043772919675,
+      "top1_correct": false
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9045488576959225,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9498008641825657,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9046588471123738,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.8886387942529701,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9294798819063486,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.8688006912341761,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_HOPPERS",
+      "top1_label": "LEAF_HOPPERS",
+      "top1_score": 0.9276662822285595,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9454620076474998,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9373859060149041,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "MOSQUITO_BUG",
+      "top1_score": 0.9356761555370161,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9676105968133913,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9376355268243751,
+      "top1_correct": true
+    },
+    {
+      "true_label": "MOSQUITO_BUG",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9311282004557965,
+      "top1_correct": false
+    },
+    {
+      "true_label": "LOOPER_CATERPILLARS",
+      "top1_label": "LOOPER_CATERPILLARS",
+      "top1_score": 0.9098947536743921,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.8921608398001464,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9229744064256443,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_BLIGHT",
+      "top1_label": "LEAF_BLIGHT",
+      "top1_score": 0.9678017680550965,
+      "top1_correct": true
+    },
+    {
+      "true_label": "LEAF_RUST",
+      "top1_label": "LEAF_RUST",
+      "top1_score": 0.9543874157000383,
+      "top1_correct": true
+    }
+  ],
+  "queries_with_class_specific_sentence": 0.6567164179104478,
+  "retrieve_only": {
+    "precision_at_1": 0.900497512437811,
+    "precision_at_1_ci95": [
+      0.8557213930348259,
+      0.9402985074626866
+    ],
+    "precision_at_5": 0.9323383084577115,
+    "mrr": 0.9469320066334991,
+    "ndcg_at_5": 0.9620864966281143,
+    "precision_at_1_with_specific_sentence": 0.9924242424242424,
+    "precision_at_1_generic_only": 0.7246376811594203
+  },
+  "classify_then_retrieve": {
+    "precision_at_1": 0.9552238805970149,
+    "precision_at_1_ci95": [
+      0.9253731343283582,
+      0.9800995024875622
+    ],
+    "precision_at_1_with_specific_sentence": 0.9848484848484849,
+    "precision_at_1_generic_only": 0.8985507246376812
+  },
+  "per_class": {
+    "LEAF_BLIGHT": {
+      "queries": 40,
+      "precision_at_1_open": 0.9,
+      "precision_at_1_routed": 0.975
+    },
+    "LEAF_HOPPERS": {
+      "queries": 40,
+      "precision_at_1_open": 0.975,
+      "precision_at_1_routed": 1.0
+    },
+    "LEAF_RUST": {
+      "queries": 40,
+      "precision_at_1_open": 0.975,
+      "precision_at_1_routed": 0.95
+    },
+    "LOOPER_CATERPILLARS": {
+      "queries": 40,
+      "precision_at_1_open": 0.775,
+      "precision_at_1_routed": 0.9
+    },
+    "MOSQUITO_BUG": {
+      "queries": 41,
+      "precision_at_1_open": 0.8780487804878049,
+      "precision_at_1_routed": 0.9512195121951219
+    }
+  },
+  "not_evaluated": [
+    "fusion-feature re-ranking (needs a fusion model on these five classes)",
+    "OBB localization overlay",
+    "agronomic correctness of the advice text itself"
+  ]
+}

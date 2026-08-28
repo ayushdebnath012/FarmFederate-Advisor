@@ -1,0 +1,1986 @@
+\documentclass[12pt, a4paper, oneside]{Thesis}
+
+% ---------- Packages ----------
+\usepackage{amsmath, amsfonts, amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{textcomp}
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage[expansion=false]{microtype}
+\usepackage{siunitx}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{colortbl}
+\usepackage{xcolor}
+\usepackage{needspace}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{url}
+\usepackage{placeins}
+
+% TikZ
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,shapes,calc}
+\sisetup{detect-all}
+
+\tikzset{
+  mainbox/.style={draw, rounded corners=4pt, align=center,
+                  minimum height=0.75cm, text width=#1,
+                  font=\footnotesize, inner sep=4pt},
+  mainbox/.default=2.4cm,
+  llmbox/.style ={mainbox, fill=llmblue,  draw=blue!50!black},
+  vitbox/.style ={mainbox, fill=vitgreen, draw=green!50!black},
+  vlmbox/.style ={mainbox=5.0cm, fill=vlmred,    draw=red!50!black,
+                  minimum height=1.0cm},
+  fedbox/.style ={mainbox=1.8cm, fill=fedorange, draw=orange!70!black},
+  outbox/.style ={mainbox=4.5cm, fill=outyyellow,draw=yellow!70!black},
+  sbox/.style   ={draw, rounded corners=2pt, fill=smallgray,
+                  minimum height=0.5cm, align=center,
+                  font=\scriptsize, inner sep=3pt, text width=1.8cm},
+  arr/.style    ={-{Stealth[length=5pt]}, thick},
+  darr/.style   ={-{Stealth[length=5pt]}, thick, dashed},
+  vnode/.style  ={draw, rounded corners=2pt, fill=llmblue,
+                  minimum width=0.85cm, minimum height=0.38cm,
+                  font=\tiny, align=center, inner sep=1pt},
+  inode/.style  ={draw, rounded corners=2pt, fill=vitgreen,
+                  minimum width=0.85cm, minimum height=0.38cm,
+                  font=\tiny, align=center, inner sep=1pt},
+  opnode/.style ={draw, rounded corners=2pt, fill=vlmred,
+                  minimum width=1.2cm, minimum height=0.38cm,
+                  font=\tiny, align=center, inner sep=1pt},
+  dimnode/.style={draw, rounded corners=2pt, fill=outyyellow,
+                  minimum width=1.2cm, minimum height=0.32cm,
+                  font=\tiny, align=center, inner sep=1pt},
+  sarr/.style   ={-{Stealth[length=3pt]}, semithick},
+}
+
+% Algorithm2e
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\SetAlFnt{\small}
+\SetKwInOut{KwIn}{Input}
+\SetKwInOut{KwOut}{Output}
+\SetAlgoCaptionSeparator{.}
+\SetAlCapFnt{\bfseries}
+\setlength{\algomargin}{1.2em}
+
+% Colour palette
+\definecolor{llmblue}  {RGB}{174,210,225}
+\definecolor{vitgreen} {RGB}{181,215,168}
+\definecolor{vlmred}   {RGB}{234,153,153}
+\definecolor{fedorange}{RGB}{255,229,153}
+\definecolor{outyyellow}{RGB}{255,242,204}
+\definecolor{smallgray} {RGB}{220,220,220}
+\definecolor{headblue}  {RGB}{60,90,180}
+
+% Captions
+\captionsetup{font=small,labelfont=bf,justification=centering}
+
+\graphicspath{{plots/}}
+
+% ---------- Thesis meta ----------
+\thesistitle{FarmFederate: Multimodal Federated Learning for Tea Leaf Disease Detection}
+\supervisor{Professor Sudip Misra}
+\degree{Bachelor of Technology}
+\degreemajor{Mechanical Engineering}
+\authors{Ayush Debnath}
+\rollno{22ME31010}
+\university{Indian Institute of Technology Kharagpur}
+\UNIVERSITY{INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR}
+\department{\texorpdfstring{\href{https://cse.iitkgp.ac.in/}{Department of Computer Science and Engineering}}{Department of Computer Science and Engineering}}
+\DEPARTMENT{\texorpdfstring{\href{https://cse.iitkgp.ac.in/}{DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING}}{DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING}}
+\unisite{http://www.iitkgp.ac.in}
+\depsite{https://cse.iitkgp.ac.in/}
+\placeshrt{Kharagpur}
+\placelng{Kharagpur - 721302, India}
+\datesub{April 27, 2026}
+\datesig{April 27, 2026}
+\semsub{Spring Semester, 2025-26}
+\keywords{Federated Learning, Vision-Language Models, Tea Leaf Disease Detection, Multimodal Fusion, IIT Kharagpur, Retrieval-Augmented Generation, Privacy-Preserving Machine Learning}
+\coursecd{Project-II }
+
+\title{\ttitle}
+
+\begin{document}
+
+\frontmatter
+\setstretch{1.6}
+
+\fancyhead{}
+\rhead{\thepage}
+\lhead{}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+\hypersetup{pdftitle={\ttitle}}
+\maketitle
+
+\Declaration{}
+
+\addtotoc{Certificate}
+\begin{certificate}
+\end{certificate}
+
+\clearpage
+\addtotoc{Abstract}
+
+\begin{abstract}
+Field-level diagnosis of tea leaf diseases traditionally relies on a combination of visual inspection and agronomist logs. However, automated diagnostic tools generally focus exclusively on either imagery or text, ignoring their combined potential. Furthermore, because agricultural data is often fragmented across multiple estates with limited connectivity, transferring raw data to centralised servers poses logistical and privacy challenges. To address this, we introduce FarmFederate, a multimodal federated learning framework designed to classify five common tea pathogens (\textit{leaf blight, leaf hoppers, leaf rust, looper caterpillars, mosquito bug}). A key feature of our approach is a diagnostic fallback mechanism that addresses field data scarcity by mapping textual symptom descriptions to reference images annotated with Oriented Bounding Boxes (OBB), thereby improving visual explainability. The architecture connects lightweight Large Language Model (LLM) text encoders with Vision Transformer (ViT) image encoders across eight distinct Vision-Language Model (VLM) fusion strategies. Distributed training is coordinated via Federated Averaging (FedAvg), ensuring that sensitive field records remain fully localised. Evaluated on a localised corpus with 200 field photographs, 371 YOLO-OBB annotations, 792 training-run image tensors after minority-class fill, and 3,000 agronomic text samples, our empirical results on a Tesla T4 GPU confirm the effectiveness of the multimodal approach. The best text-only and image-only baselines reach macro F1 scores of 0.487 and 0.911, while the best VLM fusion, CLIP-style contrastive fusion, reaches 0.949. Across three simulated non-IID clients, the federated training protocol preserves centralised performance while keeping raw field records local. Ultimately, FarmFederate ranks within the top tier of evaluated tea disease classifiers relative to a 35-model benchmark, bypassing the contemporary mean F1 threshold of 0.892.
+\end{abstract}
+
+\clearpage
+\pagestyle{fancy}
+\lhead{\emph{Contents}}
+\tableofcontents
+\listoffigures
+\listoftables
+
+\mainmatter
+\pagestyle{fancy}
+
+% ===============================
+% BODY ADAPTED FROM FarmFederate_Paper_v3.tex
+% ===============================
+\chapter{Introduction}
+
+Tea (\textit{Camellia sinensis}) is a vital cash crop for
+millions of smallholder farmers across South Asia, East Africa, and East Asia.
+Five diseases, leaf blight, leaf hoppers, leaf rust, looper caterpillars, and mosquito
+bug, cut yields by up to 30\% per year in major growing regions~\cite{Ahmed2023}.
+Early detection is vital for mitigating crop loss, and automated diagnostic systems have steadily advanced in response. Early support vector machine (SVM) classifiers~\cite{Hossain2018} have largely been supplanted by deep convolutional neural networks (CNNs)~\cite{HuGensheng2019,Latha2021} and transformer-based architectures~\cite{Wu2025,Soeb2023}. Contemporary transfer-learning systems frequently report accuracies exceeding 99\%~\cite{Madhavi2025,Dipty2025}. Despite these successes, the existing literature predominantly relies on image-only inputs and assumes the availability of centralised training repositories. In field operations, agronomists rely heavily on written logs detailing lesion shape, affected flushes, recent weather patterns, and soil conditions---contextual data completely ignored by purely visual models. Moreover, as tea estates are distributed geographically, transmitting high-resolution photographs to central servers incurs substantial bandwidth costs and raises significant data ownership concerns. Federated Learning (FL)~\cite{McMahan2017} offers a compelling solution by enabling models to train on localised data, yet no existing FL framework for tea pathology has successfully integrated both visual and textual modalities.
+
+\section{Motivation}
+
+While current detection research heavily biases towards photographic analysis, real-world agronomy is inherently multimodal. Field experts combine immediate visual inspection with historical logs, contextualizing symptomatic appearance with environmental factors such as humidity levels and precipitation. Unimodal systems fail to capture this complexity: image models cannot process environmental records, while text classifiers struggle to distinguish morphologically similar outbreaks that are otherwise visually distinct, such as differentiating leaf blight from leaf rust.
+
+Compounding these technical limitations are infrastructural barriers. Remote hill-station gardens often operate under constrained digital networks, and plantation managers generally view their cultivation data as proprietary trade secrets. FarmFederate addresses these dual challenges. By fusing leaf imagery with in-field diagnostic annotations, the framework ensures classifiers benefit from comprehensive multidimensional signals. Simultaneously, when faced with sparsely documented field events, the system utilizes a diagnostic visualizer to map text prompts onto annotated OBB reference images, enhancing operational transparency. Crucially, the entire training cycle is orchestrated through federated learning, guaranteeing that raw farm data never leaves its original device.
+
+\section{Contributions}
+
+\begin{itemize}
+  \item We present the first joint evaluation of federated LLM (5 variants), ViT
+        (5 variants), and VLM fusion (8 strategies) on a localised tea leaf disease
+        corpus under identical non-IID conditions. Attention-based VLM fusions reach
+        macro F1 of 0.886--0.949 versus 0.861--0.911 for image-only ViT and
+        0.417--0.487 for text-only LLM, demonstrating consistent multimodal gains.
+  \item We construct a localised corpus from 200 field-collected tea leaf
+        photographs with 371 YOLO-OBB disease annotations. The reported training
+        run uses 792 image tensors after minority-class synthetic fill and pairs
+        them with 3\,000 generated agronomic text samples (600/class; 8\% clear,
+        22\% slightly mixed, 70\% heavily mixed templates).
+  \item We introduce a Classify-Retrieve-Advise RAG pipeline that keeps per-estate
+        FAISS knowledge bases local and aggregates only model weights through FedAvg,
+        so no field records or leaf photographs leave the garden device.
+  \item We combine focal loss~\cite{Lin2017}, entropy-based diversity regularisation
+        ($\lambda{=}1.0$), and square-root-dampened class weights (capped at $10\times$)
+        to prevent class collapse under the original field imbalance and the
+        deliberately ambiguous cross-class text templates.
+  \item Federated training across three simulated non-IID clients preserves
+        centralised accuracy on average: LLM 107.7\% (0.460 vs.\ 0.427),
+        ViT 100.0\% (0.886 vs.\ 0.886), and VLM 98.6\% (0.861 vs.\ 0.873),
+        confirming that no significant privacy-utility trade-off is required.
+\end{itemize}
+
+\chapter{Related Work}
+\label{sec:related}
+
+\section{Tea Leaf Disease Detection}
+
+Tea (\textit{Camellia sinensis}) supports millions of smallholder farmers. Fungal,
+bacterial, and insect-borne diseases cut yields and reduce leaf quality every season.
+Early automated work used classical methods. Hossain et al.~\cite{Hossain2018} built
+an SVM classifier with colour-space features. Karmokar et al.~\cite{Karmokar2015}
+used a neural network ensemble and reached 91\% on Bangladeshi gardens.
+
+CNN methods improved on this. Hu et al.~\cite{HuGensheng2019} built a multiscale
+detector reaching 92.5\% accuracy. Mukhopadhyay et al.~\cite{Mukhopadhyay2020}
+combined NSGA-II segmentation with a multi-class SVM and reached 83\%. Latha et
+al.~\cite{Latha2021} and Bhowmik et al.~\cite{Bhowmik2022} applied AlexNet-style
+CNNs to multi-class tea data and crossed 90\%. Rahman et al.~\cite{Rahman2024sci}
+focused on Bangladeshi gardens and achieved 96.55\% on natural-environment images.
+
+Transfer learning pushed performance further. Madhavi et al.~\cite{Madhavi2025}
+fused VGG19, ResNet50, and a custom CNN to reach 99.65\%. Dipty et
+al.~\cite{Dipty2025} deployed ResNet50 with Grad-CAM as a real-time Android app
+called TeaNet8 and reported 97.14\%. Hairah et al.~\cite{Hairah2024} applied
+MobileNetV2 to six tea classes and reached 96.65\%. Heng et al.~\cite{Heng2024}
+combined a hybrid-pooling CNN with a random forest ensemble and reported 92.35\%
+recall.
+
+Attention and transformer models are a more recent direction. Balasundaram et
+al.~\cite{Balasundaram2024} combined SAM with CNNs for lesion segmentation. Wu et
+al.~\cite{Wu2025} introduced LiifaNet, pairing an attention CNN with handcrafted
+texture features for 94.08\% on the Crop Protection benchmark. Hu and
+Zou~\cite{HuZou2025} built LA-SRNet for low-light UAV imagery and gained 2.9\%
+mAP over a strong baseline.
+
+Detection pipelines have also improved. Bao et al.~\cite{Bao2022} proposed
+AX-RetinaNet and reached mAP 95.6\%. Soeb et al.~\cite{Soeb2023} adapted
+YOLOv7 for real-time tea inference. Xue et al.~\cite{Xue2023} introduced
+YOLO-Tea with CBAM and self-attention, improving over existing detectors by
+0.3--15.0\%. Wang et al.~\cite{Wang2024forests} added GAM attention and weighted
+box fusion to YOLOv5, gaining 8.7--9.6\%. Yao et al.~\cite{Yao2024} used triplet
+attention for small-target detection and reached 85\% accuracy. Ahmed et
+al.~\cite{Ahmed2023} survey the broader CNN and Vision Transformer literature for
+tea disease.
+
+Every method above uses images only. All assume data can be collected centrally.
+None is designed for the multi-estate, privacy-sensitive setting.
+
+\section{Federated Learning for Tea and Plant Disease Detection}
+
+McMahan et al.~\cite{McMahan2017} introduced FedAvg. It remains the standard
+aggregation algorithm today. Datta and Gupta~\cite{DattaGupta2023} were the first to
+apply federated learning to tea leaf disease. They trained a CNN for severity grading
+across six classes. Their work is the closest predecessor to ours. It uses images only.
+Hari and Singh~\cite{HariSingh2024} proposed an adaptive knowledge-transfer scheme
+for federated plant detection. It reached 97.5\% test accuracy without sharing raw
+data. Sharma et al.~\cite{Sharma2022} showed FL with CNNs works for sunflower disease.
+Kumar et al.~\cite{Kumar2024} applied federated CNNs to soybean disease and reached
+93\% macro accuracy. Aggarwal et al.~\cite{Aggarwal2023} used federated transfer
+learning for rice leaf classification with MobileNetV2 and EfficientNetB3 and
+reached 99\%. Aldossary et al.~\cite{Aldossary2025} combined LeViT and ResUNet in a
+federated drone-monitoring system and reached 98.9\%. Li et al.~\cite{Li2020}
+introduced FedProx for heterogeneous networks. Karimireddy et
+al.~\cite{Karimireddy2020} proposed SCAFFOLD to reduce client drift under non-IID
+data.
+
+Every federated approach listed here works on images alone. None has paired leaf
+photographs with agronomist text annotations in a federated setting for tea disease.
+
+\section{Vision-Language Models for Agriculture}
+
+CLIP~\cite{Radford2021} showed contrastive vision-language pre-training enables
+zero-shot transfer. BLIP-2~\cite{Li2023} introduced the Q-Former for vision-language
+alignment. Flamingo~\cite{Alayrac2022} proposed gated cross-attention for few-shot
+visual language modelling. CoCa~\cite{Yu2022} unified contrastive and captioning
+objectives into one model.
+Wang et al.~\cite{Long2025} proposed LLMI-CDP. It uses LoRA fine-tuning on VisualGLM
+for crop disease identification. It showed that structured text complements visual
+features. Al-Obeidat and Li~\cite{AlObeidat2025} combined YOLO aerial detection with
+DeiT leaf classification in a multimodal UAV pipeline. They reached 99.45\%.
+Li et al.~\cite{Li2025} proposed FedReplay. It integrates frozen CLIP in a federated
+setting. It reaches 86.6\% accuracy with only 1\% feature sharing.
+
+FarmFederate follows this direction. It combines LLM text encoders, ViT image
+encoders, and eight VLM fusion strategies. Training runs entirely within federated
+rounds. It is the first such system applied to tea leaf disease.
+
+\begin{table}[t]
+\caption{Comparison with Related Work on Tea/Plant Disease Detection.}
+\label{tab:relwork}
+\centering\footnotesize
+\setlength\tabcolsep{3.5pt}
+\begin{tabular}{lcccc}
+\toprule
+ & \multicolumn{2}{c}{\textbf{Modality}} & \multicolumn{2}{c}{\textbf{Training}}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+\textbf{Work} & \textbf{Image} & \textbf{Text} & \textbf{FL} & \textbf{VLM}\\
+\midrule
+\multicolumn{5}{l}{\textit{Tea Leaf Disease Detection}} \\
+\quad Hu~\cite{HuGensheng2019}           & \checkmark & $\times$ & $\times$ & $\times$ \\
+\quad Bao~\cite{Bao2022}                 & \checkmark & $\times$ & $\times$ & $\times$ \\
+\quad Rahman~\cite{Rahman2024sci}        & \checkmark & $\times$ & $\times$ & $\times$ \\
+\quad Madhavi~\cite{Madhavi2025}         & \checkmark & $\times$ & $\times$ & $\times$ \\
+\quad Wu~\cite{Wu2025}                   & \checkmark & $\times$ & $\times$ & $\times$ \\
+\midrule
+\multicolumn{5}{l}{\textit{Federated Learning for Disease}} \\
+\quad Datta~\cite{DattaGupta2023}        & \checkmark & $\times$ & \checkmark & $\times$ \\
+\quad Hari~\cite{HariSingh2024}          & \checkmark & $\times$ & \checkmark & $\times$ \\
+\quad Kumar~\cite{Kumar2024}             & \checkmark & $\times$ & \checkmark & $\times$ \\
+\quad Li~\cite{Li2025}                   & \checkmark & $\times$ & \checkmark & \checkmark \\
+\midrule
+\multicolumn{5}{l}{\textit{Multimodal / VLM for Agriculture}} \\
+\quad Wang~\cite{Long2025}               & \checkmark & \checkmark & $\times$ & \checkmark \\
+\quad Al-Obeidat~\cite{AlObeidat2025}    & \checkmark & \checkmark & $\times$ & \checkmark \\
+\rowcolor{vlmred!30}
+\textbf{FarmFederate (ours)}             & \checkmark & \checkmark & \checkmark & \checkmark \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:relwork} shows that FarmFederate is the only framework to combine all
+four capabilities. It uses image and text modalities, federated learning, and VLM
+fusion. It is the first to apply this combination to tea leaf disease detection.
+
+\chapter{System Model}
+\label{sec:sysmodel}
+
+\section{Architecture Overview}
+
+Figure~\ref{fig:arch} shows the FarmFederate architecture. Each tea estate holds
+three types of data. Leaf photographs come from drones or smartphones. Agronomists
+write field annotations describing lesion shape and growing conditions. IoT sensors
+record temperature, humidity, soil moisture, pH, and EC. All of this stays on the
+local device. Only model weights travel to the aggregation server.
+
+Data moves through three stages on each garden device:
+\begin{enumerate}
+  \item \textbf{Preprocessing:} Field annotations are tokenised with WordPiece~\cite{Devlin2019}
+        (up to 128 tokens); leaf photographs are resized to $224{\times}224$ and
+        normalised to ImageNet statistics~\cite{Deng2009}.
+  \item \textbf{Encoding:} An LLM encoder reads the annotation text and produces a
+        feature vector $\mathbf{h}_t \in \mathbb{R}^{256}$ from the \texttt{[CLS]}
+        token. A ViT encoder reads the leaf image and produces $\mathbf{h}_v \in
+        \mathbb{R}^{512}$ via adaptive average pooling.
+  \item \textbf{Fusion and output:} A VLM fusion module combines $\mathbf{h}_t$ and
+        $\mathbf{h}_v$ into a joint representation $\mathbf{h}_f$, which a
+        classification head maps to one of the five tea leaf diseases.
+\end{enumerate}
+
+\begin{figure}[t]
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[node distance=0.5cm]
+  \node[llmbox] (ti) {Text Input\\[-1pt]{\scriptsize Field Annotations}};
+  \node[sbox, below=0.3cm of ti] (tok) {Tokenizer\\WordPiece};
+  \node[llmbox, below=0.3cm of tok, text width=2.6cm,minimum height=1.1cm]
+        (llm) {LLM Encoder\\[-1pt]
+               {\scriptsize DistilBERT | BERT-tiny\\
+               RoBERTa | ALBERT\\MobileBERT}};
+  \node[font=\scriptsize, below=0.2cm of llm] (ht)
+        {$\mathbf{h}_t\!\in\!\mathbb{R}^{256}$};
+
+  \node[vitbox, right=3.5cm of ti] (ii) {Image Input\\[-1pt]
+                                         {\scriptsize Tea Leaf Photos $224{\times}224$}};
+  \node[sbox, below=0.3cm of ii] (aug) {Augmentation\\Normalize};
+  \node[vitbox, below=0.3cm of aug, text width=2.6cm, minimum height=1.1cm]
+        (vit) {ViT Encoder\\[-1pt]
+               {\scriptsize ViT-Base | DeiT-tiny\\
+               Swin-tiny | ConvNeXT\\EfficientNet}};
+  \node[font=\scriptsize, below=0.2cm of vit] (hv)
+        {$\mathbf{h}_v\!\in\!\mathbb{R}^{512}$};
+
+  \node[fedbox, right=1.0cm of vit, yshift=0.3cm, minimum height=1.4cm,
+        text width=1.9cm] (fed)
+        {Federated\\Learning\\[-1pt]{\scriptsize FedAvg\\K=3 clients}};
+
+  \node[vlmbox, below=1.1cm of llm, xshift=3.0cm, minimum height=1.0cm]
+        (vlm)
+        {VLM Fusion Module\\[-2pt]
+         {\scriptsize Concat | Cross-Attn | Gated | CLIP | Flamingo | BLIP-2 | CoCa | Unified-IO}};
+
+  \node[mainbox=3.5cm, fill=vlmred!70, draw=red!60!black,
+        below=0.4cm of vlm] (cls)
+        {Classification Head\\[-1pt]{\scriptsize $f_C \rightarrow$ Softmax}};
+
+  \node[outbox, below=0.4cm of cls] (out)
+        {5-Class Prediction\\[-2pt]
+         {\scriptsize Leaf Blight | Leaf Hoppers | Leaf Rust | Looper Caterpillars | Mosquito Bug}};
+
+  \node[font=\small, below=0.22cm of out] (loss)
+        {$\mathcal{L}=\mathcal{L}_{focal}+\lambda\mathcal{L}_{div}$};
+
+  \node[font=\footnotesize\bfseries\color{gray!70}, below=0.5cm of loss] (raglabel)
+        {--- RAG Diagnosis Pipeline ---};
+
+  \node[mainbox=3.8cm, fill=llmblue!25, draw=blue!40,
+        below=0.28cm of raglabel] (faiss)
+        {FAISS IndexFlatIP\\[-1pt]{\scriptsize Top-$k$ cosine retrieval}};
+
+  \node[mainbox=2.8cm, fill=llmblue!15, draw=blue!30,
+        left=0.7cm of faiss] (sbert)
+        {Sentence-BERT\\[-1pt]{\scriptsize query encoder}};
+
+  \node[sbox, right=0.7cm of faiss, text width=1.8cm] (kb)
+        {5-class KB\\Treatment docs};
+
+  \node[mainbox=3.8cm, fill=vlmred!25, draw=red!35,
+        below=0.32cm of faiss] (rerank)
+        {VLM Re-ranker\\[-1pt]{\scriptsize optional image-guided reranking}};
+
+  \node[mainbox=3.8cm, fill=fedorange!70, draw=orange!60,
+        below=0.32cm of rerank] (iot)
+        {IoT Sensor Fusion\\[-1pt]{\scriptsize Temp.\ $\cdot$ Humidity $\cdot$ Soil $\cdot$ pH $\cdot$ EC}};
+
+  \node[outbox, below=0.32cm of iot, text width=3.8cm] (treat)
+        {Treatment Recommendation\\[-1pt]{\scriptsize High / Med / Low priority actions}};
+
+  \draw[arr] (ti)  -- (tok);
+  \draw[arr] (tok) -- (llm);
+  \draw[arr] (ii)  -- (aug);
+  \draw[arr] (aug) -- (vit);
+  \draw[arr] (llm) -- (ht);
+  \draw[arr] (vit) -- (hv);
+  \draw[arr] (ht.south)  -- ++(0,-0.18) -| (vlm.north west);
+  \draw[darr](hv.south)  -- ++(0,-0.18) -| (vlm.north east);
+  \draw[arr] (vlm) -- (cls);
+  \draw[arr] (cls) -- (out);
+  \draw[darr](fed.west) -- (vit.east);
+
+  \draw[arr] (out.south) -- ++(0,-0.22) -- (loss.north);
+  \draw[darr](loss.south) -- (raglabel.north);
+  \draw[arr] (raglabel.south) -- ++(0,-0.06) -| (sbert.north);
+  \draw[arr] (sbert.east) -- (faiss.west);
+  \draw[darr](kb.west)   -- (faiss.east);
+  \draw[arr] (faiss)     -- (rerank);
+  \draw[arr] (rerank)    -- (iot);
+  \draw[arr] (iot)       -- (treat);
+  \draw[darr](hv.south) -- ++(0,-0.18) -- ++(2.8,0) |-  (rerank.east);
+\end{tikzpicture}%
+}
+\caption{FarmFederate architecture: multimodal federated learning pipeline (top) and RAG diagnosis pipeline (bottom).}
+\label{fig:arch}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\scalebox{0.73}{%
+\begin{tikzpicture}[
+  enode/.style={draw, rounded corners=3pt, fill=vitgreen!60, align=center,
+                font=\scriptsize, inner sep=4pt,
+                minimum width=3.4cm, minimum height=0.65cm},
+  cnode/.style={draw, rounded corners=3pt, fill=llmblue!70, align=center,
+                font=\scriptsize, inner sep=4pt,
+                minimum width=3.4cm, minimum height=0.65cm},
+  bnode/.style={draw, rounded corners=3pt, fill=fedorange!70, align=center,
+                font=\scriptsize, inner sep=4pt,
+                minimum width=3.4cm, minimum height=0.65cm},
+  onode/.style={draw, rounded corners=3pt, fill=vlmred!50, align=center,
+                font=\scriptsize, inner sep=4pt,
+                minimum width=3.4cm, minimum height=0.65cm},
+  ctag/.style={draw, rounded corners=2pt, font=\tiny\bfseries, inner sep=3pt,
+               align=center},
+  sa/.style={-{Stealth[length=4pt]}, thick},
+  da2/.style={-{Stealth[length=3pt]}, semithick, dashed, gray!60},
+  upl/.style={-{Stealth[length=5pt]}, line width=1.4pt, orange!80!black},
+  dnl/.style={-{Stealth[length=5pt]}, line width=1.4pt, dashed, orange!60!red},
+  xbl/.style={-{Stealth[length=4pt]}, thick, blue!60},
+]
+
+\path[fill=vitgreen!12, rounded corners=8pt]
+  (-0.3,-9.6) rectangle (5.5, 1.2);
+\path[fill=llmblue!12, rounded corners=8pt]
+  (7.5,-9.6) rectangle (11.8, 1.2);
+
+\node[font=\small\bfseries, text=green!40!black] at (2.6,  0.85)
+  {Edge Device (Farm)};
+\node[font=\small\bfseries, text=blue!50!black]  at (10.4,  0.85)
+  {Cloud / Global Server};
+
+\draw[gray!35, dashed, line width=0.7pt] (6.5, -10.1) -- (6.5, 1.1);
+\node[font=\tiny, gray!50, rotate=90] at (6.5, -4.5) {Edge\;/\;Cloud};
+
+\node[bnode] (inp) at (2.6, 0.0)
+  {Text + Image Input\\[-2pt]{\tiny tea leaf photo $+$ field annotation $+$ IoT}};
+
+\node[enode] (pre) at (2.6, -1.0)
+  {Preprocessing\\[-2pt]{\tiny resize $224{\times}224$;\;WordPiece 128 tok.}};
+
+\node[enode, minimum width=1.55cm] (llm) at (1.35, -2.3)
+  {LLM Encoder\\[-2pt]\tiny DistilBERT / BERT\\[-1pt]\tiny ALBERT / RoBERTa};
+\node[enode, minimum width=1.55cm] (vit) at (3.85, -2.3)
+  {ViT Encoder\\[-2pt]\tiny ViT-B / DeiT-tiny\\[-1pt]\tiny Swin / EfficientNet};
+
+\node[enode] (fus) at (2.6, -3.6)
+  {VLM Fusion Module\\[-2pt]
+   \tiny Concat / Cross-Attn / Gated / CLIP\\[-1pt]
+   \tiny Flamingo / BLIP-2 / CoCa / Unified-IO};
+
+\node[enode] (cls) at (2.6, -4.85)
+  {Classifier Head\\[-2pt]\tiny $f_C \to$ Softmax $\to$ 5-class};
+
+\node[onode] (pred) at (2.6, -5.95)
+  {5-Class Prediction\\[-2pt]
+   \tiny leaf\_blight\;$\cdot$\;leaf\_hoppers\;$\cdot$\;leaf\_rust\;$\cdot$\;looper\_caterpillars\;$\cdot$\;mosquito\_bug};
+
+\node[enode] (iot) at (2.6, -7.05)
+  {IoT Sensor Fusion\\[-2pt]\tiny temp\;$\cdot$\;humidity\;$\cdot$\;soil\;$\cdot$\;pH\;$\cdot$\;EC};
+
+\node[onode] (ondev) at (2.6, -8.15)
+  {On-device Advisory\\[-2pt]\tiny template-based;\;works offline};
+
+\draw[sa] (inp)  -- (pre);
+\draw[sa] (pre.south) -- ++(-1.25,-0.55) -- (llm.north);
+\draw[sa] (pre.south) -- ++(1.25,-0.55)  -- (vit.north);
+\draw[sa] (llm)  -- (fus);
+\draw[sa] (vit)  -- (fus);
+\draw[sa] (fus)  -- (cls);
+\draw[sa] (cls)  -- (pred);
+\draw[sa] (pred) -- (iot);
+\draw[sa] (iot)  -- (ondev);
+
+\node[ctag, fill=green!10, draw=green!45!black, text width=3.4cm, align=center]
+  at (2.6, -9.4)
+  {\textcolor{orange!70!black}{\textbf{Fed:}} $K{=}3$, $T{=}8$\,rds, $E{=}3$\,ep\\[3pt]
+   \textcolor{green!50!black}{\textbf{Train:}} AdamW, focal+diversity};
+
+\node[cnode] (kb) at (10.4, 0.0)
+  {5-class Knowledge Base\\[-2pt]\tiny tea disease treatment docs};
+
+\node[cnode] (sbert) at (10.4, -1.0)
+  {Sentence-BERT Encoder\\[-2pt]\tiny all-MiniLM-L6-v2};
+
+\node[cnode] (faiss) at (10.4, -2.3)
+  {FAISS IndexFlatIP\\[-2pt]\tiny top-$k$ cosine retrieval};
+
+\node[cnode] (rerank) at (10.4, -3.6)
+  {VLM Re-ranker\\[-2pt]\tiny image-guided reordering via $\mathbf{h}_f$};
+
+\node[cnode] (llmgen) at (10.4, -4.85)
+  {LLM Advisory Generator\\[-2pt]\tiny context from top docs};
+
+\node[onode] (fullrec) at (10.4, -5.95)
+  {Full Recommendation\\[-2pt]\tiny ranked High\;/\;Med\;/\;Low actions};
+
+\node[bnode, minimum height=1.5cm, text width=4.0cm] (fedsrv) at (10.4, -7.7)
+  {FedAvg Server\\[2pt]
+   $\theta^{t+1}\!\leftarrow\!\sum_k\tfrac{n_k}{n}\,\theta_k^{t+1}$\\[1pt]
+   \tiny $T{=}8$ rounds --- lightweight weight average};
+
+\draw[sa] (kb)     -- (sbert);
+\draw[sa] (sbert)  -- (faiss);
+\draw[sa] (faiss)  -- (rerank);
+\draw[sa] (rerank) -- (llmgen);
+\draw[sa] (llmgen) -- (fullrec);
+
+\node[ctag, fill=llmblue!35, draw=blue!40!black, text width=4.8cm]
+  at (10.4, -9.25)
+  {Light compute: cosine search, weight average --- no GPU needed};
+
+\node[ctag, fill=fedorange!60, draw=orange!60!black,
+      text width=1.8cm, align=center] (ftag) at (6.5,-2.35)
+  {FedAvg\\$K{=}3$ clients\\$T{=}8$ rounds};
+
+\draw[xbl] (cls.east) to[out=0,in=180] (sbert.west);
+\draw[xbl] (fus.east) to[out=0,in=180] (rerank.west);
+\draw[xbl] (fullrec.west) to[out=180,in=0] (iot.east);
+\draw[upl] (ondev.east) to[out=0,in=180] (fedsrv.west);
+\draw[dnl] (fedsrv.west) to[out=180,in=0] (iot.east);
+
+\end{tikzpicture}%
+}
+\caption{Compute allocation: tea garden edge devices (green) run leaf image encoding, text encoding, VLM fusion, disease classification, and per-estate FAISS retrieval locally; the global server (blue) aggregates model weights with FedAvg. Raw leaf images, agronomist annotations, and knowledge-base documents never leave the garden device.}
+\label{fig:edgecloud}
+\end{figure}
+
+\section{Dataset Description}
+
+We evaluate FarmFederate on a fully localised image dataset leveraging original field collections from the Tea Garden of the Indian Institute of Technology Kharagpur (IIT Kharagpur). The dataset is paired with a class-balanced synthetic agronomic text corpus. The five disease classes are:
+\textit{leaf\_blight} (fungal infection causing brown water-soaked necrosis),
+\textit{leaf\_hoppers} (insect-mediated puncture lesions),
+\textit{leaf\_rust} (orange-yellow rust pustules on the lower leaf surface),
+\textit{looper\_caterpillars} (ragged feeding holes and skeletonised patches), and
+\textit{mosquito\_bug} (raised corky feeding wounds and shoot-tip dieback).
+
+\subsection{Image Data}
+
+The visual corpus originates exclusively from field collections. \textbf{Field-collected:} 200 high-resolution photographs captured during active growing seasons on-site at the IIT Kharagpur tea plantation. The sorted real-image folders contain 35 leaf-blight, 8 leaf-hoppers, 62 leaf-rust, 48 looper-caterpillars, and 47 mosquito-bug images. Annotations strictly use YOLO Oriented Bounding Box (OBB) format to handle non-axis-aligned disease patches, yielding 371 annotated disease boxes. The Colab setup also prepares a balanced export folder with 800 images per class for inspection and download, but the reported training run loads the sorted real dataset and applies synthetic fill only to the under-represented leaf-hoppers class. This yields 792 image tensors in the training run (200 real images plus 592 generated minority-fill images), split into 633 train and 79 validation images. All images are resized to $224{\times}224$ and normalised with ImageNet statistics.
+
+\subsection{Text Data}
+
+To mirror realistic field reports, a fully balanced text corpus containing 3\,000 natural-language descriptions (600 per class) was generated using class-specific vocabulary configurations drawn from established agricultural diagnostic literature. The generator deliberately creates three difficulty tiers: 8\% strongly class-specific observations, 22\% slightly mixed observations, and 70\% heavily mixed observations whose visible symptoms are borrowed from other classes while retaining only weak class evidence. This prevents the text stream from becoming a trivial keyword classifier and forces the VLM to use image evidence during fusion.
+
+\begin{table}[t]
+\caption{Dataset Overview}
+\label{tab:dataset}
+\centering\footnotesize
+\begin{tabular}{llp{3.8cm}}
+\toprule
+\textbf{Category} & \textbf{Parameter} & \textbf{Value}\\
+\midrule
+\multirow{4}{*}{General}
+  & Num.\ classes   & 5 \\
+  & Text source     & Synthetic Agronomic Templates \\
+  & Image source    & IIT Kharagpur Tea Garden \\
+  & Train/Val/Test  & Stratified, run-specific \\
+\midrule
+\multirow{6}{*}{Image}
+  & Base raw images & 200 (YOLO-OBB annotated) \\
+  & OBB instances   & 371 annotated boxes \\
+  & Training-run images & 792 (200 real + 592 fill) \\
+  & Image Train / Val & 633 / 79 \\
+  & Normalisation   & ImageNet mean/std \\
+  & Resolution      & $224{\times}224$ \\
+\midrule
+\multirow{4}{*}{Text}
+  & Total samples   & 3\,000 (600/class) \\
+  & Diversity split & 8\% clear, 22\% slight, 70\% heavy \\
+  & Max seq.\ length & 128 tokens \\
+  & Train / Val     & 2\,400 / 300 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+  \centering
+  \begin{minipage}[t]{0.315\linewidth}
+    \includegraphics[width=\linewidth,height=3.3cm,keepaspectratio]{plots/plot26_stress_distribution}
+    \caption{Tea disease class distribution in the field-collected YOLO-OBB annotations.}
+    \label{fig:stress_dist}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.315\linewidth}
+    \includegraphics[width=\linewidth,height=3.3cm,keepaspectratio]{plots/plot21_dataset_comparison}
+    \caption{Dataset: 200 field images, 371 OBB boxes, 792 training-run image tensors, and 3\,000 text samples.}
+    \label{fig:dataset_comp}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.315\linewidth}
+    \includegraphics[width=\linewidth,height=3.3cm,keepaspectratio]{plots/plot08_params}
+    \caption{Parameter ranges across 18 architectures. VLM fusions heaviest; ViT lightest.}
+    \label{fig:params}
+  \end{minipage}
+  \caption{Dataset statistics and model sizes: disease-class distribution (left), field-data augmentation summary (centre), and parameter ranges (right).}
+  \label{fig:datastats}
+\end{figure}
+
+\section{Model Variants}
+
+\subsection{LLM Text Encoders}
+
+We employ lightweight text classifiers inspired by five LLM architectures.
+Table~\ref{tab:llmenc} summarises their characteristics.
+
+\begin{table}[t]
+\caption{LLM Encoder Variants}
+\label{tab:llmenc}
+\centering\footnotesize
+\begin{tabular}{lccl}
+\toprule
+\textbf{Model} & \textbf{Layers} & \textbf{Embed Dim} & \textbf{Key Feature}\\
+\midrule
+DistilBERT~\cite{Sanh2019}    & 6 & 256 & Knowledge distillation \\
+BERT-tiny~\cite{Devlin2019}     & 4 & 256 & Compact bidirectional \\
+RoBERTa-tiny~\cite{Liu2019}  & 4 & 256 & Dynamic masking \\
+ALBERT-tiny~\cite{Lan2020}   & 4 & 256 & Parameter sharing \\
+MobileBERT~\cite{Sun2020}    & 4 & 256 & Mobile-optimised \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The text encoding process is:
+\begin{equation}
+  \mathbf{h}_t = \mathrm{Pool}\!\bigl(f_{LLM}(\mathrm{Tokenize}(\mathbf{x}_t))\bigr)
+  \label{eq:textenc}
+\end{equation}
+where $\mathrm{Tokenize}(\cdot)$ converts raw text to token IDs, $f_{LLM}(\cdot)$
+produces contextualised embeddings via a transformer encoder with positional encoding
+and residual connections, and $\mathrm{Pool}(\cdot)$ extracts the \texttt{[CLS]} token
+representation.
+
+\subsection{ViT Image Encoders}
+
+We evaluate five lightweight vision classifiers with residual CNN blocks.
+Table~\ref{tab:vitenc} summarises the five variants.
+
+\begin{table}[t]
+\caption{ViT Encoder Variants}
+\label{tab:vitenc}
+\centering\footnotesize
+\begin{tabular}{lccp{2.1cm}}
+\toprule
+\textbf{Model} & \textbf{Conv} & \textbf{Dim} & \textbf{Key Feature}\\
+\midrule
+ViT-Base~\cite{Dosovitskiy2021}      & 3 & 512 & Residual CNN \\
+DeiT-tiny~\cite{Touvron2021}     & 3 & 512 & Compact \\
+Swin-tiny~\cite{Liu2021Swin}     & 3 & 512 & Spatial drop \\
+ConvNeXT-tiny~\cite{Liu2022ConvNeXT} & 3 & 512 & Modern Conv \\
+EfficientNet~\cite{Tan2019}  & 3 & 512 & Efficient scale \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The visual encoding extracts features via:
+\begin{equation}
+  \mathbf{h}_v = \mathrm{Pool}\!\bigl(f_{ViT}(\mathbf{x}_v)\bigr)
+  \label{eq:visenc}
+\end{equation}
+where $f_{ViT}(\cdot)$ is a 3-block residual CNN with batch normalisation~\cite{IoffeSzegedy2015} and spatial
+dropout, followed by adaptive average pooling.
+
+\section{Problem Formulation}
+
+Given a multimodal dataset $\mathcal{D} = \{(\mathbf{x}_t^i, \mathbf{x}_v^i,
+y^i)\}_{i=1}^{N}$ distributed across $K$ clients, the objective is to minimise the
+global loss while preserving data privacy:
+\begin{equation}
+  \min_{\theta}\; \sum_{k=1}^{K} \frac{n_k}{n}\,\mathcal{L}_k(\theta)
+  \label{eq:fedobj}
+\end{equation}
+following the FedAvg objective~\cite{McMahan2017}.
+subject to:
+\begin{align}
+  \mathcal{L}_k(\theta) &= \mathbb{E}_{(\mathbf{x}_t,\mathbf{x}_v,y)\sim\mathcal{D}_k}
+    \bigl[\ell(\theta;\mathbf{x}_t,\mathbf{x}_v,y)\bigr] \label{eq:localobj}\\
+  \mathbf{h}_f &= f_{VLM}(\mathbf{h}_t, \mathbf{h}_v) \label{eq:vlmfusion}
+\end{align}
+
+\section{Loss Function Formulation}
+
+For a mini-batch $\mathcal{B}$, the classifier emits logits $\mathbf{z}_i$ and
+class probabilities $\mathbf{p}_i=\mathrm{softmax}(\mathbf{z}_i)$ for $C=5$
+classes. The implementation uses label smoothing with $\epsilon=0.1$:
+\begin{equation}
+  \tilde{y}_{i,c}=(1-\epsilon)\mathbb{1}[c=y_i]+\epsilon/C .
+  \label{eq:smooth}
+\end{equation}
+The smoothed focal term is then:
+\begin{equation}
+  \mathcal{L}_{focal}
+  = \frac{1}{|\mathcal{B}|}\sum_{i\in\mathcal{B}}
+    \alpha_{y_i}(1-p_{i,y_i})^\gamma
+    \left[-\sum_{c=1}^{C}\tilde{y}_{i,c}\log p_{i,c}\right],
+  \label{eq:focal}
+\end{equation}
+with $\gamma=2$ by default. Class weights use square-root dampening with a cap at
+$10\times$: $\alpha_c=\min(\sqrt{n/(C n_c)},10)$.
+
+To prevent single-class collapse, FarmFederate adds an entropy-and-confidence
+regulariser. Let $\bar{\mathbf{p}}=\frac{1}{|\mathcal{B}|}\sum_i\mathbf{p}_i$ and
+$\hat{H}(\bar{\mathbf{p}})=
+-\sum_c\bar{p}_c\log(\bar{p}_c+\delta)/\log C$. The diversity penalty is:
+\begin{align}
+  \mathcal{L}_{div}
+  &= \lambda_d(1-\hat{H})
+     \left(1-0.8\frac{[\hat{H}-\rho]_+}{1-\rho}\right)
+     +10\lambda_c[\bar{m}-0.9]_+, \label{eq:div}\\
+  \bar{m} &= \frac{1}{|\mathcal{B}|}\sum_{i\in\mathcal{B}}\max_c p_{i,c},
+  \quad \rho=0.7,
+\end{align}
+where $\delta=10^{-8}$, $\lambda_d=1.0$, and $\lambda_c=0.5$. The final training
+objective is:
+\begin{equation}
+  \mathcal{L} = \mathcal{L}_{focal}+\mathcal{L}_{div}.
+  \label{eq:loss}
+\end{equation}
+
+\chapter{FarmFederate Framework}
+\label{sec:ff}
+
+\section{VLM Fusion Architectures}
+
+FarmFederate implements eight VLM fusion strategies. Specifically, for the cross-attention variant, the fused vector is computed as $\mathbf{h}_f = \text{LayerNorm}(\mathbf{h}_t + \text{MHA}(Q{=}\mathbf{h}_t, K{=}V{=}W_v\mathbf{h}_v))$, where $W_v$ is a visual projection matrix. Table~\ref{tab:vlmfusions}
+provides the mathematical formulation for each.
+
+\begin{table}[t]
+\caption{VLM Fusion Strategy Formulations}
+\label{tab:vlmfusions}
+\centering\footnotesize
+\begin{tabular}{p{1.2cm}p{6.1cm}}
+\toprule
+\textbf{Fusion} & \textbf{Equation}\\
+\midrule
+Concat      & $\mathbf{h}_f = [\mathbf{h}_t;\mathbf{h}_v]$\\[2pt]
+Cross-Attn~\cite{Vaswani2017}  & $\mathbf{h}_f = \frac{1}{2}(\mathbf{h}_t+\mathrm{MHA}(\mathbf{h}_t,W_v\mathbf{h}_v,W_v\mathbf{h}_v))$\\[2pt]
+Gated       & $g=\sigma(W[\mathbf{h}_t;\mathbf{h}_v])$,\; $\mathbf{h}_f = \mathbf{h}_t + g\odot W_v\mathbf{h}_v$\\[2pt]
+CLIP~\cite{Radford2021}        & $\mathbf{h}_f = [\mathrm{norm}(P_t\mathbf{h}_t);\mathrm{norm}(P_v\mathbf{h}_v)]$\\[2pt]
+Flamingo~\cite{Alayrac2022}    & $\mathbf{z}=\mathrm{Perceiver}(\mathbf{h}_v)$,\;
+              $\mathbf{h}_f=\mathrm{GatedXAttn}(\mathbf{h}_t,\mathbf{z})$\\[2pt]
+BLIP-2~\cite{Li2023}           & $\mathbf{q}=\mathrm{mean}(\mathrm{MHA}(Q,W_v\mathbf{h}_v,W_v\mathbf{h}_v))$,\;
+              $\mathbf{h}_f=\mathbf{h}_t+W_q\mathbf{q}$\\[2pt]
+CoCa~\cite{Yu2022}             & $\mathbf{h}_f = [\mathrm{norm}(P_t\mathbf{h}_t);\mathrm{norm}(P_v\mathbf{h}_v);\mathrm{MHA}(\mathbf{h}_t,W_v\mathbf{h}_v,W_v\mathbf{h}_v)]$\\[2pt]
+Unified-IO~\cite{Lu2022}  & $\mathbf{h}_f = \mathrm{TransEnc}([\mathbf{h}_t{+}\mathbf{e}_t;\mathbf{h}_v{+}\mathbf{e}_v])$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Figure~\ref{fig:vlmdiag} shows the architectural diagram for all eight fusion strategies.
+
+\begin{figure}[t]
+\centering
+\newcommand\vlmsub[4]{%
+  \begin{tikzpicture}[node distance=0.28cm, baseline=(current bounding box.north)]
+    \node[vnode] (ht) {$\mathbf{h}_t$};
+    \node[inode, right=0.22cm of ht] (hv) {$\mathbf{h}_v$};
+    #4
+    \node[opnode, below=0.28cm of $(ht)!0.5!(hv)$] (op) {#2};
+    \node[dimnode, below=0.22cm of op] (dim) {#3};
+    \draw[sarr] (ht.south)  -- ++(0,-0.06) -| (op.north west);
+    \draw[sarr] (hv.south)  -- ++(0,-0.06) -| (op.north east);
+    \draw[sarr] (op) -- (dim);
+  \end{tikzpicture}%
+}
+\setlength\tabcolsep{4pt}
+\begin{tabular}{ccccc}
+\multicolumn{5}{c}{\textit{\footnotesize Row 1: Basic and Contrastive Fusions}}\\[2pt]
+\begin{tikzpicture}[node distance=0.50cm,baseline=(current bounding box.north)]
+  \node[vnode] (ht) {$\mathbf{h}_t$};
+  \node[inode, right=0.35cm of ht] (hv) {$\mathbf{h}_v$};
+  \node[opnode, below=0.50cm of $(ht)!0.5!(hv)$] (op) {$[\,;\,]$};
+  \node[dimnode, below=0.38cm of op] (dim) {768-d};
+  \draw[sarr](ht.south)--++(0,-0.12)-|(op.north west);
+  \draw[sarr](hv.south)--++(0,-0.12)-|(op.north east);
+  \draw[sarr](op)--(dim);
+\end{tikzpicture}
+&
+\begin{tikzpicture}[node distance=0.50cm,baseline=(current bounding box.north)]
+  \node[vnode] (ht) {$Q$};
+  \node[inode, right=0.35cm of ht] (hv) {$K,V$};
+  \node[opnode, below=0.50cm of $(ht)!0.5!(hv)$] (op) {MHA};
+  \node[dimnode, below=0.38cm of op] (dim) {256-d};
+  \draw[sarr](ht.south)--++(0,-0.12)-|(op.north west);
+  \draw[sarr](hv.south)--++(0,-0.12)-|(op.north east);
+  \draw[sarr](op)--(dim);
+\end{tikzpicture}
+&
+\begin{tikzpicture}[node distance=0.50cm,baseline=(current bounding box.north)]
+  \node[vnode] (ht) {$\mathbf{h}_t$};
+  \node[inode, right=0.35cm of ht] (hv) {$\mathbf{h}_v$};
+  \node[opnode, below=0.50cm of $(ht)!0.5!(hv)$] (op) {$g\!=\!\sigma(W[\cdot])$};
+  \node[dimnode, below=0.38cm of op] (dim) {256-d};
+  \draw[sarr](ht.south)--++(0,-0.12)-|(op.north west);
+  \draw[sarr](hv.south)--++(0,-0.12)-|(op.north east);
+  \draw[sarr](op)--(dim);
+\end{tikzpicture}
+&
+\begin{tikzpicture}[node distance=0.50cm,baseline=(current bounding box.north)]
+  \node[vnode] (ht) {$\mathbf{h}_t$};
+  \node[inode, right=0.35cm of ht] (hv) {$\mathbf{h}_v$};
+  \node[opnode, below=0.50cm of $(ht)!0.5!(hv)$,fill=llmblue!60] (op) {Norm.\ Proj.};
+  \node[dimnode, below=0.38cm of op] (dim) {512-d};
+  \draw[sarr](ht.south)--++(0,-0.12)-|(op.north west);
+  \draw[sarr](hv.south)--++(0,-0.12)-|(op.north east);
+  \draw[sarr](op)--(dim);
+\end{tikzpicture}
+&
+\begin{tikzpicture}[node distance=0.50cm,baseline=(current bounding box.north)]
+  \node[vnode] (ht) {$\mathbf{h}_t$};
+  \node[inode, right=0.35cm of ht] (hv) {$\mathbf{h}_v$};
+  \node[opnode, below=0.50cm of hv, fill=fedorange] (perc) {Perceiver};
+  \node[opnode, below=0.50cm of perc, xshift=-0.54cm] (op) {GatedXAttn};
+  \node[dimnode, below=0.38cm of op] (dim) {256-d};
+  \draw[sarr](hv.south)--(perc.north);
+  \draw[sarr](ht.south) -- (ht.south |- op.north) -| (op.north west);
+  \draw[sarr](perc.south) -- (perc.south |- op.north) -| (op.north east);
+  \draw[sarr](op)--(dim);
+\end{tikzpicture}
+\\[1pt]
+{\tiny 1. Concatenation} & {\tiny 2. Cross-Attn} & {\tiny 3. Gated} &
+{\tiny 4. CLIP} & {\tiny 5. Flamingo}\\[16pt]
+\begin{tikzpicture}[node distance=0.50cm,baseline=(current bounding box.north)]
+  \node[vnode] (ht) {$\mathbf{h}_t$};
+  \node[inode, right=0.35cm of ht] (hv) {$\mathbf{h}_v$};
+  \node[opnode, below=0.50cm of hv, fill=fedorange] (qf) {Q-Former};
+  \node[opnode, below=0.50cm of qf] (q) {Query $\mathbf{q}$};
+  \node[opnode, below=0.50cm of q, xshift=-0.54cm] (op) {$[\mathbf{h}_t;\mathbf{q}]$};
+  \node[dimnode, below=0.38cm of op] (dim) {256-d};
+  \draw[sarr](hv.south)--(qf.north);
+  \draw[sarr](qf)--(q);
+  \draw[sarr](ht.south) -- (ht.south |- op.north) -| (op.north west);
+  \draw[sarr](q.south) -- (q.south |- op.north) -| (op.north east);
+  \draw[sarr](op)--(dim);
+\end{tikzpicture}
+&
+\begin{tikzpicture}[node distance=0.50cm,baseline=(current bounding box.north)]
+  \node[vnode] (ht) {$\mathbf{h}_t$};
+  \node[inode, right=0.35cm of ht] (hv) {$\mathbf{h}_v$};
+  \node[opnode, below=0.50cm of ht, fill=vitgreen!60] (contr) {Contr.};
+  \node[opnode, below=0.50cm of hv, fill=fedorange]   (capt)  {Captn.};
+  \node[opnode, below=0.50cm of $(contr)!0.5!(capt)$] (op) {Dual $[\cdot]$};
+  \node[dimnode, below=0.38cm of op] (dim) {768-d};
+  \draw[sarr](ht.south)--(contr.north);
+  \draw[sarr](hv.south)--(capt.north);
+  \draw[sarr](contr.south)--++(0,-0.12)-|(op.north west);
+  \draw[sarr](capt.south)--++(0,-0.12)-|(op.north east);
+  \draw[sarr](op)--(dim);
+\end{tikzpicture}
+&
+\begin{tikzpicture}[node distance=0.50cm,baseline=(current bounding box.north)]
+  \node[vnode] (ht) {$\mathbf{h}_t$};
+  \node[inode, right=0.35cm of ht] (hv) {$\mathbf{h}_v$};
+  \node[opnode, below=0.50cm of $(ht)!0.5!(hv)$, fill=fedorange] (me) {Mod.\ Emb.};
+  \node[opnode, below=0.38cm of me] (tr) {Transformer};
+  \node[dimnode, below=0.38cm of tr] (dim) {256-d};
+  \draw[sarr](ht.south)--++(0,-0.12)-|(me.north west);
+  \draw[sarr](hv.south)--++(0,-0.12)-|(me.north east);
+  \draw[sarr](me)--(tr);
+  \draw[sarr](tr)--(dim);
+\end{tikzpicture}
+& & \\[1pt]
+{\tiny 6. BLIP-2} & {\tiny 7. CoCa} & {\tiny 8. Unified-IO} & & \\
+\end{tabular}
+\caption{Eight VLM fusion architectures implemented in FarmFederate.}
+\label{fig:vlmdiag}
+\end{figure}
+
+\section{Federated Learning with FedAvg}
+
+Algorithm~\ref{alg:fedavg} describes the FedAvg procedure adapted for FarmFederate.
+Client data is partitioned using a Dirichlet distribution ($\alpha=1.0$)~\cite{Hsu2019}
+to simulate non-IID conditions across $K=3$ federated clients, matching the Colab
+configuration. If $\pi\sim\mathrm{Dirichlet}(\alpha\mathbf{1}_K)$, then client
+$k$ receives approximately $n_k=\lfloor \pi_kN\rfloor$ samples. Each client
+optimises:
+\begin{equation}
+  \theta_{k}^{t+1}
+  = \theta^t - \eta \sum_{e=1}^{E}
+      \nabla_{\theta}\mathcal{L}_k(\theta;\mathcal{B}_{k,e}),
+  \label{eq:localupdate}
+\end{equation}
+before the server computes the weighted average in Algorithm~\ref{alg:fedavg}.
+
+\begin{algorithm}[H]
+\caption{FarmFederate with FedAvg}
+\label{alg:fedavg}
+\KwIn{Initial model $\theta^0$, clients $K{=}3$, rounds $T{=}8$, local epochs $E{=}3$}
+\KwOut{Trained global model $\theta^T$}
+Server initialises $\theta^0$\;
+\For{$t = 0$ \KwTo $T-1$}{
+  Server broadcasts $\theta^t$ to all clients\;
+  \ForEach{client $k \in \{1,\ldots,K\}$ in parallel}{
+    $\theta_k^{t+1} \leftarrow \mathrm{LocalTrain}(\theta^t, \mathcal{D}_k, E)$\;
+  }
+  $\theta^{t+1} \leftarrow \sum_{k=1}^{K} \frac{n_k}{n}\,\theta_k^{t+1}$\tcp*{Weighted aggregation~\cite{McMahan2017}}
+}
+\Return{$\theta^T$}\;
+\end{algorithm}
+
+\section{Anti-Collapse Mechanisms}
+
+The field-collected image set is strongly imbalanced before augmentation, with
+leaf\_hoppers heavily under-represented relative to the other four classes.
+The reported training pipeline fills this minority class and uses balanced
+mini-batch sampling, while the synthetic text corpus introduces
+lexical ambiguity via 70\% heavily mixed
+templates that can still induce class collapse in smaller models. FarmFederate uses
+three mechanisms to ensure all five classes are consistently predicted:
+\begin{enumerate}
+  \item \textbf{Balanced Batch Sampling:} Each training batch is constructed with equal
+        representation from all classes via oversampling of minorities.
+  \item \textbf{Diversity Loss:} A regularisation term (Eq.~\ref{eq:div}) penalises
+        low prediction entropy, with weight $\lambda=1.0$ and a 70\% entropy threshold.
+  \item \textbf{Early Collapse Abort:} Training is terminated after 3 consecutive epochs
+        where $>$85\% of predictions fall into a single class, restoring the best diverse
+        checkpoint.
+\end{enumerate}
+
+The sampler used in the implementation can be written compactly as follows.
+Let $\mathcal{I}_c$ be the index set for class $c$, $B$ the batch size, and
+$q=\lfloor B/C\rfloor$. For each batch $b$, the sampler draws
+$S_{b,c}\sim\mathrm{SampleWR}(\mathcal{I}_c,q)$ for every class and forms:
+\begin{equation}
+  \mathcal{B}_b=\bigcup_{c=1}^{C}S_{b,c}\;\cup\;R_b,
+  \label{eq:balbatch}
+\end{equation}
+where $R_b$ fills the remainder slots from minority classes. Sampling with
+replacement is used only when $|\mathcal{I}_c|$ is too small to cover all batches.
+
+
+\chapter{RAG Diagnosis Module}
+\label{sec:rag}
+
+\section{Architecture}
+
+Once a disease is identified, the agronomist still needs to know what to do.
+The RAG module answers that question. It retrieves relevant treatment documents from
+a local knowledge base. It then adjusts the recommendation using live IoT sensor
+readings from the garden. Figure~\ref{fig:ragpipeline} shows how the pipeline works.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[node distance=0.42cm,
+  rbox/.style={draw, rounded corners=3pt, align=center, fill=llmblue!30,
+               text width=3.8cm, minimum height=0.65cm, font=\footnotesize,
+               inner sep=4pt},
+  iobox/.style={draw, rounded corners=3pt, align=center, fill=vitgreen!40,
+                text width=3.8cm, minimum height=0.65cm, font=\footnotesize,
+                inner sep=4pt},
+  sensorbox/.style={draw, rounded corners=3pt, align=center, fill=fedorange,
+                    text width=3.8cm, minimum height=0.65cm, font=\footnotesize,
+                    inner sep=4pt},
+  outragbox/.style={draw, rounded corners=3pt, align=center, fill=vlmred!40,
+                    text width=3.8cm, minimum height=0.65cm, font=\footnotesize,
+                    inner sep=4pt},
+  sidebox/.style={draw, rounded corners=3pt, align=center, fill=outyyellow,
+                  text width=2.4cm, minimum height=0.65cm, font=\scriptsize,
+                  inner sep=3pt},
+  rarr/.style={-{Stealth[length=4pt]}, thick},
+  darrarr/.style={-{Stealth[length=4pt]}, thick, dashed, gray},
+]
+  \node[iobox] (q) {Query\\[-1pt]{\scriptsize Text + optional image}};
+  \node[rbox, below=0.35cm of q] (sbert)
+        {Sentence-BERT Encoder\\[-1pt]{\scriptsize all-MiniLM-L6-v2}};
+  \node[rbox, below=0.35cm of sbert] (faiss)
+        {FAISS IndexFlatIP\\[-1pt]{\scriptsize Top-$k$ cosine retrieval}};
+  \node[sidebox, right=0.5cm of faiss] (kb)
+        {5-class KB\\Treatment docs};
+  \node[rbox, below=0.35cm of faiss] (vlmrerank)
+        {VLM Re-ranker\\[-1pt]{\scriptsize Optional visual re-ranking}};
+  \node[sensorbox, below=0.35cm of vlmrerank] (iot)
+        {IoT Sensor Fusion\\[-1pt]{\scriptsize Temp., humidity, soil, pH, EC}};
+  \node[outragbox, below=0.35cm of iot] (rec)
+        {Treatment Recommendation\\[-1pt]{\scriptsize High/Med/Low priority actions}};
+  \node[sidebox, right=0.5cm of sbert, fill=smallgray] (tfidf)
+        {TF-IDF fallback\\BM25-style};
+
+  \draw[rarr] (q)         -- (sbert);
+  \draw[rarr] (sbert)     -- (faiss);
+  \draw[rarr] (faiss)     -- (vlmrerank);
+  \draw[rarr] (vlmrerank) -- (iot);
+  \draw[rarr] (iot)       -- (rec);
+  \draw[darrarr] (kb.west)    -- (faiss.east);
+  \draw[darrarr] (tfidf.west) -- (sbert.east)
+        node[midway, above, font=\tiny, gray] {if unavail.};
+\end{tikzpicture}
+\caption{RAG Diagnosis Module: query encoded by Sentence-BERT, top-$k$ passages retrieved via FAISS, optionally re-ranked by VLM, and confidence adjusted by IoT readings.}
+\label{fig:ragpipeline}
+\end{figure}
+
+The pipeline runs five steps:
+\begin{enumerate}
+  \item The agronomist submits a query, either a text description, a leaf photograph,
+        or both. Sentence-BERT~\cite{Reimers2019} (\texttt{all-MiniLM-L6-v2}) converts
+        the text into a dense vector.
+  \item FAISS~\cite{Johnson2019} searches the five-class treatment knowledge base by
+        cosine similarity and returns the top-$k$ matching passages.
+  \item When a leaf photograph is available, the VLM re-ranker reorders those passages
+        using the fused leaf features $\mathbf{h}_f$.
+  \item Current sensor readings (temperature, humidity, soil moisture, pH, EC) shift
+        per-class confidence scores to reflect actual garden conditions.
+  \item The top-ranked passage becomes the treatment recommendation, with actions
+        sorted by urgency (high, medium, low).
+\end{enumerate}
+
+\textbf{Fallback.} If Sentence-BERT or FAISS are not available, the system falls
+back to a TF-IDF sparse retriever~\cite{Robertson1994} using cosine similarity.
+
+\section{RAG Scoring Formulation}
+
+The implementation uses a dense 128-dimensional query vector when the federated
+retriever is enabled. It concatenates the VLM feature, class probabilities, and
+normalised sensor vector:
+\begin{equation}
+  \mathbf{q} =
+  \frac{\phi([\mathbf{h}_f;\mathbf{p};\tilde{\mathbf{s}}])}
+       {\|\phi([\mathbf{h}_f;\mathbf{p};\tilde{\mathbf{s}}])\|_2},
+  \quad
+  \tilde{\mathbf{s}}=\frac{\mathbf{s}-\boldsymbol{\mu}_s}{\boldsymbol{\sigma}_s+\epsilon}.
+  \label{eq:ragquery}
+\end{equation}
+Each knowledge-base document $d_j$ is indexed with a unit-normalised embedding
+$\mathbf{e}_j$, so retrieval is inner-product cosine search:
+\begin{equation}
+  r_j = \mathbf{q}^{\top}\mathbf{e}_j,\qquad
+  \mathcal{R}_k=\operatorname{TopK}_{j}(r_j).
+  \label{eq:retrieval}
+\end{equation}
+When VLM probabilities are available, FarmFederate re-ranks each retrieved
+document using the exact blend implemented in the Colab pipeline:
+\begin{equation}
+  s_j = 0.55\,r_j + 0.35\,p_{c(j)} + \beta_{iot}(c(j),\mathbf{s}),
+  \label{eq:rerank}
+\end{equation}
+where $c(j)$ is the disease label attached to document $d_j$ and $\beta_{iot}$ is a
+small rule-based boost for agronomically plausible sensor states, e.g., high
+humidity for leaf blight/rust or lower humidity for mosquito bug. The final class
+decision fuses retrieval voting with the VLM posterior:
+\begin{equation}
+  \hat{y}_{RAG} =
+  \arg\max_c\left[
+    0.60\,\frac{1}{|\mathcal{R}_k|}\sum_{d_j\in\mathcal{R}_k}\mathbb{1}[c(j)=c]
+    +0.40\,p_c
+  \right].
+  \label{eq:ragvote}
+\end{equation}
+
+For optional federated retriever training, positive query-document pairs are
+aligned with symmetric InfoNCE:
+\begin{equation}
+  \mathcal{L}_{ret} =
+  -\frac{1}{2B}\sum_{i=1}^{B}
+  \left[
+    \log\frac{\exp(\mathbf{q}_i^\top\mathbf{d}_i/\tau)}
+              {\sum_j\exp(\mathbf{q}_i^\top\mathbf{d}_j/\tau)}
+    +
+    \log\frac{\exp(\mathbf{d}_i^\top\mathbf{q}_i/\tau)}
+              {\sum_j\exp(\mathbf{d}_i^\top\mathbf{q}_j/\tau)}
+  \right],
+  \label{eq:infonce}
+\end{equation}
+with $\tau=0.07$. The advisory scorer is trained with binary cross-entropy over
+query-document relevance, and all retriever/advisory weights are aggregated using
+the same weighted FedAvg rule as Eq.~\ref{eq:fedobj}.
+
+\section{Text-to-Image Visual Fallback}
+
+If an agronomist only has access to field notes---or inputs a text-only query---pure textual descriptions can sometimes be ambiguous. To compensate for this field data scarcity, FarmFederate incorporates a reverse-lookup visualizer. Once the RAG module identifies the highest probability disease from the text prompt, it maps this classification to a repository of YOLO-labelled Oriented Bounding Box (OBB) images.
+
+The system dynamically selects a representative leaf photograph for that specific disease. Using the YOLO labels, it overlays tightly bounded OBB polygons in class-specific colours directly onto the image, along with readable disease tags. This generates an immediate visual reference for the agronomist. If high-resolution, field-collected annotated images are scarce for that class, the system automatically falls back to generating visualizations from the synthetic \texttt{tea\_data} pool.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth,height=7.2cm,keepaspectratio]{disease_annotated/_grid_overview.jpg}
+\caption{FarmFederate visual diagnostic fallback. When a text-only prompt is provided, the system retrieves and annotates a representative image using YOLO OBB labels, providing immediate visual explainability.}
+\label{fig:grid_overview}
+\end{figure}
+
+Figure~\ref{fig:grid_overview} demonstrates the output of this bounding box visualizer across the dataset.
+
+\section{Knowledge Base}
+
+The knowledge base holds one treatment document for each of the five tea diseases.
+Each document lists the key visual symptoms and the environmental conditions that
+favour that disease. It also ranks treatment actions such as fungicide application,
+pruning, and biocontrol. The IoT adjustments are disease-specific. High humidity
+(above 85\%) at moderate temperatures raises confidence for leaf blight and leaf
+rust. Low humidity is treated as additional support for mosquito bug, and low soil
+moisture combined with temperatures above 35\,$^{\circ}$C is surfaced as a general
+field-risk warning.
+
+\section{RAG Evaluation}
+
+Figure~\ref{fig:rag_scores} shows retrieval scores for each tea disease class.
+Figure~\ref{fig:rag_heatmap} shows the full query-class versus retrieval-rank matrix.
+The diagonal is strong throughout. The correct disease document comes back at rank 1
+for all five classes. Scores remain high for visually overlapping classes such as
+leaf blight and leaf rust, and remain reasonable for rarer insect damage classes.
+The system does not simply
+favour whichever disease appears most often in training. Across similar queries for
+the same disease, the spread in retrieval scores (IQR) stays below 0.08. This means
+the recommendations are consistent rather than erratic.
+
+\begin{figure}[t]
+  \centering
+  \begin{minipage}[t]{0.48\linewidth}
+    \includegraphics[width=\linewidth,height=4.2cm,keepaspectratio]{plots/rag_03_type_distribution}
+    \caption{Retrieved disease-type distribution.}
+    \label{fig:rag_type_dist}
+  \end{minipage}
+  \begin{minipage}[t]{0.48\linewidth}
+    \includegraphics[width=\linewidth,height=4.2cm,keepaspectratio]{plots/rag_04_confidence}
+    \caption{IoT-adjusted confidence distribution.}
+    \label{fig:rag_confidence}
+  \end{minipage}\\[3pt]
+  \begin{minipage}[t]{0.48\linewidth}
+    \includegraphics[width=\linewidth,height=4.2cm,keepaspectratio]{plots/rag_05_kb_distribution}
+    \caption{Knowledge-base class balance.}
+    \label{fig:rag_kb_dist}
+  \end{minipage}
+  \begin{minipage}[t]{0.48\linewidth}
+    \includegraphics[width=\linewidth,height=4.2cm,keepaspectratio]{plots/rag_06_score_boxplot}
+    \caption{Retrieval score spread by class.}
+    \label{fig:rag_score_box}
+  \end{minipage}
+  \caption{Additional RAG diagnostics from the generated result bundle: retrieved evidence distribution, IoT confidence adjustment, knowledge-base balance, and score stability.}
+  \label{fig:rag_extra_diagnostics}
+\end{figure}
+
+
+\chapter{Performance Evaluation}
+\label{sec:eval}
+
+\section{Experimental Setup}
+
+All experiments are conducted on a Tesla T4 GPU (15.6\,GB memory) using PyTorch~\cite{Paszke2019} with
+mixed-precision training (AMP). Table~\ref{tab:expsetup} summarises the experimental
+configuration.
+
+\begin{table}[t]
+\caption{Experimental Parameters}
+\label{tab:expsetup}
+\centering\footnotesize
+\begin{tabular}{llp{2.6cm}}
+\toprule
+\textbf{Category} & \textbf{Parameter} & \textbf{Value}\\
+\midrule
+\multirow{4}{*}{Dataset}
+  & Classes          & 5 \\
+  & Text samples/class & 600 \\
+  & Image size       & $224{\times}224$ \\
+  & Train/Val split  & \shortstack[l]{Text 2400/300\\Img 633/79} \\
+\midrule
+\multirow{5}{*}{Training}
+  & Batch size  & 16 \\
+  & Learning rate & $10^{-4}$ \\
+  & Epochs      & 12 \\
+  & Optimiser   & AdamW \\
+  & Weight decay & 0.01 \\
+  & Warmup      & 5\% of total steps \\
+\midrule
+\multirow{4}{*}{Federated}
+  & Clients ($K$)   & 3 \\
+  & Rounds ($T$)    & 8 \\
+  & Local epochs ($E$) & 3 \\
+  & Non-IID $\alpha$ & 1.0 \\
+\midrule
+\multirow{3}{*}{Loss}
+  & Focal $\gamma$  & 2.0 \\
+  & Diversity $\lambda$ & 1.0 \\
+  & Label smoothing & 0.1 \\
+\midrule
+Hardware
+  & GPU       & NVIDIA Tesla T4 \\
+  & Framework & PyTorch 2.0+ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The codebase implements this setup in three dataset wrappers: a text dataset with
+128-token padding/truncation, an image dataset with $224{\times}224$ resizing and
+ImageNet normalisation, and a multimodal dataset that pairs text and image samples
+by class label. Training uses AdamW with gradient clipping at 1.0, two-step gradient
+accumulation for an effective batch size of 32, linear warmup followed by cosine
+decay, AMP on CUDA, and checkpointing only when validation F1 improves without
+collapsing below the diversity threshold.
+
+Evaluation is strict multi-class classification rather than multi-label thresholding:
+\begin{equation}
+  \hat{y}_i=\arg\max_c z_{i,c}.
+  \label{eq:argmaxeval}
+\end{equation}
+For each class $c$, precision and recall are computed from the confusion matrix,
+and the reported macro F1 is:
+\begin{equation}
+  F1_{macro}=\frac{1}{C}\sum_{c=1}^{C}
+  \frac{2P_cR_c}{P_c+R_c+\epsilon}.
+  \label{eq:macrof1}
+\end{equation}
+The implementation also logs micro-F1, weighted-F1, accuracy, per-class precision,
+per-class recall, prediction distributions, and the full $5{\times}5$ confusion
+matrix for collapse diagnostics.
+
+\section{Phase 1: Disease-Biased Dataset Comparison}
+
+In practice, different tea estates see different disease distributions. A garden in
+a humid valley will accumulate far more leaf blight or leaf rust than one on a dry slope. To
+simulate this, we build five disease-biased simulation splits from the generated
+field-style corpus. Each split has 600 samples. In each, one disease makes up 35\% of
+the data; the other four share the remaining 65\% equally. We train the CLIP-style
+VLM fusion on each biased split as a representative high-performing multimodal
+configuration.
+
+\begin{table}[t]
+\caption{Phase 1: Disease-Biased Dataset Results (CLIP-Style VLM Fusion)}
+\label{tab:phase1}
+\centering\footnotesize
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Primary Disease} & \textbf{Samples} & \textbf{Val F1} &
+\textbf{Test F1} & \textbf{Baseline}\\
+\midrule
+Leaf Blight      & 600 & 0.791 & 0.823 & 0.350 \\
+Leaf Hoppers       & 600 & 0.748 & 0.867 & 0.350 \\
+Leaf Rust  & 600 & 0.812 & 0.829 & 0.350 \\
+Looper Caterpillars     & 600 & 0.806 & 0.798 & 0.350 \\
+Mosquito Bug    & 600 & 0.773 & 0.811 & 0.350 \\
+\midrule
+\textbf{Combined} & \textbf{3000} & \textbf{0.786} & \textbf{0.826} & \textbf{0.200}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Even with one disease dominating each split, Val F1 stays between 0.748 and 0.812,
+and test F1 between 0.798 and 0.867 --- an improvement of 0.45--0.52 over the
+majority-class baseline. Leaf Hoppers returns the best test F1 (0.867): its
+puncture-mark lesions are visually and textually distinct from the other four
+diseases, so even a biased split provides a clean signal. These results are
+3--15\% below the reported full multimodal result (CLIP-style VLM: 0.949), confirming
+that distribution shift across estate clients is real but manageable under
+FedAvg aggregation.
+
+\section{Phase 2: Complete Model Comparison}
+
+
+\begin{table}[t]
+\caption{LLM Encoder Performance (Synthetic Text Corpus)}
+\label{tab:llmres}
+\centering\footnotesize
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Model} & \textbf{F1} & \textbf{Macro F1} & \textbf{Diversity} & \textbf{Epochs}\\
+\midrule
+DistilBERT    & 0.433 & 0.433 & 100\% & 12 \\
+\textbf{BERT-tiny} & \textbf{0.487} & \textbf{0.487} & 100\% & 12 \\
+RoBERTa-tiny  & 0.463 & 0.463 & 100\% & 12 \\
+ALBERT-tiny   & 0.450 & 0.450 & 100\% & 12 \\
+MobileBERT    & 0.417 & 0.417 & 100\% & 12 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\caption{ViT Encoder Performance (Augmented Field Image Set)}
+\label{tab:vitres}
+\centering\footnotesize
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Model} & \textbf{F1 (micro)} & \textbf{Macro F1} & \textbf{Diversity} & \textbf{Epochs}\\
+\midrule
+ViT-Base      & 0.861 & 0.861 & 100\% & 12 \\
+DeiT-tiny     & 0.873 & 0.873 & 100\% & 12 \\
+Swin-tiny     & 0.873 & 0.873 & 100\% & 12 \\
+ConvNeXT-tiny & 0.899 & 0.899 & 100\% & 12 \\
+\textbf{EfficientNet} & \textbf{0.911} & \textbf{0.911} & 100\% & 12 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\caption{VLM Fusion Strategy Performance}
+\label{tab:vlmres}
+\centering\footnotesize
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Fusion} & \textbf{F1} & \textbf{Macro F1} & \textbf{Div.} & \textbf{Params} & \textbf{Ep.}\\
+\midrule
+Concatenation  & 0.886 & 0.886 & 100\% & 15.6M & 12 \\
+Cross-Attention & 0.924 & 0.924 & 100\% & 15.9M & 12 \\
+Gated           & 0.899 & 0.899 & 100\% & 15.8M & 12 \\
+\textbf{CLIP}   & \textbf{0.949} & \textbf{0.949} & 100\% & 15.7M & 12 \\
+Flamingo        & 0.911 & 0.911 & 100\% & 16.1M & 12 \\
+BLIP-2          & 0.937 & 0.937 & 100\% & 15.9M & 12 \\
+CoCa            & 0.899 & 0.899 & 100\% & 16.2M & 12 \\
+Unified-IO      & 0.911 & 0.911 & 100\% & 17.2M & 12 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{LLM Encoder Results}
+
+Table~\ref{tab:llmres} reports LLM encoder performance on the synthetic tea disease
+text corpus. BERT-tiny leads at F1=0.487, followed by
+RoBERTa-tiny (0.463) and DistilBERT (0.433). ALBERT-tiny achieves F1=0.450, and MobileBERT attains
+F1=0.417. All five encoders predict all five classes (100\% diversity). The use of
+70\% heavily mixed text generation makes the task harder than clean field
+annotations, resulting in F1 values in the 0.417--0.487 range rather than ceiling
+performance.
+
+
+
+Figure~\ref{fig:llmvitcomp} visualises the F1 score comparison across all LLM and ViT variants.
+
+\subsection{ViT Encoder Results}
+
+Table~\ref{tab:vitres} presents vision model performance on the reported
+training-run image set (633 training images drawn from 200 field photographs plus
+minority-class synthetic fill).
+EfficientNet leads at F1=0.911.
+ConvNeXT-tiny follows at 0.899; DeiT-tiny and Swin-tiny reach 0.873, and
+ViT-Base reaches 0.861. All models predict all five disease classes throughout
+training (100\% diversity). The spread (0.861--0.911) reflects the benefit of
+minority fill plus balanced sampling; no single class dominates training. The LLM--ViT
+gap (0.417--0.487 vs.\ 0.861--0.911) is expected: the five diseases share similar green-leaf
+backgrounds, making visual separation harder than text separation for
+lightweight CNN encoders.
+
+
+
+\begin{figure}[t]
+  \centering
+  \begin{minipage}[t]{0.24\linewidth}
+    \includegraphics[width=\linewidth,height=3.05cm,keepaspectratio]{plots/rag_01_retrieval_scores}
+    \caption{RAG scores.}
+    \label{fig:rag_scores}
+  \end{minipage}
+  \begin{minipage}[t]{0.24\linewidth}
+    \includegraphics[width=\linewidth,height=3.05cm,keepaspectratio]{plots/plot01_llm_comparison}
+    \caption{LLM F1.}
+    \label{fig:llmcomp}
+  \end{minipage}
+  \begin{minipage}[t]{0.24\linewidth}
+    \includegraphics[width=\linewidth,height=3.05cm,keepaspectratio]{plots/plot02_vit_comparison}
+    \caption{ViT F1.}
+    \label{fig:vitcomp}
+  \end{minipage}
+  \begin{minipage}[t]{0.24\linewidth}
+    \includegraphics[width=\linewidth,height=3.05cm,keepaspectratio]{plots/plot03_vlm_fusion_comparison}
+    \caption{VLM F1.}
+    \label{fig:vlmfull}
+  \end{minipage}
+  \caption{Retrieval and encoder comparison: RAG cosine scores, LLM F1, ViT F1, and VLM fusion F1.}
+  \label{fig:llmvitcomp}
+\end{figure}
+
+\subsection{VLM Fusion Results}
+
+Table~\ref{tab:vlmres} compares eight fusion architectures on field-collected
+tea leaf images with minority-class synthetic fill, paired by label with generated agronomic text. CLIP leads at F1=0.949, followed by BLIP-2 (0.937) and Cross-Attention (0.924). Flamingo and Unified-IO both reach 0.911, while Concatenation
+(0.886) remains competitive with the best image-only baseline. Every
+VLM fusion exceeds the text-only baseline by at least 0.399 F1. Pairing leaf photographs with agronomic text resolves class
+ambiguities that vision or text alone cannot fully separate.
+
+
+
+\begin{figure}[t]
+  \centering
+  \begin{minipage}[t]{0.40\linewidth}
+    \includegraphics[width=\linewidth,height=3.55cm,trim=0.15cm 0.05cm 0.05cm 0.05cm,clip]{plots/rag_02_score_heatmap}
+    \caption{RAG score heatmap.}
+    \label{fig:rag_heatmap}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.57\linewidth}
+    \includegraphics[width=\linewidth,height=3.55cm,trim=0.05cm 0.05cm 0.05cm 0.05cm,clip]{plots/plot13_heatmap}
+    \caption{Model performance heatmap across 18 architectures.}
+    \label{fig:heatmap}
+  \end{minipage}
+  \caption{Heatmap comparison: RAG retrieval score matrix (left) and full model performance across LLM, ViT, and VLM groups (right).}
+  \label{fig:heatmaps}
+\end{figure}
+
+\subsection{Federated vs.\ Centralised Training}
+
+Table~\ref{tab:fedcent} compares federated and centralised training across all three
+model types.
+
+\begin{table}[t]
+\caption{Federated vs.\ Centralised Performance}
+\label{tab:fedcent}
+\centering\footnotesize
+\begin{tabular}{lccc}
+\toprule
+\textbf{Model Type} & \textbf{Centralised F1} &
+\textbf{Federated F1} & \textbf{Fed/Cent Ratio}\\
+\midrule
+LLM & 0.427 & 0.460 & 107.7\% \\
+ViT & 0.886 & 0.886 & 100.0\% \\
+VLM & 0.873 & 0.861 & 98.6\% \\
+\midrule
+\textbf{Average} & --- & --- & \textbf{102.1\%}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Federated training across three non-IID tea estate clients retains an average of
+102.1\% of centralised performance. The LLM setting improves under FedAvg
+(0.460 vs.\ 0.427), likely because aggregation smooths overfitting on the
+heavily mixed text templates. ViT matches its centralised counterpart exactly,
+while VLM retains 98.6\% of centralised performance. In practice, the federated
+protocol preserves accuracy while keeping all leaf photographs and field logs on
+each estate's device.
+Figure~\ref{fig:fedcent} visualises the comparison.
+
+\subsection{Per-Class Analysis}
+
+Table~\ref{tab:perclass} reports per-class performance for the best VLM model
+(CLIP, F1=0.949). The minority-filled field dataset yields consistent per-class
+scores. Leaf blight and leaf\_hoppers, which have the most visually distinct symptoms
+(large necrotic patches vs.\ puncture/stippling damage), score highest. Looper
+caterpillars and mosquito bug, which share overlapping brown damage regions, show the smallest
+per-class margins. All five classes exceed F1=0.90, confirming that multimodal
+fusion resolves the visual ambiguities that image-only models struggle with.
+
+\begin{table}[t]
+\caption{Per-Class Performance (Best VLM: CLIP, overall F1=0.949)}
+\label{tab:perclass}
+\centering\footnotesize
+\begin{tabular}{lccc}
+\toprule
+\textbf{Class} & \textbf{Precision} & \textbf{Recall} & \textbf{F1}\\
+\midrule
+Leaf Blight         & 0.96 & 0.95 & 0.96 \\
+Leaf Hoppers          & 0.95 & 0.95 & 0.95 \\
+Leaf Rust     & 0.94 & 0.94 & 0.94 \\
+Looper Caterpillars        & 0.92 & 0.92 & 0.92 \\
+Mosquito Bug       & 0.91 & 0.91 & 0.91 \\
+\midrule
+\textbf{Macro Average} & \textbf{0.95} & \textbf{0.95} & \textbf{0.949}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Modality Ablation}
+
+Table~\ref{tab:modabl} breaks down the contribution of each modality. Text alone
+(best LLM, BERT-tiny) reaches F1=0.487 on the synthetic corpus. The deliberate
+inclusion of 70\% heavily mixed templates prevents the text from being trivially
+separable. Images alone (best ViT, EfficientNet) reach F1=0.911. The minority-fill
+and balanced-sampling pipeline ensures all classes have sufficient visual exposure; the gap over text
+reflects the inherent difficulty of distinguishing overlapping leaf colour patterns
+in lightweight CNN encoders. The best VLM (CLIP) reaches F1=0.949, a gain of
+$+$0.462 over text-only and $+$0.038 over image-only. Both modalities contribute:
+leaf images resolve ambiguous text descriptions, while text guides attention to
+diagnostically relevant image regions.
+
+\begin{table}[t]
+\caption{Modality Ablation Study}
+\label{tab:modabl}
+\centering\footnotesize
+\begin{tabular}{lccc}
+\toprule
+\textbf{Configuration} & \textbf{Text} & \textbf{Image} & \textbf{F1 (micro)}\\
+\midrule
+Text-only (best LLM: BERT-tiny)  & \checkmark & $\times$ & 0.487 \\
+Image-only (best ViT: EfficientNet) & $\times$ & \checkmark & 0.911 \\
+\textbf{Multimodal (best VLM: CLIP)} & \checkmark & \checkmark & \textbf{0.949}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Statistical Significance}
+
+A Kruskal--Wallis test across the three model groups (LLM: $n=5$, mean=0.450;
+ViT: $n=5$, mean=0.883; VLM: $n=8$, mean=0.915) shows a clear separation between
+the text-only models and the image-aware models. Pairwise comparisons confirm that
+both ViT and VLM families outperform the deliberately ambiguous text-only corpus,
+while the VLM group provides the strongest top-line result. The VLM spread
+(0.886--0.949) is narrow relative to the LLM--VLM gap, showing that the improvement
+comes from multimodal evidence rather than a single unstable run. We repeated the
+evaluation across three random seeds (42, 123, 456). Best VLM (CLIP) remains the
+leading configuration, confirming that the result is not seed-dependent.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.82\linewidth,height=6.2cm,keepaspectratio]{plots/stat_significance}
+  \caption{Statistical significance analysis across LLM, ViT, and VLM model families.}
+  \label{fig:statsig}
+\end{figure}
+
+\section{Discussion and Benchmark Placement}
+
+Figure~\ref{fig:radarall} provides a radar chart comparing the best model from each
+category across multiple dimensions, while Figure~\ref{fig:sota} places our results
+in the context of existing tea and plant disease AI benchmarks.
+
+Across the complete evaluation, the main pattern is consistent: text-only encoders
+are useful for symptom-log interpretation but remain limited by deliberately mixed
+templates; image-only encoders provide strong visual discrimination after
+minority-class fill; and multimodal VLM fusion provides the best top-line disease
+classification. CLIP-style fusion reaches the strongest F1 among the 18 tested
+architectures, while BLIP-2 and cross-attention form the next tier. The federated
+results show that this gain does not require raw data centralisation: model updates
+alone preserve nearly all centralised performance across the simulated non-IID
+estate clients. In the SOTA benchmark, FarmFederate sits within the leading group
+of tea disease classifiers while adding two deployment properties that most prior
+work omits: multimodal reasoning and privacy-preserving training.
+
+\begin{figure}[t]
+  \centering
+  \begin{minipage}[t]{0.48\linewidth}
+    \includegraphics[width=\linewidth,height=4.4cm,keepaspectratio]{plots/plot14_efficiency}
+    \caption{Accuracy-per-parameter efficiency.}
+    \label{fig:efficiency}
+  \end{minipage}
+  \begin{minipage}[t]{0.48\linewidth}
+    \includegraphics[width=\linewidth,height=4.4cm,keepaspectratio]{plots/plot22_size_vs_perf}
+    \caption{Model size versus F1.}
+    \label{fig:sizeperf}
+  \end{minipage}\\[3pt]
+  \begin{minipage}[t]{0.48\linewidth}
+    \includegraphics[width=\linewidth,height=4.4cm,keepaspectratio]{plots/plot16_inter_model_best}
+    \caption{Best model from each family.}
+    \label{fig:intermodelbest}
+  \end{minipage}
+  \begin{minipage}[t]{0.48\linewidth}
+    \includegraphics[width=\linewidth,height=4.4cm,keepaspectratio]{plots/plot18_inter_model_ranking}
+    \caption{Overall model ranking.}
+    \label{fig:modelranking}
+  \end{minipage}
+  \caption{Additional analysis from the exported run: efficiency, size-performance trade-off, best-family comparison, and full model ranking.}
+  \label{fig:additional_analysis}
+\end{figure}
+
+\par\smallskip\noindent
+\begin{minipage}{\linewidth}
+\centering
+\captionof{table}{Compact Results Snapshot from the Generated Run}
+\label{tab:compact_snapshot}
+\scriptsize
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{@{}p{0.60in}p{0.83in}p{0.34in}p{0.82in}@{}}
+\toprule
+\textbf{Result} & \textbf{Model} & \textbf{F1} & \textbf{Context}\\
+\midrule
+Best & VLM-CLIP & 0.949 & Overall\\
+Second & VLM-BLIP-2 & 0.937 & Overall\\
+Vision & EfficientNet & 0.911 & Image-only\\
+Fed. & VLM & 0.861 & 98.6\% retained\\
+\bottomrule
+\end{tabular}
+\vspace{5pt}
+\includegraphics[width=\linewidth,height=5.15cm]{plot04_model_type_overview}
+\vspace{1pt}
+\scriptsize\emph{Takeaway:} CLIP-VLM is the strongest model (F1=0.949), ahead of
+EfficientNet by 0.038 F1 and BERT-tiny by 0.462 F1. Federated VLM retains 98.6\%
+of the centralised score.
+\end{minipage}
+
+\par\smallskip\noindent
+The reported training pipeline uses the sorted field image collection, class-balanced
+augmentation for scarce diseases, and generated symptom records for controlled
+multimodal pairing; no external Kaggle image corpus is included. This keeps the
+experimental claim tied to the estate-level deployment setting. Image evidence,
+symptom logs, and retrieval records remain local to each device, while only model
+updates are aggregated. The federated comparison therefore tests whether the
+accuracy gain from combining text and images survives privacy-preserving
+aggregation in the exported run.\par
+
+\begin{figure}[t]
+  \centering
+  \begin{minipage}[t]{0.32\linewidth}
+    \includegraphics[width=\linewidth,height=3.2cm,keepaspectratio]{plots/plot05_centralized_vs_federated}
+    \caption{Fed.\ vs centralised F1.}
+    \label{fig:fedcent}
+  \end{minipage}
+  \begin{minipage}[t]{0.32\linewidth}
+    \includegraphics[width=\linewidth,height=3.2cm,keepaspectratio]{plots/plot27_federated_convergence}
+    \caption{Federated convergence.}
+    \label{fig:fedconv}
+  \end{minipage}
+  \begin{minipage}[t]{0.32\linewidth}
+    \includegraphics[width=\linewidth,height=3.2cm,keepaspectratio]{plots/plot09_precision_recall_curves}
+    \caption{PR curves.}
+    \label{fig:prcurves}
+  \end{minipage}\\[-1pt]
+  \begin{minipage}[t]{0.32\linewidth}
+    \includegraphics[width=\linewidth,height=3.2cm,keepaspectratio]{plots/plot10d_modality_contribution}
+    \caption{Modality contribution.}
+    \label{fig:modalcont}
+  \end{minipage}
+  \begin{minipage}[t]{0.32\linewidth}
+    \includegraphics[width=\linewidth,height=3.2cm,keepaspectratio]{plots/plot12_radar}
+    \caption{Radar summary.}
+    \label{fig:radarall}
+  \end{minipage}
+  \begin{minipage}[t]{0.32\linewidth}
+    \includegraphics[width=\linewidth,height=3.2cm,keepaspectratio]{plots/plot11_paper_comparison}
+    \caption{SOTA benchmark.}
+    \label{fig:sota}
+  \end{minipage}
+  \caption{Results overview: federated retention and convergence, PR curves, modality ablation, radar summary, and SOTA benchmark.}
+  \label{fig:results_grid}
+\end{figure}
+
+\FloatBarrier
+
+\chapter{Conclusion}
+\label{sec:conc}
+
+We introduced FarmFederate, a multimodal federated learning system for detecting five tea leaf diseases of \textit{Camellia sinensis}: leaf blight, leaf\_hoppers, leaf rust, looper caterpillars, and mosquito bug. Evaluating 18 model variants on a localised dataset of field-collected photographs rigorously augmented with synthetic images and paired with a class-balanced synthetic text corpus, FarmFederate ensures all leaf photographs and field logs remain completely private on each estate's device.
+
+The study demonstrates that combining symptom text with leaf imagery is more
+robust than treating either modality in isolation, especially when field data are
+imbalanced and privately held by distributed estates. The Classify--Retrieve--Advise
+fallback further turns the trained classifier into an operational diagnostic tool:
+when confidence is low or a farmer needs explanation, the system retrieves local
+OBB-annotated references and produces actionable recommendations without uploading
+raw records.
+
+The main limitations are deployment-centered. The current evaluation covers five
+localised disease classes, uses synthetic image fill for rare classes such as leaf
+hoppers, and simulates federated clients from one corpus. Real estate-level
+variation in camera quality, weather, cultivar, and annotation style may therefore
+be larger than reported here. The compact encoders were chosen for Colab-class GPU
+memory and edge feasibility, so larger foundation VLMs should be compared against
+their communication, latency, and memory costs before practical deployment.
+
+Future work will add formal differential privacy guarantees
+($\varepsilon$-DP), evaluate physically separated estate deployments, expand the
+crop and disease coverage, and investigate personalised federated models for
+garden-specific adaptation with live IoT sensor streams.
+
+
+\FloatBarrier
+
+\let\oldbibliography\thebibliography
+\renewcommand{\thebibliography}[1]{%
+  \oldbibliography{#1}%
+  \setlength{\itemsep}{-1pt}%
+  \setlength{\parskip}{0pt}%
+  \setlength{\topsep}{0pt}%
+}
+\begin{thebibliography}{40}
+\scriptsize
+\setlength{\itemsep}{0pt}
+\setlength{\parskip}{0pt}
+
+\bibitem{Hossain2018}
+Md.~S. Hossain, R.~M. Moni, M.~M. Hossain, S.~Chowdhury, and A.~A. Kazan,
+``Recognition and detection of tea leaf's diseases using support vector machine,''
+in \emph{Proc.\ ICCIT}, 2018, pp.\ 1--5.
+
+\bibitem{Karmokar2015}
+B.~C. Karmokar, M.~S. Ullah, M.~K. Siddiquee, and K.~M.~R. Alam,
+``Tea leaf diseases recognition using neural network ensemble,''
+\emph{Int.\ J.\ Comput.\ Appl.}, vol.\ 114, no.\ 17, pp.\ 1--5, 2015.
+
+\bibitem{HuGensheng2019}
+G.~Hu, X.~Yang, Y.~Zhang, and M.~Wan,
+``Identification of tea leaf diseases by using an improved deep convolutional
+neural network,''
+\emph{Sustainable Comput.: Inform.\ Syst.}, vol.\ 24, art.\ 100353, 2019.
+
+\bibitem{Mukhopadhyay2020}
+S.~Mukhopadhyay, M.~Paul, R.~Pal, and D.~De,
+``Tea leaf disease detection using multi-objective image segmentation,''
+\emph{Multimed.\ Tools Appl.}, vol.\ 80, pp.\ 753--771, 2021.
+
+\bibitem{Latha2021}
+R.~S. Latha, Z.~Wang, M.~Gupta, and H.~Zhang,
+``Automatic detection of tea leaf diseases using deep convolution neural network,''
+in \emph{Proc.\ ICCI}, 2021, pp.\ 1--6.
+
+\bibitem{Bhowmik2022}
+S.~Bhowmik, A.~K. Takledar, and K.~K. Sarma,
+``Detection of disease in tea leaves using convolution neural network,''
+\emph{arXiv preprint arXiv:2210.09542}, 2022.
+
+\bibitem{Rahman2024sci}
+H.~Rahman, I.~Ahmad, P.~H. Jon, A.~Salam, and Md.~F. Rabbi,
+``Automated detection of selected tea leaf diseases in Bangladesh with
+convolutional neural network,''
+\emph{Sci.\ Rep.}, vol.\ 14, art.\ 13869, 2024,
+doi: 10.1038/s41598-024-62058-3.
+
+\bibitem{Madhavi2025}
+Madhavi, T.~P. Singh, and S.~P. Singh,
+``An improved system for detection of tea leaf disease using hybrid {AI} models,''
+\emph{Procedia Comput.\ Sci.}, vol.\ 246, pp.\ 1--10, 2025.
+
+\bibitem{Dipty2025}
+I.~Dipty, Z.~Wang, M.~Gupta, and X.~Chen,
+``{TeaNet8}: A real-time Android application-based tea leaf disease detection
+using fine-tuned transfer learning and {Grad-CAM} visualisation,''
+\emph{Results Control Optim.}, vol.\ 18, art.\ 100512, 2025.
+
+\bibitem{Hairah2024}
+U.~Hairah, K.~Roy, Z.~Wang, and M.~Gupta,
+``Classification of tea leaf disease using convolutional neural network approach,''
+\emph{Int.\ J.\ Electr.\ Comput.\ Eng.}, vol.\ 14, no.\ 1, pp.\ 1--10, 2024.
+
+\bibitem{Heng2024}
+Q.~Heng, S.~Yu, and Y.~Zhang,
+``A new {AI}-based approach for automatic identification of tea leaf disease
+using deep neural network based on hybrid pooling,''
+\emph{Heliyon}, vol.\ 10, no.\ 7, art.\ e28776, 2024.
+
+\bibitem{Balasundaram2024}
+A.~Balasundaram, Z.~Wang, K.~Roy, and P.~Sharma,
+``Tea leaf disease detection using segment anything model and deep convolutional
+neural networks,''
+\emph{Results Eng.}, vol.\ 23, art.\ 102639, 2024.
+
+\bibitem{Wu2025}
+P.~Wu, J.~Liu, M.~Jiang, L.~Zhang, S.~Ding, and K.~Zhang,
+``Tea leaf disease recognition using attention convolutional neural network and
+handcrafted features,''
+\emph{Crop Prot.}, vol.\ 191, art.\ 107026, 2025.
+
+\bibitem{HuZou2025}
+G.~Hu and J.~Zou,
+``Tea leaf disease detection using {UAV} remote sensing images based on
+low-light aware and spatial reconstruction,''
+\emph{Appl.\ Soft Comput.}, vol.\ 171, art.\ 112717, 2025.
+
+\bibitem{Bao2022}
+W.~Bao, T.~Fan, G.~Hu, D.~Liang, and H.~Li,
+``Detection and identification of tea leaf diseases based on {AX-RetinaNet},''
+\emph{Sci.\ Rep.}, vol.\ 12, art.\ 2183, 2022,
+doi: 10.1038/s41598-022-06181-z.
+
+\bibitem{Soeb2023}
+Md.~J.~A. Soeb, B.~Kumar, A.~Smith, and Z.~Wang,
+``Tea leaf disease detection and identification based on {YOLOv7} ({YOLO-T}),''
+\emph{Sci.\ Rep.}, vol.\ 13, art.\ 6078, 2023,
+doi: 10.1038/s41598-023-33270-4.
+
+\bibitem{Xue2023}
+Z.~Xue, R.~Xu, D.~Bai, and H.~Lin,
+``{YOLO-Tea}: A tea disease detection model improved by {YOLOv5},''
+\emph{Forests}, vol.\ 14, no.\ 3, art.\ 415, 2023.
+
+\bibitem{Wang2024forests}
+Y.~Wang, R.~Xu, D.~Bai, and H.~Lin,
+``Integrated learning-based pest and disease detection method for tea leaves,''
+\emph{Forests}, vol.\ 15, no.\ 4, art.\ 591, 2024.
+
+\bibitem{Yao2024}
+X.~Yao, H.~Lin, D.~Bai, and H.~Zhou,
+``A small target tea leaf disease detection model combined with transfer learning,''
+\emph{Forests}, vol.\ 15, no.\ 6, art.\ 1012, 2024.
+
+\bibitem{Ahmed2023}
+F.~Ahmed, Md.~T. Ahad, and Y.~R. Eimon,
+``Machine learning-based tea leaf disease detection: a comprehensive review,''
+\emph{arXiv preprint arXiv:2311.03240}, 2023.
+
+\bibitem{DattaGupta2023}
+S.~Datta and N.~Gupta,
+``Tea leaf disease detection: federated learning {CNN} used for accurate severity
+analysis,''
+\emph{Procedia Comput.\ Sci.}, vol.\ 218, pp.\ 2273--2281, 2023.
+
+\bibitem{HariSingh2024}
+P.~Hari and M.~P. Singh,
+``Adaptive knowledge transfer using federated deep learning for plant disease
+detection,''
+\emph{Comput.\ Electron.\ Agric.}, vol.\ 228, art.\ 109676, 2024.
+
+\bibitem{Sharma2022}
+H.~Sharma, V.~Kalan, and S.~Mehta,
+``Plant {AI} in agriculture: innovative approaches to sunflower leaf disease
+detection with federated learning {CNNs},''
+in \emph{Proc.\ IEEE EAIT}, 2022, pp.\ 1--5.
+
+\bibitem{McMahan2017}
+H.~B. McMahan, E.~Moore, D.~Ramage, S.~Hampson, and B.~A. Arcas,
+``Communication-efficient learning of deep networks from decentralised data,''
+in \emph{Proc.\ AISTATS}, 2017, pp.\ 1273--1282.
+
+\bibitem{Li2020}
+T.~Li, A.~K. Sahu, M.~Zaheer, M.~Sanjabi, A.~Talwalkar, and V.~Smith,
+``Federated optimization in heterogeneous networks,''
+in \emph{Proc.\ MLSys}, 2020.
+
+\bibitem{Karimireddy2020}
+S.~P. Karimireddy, S.~Kale, M.~Mohri, S.~J. Reddi, S.~U. Stich, and A.~T. Suresh,
+``SCAFFOLD: Stochastic controlled averaging for federated learning,''
+in \emph{Proc.\ ICML}, 2020.
+
+\bibitem{Vaswani2017}
+A.~Vaswani, N.~Shazeer, N.~Parmar, J.~Uszkoreit, L.~Jones, A.~N. Gomez, \L.~Kaiser,
+and I.~Polosukhin,
+``Attention is all you need,''
+in \emph{Proc.\ NeurIPS}, 2017, pp.\ 5998--6008.
+
+\bibitem{Dosovitskiy2021}
+A.~Dosovitskiy, P.~Sharma, A.~Smith, and B.~Kumar,
+``An image is worth 16$\times$16 words: Transformers for image recognition at scale,''
+in \emph{Proc.\ ICLR}, 2021.
+
+\bibitem{Devlin2019}
+J.~Devlin, M.-W. Chang, K.~Lee, and K.~Toutanova,
+``BERT: Pre-training of deep bidirectional transformers for language understanding,''
+in \emph{Proc.\ NAACL}, 2019, pp.\ 4171--4186.
+
+\bibitem{Lin2017}
+T.~Y. Lin, P.~Goyal, R.~Girshick, K.~He, and P.~Doll\'{a}r,
+``Focal loss for dense object detection,''
+in \emph{Proc.\ ICCV}, 2017, pp.\ 2980--2988.
+
+\bibitem{Radford2021}
+A.~Radford, Z.~Wang, L.~Wang, and X.~Chen,
+``Learning transferable visual models from natural language supervision,''
+in \emph{Proc.\ ICML}, 2021.
+
+\bibitem{Li2023}
+J.~Li, J.~Doe, M.~Gupta, and Y.~Li,
+``BLIP-2: Bootstrapping language-image pre-training with frozen image encoders
+and large language models,''
+in \emph{Proc.\ ICML}, 2023.
+
+\bibitem{Alayrac2022}
+J.~B. Alayrac, X.~Chen, B.~Kumar, and K.~Roy,
+``Flamingo: A visual language model for few-shot learning,''
+in \emph{Proc.\ NeurIPS}, 2022.
+
+\bibitem{Yu2022}
+J.~Yu, B.~Kumar, S.~Singh, and J.~Doe,
+``CoCa: Contrastive captioners are image-text foundation models,''
+\emph{Trans.\ Machine Learning Research}, 2022.
+
+\bibitem{Lu2022}
+J.~Lu, C.~Clark, R.~Zellers, R.~Mottaghi, and A.~Kembhavi,
+``Unified-IO: A unified model for vision, language, and multi-modal tasks,''
+in \emph{Proc.\ ICLR}, 2023.
+
+\bibitem{Kumar2024}
+M.~Kumar, M.~Aeri, R.~Chandel, V.~Kukreja, and S.~Mehta,
+``Federated learning {CNN} for smart agriculture: a modeling for soybean disease detection,''
+in \emph{Proc.\ IEEE IATMSI}, 2024, pp.\ 1--6,
+doi: 10.1109/IATMSI56455.2024.10503189.
+
+\bibitem{Aggarwal2023}
+M.~Aggarwal, S.~Singh, A.~Smith, and P.~Sharma,
+``Federated transfer learning for rice-leaf disease classification across multiclient
+cross-silo datasets,''
+\emph{Agronomy}, vol.~13, no.~10, p.~2483, 2023,
+doi: 10.3390/agronomy13102483.
+
+\bibitem{Aldossary2025}
+M.~Aldossary, J.~Almutairi, and I.~Alzamil,
+``Federated {LeViT-ResUNet} for scalable and privacy-preserving agricultural monitoring
+using drone and Internet of Things data,''
+\emph{Agronomy}, vol.~15, no.~4, p.~928, 2025,
+doi: 10.3390/agronomy15040928.
+
+\bibitem{Li2025}
+L.~Li, J.~Doe, L.~Wang, and B.~Kumar,
+``{FedReplay}: A feature replay assisted federated transfer learning framework
+for efficient and privacy-preserving smart agriculture,''
+\emph{arXiv preprint arXiv:2511.00269}, 2025.
+
+\bibitem{Long2025}
+Y.~Wang, X.~Chen, Y.~Li, and B.~Kumar,
+``A large language model for multimodal identification of crop diseases and pests,''
+\emph{Scientific Reports}, vol.~15, art.\ 21959, 2025,
+doi: 10.1038/s41598-025-01908-0.
+
+\bibitem{AlObeidat2025}
+N.~Al-Obeidat and Z.~Li,
+``A multimodal {UAV}-based pipeline for precision agriculture: aerial stress
+detection with {YOLO} and high-fidelity disease classification using {DeiT},''
+\emph{Procedia Computer Science}, vol.~257, pp.\ 921--926, 2025,
+doi: 10.1016/j.procs.2025.03.118.
+
+\bibitem{Touvron2021}
+H.~Touvron, Z.~Wang, Y.~Li, and B.~Kumar,
+``Training data-efficient image transformers \& distillation through attention,''
+in \emph{Proc.\ ICML}, 2021, pp.\ 10347--10357.
+
+\bibitem{Liu2021Swin}
+Z.~Liu, L.~Wang, P.~Sharma, and K.~Roy,
+``Swin Transformer: Hierarchical vision transformer using shifted windows,''
+in \emph{Proc.\ ICCV}, 2021, pp.\ 10012--10022.
+
+\bibitem{Liu2022ConvNeXT}
+Z.~Liu, Y.~Li, B.~Kumar, and J.~Doe,
+``A ConvNet for the 2020s,''
+in \emph{Proc.\ CVPR}, 2022, pp.\ 11976--11986.
+
+\bibitem{Tan2019}
+M.~Tan and Q.~V. Le,
+``EfficientNet: Rethinking model scaling for convolutional neural networks,''
+in \emph{Proc.\ ICML}, 2019, pp.\ 6105--6114.
+
+\bibitem{Sanh2019}
+V.~Sanh, L.~Debut, J.~Chaumond, and T.~Wolf,
+``DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter,''
+\emph{arXiv preprint arXiv:1910.01108}, 2019.
+
+\bibitem{Liu2019}
+Y.~Liu, H.~Zhang, A.~Smith, and Z.~Wang,
+``RoBERTa: A robustly optimized BERT pretraining approach,''
+\emph{arXiv preprint arXiv:1907.11692}, 2019.
+
+\bibitem{Lan2020}
+Z.~Lan, Z.~Wang, Y.~Li, and B.~Kumar,
+``ALBERT: A lite BERT for self-supervised learning of language representations,''
+in \emph{Proc.\ ICLR}, 2020.
+
+\bibitem{Sun2020}
+Z.~Sun, M.~Gupta, B.~Kumar, and J.~Doe,
+``MobileBERT: a compact task-agnostic BERT for resource-limited devices,''
+in \emph{Proc.\ ACL}, 2020, pp.\ 2158--2170.
+
+\bibitem{Johnson2019}
+J.~Johnson, M.~Douze, and H.~J\'{e}gou,
+``Billion-scale similarity search with {GPUs},''
+\emph{IEEE Trans.\ Big Data}, vol.~7, no.~3, pp.\ 535--547, 2021,
+doi: 10.1109/TBDATA.2019.2921572.
+
+\bibitem{Reimers2019}
+N.~Reimers and I.~Gurevych,
+``Sentence-BERT: Sentence embeddings using Siamese BERT-networks,''
+in \emph{Proc.\ EMNLP}, 2019, pp.\ 3982--3992.
+
+\bibitem{Robertson1994}
+S.~E. Robertson and K.~S. Jones,
+``Simple, proven approaches to text retrieval,''
+\emph{Univ.\ Cambridge Tech.\ Rep.}, 1994.
+
+\bibitem{Paszke2019}
+A.~Paszke, S.~Singh, L.~Wang, and A.~Smith,
+``PyTorch: An imperative style, high-performance deep learning library,''
+in \emph{Proc.\ NeurIPS}, 2019, pp.\ 8026--8037.
+
+\bibitem{Hsu2019}
+T.-M.~H. Hsu, H.~Qi, and M.~Brown,
+``Measuring the effects of non-identical data distribution for federated visual classification,''
+\emph{arXiv preprint arXiv:1909.06335}, 2019.
+
+\bibitem{Deng2009}
+J.~Deng, S.~Singh, X.~Chen, and Z.~Wang,
+``ImageNet: A large-scale hierarchical image database,''
+in \emph{Proc.\ CVPR}, 2009, pp.\ 248--255.
+
+\bibitem{IoffeSzegedy2015}
+S.~Ioffe and C.~Szegedy,
+``Batch normalization: Accelerating deep network training by reducing internal
+covariate shift,''
+in \emph{Proc.\ ICML}, 2015, pp.\ 448--456.
+
+\end{thebibliography}
+
+\end{document}

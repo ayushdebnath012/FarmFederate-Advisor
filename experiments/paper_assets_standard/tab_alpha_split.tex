@@ -1,0 +1,21 @@
+\begin{table}[t]
+\caption{Realised heterogeneity and accuracy under the two partitioners. TV is the mean total-variation distance between a client's class distribution and the global one; size CV is the coefficient of variation of shard sizes. The legacy partitioner varies shard size while leaving label mix close to IID, so its accuracy is flat in $\alpha$ by construction.}
+\label{tab:alpha_split}
+\centering\footnotesize
+\setlength\tabcolsep{2.2pt}
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Partition} & \multicolumn{3}{c}{\textbf{Class-wise Dirichlet}} & \multicolumn{3}{c}{\textbf{Legacy size-only}}\\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+ & TV & size CV & Macro F1 & TV & size CV & Macro F1\\
+\midrule
+$\alpha=0.1$ & 0.571 & 0.47 & 0.715\,$\pm$\,0.036 & 0.303 & 1.41 & 0.909\,$\pm$\,0.009 \\
+$\alpha=0.5$ & 0.392 & 0.41 & 0.757\,$\pm$\,0.069 & 0.210 & 0.70 & 0.879\,$\pm$\,0.033 \\
+$\alpha=1$ & 0.339 & 0.31 & 0.809\,$\pm$\,0.005 & 0.092 & 0.57 & 0.886\,$\pm$\,0.033 \\
+$\alpha=10$ & 0.108 & 0.08 & 0.848\,$\pm$\,0.023 & 0.039 & 0.28 & 0.843\,$\pm$\,0.023 \\
+\bottomrule
+\end{tabular}
+\vspace{1pt}
+
+{\scriptsize Both columns use identical models, budgets and seeds; only the partitioning rule differs. Report the TV column alongside $\alpha$: $\alpha$ alone does not establish that clients were non-IID.}
+\end{table}

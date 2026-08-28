@@ -1,0 +1,5 @@
+train: C:\Users\USER_HP\Desktop\FarmFederate\Augmented-Dataset-YOLO\images
+val:   C:\Users\USER_HP\Desktop\FarmFederate\Augmented-Dataset-YOLO\images
+
+nc: 5
+names: ['LEAF_BLIGHT', 'LEAF_HOPPERS', 'LEAF_RUST', 'LOOPER_CATERPILLARS', 'MOSQUITO_BUG']

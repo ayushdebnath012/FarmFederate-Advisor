@@ -1,0 +1,20 @@
+remaining evaluation gaps without mixing supports. The suite runs on 371 genuine
+box-linked observations, and within each cell every architecture trains on the
+identical client partition, so differences are architectural rather than
+partition effects. At $\alpha=0.1$ the corrected splitter realizes label TV
+0.451 against 0.265 for the legacy splitter, and federation beats local-only
+training for all five architectures (gains $+0.121$ to $+0.348$). Aggregator
+ranking is architecture-dependent: FedProx leads for the text, attention, and
+cross-attention models at $\alpha=0.1$, while FedAvg leads for the image-only
+and concat models; at $\alpha=1$ FedProx leads or ties throughout. SCAFFOLD is
+unstable in every configuration (0.088--0.579) and is always worst.
+Communication spans $3.5\times$, from 18.9\,MiB per client-round for the
+image-only model to 67.2\,MiB for cross-attention, so the image-only model
+reaches 0.499 macro F1 at roughly a third the uplink cost of either fusion
+model. The text-only and cross-attention models reach exactly 1.000 at
+$\alpha\geq0.5$; on a 53-crop validation split this indicates that the templated
+notes are close to label-determining rather than that federation is solved, and
+it bounds what the fusion comparison can establish on this corpus. Warm start
+adds 0.034 macro F1 at one seed and nothing at the other. The anti-collapse and
+fusion-variant ablations remain single-architecture and are reported for the
+concat model only.

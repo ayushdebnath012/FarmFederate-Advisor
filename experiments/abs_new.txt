@@ -1,0 +1,9 @@
+The validation-selected ResNet--compact-Transformer VLM retains
+98.1--100.0\% of its 0.9099 centralized validation macro F1 under warm-start
+FedAvg over 2--8 simulated clients. Across five federated architectures on 371
+genuine box-linked observations, federation outperforms local-only training,
+although the best aggregator is architecture-dependent; one float32 round costs
+18.9--67.2\,MiB per client
+depending on architecture. Two architectures saturate at 1.000 macro F1, which
+bounds what this corpus can establish; clients are simulated, so multi-site
+validation remains necessary.

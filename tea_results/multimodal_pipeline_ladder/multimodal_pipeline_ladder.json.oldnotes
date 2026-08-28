@@ -1,0 +1,177 @@
+{
+  "_meta": {
+    "crops": {
+      "train": 222,
+      "validation": 74,
+      "test": 75
+    },
+    "source_groups": {
+      "train": 122,
+      "validation": 40,
+      "test": 38
+    },
+    "blocked_tokens": 178,
+    "split_seed": 42,
+    "pairing": "exact (photograph, box) crop-note linkage",
+    "sparsities": [
+      0.0,
+      0.5,
+      0.75
+    ],
+    "validation_score": "0.65*F1_paired + 0.35*F1_image",
+    "text_encoder": "distilbert-base-uncased",
+    "image_encoder": "google/vit-base-patch16-224"
+  },
+  "ladder": {
+    "sparsity=0.0": {
+      "Direct concat path": {
+        "candidates": 1,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0,
+        "validation_score": 0.907045584045584,
+        "test_accuracy": 1.0,
+        "test_macro_f1": 1.0
+      },
+      "Concat + tuned head": {
+        "candidates": 6,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0,
+        "validation_score": 0.907045584045584,
+        "test_accuracy": 1.0,
+        "test_macro_f1": 1.0
+      },
+      "Deep-feature concat": {
+        "candidates": 24,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0,
+        "validation_score": 0.907045584045584,
+        "test_accuracy": 1.0,
+        "test_macro_f1": 1.0
+      },
+      "PCA-per-modality concat": {
+        "candidates": 24,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0,
+        "validation_score": 0.907045584045584,
+        "test_accuracy": 1.0,
+        "test_macro_f1": 1.0
+      },
+      "Calibrated late fusion": {
+        "candidates": 9,
+        "validation_accuracy": 0.9864864864864865,
+        "validation_macro_f1": 0.9253333333333333,
+        "validation_score": 0.8585122507122507,
+        "test_accuracy": 0.9866666666666667,
+        "test_macro_f1": 0.9286821705426356
+      },
+      "Three-expert gate (not single model)": {
+        "candidates": 243,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0,
+        "validation_score": 0.907045584045584,
+        "test_accuracy": 1.0,
+        "test_macro_f1": 1.0
+      }
+    },
+    "sparsity=0.5": {
+      "Direct concat path": {
+        "candidates": 1,
+        "validation_accuracy": 0.8378378378378378,
+        "validation_macro_f1": 0.8186984646559115,
+        "validation_score": 0.7891995860719264,
+        "test_accuracy": 0.8666666666666667,
+        "test_macro_f1": 0.8380537701292419
+      },
+      "Concat + tuned head": {
+        "candidates": 6,
+        "validation_accuracy": 0.918918918918919,
+        "validation_macro_f1": 0.8790580013976239,
+        "validation_score": 0.8284332849540396,
+        "test_accuracy": 0.8666666666666667,
+        "test_macro_f1": 0.7113745144881609
+      },
+      "Deep-feature concat": {
+        "candidates": 24,
+        "validation_accuracy": 0.9324324324324325,
+        "validation_macro_f1": 0.8920751299717964,
+        "validation_score": 0.8368944185272517,
+        "test_accuracy": 0.9066666666666666,
+        "test_macro_f1": 0.9261113895850738
+      },
+      "PCA-per-modality concat": {
+        "candidates": 24,
+        "validation_accuracy": 0.9459459459459459,
+        "validation_macro_f1": 0.9009129720853858,
+        "validation_score": 0.8426390159010848,
+        "test_accuracy": 0.9066666666666666,
+        "test_macro_f1": 0.8652193335120165
+      },
+      "Calibrated late fusion": {
+        "candidates": 9,
+        "validation_accuracy": 0.9459459459459459,
+        "validation_macro_f1": 0.9011111111111111,
+        "validation_score": 0.8427678062678062,
+        "test_accuracy": 0.92,
+        "test_macro_f1": 0.8805923961096374
+      },
+      "Three-expert gate (not single model)": {
+        "candidates": 243,
+        "validation_accuracy": 0.9324324324324325,
+        "validation_macro_f1": 0.8878921699953045,
+        "validation_score": 0.8341754945425319,
+        "test_accuracy": 0.7466666666666667,
+        "test_macro_f1": 0.6075704262896382
+      }
+    },
+    "sparsity=0.75": {
+      "Direct concat path": {
+        "candidates": 1,
+        "validation_accuracy": 0.7837837837837838,
+        "validation_macro_f1": 0.7584656084656085,
+        "validation_score": 0.7500482295482296,
+        "test_accuracy": 0.7866666666666666,
+        "test_macro_f1": 0.6569387755102041
+      },
+      "Concat + tuned head": {
+        "candidates": 6,
+        "validation_accuracy": 0.8108108108108109,
+        "validation_macro_f1": 0.7800432600432601,
+        "validation_score": 0.764073703073703,
+        "test_accuracy": 0.8266666666666667,
+        "test_macro_f1": 0.6755184522626383
+      },
+      "Deep-feature concat": {
+        "candidates": 24,
+        "validation_accuracy": 0.8378378378378378,
+        "validation_macro_f1": 0.8000504326591283,
+        "validation_score": 0.7770783652740174,
+        "test_accuracy": 0.8533333333333334,
+        "test_macro_f1": 0.6869841269841269
+      },
+      "PCA-per-modality concat": {
+        "candidates": 24,
+        "validation_accuracy": 0.8378378378378378,
+        "validation_macro_f1": 0.7905924230867023,
+        "validation_score": 0.7709306590519405,
+        "test_accuracy": 0.7733333333333333,
+        "test_macro_f1": 0.6342995169082125
+      },
+      "Calibrated late fusion": {
+        "candidates": 9,
+        "validation_accuracy": 0.8513513513513513,
+        "validation_macro_f1": 0.810098223615465,
+        "validation_score": 0.7836094293956363,
+        "test_accuracy": 0.7733333333333333,
+        "test_macro_f1": 0.6242457091237579
+      },
+      "Three-expert gate (not single model)": {
+        "candidates": 243,
+        "validation_accuracy": 0.918918918918919,
+        "validation_macro_f1": 0.8751339031339033,
+        "validation_score": 0.8258826210826211,
+        "test_accuracy": 0.7333333333333333,
+        "test_macro_f1": 0.6147712759781725
+      }
+    }
+  }
+}

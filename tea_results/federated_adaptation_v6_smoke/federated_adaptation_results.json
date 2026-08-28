@@ -1,0 +1,136 @@
+{
+  "generated_at_utc": "2026-07-27T17:12:46.682820+00:00",
+  "experiment": "validation_only_federated_adaptation",
+  "config": {
+    "checkpoint": "C:\\Users\\USER_HP\\Desktop\\FarmFederate\\tea_results\\multimodal_v6_vision_full_20260727\\models\\best_vlm.pt",
+    "output_dir": "C:\\Users\\USER_HP\\Desktop\\FarmFederate\\tea_results\\federated_adaptation_v6_smoke",
+    "clients": [
+      3
+    ],
+    "rounds": 1,
+    "seeds": [
+      42
+    ],
+    "alpha": 1.0,
+    "local_epochs": 1,
+    "batch_size": 16,
+    "learning_rate": 0.0001,
+    "weight_decay": 0.01,
+    "split_seed": 42
+  },
+  "device": "cpu",
+  "data_audit": {
+    "split_seed": 42,
+    "train_crops": 222,
+    "validation_crops": 74,
+    "locked_test_crops_not_used": 75,
+    "train_source_images": 122,
+    "validation_source_images": 40,
+    "locked_test_source_images_not_used": 38,
+    "pairwise_source_overlap": 0,
+    "train_pairing_coverage": 1.0,
+    "validation_pairing_coverage": 1.0,
+    "masked_target_shortcut_tokens": 178,
+    "checkpoint_sha256": "76abbd249a284d3be442fe2c77e9b38da6045fada095676c1bccd0acb0f9ac46"
+  },
+  "runs": [
+    {
+      "num_clients": 3,
+      "seed": 42,
+      "alpha": 1.0,
+      "local_epochs": 1,
+      "baseline_validation": {
+        "f1_macro": 0.90988862988863,
+        "accuracy": 0.9594594594594594,
+        "nll": 0.3900126516819,
+        "ece": 0.2272546106093639,
+        "mean_confidence": 0.7322048544883728
+      },
+      "history": [
+        {
+          "f1_macro": 0.90988862988863,
+          "accuracy": 0.9594594594594594,
+          "nll": 0.29824551939964294,
+          "ece": 0.15838306981164058,
+          "mean_confidence": 0.8010764122009277,
+          "round": 1,
+          "elapsed_seconds": 7.254170500000328
+        }
+      ],
+      "final_validation": {
+        "f1_macro": 0.90988862988863,
+        "accuracy": 0.9594594594594594,
+        "nll": 0.29824551939964294,
+        "ece": 0.15838306981164058,
+        "mean_confidence": 0.8010764122009277,
+        "round": 1,
+        "elapsed_seconds": 7.254170500000328
+      },
+      "best_validation": {
+        "f1_macro": 0.90988862988863,
+        "accuracy": 0.9594594594594594,
+        "nll": 0.29824551939964294,
+        "ece": 0.15838306981164058,
+        "mean_confidence": 0.8010764122009277,
+        "round": 1,
+        "elapsed_seconds": 7.254170500000328
+      },
+      "partition": {
+        "clients": [
+          {
+            "client": 0,
+            "samples": 114,
+            "class_counts": [
+              35,
+              3,
+              17,
+              30,
+              29
+            ]
+          },
+          {
+            "client": 1,
+            "samples": 84,
+            "class_counts": [
+              27,
+              1,
+              20,
+              28,
+              8
+            ]
+          },
+          {
+            "client": 2,
+            "samples": 24,
+            "class_counts": [
+              15,
+              1,
+              3,
+              3,
+              2
+            ]
+          }
+        ],
+        "mean_label_total_variation": 0.16542482331956018,
+        "size_coefficient_of_variation": 0.5056293765910732,
+        "empty_clients": 0
+      }
+    }
+  ],
+  "summary": {
+    "3": {
+      "round_mean_macro_f1": [
+        0.90988862988863
+      ],
+      "round_std_macro_f1": [
+        0.0
+      ],
+      "final_macro_f1_mean": 0.90988862988863,
+      "final_macro_f1_std": 0.0,
+      "best_macro_f1_mean": 0.90988862988863,
+      "best_macro_f1_std": 0.0,
+      "mean_label_total_variation": 0.16542482331956018
+    }
+  },
+  "wall_time_seconds": 9.338813099999243
+}

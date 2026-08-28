@@ -1,0 +1,171 @@
+{
+  "_meta": {
+    "crops": {
+      "train": 222,
+      "validation": 74,
+      "test": 75
+    },
+    "source_groups": {
+      "train": 122,
+      "validation": 40,
+      "test": 38
+    },
+    "blocked_tokens": 45,
+    "split_seed": 42,
+    "pairing": "exact (photograph, box) crop-note linkage",
+    "protocol": "frozen encoder + ridge head; penalty chosen on the 74 validation crops only; test evaluated once after the choice was frozen",
+    "identical_support_asserted": true,
+    "fusion_image_encoder": "ViT-Base"
+  },
+  "text_only": {
+    "DistilBERT": {
+      "ridge_alpha": 10.0,
+      "validation_accuracy": 0.7027027027027027,
+      "validation_macro_f1": 0.7667365873604217,
+      "test_accuracy": 0.6133333333333333,
+      "test_macro_f1": 0.48473684210526313,
+      "test_micro_f1": 0.6133333333333333,
+      "encoder": "distilbert-base-uncased",
+      "dim": 768
+    },
+    "BERT-tiny": {
+      "ridge_alpha": 0.01,
+      "validation_accuracy": 0.6891891891891891,
+      "validation_macro_f1": 0.7370329670329671,
+      "test_accuracy": 0.6133333333333333,
+      "test_macro_f1": 0.5081939799331103,
+      "test_micro_f1": 0.6133333333333333,
+      "encoder": "prajjwal1/bert-tiny",
+      "dim": 128
+    },
+    "BERT-mini": {
+      "ridge_alpha": 10.0,
+      "validation_accuracy": 0.6891891891891891,
+      "validation_macro_f1": 0.7397890245347872,
+      "test_accuracy": 0.6133333333333333,
+      "test_macro_f1": 0.49605103668261563,
+      "test_micro_f1": 0.6133333333333333,
+      "encoder": "prajjwal1/bert-mini",
+      "dim": 256
+    },
+    "BERT-small": {
+      "ridge_alpha": 10.0,
+      "validation_accuracy": 0.6756756756756757,
+      "validation_macro_f1": 0.7351497613589387,
+      "test_accuracy": 0.64,
+      "test_macro_f1": 0.5123350679872418,
+      "test_micro_f1": 0.64,
+      "encoder": "prajjwal1/bert-small",
+      "dim": 512
+    },
+    "BERT-medium": {
+      "ridge_alpha": 10.0,
+      "validation_accuracy": 0.6891891891891891,
+      "validation_macro_f1": 0.7414658597713798,
+      "test_accuracy": 0.6,
+      "test_macro_f1": 0.4925284262627073,
+      "test_micro_f1": 0.6,
+      "encoder": "prajjwal1/bert-medium",
+      "dim": 512
+    }
+  },
+  "image_only": {
+    "ViT-Base": {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.9054054054054054,
+      "validation_macro_f1": 0.7344159544159543,
+      "test_accuracy": 0.7333333333333333,
+      "test_macro_f1": 0.6147712759781725,
+      "test_micro_f1": 0.7333333333333333,
+      "encoder": "google/vit-base-patch16-224",
+      "dim": 768
+    },
+    "DeiT-tiny": {
+      "ridge_alpha": 1000.0,
+      "validation_accuracy": 0.7567567567567568,
+      "validation_macro_f1": 0.6150019434727081,
+      "test_accuracy": 0.6933333333333334,
+      "test_macro_f1": 0.5452541781935606,
+      "test_micro_f1": 0.6933333333333334,
+      "encoder": "facebook/deit-tiny-patch16-224",
+      "dim": 192
+    },
+    "Swin-tiny": {
+      "ridge_alpha": 10.0,
+      "validation_accuracy": 0.581081081081081,
+      "validation_macro_f1": 0.4858161350844278,
+      "test_accuracy": 0.6,
+      "test_macro_f1": 0.507230890464933,
+      "test_micro_f1": 0.6,
+      "encoder": "microsoft/swin-tiny-patch4-window7-224",
+      "dim": 768
+    },
+    "ConvNeXT-tiny": {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.7837837837837838,
+      "validation_macro_f1": 0.6415726195699868,
+      "test_accuracy": 0.56,
+      "test_macro_f1": 0.4926666666666667,
+      "test_micro_f1": 0.56,
+      "encoder": "facebook/convnext-tiny-224",
+      "dim": 768
+    },
+    "EfficientNet": {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.7162162162162162,
+      "validation_macro_f1": 0.568378500451671,
+      "test_accuracy": 0.68,
+      "test_macro_f1": 0.5614835164835166,
+      "test_micro_f1": 0.68,
+      "encoder": "google/efficientnet-b0",
+      "dim": 1280
+    }
+  },
+  "multimodal": {
+    "ViT-Base + DistilBERT": {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.8918918918918919,
+      "validation_macro_f1": 0.8665852665852665,
+      "test_accuracy": 0.7733333333333333,
+      "test_macro_f1": 0.6453861693861693,
+      "test_micro_f1": 0.7733333333333333,
+      "dim": 1536
+    },
+    "ViT-Base + BERT-tiny": {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.918918918918919,
+      "validation_macro_f1": 0.8766788766788768,
+      "test_accuracy": 0.7466666666666667,
+      "test_macro_f1": 0.6246772486772486,
+      "test_micro_f1": 0.7466666666666667,
+      "dim": 896
+    },
+    "ViT-Base + BERT-mini": {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.9324324324324325,
+      "validation_macro_f1": 0.8882352941176471,
+      "test_accuracy": 0.7733333333333333,
+      "test_macro_f1": 0.643066267066267,
+      "test_micro_f1": 0.7733333333333333,
+      "dim": 1024
+    },
+    "ViT-Base + BERT-small": {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.918918918918919,
+      "validation_macro_f1": 0.8801796945193171,
+      "test_accuracy": 0.8,
+      "test_macro_f1": 0.6637845117845118,
+      "test_micro_f1": 0.8,
+      "dim": 1280
+    },
+    "ViT-Base + BERT-medium": {
+      "ridge_alpha": 100.0,
+      "validation_accuracy": 0.8918918918918919,
+      "validation_macro_f1": 0.8559516364394412,
+      "test_accuracy": 0.7733333333333333,
+      "test_macro_f1": 0.6424196268847432,
+      "test_micro_f1": 0.7733333333333333,
+      "dim": 1280
+    }
+  }
+}

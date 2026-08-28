@@ -1,0 +1,70 @@
+% Federated deployment overview -- pictorial version with real corpus photographs.
+% Requires graphicx, fontawesome5 and TikZ libraries arrows.meta, positioning,
+% fit, shapes.symbols.
+\begin{tikzpicture}[
+  font=\small,
+  >={Stealth[length=2.8mm,width=2.1mm]},
+  client/.style={draw=black!50, rounded corners=6pt, line width=0.9pt,
+                 fill=vitgreen!14, minimum width=5.60cm, minimum height=1.62cm},
+  chip/.style={draw=black!32, rounded corners=3pt, fill=white,
+               inner xsep=4pt, inner ysep=1.8pt, font=\scriptsize, align=center},
+  upload/.style={->, ultra thick, draw=orange!85!black},
+  download/.style={->, ultra thick, dashed, draw=headblue},
+  stepbadge/.style={circle, fill=black!80, text=white, minimum size=5.2mm,
+                    inner sep=0pt, font=\scriptsize\bfseries}
+]
+
+\def\clientcard#1#2#3{%
+  \node[client] (c#1) at (0,#2) {};
+  \node[anchor=north west, font=\scriptsize\bfseries]
+    at ([xshift=5pt,yshift=-4pt]c#1.north west) {\faMobile~Tea-garden client #1};
+  \node[draw=black!35, inner sep=0.5pt, fill=white]
+    at ([xshift=-1.85cm,yshift=-0.16cm]c#1.center)
+    {\includegraphics[width=1.30cm,height=0.82cm,keepaspectratio]{#3}};
+  \node[font=\Large, color=orange!70!black]
+    at ([xshift=-0.62cm,yshift=-0.10cm]c#1.center) {\faStickyNote};
+  \node[anchor=west, align=left, font=\scriptsize]
+    at ([xshift=-0.25cm,yshift=-0.10cm]c#1.center)
+    {\textbf{linked record}\\[-1pt]{\scriptsize photo $+$ its own note}};
+  \node[chip, anchor=east, fill=green!8, draw=green!45!black]
+    at ([xshift=-6pt,yshift=-0.52cm]c#1.east) {\faLock~stays on-site};
+}
+
+\clientcard{1}{2.15}
+  {data_final/data_final/real_dataset_sorted/LEAF_RUST/107_jpg.rf.9c0264c78b1f4dfff87adea98349df8b.jpg}
+\clientcard{2}{0}
+  {data_final/data_final/real_dataset_sorted/LEAF_BLIGHT/121_jpg.rf.ab585552a4145906dbdce2bc02a016ce.jpg}
+\clientcard{3}{-2.15}
+  {data_final/data_final/real_dataset_sorted/MOSQUITO_BUG/22_jpg.rf.b563c170f475a98253e29e444debeaf9.jpg}
+
+%------------------------------------------------------------ privacy boundary
+\draw[densely dotted, black!50, line width=1pt] (4.45,-3.30) -- (4.45,3.30);
+\node[fill=white, inner sep=2pt, text=black!62, font=\scriptsize\bfseries]
+  at (4.45,3.30) {\faUserShield~privacy boundary};
+
+%------------------------------------------------------------ aggregation cloud
+\node[cloud, draw=headblue, line width=1pt, fill=llmblue!45, aspect=1.85,
+      cloud puffs=13, cloud puff arc=115, minimum width=6.4cm,
+      minimum height=3.9cm, align=center] (srv) at (9.05,0)
+  {{\LARGE\color{headblue}\faServer}\\[-1pt]
+   {\small\bfseries FedAvg server}\\[2pt]
+   $\displaystyle\theta^{t+1}=\sum_{k=1}^{K}\frac{n_k}{n}\,\theta_k^{t+1}$};
+
+\node[chip, fill=vlmred!18, draw=vlmred!80] at (9.05,-2.05)
+  {{\color{vlmred!60!black}\faBan}~\textbf{no image or note uploaded}};
+\node[font=\scriptsize\itshape, text=black!55] at (9.05,-2.62)
+  {simulated ownership partitions};
+
+%------------------------------------------------------------ traffic
+\foreach \y/\t in {2.15/0.62, 0/0, -2.15/-0.62}{
+  \draw[upload]   (2.85,\y+0.14) -- (6.35,\t+0.30);
+  \draw[download] (6.35,\t-0.30) -- (2.85,\y-0.14);
+}
+\node[stepbadge] at (4.45,1.24) {1};
+\node[chip, anchor=west, fill=orange!10, draw=orange!70!black]
+  at (4.68,1.24) {\faUpload~$\Delta\theta_k$ only};
+\node[stepbadge] at (4.45,-1.24) {2};
+\node[chip, anchor=west, fill=blue!5, draw=headblue]
+  at (4.68,-1.24) {\faSatelliteDish~broadcast $\theta^{t+1}$};
+
+\end{tikzpicture}

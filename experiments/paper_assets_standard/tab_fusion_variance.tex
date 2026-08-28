@@ -1,0 +1,18 @@
+\begin{table}[t]
+\caption{Fusion strategies across seeds. The spread is what determines whether a ranking between strategies is real.}
+\label{tab:fusion_variance}
+\centering\footnotesize
+\setlength\tabcolsep{5pt}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Fusion} & Seeds & \textbf{Macro F1 (mean\,$\pm$\,std)}\\
+\midrule
+Gated & 2 & 0.890\,$\pm$\,0.010 \\
+Attention & 2 & 0.860\,$\pm$\,0.001 \\
+Concat & 2 & 0.809\,$\pm$\,0.005 \\
+\bottomrule
+\end{tabular}
+\vspace{1pt}
+
+{\scriptsize Single-run differences smaller than the seed spread are not evidence that one fusion strategy beats another.}
+\end{table}

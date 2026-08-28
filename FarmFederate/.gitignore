@@ -1,0 +1,17 @@
+# FarmFederate root .gitignore
+
+# Model checkpoints (stored locally, not in git)
+*.pt
+models/
+backend/checkpoints/
+checkpoints/
+
+# Temporary files
+/tmp/
+*.tmp
+
+# Reserved device name on Windows (avoid git add errors)
+nul
+
+# Image datasets (too large for git — upload to Drive manually)
+data/*/images/

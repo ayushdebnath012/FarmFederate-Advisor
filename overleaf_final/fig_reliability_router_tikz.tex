@@ -1,0 +1,108 @@
+% Deterministic sparse-note router -- pictorial version. Validation controls stay
+% visibly separated from the frozen test-time decision path.
+% Requires fontawesome5 and TikZ libraries arrows.meta, positioning, shapes.geometric.
+\begin{tikzpicture}[
+  font=\small,
+  >={Stealth[length=2.4mm,width=1.8mm]},
+  flow/.style={->, thick, draw=black!70},
+  selected/.style={->, very thick, draw=headblue},
+  route/.style={draw=black!45, rounded corners=4pt, thick, fill=white,
+                minimum width=3.75cm, minimum height=1.05cm, align=center,
+                inner xsep=5pt, inner ysep=3pt},
+  chip/.style={draw=black!32, rounded corners=3pt, fill=white,
+               inner xsep=4pt, inner ysep=2pt, font=\scriptsize, align=center},
+  decision/.style={diamond, aspect=2.0, draw=black!60, line width=1pt,
+                   fill=outyyellow, align=center, inner xsep=1pt, inner ysep=1pt,
+                   font=\scriptsize\bfseries},
+  outcome/.style={draw=headblue, rounded corners=4pt, line width=1pt, fill=blue!4,
+                  minimum width=3.60cm, minimum height=1.85cm, align=center}
+]
+
+%------------------------------------------------- validation-only rule strip
+\node[draw=headblue, dashed, rounded corners=4pt, fill=blue!3,
+      minimum width=15.0cm, minimum height=0.74cm] (validation) at (7.90,2.95) {};
+\node[anchor=west, font=\scriptsize] at ([xshift=6pt]validation.west)
+  {{\color{headblue}\faSlidersH}~\textbf{Rule fitted on validation only:}};
+\node[chip, anchor=west, fill=green!5] at ([xshift=4.55cm]validation.west)
+  {\faImage~image gate for hopper / bug};
+\node[chip, anchor=west, fill=blue!5] at ([xshift=8.30cm]validation.west)
+  {\faFont~sparse text if rust \& $p_{\max}<0.60$};
+\node[chip, anchor=west, fill=black!5] at ([xshift=12.55cm]validation.west)
+  {\faLock~then frozen};
+
+%------------------------------------------------- candidate routes
+\node[route, fill=green!8] (image) at (2.05,1.45)
+  {{\large\color{green!45!black}\faImage}~\textbf{Enhanced image}\\
+   {\scriptsize\color{black!65} five-expert class gate}};
+\node[route, fill=llmblue!30] (text) at (2.05,0.15)
+  {{\large\color{headblue}\faFont}~\textbf{Sparse text}\\
+   {\scriptsize\color{black!65} 50\% token retention}};
+\node[route, fill=fedorange!55] (late) at (2.05,-1.15)
+  {{\large\color{orange!75!black}\faLayerGroup}~\textbf{Late fusion}\\
+   {\scriptsize\color{black!65} paired score $+$ image gate}};
+\node[route, fill=vlmred!25] (raw) at (2.05,-2.45)
+  {{\large\color{vlmred!70!black}\faBrain}~\textbf{Raw cross-modal}\\
+   {\scriptsize\color{black!65} base paired checkpoint}};
+
+\foreach \n/\c in {image/green!55!black, text/headblue, late/orange!85!black,
+                   raw/vlmred}{
+  \draw[\c, line width=3pt]
+    ([xshift=0.09cm,yshift=0.26cm]\n.south west) --
+    ([xshift=0.09cm,yshift=-0.26cm]\n.north west);
+}
+
+%------------------------------------------------- fan-in bus
+\node[draw=black!45, rounded corners=3pt, thick, fill=black!5,
+      minimum width=0.50cm, minimum height=4.55cm] (pool) at (5.10,-0.50) {};
+\node[font=\scriptsize, rotate=90, text=black!60] at (5.10,-0.50)
+  {four candidate routes};
+
+%------------------------------------------------- decisions
+\node[decision] (imageclass) at (8.10,0.35)
+  {base class\\ hopper / bug?};
+\node[decision] (lowconf) at (11.75,0.35)
+  {rust \&\\ $p_{\max}{<}0.60$?};
+
+%------------------------------------------------- outcomes
+\node[chip, fill=green!8, draw=green!45!black, minimum height=0.55cm]
+  (useimage) at (8.10,-1.75) {{\color{green!45!black}\faImage}~image route};
+\node[chip, fill=llmblue!30, draw=headblue, minimum height=0.55cm]
+  (usetext) at (11.75,-1.75) {{\color{headblue}\faFont}~sparse-text route};
+\node[chip, fill=fedorange!55, draw=orange!70!black, minimum height=0.55cm]
+  (uselate) at (15.40,-1.75) {{\color{orange!75!black}\faLayerGroup}~keep late / raw};
+
+%------------------------------------------------- final probability vector
+\node[outcome] (output) at (19.05,-1.10) {};
+\node[font=\small\bfseries, anchor=north] at ([yshift=-0.08cm]output.north)
+  {{\color{headblue}\faChartLine}~Five-class output};
+\foreach \i/\lab/\ww/\cc in {0/Blight/1.10/headblue, 1/Hoppers/0.30/black!45,
+                             2/Rust/0.78/green!55!black, 3/Looper/0.50/orange!85!black,
+                             4/{Mosq.}/0.26/vlmred}{
+  \node[font=\tiny, anchor=east] at (18.30,-0.72-0.24*\i) {\lab};
+  \draw[fill=black!10, draw=none] (18.36,-0.79-0.24*\i) rectangle (19.70,-0.65-0.24*\i);
+  \draw[fill=\cc, draw=none] (18.36,-0.79-0.24*\i) rectangle (18.36+\ww,-0.65-0.24*\i);
+}
+\node[chip, fill=green!4, draw=green!45!black] at (19.05,0.35)
+  {\faLock~frozen before test inference};
+
+%------------------------------------------------- wiring
+\foreach \n in {image,text,late,raw}{
+  \draw[flow] (\n.east) -- (pool.west |- \n.east);
+}
+\draw[flow] (pool.east) -- ++(0.30,0) |- (imageclass.west);
+
+\draw[selected] (imageclass.east) -- node[above,font=\scriptsize,text=black!60]{no}
+  (lowconf.west);
+\draw[selected] (imageclass.south) -- node[right,font=\scriptsize]{yes} (useimage.north);
+\draw[selected] (lowconf.south) -- node[right,font=\scriptsize]{yes} (usetext.north);
+\draw[selected] (lowconf.east) -- ++(0.45,0)
+  |- node[pos=0.72,above,font=\scriptsize]{no} (uselate.west);
+
+\draw[flow] (useimage.south) -- ++(0,-0.80) -| (output.south);
+\draw[flow] (usetext.south)  -- ++(0,-0.80) -| (output.south);
+\draw[flow] (uselate.east) -- (output.west |- uselate.east);
+
+\draw[dashed,draw=headblue,-{Stealth[length=1.8mm]}]
+  (validation.south) -- (imageclass.north);
+
+\end{tikzpicture}

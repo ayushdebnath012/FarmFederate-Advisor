@@ -1,0 +1,20 @@
+\begin{table}[t]
+\caption{Anti-collapse components under federation on the multimodal branch. ``div.'' is the fraction of the five classes the model actually predicts on validation; a collapsed model scores high micro-F1 while predicting one or two classes.}
+\label{tab:anticollapse}
+\centering\footnotesize
+\setlength\tabcolsep{5pt}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Configuration} & \multicolumn{2}{c}{$\alpha=0.1$} & \multicolumn{2}{c}{$\alpha=1$}\\
+ & F1 & div. & F1 & div.\\
+\midrule
+Both (full system) & 0.651 & 100\% & 0.906 & 100\% \\
+-- diversity loss & 0.561 & 100\% & 0.919 & 100\% \\
+-- balanced sampler & 0.771 & 100\% & 0.813 & 100\% \\
+Neither & 0.736 & 100\% & 0.840 & 100\% \\
+\bottomrule
+\end{tabular}
+\vspace{1pt}
+
+{\scriptsize The repository's own run\_ablation\_study asks this question centrally and text-only; collapse is a federated, class-imbalanced failure, so it is measured here under federation.}
+\end{table}

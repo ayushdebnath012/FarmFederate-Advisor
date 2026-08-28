@@ -1,0 +1,6518 @@
+{
+ "_meta": {
+  "data": {
+   "pairing_mode": "label_matched_resample",
+   "num_paired": 1000,
+   "num_real_images": 200,
+   "train": 700,
+   "val": 150,
+   "class_counts": [
+    212,
+    199,
+    204,
+    182,
+    203
+   ],
+   "note": "image-text pairs are label-matched resamples, not genuine co-observations; fusion results must be read with that caveat"
+  }
+ },
+ "E1_alpha_sweep": {
+  "alpha=0.1|split=corrected|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.7510077169207603,
+   "f1_micro": 0.7733333333333333,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 116,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.7733333333333333,
+    "f1_macro": 0.7510077169207603,
+    "f1_weighted": 0.7555918439048874,
+    "precision": 0.8170273586063062,
+    "precision_micro": 0.7733333333333333,
+    "recall": 0.7638097371565113,
+    "recall_micro": 0.7733333333333333,
+    "accuracy": 0.7733333333333333,
+    "accuracy_ci95_low": 0.6999980606806022,
+    "accuracy_ci95_high": 0.8330182057315159,
+    "per_class_f1": [
+     0.8857142857142857,
+     0.8405797101449275,
+     0.7733333333333333,
+     0.6190476190476191,
+     0.6363636363636364
+    ],
+    "f1_LEAF_BLIGHT": 0.8857142857142857,
+    "precision_LEAF_BLIGHT": 0.8157894736842105,
+    "recall_LEAF_BLIGHT": 0.96875,
+    "f1_LEAF_HOPPERS": 0.8405797101449275,
+    "precision_LEAF_HOPPERS": 0.7435897435897436,
+    "recall_LEAF_HOPPERS": 0.9666666666666667,
+    "f1_LEAF_RUST": 0.7733333333333333,
+    "precision_LEAF_RUST": 0.6590909090909091,
+    "recall_LEAF_RUST": 0.9354838709677419,
+    "f1_LOOPER_CATERPILLARS": 0.6190476190476191,
+    "precision_LOOPER_CATERPILLARS": 0.8666666666666667,
+    "recall_LOOPER_CATERPILLARS": 0.48148148148148145,
+    "f1_MOSQUITO_BUG": 0.6363636363636364,
+    "precision_MOSQUITO_BUG": 1.0,
+    "recall_MOSQUITO_BUG": 0.4666666666666667,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.24502718985177308,
+     0.3654739783772042,
+     0.44659517019775236,
+     0.6084339788007768,
+     0.6504354660188307,
+     0.7117525736867276,
+     0.7471099945821887,
+     0.7510077169207603
+    ],
+    "round_f1_micro": [
+     0.32,
+     0.4266666666666667,
+     0.5733333333333334,
+     0.6666666666666666,
+     0.7,
+     0.7466666666666667,
+     0.7733333333333333,
+     0.7733333333333333
+    ],
+    "round_seconds": [
+     7.966470241546631,
+     6.498401641845703,
+     5.529715538024902,
+     7.661634206771851,
+     7.7917256355285645,
+     5.911844968795776,
+     6.241330623626709,
+     6.862470626831055
+    ],
+    "round_peak_mib": [
+     836.3779296875,
+     836.6962890625,
+     835.0771484375,
+     837.1904296875,
+     836.6962890625,
+     837.8720703125,
+     836.6279296875,
+     836.1904296875
+    ]
+   },
+   "client_sizes": [
+    224,
+    423,
+    53
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 54.46359348297119,
+   "peak_mib": 837.8720703125,
+   "partition": {
+    "label_tv_mean": 0.5967857142857143,
+    "label_tv_max": 0.8171428571428572,
+    "size_cv": 0.647982741014806,
+    "client_sizes": [
+     224,
+     423,
+     53
+    ]
+   },
+   "alpha": 0.1,
+   "splitter": "corrected"
+  },
+  "alpha=0.1|split=corrected|seed=1": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.6789123953291216,
+   "f1_micro": 0.7066666666666667,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 106,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.7066666666666667,
+    "f1_macro": 0.6789123953291216,
+    "f1_weighted": 0.6795076451826139,
+    "precision": 0.7636986160415702,
+    "precision_micro": 0.7066666666666667,
+    "recall": 0.7102120669056153,
+    "recall_micro": 0.7066666666666667,
+    "accuracy": 0.7066666666666667,
+    "accuracy_ci95_low": 0.6293765082407161,
+    "accuracy_ci95_high": 0.7736357907538123,
+    "per_class_f1": [
+     0.7096774193548387,
+     0.819672131147541,
+     0.782608695652174,
+     0.704225352112676,
+     0.3783783783783784
+    ],
+    "f1_LEAF_BLIGHT": 0.7096774193548387,
+    "precision_LEAF_BLIGHT": 0.7333333333333333,
+    "recall_LEAF_BLIGHT": 0.6875,
+    "f1_LEAF_HOPPERS": 0.819672131147541,
+    "precision_LEAF_HOPPERS": 0.8064516129032258,
+    "recall_LEAF_HOPPERS": 0.8333333333333334,
+    "f1_LEAF_RUST": 0.782608695652174,
+    "precision_LEAF_RUST": 0.7105263157894737,
+    "recall_LEAF_RUST": 0.8709677419354839,
+    "f1_LOOPER_CATERPILLARS": 0.704225352112676,
+    "precision_LOOPER_CATERPILLARS": 0.5681818181818182,
+    "recall_LOOPER_CATERPILLARS": 0.9259259259259259,
+    "f1_MOSQUITO_BUG": 0.3783783783783784,
+    "precision_MOSQUITO_BUG": 1.0,
+    "recall_MOSQUITO_BUG": 0.23333333333333334,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.1918006176829706,
+     0.4189062693058541,
+     0.5250045846323125,
+     0.5886496097641609,
+     0.5435426787066115,
+     0.655850395574303,
+     0.643129407073069,
+     0.6789123953291216
+    ],
+    "round_f1_micro": [
+     0.2733333333333333,
+     0.4533333333333333,
+     0.5866666666666667,
+     0.62,
+     0.5933333333333334,
+     0.68,
+     0.68,
+     0.7066666666666667
+    ],
+    "round_seconds": [
+     6.42769980430603,
+     7.20865535736084,
+     8.797696352005005,
+     5.8778417110443115,
+     5.532172918319702,
+     5.219057083129883,
+     5.2764177322387695,
+     7.670267820358276
+    ],
+    "round_peak_mib": [
+     834.5654296875,
+     835.1904296875,
+     836.6904296875,
+     836.3837890625,
+     835.9462890625,
+     835.1904296875,
+     836.1904296875,
+     835.5654296875
+    ]
+   },
+   "client_sizes": [
+    306,
+    249,
+    145
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 52.00980877876282,
+   "peak_mib": 836.6904296875,
+   "partition": {
+    "label_tv_mean": 0.5454171856620597,
+    "label_tv_max": 0.7819211822660098,
+    "size_cv": 0.28566428133851995,
+    "client_sizes": [
+     306,
+     249,
+     145
+    ]
+   },
+   "alpha": 0.1,
+   "splitter": "corrected"
+  },
+  "alpha=0.1|split=legacy|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.9180767866013767,
+   "f1_micro": 0.92,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 138,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.92,
+    "f1_macro": 0.9180767866013767,
+    "f1_weighted": 0.9203867243867243,
+    "precision": 0.9182642089093702,
+    "precision_micro": 0.92,
+    "recall": 0.9183004778972522,
+    "recall_micro": 0.92,
+    "accuracy": 0.92,
+    "accuracy_ci95_low": 0.8653786362494686,
+    "accuracy_ci95_high": 0.953646358481347,
+    "per_class_f1": [
+     0.9523809523809523,
+     0.9508196721311475,
+     0.9508196721311475,
+     0.8363636363636363,
+     0.9
+    ],
+    "f1_LEAF_BLIGHT": 0.9523809523809523,
+    "precision_LEAF_BLIGHT": 0.967741935483871,
+    "recall_LEAF_BLIGHT": 0.9375,
+    "f1_LEAF_HOPPERS": 0.9508196721311475,
+    "precision_LEAF_HOPPERS": 0.9354838709677419,
+    "recall_LEAF_HOPPERS": 0.9666666666666667,
+    "f1_LEAF_RUST": 0.9508196721311475,
+    "precision_LEAF_RUST": 0.9666666666666667,
+    "recall_LEAF_RUST": 0.9354838709677419,
+    "f1_LOOPER_CATERPILLARS": 0.8363636363636363,
+    "precision_LOOPER_CATERPILLARS": 0.8214285714285714,
+    "recall_LOOPER_CATERPILLARS": 0.8518518518518519,
+    "f1_MOSQUITO_BUG": 0.9,
+    "precision_MOSQUITO_BUG": 0.9,
+    "recall_MOSQUITO_BUG": 0.9,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.4551378874733637,
+     0.7756825462082669,
+     0.8916390374902564,
+     0.886334745762712,
+     0.8996424932851719,
+     0.9180767866013767,
+     0.9123484279180236,
+     0.9116393437880589
+    ],
+    "round_f1_micro": [
+     0.48,
+     0.7733333333333333,
+     0.8933333333333333,
+     0.8866666666666667,
+     0.9,
+     0.92,
+     0.9133333333333333,
+     0.9133333333333333
+    ],
+    "round_seconds": [
+     6.272173643112183,
+     5.2800986766815186,
+     7.773015737533569,
+     8.774853944778442,
+     4.616862058639526,
+     6.3893349170684814,
+     6.35834813117981,
+     10.042657375335693
+    ],
+    "round_peak_mib": [
+     832.9404296875,
+     834.9404296875,
+     834.9404296875,
+     834.9404296875,
+     834.9404296875,
+     834.9404296875,
+     834.9404296875,
+     834.9404296875
+    ]
+   },
+   "client_sizes": [
+    696,
+    0,
+    4
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 55.507344484329224,
+   "peak_mib": 834.9404296875,
+   "partition": {
+    "label_tv_mean": 0.20474137931034483,
+    "label_tv_max": 0.40714285714285714,
+    "size_cv": 1.4021091983442773,
+    "client_sizes": [
+     696,
+     0,
+     4
+    ]
+   },
+   "alpha": 0.1,
+   "splitter": "legacy"
+  },
+  "alpha=0.1|split=legacy|seed=1": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.9006959005291776,
+   "f1_micro": 0.9,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 135,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.9,
+    "f1_macro": 0.9006959005291776,
+    "f1_weighted": 0.901516496907927,
+    "precision": 0.9070046082949309,
+    "precision_micro": 0.9,
+    "recall": 0.9010319593787337,
+    "recall_micro": 0.9,
+    "accuracy": 0.9,
+    "accuracy_ci95_low": 0.8415651883318529,
+    "accuracy_ci95_high": 0.9384586161736859,
+    "per_class_f1": [
+     0.9152542372881356,
+     0.9,
+     0.8787878787878788,
+     0.8620689655172413,
+     0.9473684210526315
+    ],
+    "f1_LEAF_BLIGHT": 0.9152542372881356,
+    "precision_LEAF_BLIGHT": 1.0,
+    "recall_LEAF_BLIGHT": 0.84375,
+    "f1_LEAF_HOPPERS": 0.9,
+    "precision_LEAF_HOPPERS": 0.9,
+    "recall_LEAF_HOPPERS": 0.9,
+    "f1_LEAF_RUST": 0.8787878787878788,
+    "precision_LEAF_RUST": 0.8285714285714286,
+    "recall_LEAF_RUST": 0.9354838709677419,
+    "f1_LOOPER_CATERPILLARS": 0.8620689655172413,
+    "precision_LOOPER_CATERPILLARS": 0.8064516129032258,
+    "recall_LOOPER_CATERPILLARS": 0.9259259259259259,
+    "f1_MOSQUITO_BUG": 0.9473684210526315,
+    "precision_MOSQUITO_BUG": 1.0,
+    "recall_MOSQUITO_BUG": 0.9,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.6326604133232137,
+     0.7613617859298296,
+     0.8068767017599054,
+     0.8655452904009782,
+     0.8667494298172921,
+     0.8797718487281377,
+     0.8980811368770668,
+     0.9006959005291776
+    ],
+    "round_f1_micro": [
+     0.6533333333333333,
+     0.7733333333333333,
+     0.8066666666666666,
+     0.8666666666666667,
+     0.8666666666666667,
+     0.88,
+     0.9,
+     0.9
+    ],
+    "round_seconds": [
+     7.757791996002197,
+     5.234456539154053,
+     5.534077882766724,
+     4.801072359085083,
+     5.2436535358428955,
+     4.596637725830078,
+     5.2892937660217285,
+     5.086834192276001
+    ],
+    "round_peak_mib": [
+     835.0654296875,
+     835.1904296875,
+     833.8837890625,
+     834.9970703125,
+     835.0087890625,
+     834.1396484375,
+     834.9404296875,
+     834.1337890625
+    ]
+   },
+   "client_sizes": [
+    0,
+    699,
+    1
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 43.54381799697876,
+   "peak_mib": 835.1904296875,
+   "partition": {
+    "label_tv_mean": 0.4012875536480687,
+    "label_tv_max": 0.8014285714285714,
+    "size_cv": 1.4111841893695276,
+    "client_sizes": [
+     0,
+     699,
+     1
+    ]
+   },
+   "alpha": 0.1,
+   "splitter": "legacy"
+  },
+  "alpha=0.5|split=corrected|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.8261667771874011,
+   "f1_micro": 0.8266666666666667,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 124,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.8266666666666667,
+    "f1_macro": 0.8261667771874011,
+    "f1_weighted": 0.827270833624791,
+    "precision": 0.8351337710909942,
+    "precision_micro": 0.8266666666666667,
+    "recall": 0.8281391875746713,
+    "recall_micro": 0.8266666666666667,
+    "accuracy": 0.8266666666666667,
+    "accuracy_ci95_low": 0.7581400726100628,
+    "accuracy_ci95_high": 0.8788793677361272,
+    "per_class_f1": [
+     0.8253968253968254,
+     0.8852459016393442,
+     0.8148148148148148,
+     0.7666666666666667,
+     0.8387096774193549
+    ],
+    "f1_LEAF_BLIGHT": 0.8253968253968254,
+    "precision_LEAF_BLIGHT": 0.8387096774193549,
+    "recall_LEAF_BLIGHT": 0.8125,
+    "f1_LEAF_HOPPERS": 0.8852459016393442,
+    "precision_LEAF_HOPPERS": 0.8709677419354839,
+    "recall_LEAF_HOPPERS": 0.9,
+    "f1_LEAF_RUST": 0.8148148148148148,
+    "precision_LEAF_RUST": 0.9565217391304348,
+    "recall_LEAF_RUST": 0.7096774193548387,
+    "f1_LOOPER_CATERPILLARS": 0.7666666666666667,
+    "precision_LOOPER_CATERPILLARS": 0.696969696969697,
+    "recall_LOOPER_CATERPILLARS": 0.8518518518518519,
+    "f1_MOSQUITO_BUG": 0.8387096774193549,
+    "precision_MOSQUITO_BUG": 0.8125,
+    "recall_MOSQUITO_BUG": 0.8666666666666667,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.22216317526662355,
+     0.4251401571941303,
+     0.49940912743729643,
+     0.655699846947452,
+     0.7552430420709058,
+     0.8133393043737872,
+     0.8128678975480506,
+     0.8261667771874011
+    ],
+    "round_f1_micro": [
+     0.3,
+     0.44666666666666666,
+     0.5333333333333333,
+     0.6666666666666666,
+     0.7533333333333333,
+     0.8133333333333334,
+     0.8133333333333334,
+     0.8266666666666667
+    ],
+    "round_seconds": [
+     7.560107469558716,
+     5.325580596923828,
+     4.717034339904785,
+     6.208069086074829,
+     7.133634090423584,
+     5.3857035636901855,
+     5.470210313796997,
+     7.554758071899414
+    ],
+    "round_peak_mib": [
+     835.8154296875,
+     837.1904296875,
+     836.1337890625,
+     836.8154296875,
+     835.8154296875,
+     836.1904296875,
+     838.5654296875,
+     837.6064453125
+    ]
+   },
+   "client_sizes": [
+    349,
+    236,
+    115
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 49.35509753227234,
+   "peak_mib": 838.5654296875,
+   "partition": {
+    "label_tv_mean": 0.3717240944178209,
+    "label_tv_max": 0.4926392251815981,
+    "size_cv": 0.40949446184986954,
+    "client_sizes": [
+     349,
+     236,
+     115
+    ]
+   },
+   "alpha": 0.5,
+   "splitter": "corrected"
+  },
+  "alpha=0.5|split=corrected|seed=1": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.6873119753023843,
+   "f1_micro": 0.7133333333333334,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 107,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.7133333333333334,
+    "f1_macro": 0.6873119753023843,
+    "f1_weighted": 0.6890886216479326,
+    "precision": 0.7386492529681383,
+    "precision_micro": 0.7133333333333334,
+    "recall": 0.7119384707287933,
+    "recall_micro": 0.7133333333333334,
+    "accuracy": 0.7133333333333334,
+    "accuracy_ci95_low": 0.6363508226083401,
+    "accuracy_ci95_high": 0.7796618731279474,
+    "per_class_f1": [
+     0.7878787878787878,
+     0.41025641025641024,
+     0.7246376811594203,
+     0.6779661016949152,
+     0.835820895522388
+    ],
+    "f1_LEAF_BLIGHT": 0.7878787878787878,
+    "precision_LEAF_BLIGHT": 0.7647058823529411,
+    "recall_LEAF_BLIGHT": 0.8125,
+    "f1_LEAF_HOPPERS": 0.41025641025641024,
+    "precision_LEAF_HOPPERS": 0.8888888888888888,
+    "recall_LEAF_HOPPERS": 0.26666666666666666,
+    "f1_LEAF_RUST": 0.7246376811594203,
+    "precision_LEAF_RUST": 0.6578947368421053,
+    "recall_LEAF_RUST": 0.8064516129032258,
+    "f1_LOOPER_CATERPILLARS": 0.6779661016949152,
+    "precision_LOOPER_CATERPILLARS": 0.625,
+    "recall_LOOPER_CATERPILLARS": 0.7407407407407407,
+    "f1_MOSQUITO_BUG": 0.835820895522388,
+    "precision_MOSQUITO_BUG": 0.7567567567567568,
+    "recall_MOSQUITO_BUG": 0.9333333333333333,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.26069426069426066,
+     0.4984166772135582,
+     0.5507119154190462,
+     0.5418157181491352,
+     0.5651566929008468,
+     0.6213231204071183,
+     0.6702212320200125,
+     0.6873119753023843
+    ],
+    "round_f1_micro": [
+     0.32,
+     0.5133333333333333,
+     0.5933333333333334,
+     0.5933333333333334,
+     0.6066666666666667,
+     0.6533333333333333,
+     0.6866666666666666,
+     0.7133333333333334
+    ],
+    "round_seconds": [
+     5.8196470737457275,
+     7.258041143417358,
+     6.629979133605957,
+     4.7065651416778564,
+     8.102142810821533,
+     7.184776306152344,
+     8.723758220672607,
+     6.7784037590026855
+    ],
+    "round_peak_mib": [
+     836.0654296875,
+     834.0654296875,
+     835.6279296875,
+     835.3720703125,
+     835.9970703125,
+     835.5087890625,
+     835.1904296875,
+     836.5146484375
+    ]
+   },
+   "client_sizes": [
+    176,
+    157,
+    367
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 55.20331358909607,
+   "peak_mib": 836.5146484375,
+   "partition": {
+    "label_tv_mean": 0.4130351492026027,
+    "label_tv_max": 0.4889285714285715,
+    "size_cv": 0.40643296507793364,
+    "client_sizes": [
+     176,
+     157,
+     367
+    ]
+   },
+   "alpha": 0.5,
+   "splitter": "corrected"
+  },
+  "alpha=0.5|split=legacy|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.912495446265938,
+   "f1_micro": 0.9133333333333333,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 137,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.9133333333333333,
+    "f1_macro": 0.912495446265938,
+    "f1_weighted": 0.9138499436204355,
+    "precision": 0.9130292918057099,
+    "precision_micro": 0.9133333333333333,
+    "recall": 0.9130062724014337,
+    "recall_micro": 0.9133333333333333,
+    "accuracy": 0.9133333333333333,
+    "accuracy_ci95_low": 0.8573717762637809,
+    "accuracy_ci95_high": 0.9486528217252759,
+    "per_class_f1": [
+     0.9206349206349206,
+     0.9180327868852459,
+     0.9333333333333333,
+     0.8571428571428571,
+     0.9333333333333333
+    ],
+    "f1_LEAF_BLIGHT": 0.9206349206349206,
+    "precision_LEAF_BLIGHT": 0.9354838709677419,
+    "recall_LEAF_BLIGHT": 0.90625,
+    "f1_LEAF_HOPPERS": 0.9180327868852459,
+    "precision_LEAF_HOPPERS": 0.9032258064516129,
+    "recall_LEAF_HOPPERS": 0.9333333333333333,
+    "f1_LEAF_RUST": 0.9333333333333333,
+    "precision_LEAF_RUST": 0.9655172413793104,
+    "recall_LEAF_RUST": 0.9032258064516129,
+    "f1_LOOPER_CATERPILLARS": 0.8571428571428571,
+    "precision_LOOPER_CATERPILLARS": 0.8275862068965517,
+    "recall_LOOPER_CATERPILLARS": 0.8888888888888888,
+    "f1_MOSQUITO_BUG": 0.9333333333333333,
+    "precision_MOSQUITO_BUG": 0.9333333333333333,
+    "recall_MOSQUITO_BUG": 0.9333333333333333,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.2919030654879711,
+     0.5247813005707742,
+     0.7563806165099269,
+     0.8444405210295042,
+     0.8384796796531051,
+     0.8802130221357786,
+     0.8924651879064504,
+     0.912495446265938
+    ],
+    "round_f1_micro": [
+     0.3333333333333333,
+     0.5533333333333333,
+     0.7666666666666667,
+     0.8466666666666667,
+     0.84,
+     0.88,
+     0.8933333333333333,
+     0.9133333333333333
+    ],
+    "round_seconds": [
+     9.524495840072632,
+     4.745528221130371,
+     9.702509641647339,
+     9.829774856567383,
+     5.296597242355347,
+     6.3878655433654785,
+     6.70983624458313,
+     6.958568334579468
+    ],
+    "round_peak_mib": [
+     835.9970703125,
+     836.8154296875,
+     836.8154296875,
+     836.9404296875,
+     837.9404296875,
+     836.8154296875,
+     837.5146484375,
+     836.8154296875
+    ]
+   },
+   "client_sizes": [
+    28,
+    295,
+    377
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 59.15517592430115,
+   "peak_mib": 837.9404296875,
+   "partition": {
+    "label_tv_mean": 0.13265468215789666,
+    "label_tv_max": 0.2285714285714286,
+    "size_cv": 0.6385794182945357,
+    "client_sizes": [
+     28,
+     295,
+     377
+    ]
+   },
+   "alpha": 0.5,
+   "splitter": "legacy"
+  },
+  "alpha=0.5|split=legacy|seed=1": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.8461091182745257,
+   "f1_micro": 0.8466666666666667,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 127,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.8466666666666667,
+    "f1_macro": 0.8461091182745257,
+    "f1_weighted": 0.8466537563497533,
+    "precision": 0.852433592144382,
+    "precision_micro": 0.8466666666666667,
+    "recall": 0.8471565113500598,
+    "recall_micro": 0.8466666666666667,
+    "accuracy": 0.8466666666666667,
+    "accuracy_ci95_low": 0.7804201682766676,
+    "accuracy_ci95_high": 0.8956004622947993,
+    "per_class_f1": [
+     0.8275862068965517,
+     0.8813559322033898,
+     0.8709677419354839,
+     0.8148148148148148,
+     0.835820895522388
+    ],
+    "f1_LEAF_BLIGHT": 0.8275862068965517,
+    "precision_LEAF_BLIGHT": 0.9230769230769231,
+    "recall_LEAF_BLIGHT": 0.75,
+    "f1_LEAF_HOPPERS": 0.8813559322033898,
+    "precision_LEAF_HOPPERS": 0.896551724137931,
+    "recall_LEAF_HOPPERS": 0.8666666666666667,
+    "f1_LEAF_RUST": 0.8709677419354839,
+    "precision_LEAF_RUST": 0.8709677419354839,
+    "recall_LEAF_RUST": 0.8709677419354839,
+    "f1_LOOPER_CATERPILLARS": 0.8148148148148148,
+    "precision_LOOPER_CATERPILLARS": 0.8148148148148148,
+    "recall_LOOPER_CATERPILLARS": 0.8148148148148148,
+    "f1_MOSQUITO_BUG": 0.835820895522388,
+    "precision_MOSQUITO_BUG": 0.7567567567567568,
+    "recall_MOSQUITO_BUG": 0.9333333333333333,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.2533174083174083,
+     0.7437791459655628,
+     0.761705742851753,
+     0.7991663251566067,
+     0.8138002594755289,
+     0.8339828985742793,
+     0.8461091182745257,
+     0.8331675964103807
+    ],
+    "round_f1_micro": [
+     0.32666666666666666,
+     0.7533333333333333,
+     0.7666666666666667,
+     0.8,
+     0.8133333333333334,
+     0.8333333333333334,
+     0.8466666666666667,
+     0.8333333333333334
+    ],
+    "round_seconds": [
+     5.763556241989136,
+     5.922788143157959,
+     6.189901351928711,
+     5.072419166564941,
+     6.61371922492981,
+     6.997020721435547,
+     9.18576455116272,
+     9.817470788955688
+    ],
+    "round_peak_mib": [
+     835.9970703125,
+     834.6904296875,
+     835.0712890625,
+     836.0712890625,
+     835.1337890625,
+     836.0712890625,
+     834.6904296875,
+     834.6904296875
+    ]
+   },
+   "client_sizes": [
+    435,
+    263,
+    2
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 55.56264019012451,
+   "peak_mib": 836.0712890625,
+   "partition": {
+    "label_tv_mean": 0.2865142840493568,
+    "label_tv_max": 0.8014285714285714,
+    "size_cv": 0.7629079704843641,
+    "client_sizes": [
+     435,
+     263,
+     2
+    ]
+   },
+   "alpha": 0.5,
+   "splitter": "legacy"
+  },
+  "alpha=1.0|split=corrected|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.8135038596055544,
+   "f1_micro": 0.8133333333333334,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 122,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.8133333333333334,
+    "f1_macro": 0.8135038596055544,
+    "f1_weighted": 0.8149207728868746,
+    "precision": 0.8308543563715978,
+    "precision_micro": 0.8133333333333334,
+    "recall": 0.8162440262843489,
+    "recall_micro": 0.8133333333333334,
+    "accuracy": 0.8133333333333334,
+    "accuracy_ci95_low": 0.7434428016958636,
+    "accuracy_ci95_high": 0.8675758451668085,
+    "per_class_f1": [
+     0.7777777777777778,
+     0.8813559322033898,
+     0.847457627118644,
+     0.7301587301587301,
+     0.8307692307692308
+    ],
+    "f1_LEAF_BLIGHT": 0.7777777777777778,
+    "precision_LEAF_BLIGHT": 0.9545454545454546,
+    "recall_LEAF_BLIGHT": 0.65625,
+    "f1_LEAF_HOPPERS": 0.8813559322033898,
+    "precision_LEAF_HOPPERS": 0.896551724137931,
+    "recall_LEAF_HOPPERS": 0.8666666666666667,
+    "f1_LEAF_RUST": 0.847457627118644,
+    "precision_LEAF_RUST": 0.8928571428571429,
+    "recall_LEAF_RUST": 0.8064516129032258,
+    "f1_LOOPER_CATERPILLARS": 0.7301587301587301,
+    "precision_LOOPER_CATERPILLARS": 0.6388888888888888,
+    "recall_LOOPER_CATERPILLARS": 0.8518518518518519,
+    "f1_MOSQUITO_BUG": 0.8307692307692308,
+    "precision_MOSQUITO_BUG": 0.7714285714285715,
+    "recall_MOSQUITO_BUG": 0.9,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.19130456643919092,
+     0.3292642312629222,
+     0.6645251424227165,
+     0.7889268521333739,
+     0.8010464087883443,
+     0.8066073723921319,
+     0.7937870159166489,
+     0.8135038596055544
+    ],
+    "round_f1_micro": [
+     0.2733333333333333,
+     0.38666666666666666,
+     0.6733333333333333,
+     0.7866666666666666,
+     0.8,
+     0.8066666666666666,
+     0.7933333333333333,
+     0.8133333333333334
+    ],
+    "round_seconds": [
+     6.408243179321289,
+     6.048029899597168,
+     7.34129524230957,
+     4.986782550811768,
+     8.789713144302368,
+     7.747277021408081,
+     7.940124750137329,
+     6.84544038772583
+    ],
+    "round_peak_mib": [
+     834.6337890625,
+     836.4404296875,
+     836.7587890625,
+     836.8154296875,
+     835.9404296875,
+     837.1337890625,
+     837.1904296875,
+     837.9404296875
+    ]
+   },
+   "client_sizes": [
+    298,
+    236,
+    166
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 56.1069061756134,
+   "peak_mib": 837.9404296875,
+   "partition": {
+    "label_tv_mean": 0.3306356981299591,
+    "label_tv_max": 0.3682271944922547,
+    "size_cv": 0.2310932314730422,
+    "client_sizes": [
+     298,
+     236,
+     166
+    ]
+   },
+   "alpha": 1.0,
+   "splitter": "corrected"
+  },
+  "alpha=1.0|split=corrected|seed=1": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.8041710875331566,
+   "f1_micro": 0.8066666666666666,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 121,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.8066666666666666,
+    "f1_macro": 0.8041710875331566,
+    "f1_weighted": 0.8060068523430591,
+    "precision": 0.816114219114219,
+    "precision_micro": 0.8066666666666666,
+    "recall": 0.8051493428912784,
+    "recall_micro": 0.8066666666666666,
+    "accuracy": 0.8066666666666666,
+    "accuracy_ci95_low": 0.7361371418228314,
+    "accuracy_ci95_high": 0.8618811082980816,
+    "per_class_f1": [
+     0.8275862068965517,
+     0.8214285714285714,
+     0.8125,
+     0.7307692307692307,
+     0.8285714285714286
+    ],
+    "f1_LEAF_BLIGHT": 0.8275862068965517,
+    "precision_LEAF_BLIGHT": 0.9230769230769231,
+    "recall_LEAF_BLIGHT": 0.75,
+    "f1_LEAF_HOPPERS": 0.8214285714285714,
+    "precision_LEAF_HOPPERS": 0.8846153846153846,
+    "recall_LEAF_HOPPERS": 0.7666666666666667,
+    "f1_LEAF_RUST": 0.8125,
+    "precision_LEAF_RUST": 0.7878787878787878,
+    "recall_LEAF_RUST": 0.8387096774193549,
+    "f1_LOOPER_CATERPILLARS": 0.7307692307692307,
+    "precision_LOOPER_CATERPILLARS": 0.76,
+    "recall_LOOPER_CATERPILLARS": 0.7037037037037037,
+    "f1_MOSQUITO_BUG": 0.8285714285714286,
+    "precision_MOSQUITO_BUG": 0.725,
+    "recall_MOSQUITO_BUG": 0.9666666666666667,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.3194477620842878,
+     0.5062240267762877,
+     0.7223904374262903,
+     0.7488607550922015,
+     0.7566254430933608,
+     0.797862205801861,
+     0.7583632847147566,
+     0.8041710875331566
+    ],
+    "round_f1_micro": [
+     0.37333333333333335,
+     0.5533333333333333,
+     0.7333333333333333,
+     0.76,
+     0.76,
+     0.8,
+     0.76,
+     0.8066666666666666
+    ],
+    "round_seconds": [
+     8.437820196151733,
+     5.380671501159668,
+     11.69615888595581,
+     6.781251907348633,
+     8.748252630233765,
+     5.637181758880615,
+     4.697844982147217,
+     5.151628255844116
+    ],
+    "round_peak_mib": [
+     835.9970703125,
+     836.0712890625,
+     835.2587890625,
+     836.1337890625,
+     836.4404296875,
+     837.1904296875,
+     835.1904296875,
+     836.8154296875
+    ]
+   },
+   "client_sizes": [
+    110,
+    330,
+    260
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 56.53081011772156,
+   "peak_mib": 837.1904296875,
+   "partition": {
+    "label_tv_mean": 0.3476490176490176,
+    "label_tv_max": 0.4584415584415584,
+    "size_cv": 0.39331142565532007,
+    "client_sizes": [
+     110,
+     330,
+     260
+    ]
+   },
+   "alpha": 1.0,
+   "splitter": "corrected"
+  },
+  "alpha=1.0|split=legacy|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.9188100199790947,
+   "f1_micro": 0.92,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 138,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.92,
+    "f1_macro": 0.9188100199790947,
+    "f1_weighted": 0.9203893850584598,
+    "precision": 0.9194243604004451,
+    "precision_micro": 0.92,
+    "recall": 0.9192562724014337,
+    "recall_micro": 0.92,
+    "accuracy": 0.92,
+    "accuracy_ci95_low": 0.8653786362494686,
+    "accuracy_ci95_high": 0.953646358481347,
+    "per_class_f1": [
+     0.9375,
+     0.9508196721311475,
+     0.9333333333333333,
+     0.8571428571428571,
+     0.9152542372881356
+    ],
+    "f1_LEAF_BLIGHT": 0.9375,
+    "precision_LEAF_BLIGHT": 0.9375,
+    "recall_LEAF_BLIGHT": 0.9375,
+    "f1_LEAF_HOPPERS": 0.9508196721311475,
+    "precision_LEAF_HOPPERS": 0.9354838709677419,
+    "recall_LEAF_HOPPERS": 0.9666666666666667,
+    "f1_LEAF_RUST": 0.9333333333333333,
+    "precision_LEAF_RUST": 0.9655172413793104,
+    "recall_LEAF_RUST": 0.9032258064516129,
+    "f1_LOOPER_CATERPILLARS": 0.8571428571428571,
+    "precision_LOOPER_CATERPILLARS": 0.8275862068965517,
+    "recall_LOOPER_CATERPILLARS": 0.8888888888888888,
+    "f1_MOSQUITO_BUG": 0.9152542372881356,
+    "precision_MOSQUITO_BUG": 0.9310344827586207,
+    "recall_MOSQUITO_BUG": 0.9,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.3178001670959417,
+     0.3733549422668669,
+     0.4640528914185088,
+     0.7303336120285273,
+     0.8518630036273226,
+     0.9059720231235536,
+     0.8995650119795716,
+     0.9188100199790947
+    ],
+    "round_f1_micro": [
+     0.3333333333333333,
+     0.42,
+     0.5,
+     0.7333333333333333,
+     0.8533333333333334,
+     0.9066666666666666,
+     0.9,
+     0.92
+    ],
+    "round_seconds": [
+     7.644946336746216,
+     7.199148416519165,
+     5.484330415725708,
+     6.269114017486572,
+     6.438668727874756,
+     7.932933330535889,
+     4.938974380493164,
+     4.627718448638916
+    ],
+    "round_peak_mib": [
+     835.0712890625,
+     838.0146484375,
+     837.9404296875,
+     836.9404296875,
+     837.9404296875,
+     836.9404296875,
+     837.9404296875,
+     836.9404296875
+    ]
+   },
+   "client_sizes": [
+    121,
+    260,
+    319
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 50.535834074020386,
+   "peak_mib": 838.0146484375,
+   "partition": {
+    "label_tv_mean": 0.029176340900478825,
+    "label_tv_max": 0.038831168831168814,
+    "size_cv": 0.3557286285117591,
+    "client_sizes": [
+     121,
+     260,
+     319
+    ]
+   },
+   "alpha": 1.0,
+   "splitter": "legacy"
+  },
+  "alpha=1.0|split=legacy|seed=1": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.8524958615470458,
+   "f1_micro": 0.8533333333333334,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 128,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.8533333333333334,
+    "f1_macro": 0.8524958615470458,
+    "f1_weighted": 0.8538700532399215,
+    "precision": 0.8547474747474746,
+    "precision_micro": 0.8533333333333334,
+    "recall": 0.8533139187574672,
+    "recall_micro": 0.8533333333333334,
+    "accuracy": 0.8533333333333334,
+    "accuracy_ci95_low": 0.7879153994391072,
+    "accuracy_ci95_high": 0.9011056278741189,
+    "per_class_f1": [
+     0.8709677419354839,
+     0.8421052631578947,
+     0.8852459016393442,
+     0.8070175438596491,
+     0.8571428571428571
+    ],
+    "f1_LEAF_BLIGHT": 0.8709677419354839,
+    "precision_LEAF_BLIGHT": 0.9,
+    "recall_LEAF_BLIGHT": 0.84375,
+    "f1_LEAF_HOPPERS": 0.8421052631578947,
+    "precision_LEAF_HOPPERS": 0.8888888888888888,
+    "recall_LEAF_HOPPERS": 0.8,
+    "f1_LEAF_RUST": 0.8852459016393442,
+    "precision_LEAF_RUST": 0.9,
+    "recall_LEAF_RUST": 0.8709677419354839,
+    "f1_LOOPER_CATERPILLARS": 0.8070175438596491,
+    "precision_LOOPER_CATERPILLARS": 0.7666666666666667,
+    "recall_LOOPER_CATERPILLARS": 0.8518518518518519,
+    "f1_MOSQUITO_BUG": 0.8571428571428571,
+    "precision_MOSQUITO_BUG": 0.8181818181818182,
+    "recall_MOSQUITO_BUG": 0.9,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.4098047605127674,
+     0.721669783759336,
+     0.757765907336073,
+     0.8123686039829859,
+     0.8132757741812157,
+     0.8524958615470458,
+     0.8305857642347185,
+     0.8455898357155874
+    ],
+    "round_f1_micro": [
+     0.46,
+     0.74,
+     0.7666666666666667,
+     0.8133333333333334,
+     0.8133333333333334,
+     0.8533333333333334,
+     0.8333333333333334,
+     0.8466666666666667
+    ],
+    "round_seconds": [
+     5.6398537158966064,
+     5.1850810050964355,
+     4.779098987579346,
+     8.109281539916992,
+     14.620256185531616,
+     6.907145738601685,
+     5.460610866546631,
+     6.450277090072632
+    ],
+    "round_peak_mib": [
+     835.6337890625,
+     836.4404296875,
+     835.7587890625,
+     837.1064453125,
+     836.8154296875,
+     835.8154296875,
+     835.5654296875,
+     835.5654296875
+    ]
+   },
+   "client_sizes": [
+    3,
+    447,
+    250
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 57.15160512924194,
+   "peak_mib": 837.1064453125,
+   "partition": {
+    "label_tv_mean": 0.15414530733993823,
+    "label_tv_max": 0.3871428571428571,
+    "size_cv": 0.7784783692746841,
+    "client_sizes": [
+     3,
+     447,
+     250
+    ]
+   },
+   "alpha": 1.0,
+   "splitter": "legacy"
+  },
+  "alpha=10.0|split=corrected|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.8712347702145864,
+   "f1_micro": 0.8733333333333333,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 131,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.8733333333333333,
+    "f1_macro": 0.8712347702145864,
+    "f1_weighted": 0.872922861912465,
+    "precision": 0.8733774034641664,
+    "precision_micro": 0.8733333333333333,
+    "recall": 0.8705824372759856,
+    "recall_micro": 0.8733333333333333,
+    "accuracy": 0.8733333333333333,
+    "accuracy_ci95_low": 0.8106335124178631,
+    "accuracy_ci95_high": 0.9173887051206396,
+    "per_class_f1": [
+     0.8955223880597015,
+     0.9152542372881356,
+     0.8852459016393442,
+     0.8076923076923077,
+     0.8524590163934426
+    ],
+    "f1_LEAF_BLIGHT": 0.8955223880597015,
+    "precision_LEAF_BLIGHT": 0.8571428571428571,
+    "recall_LEAF_BLIGHT": 0.9375,
+    "f1_LEAF_HOPPERS": 0.9152542372881356,
+    "precision_LEAF_HOPPERS": 0.9310344827586207,
+    "recall_LEAF_HOPPERS": 0.9,
+    "f1_LEAF_RUST": 0.8852459016393442,
+    "precision_LEAF_RUST": 0.9,
+    "recall_LEAF_RUST": 0.8709677419354839,
+    "f1_LOOPER_CATERPILLARS": 0.8076923076923077,
+    "precision_LOOPER_CATERPILLARS": 0.84,
+    "recall_LOOPER_CATERPILLARS": 0.7777777777777778,
+    "f1_MOSQUITO_BUG": 0.8524590163934426,
+    "precision_MOSQUITO_BUG": 0.8387096774193549,
+    "recall_MOSQUITO_BUG": 0.8666666666666667,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.23603417885651767,
+     0.2793889380096276,
+     0.49416395684864833,
+     0.7858572010195257,
+     0.8395796243876031,
+     0.8591610445676416,
+     0.8670959063413957,
+     0.8712347702145864
+    ],
+    "round_f1_micro": [
+     0.32,
+     0.3333333333333333,
+     0.5266666666666666,
+     0.7933333333333333,
+     0.84,
+     0.86,
+     0.8666666666666667,
+     0.8733333333333333
+    ],
+    "round_seconds": [
+     9.187458038330078,
+     5.0380730628967285,
+     5.154661417007446,
+     6.5971314907073975,
+     7.841033220291138,
+     6.911834716796875,
+     7.655537128448486,
+     5.6730711460113525
+    ],
+    "round_peak_mib": [
+     835.1904296875,
+     834.8154296875,
+     834.9404296875,
+     835.3720703125,
+     836.2529296875,
+     836.1904296875,
+     838.0146484375,
+     838.0654296875
+    ]
+   },
+   "client_sizes": [
+    252,
+    194,
+    254
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 54.0588002204895,
+   "peak_mib": 838.0654296875,
+   "partition": {
+    "label_tv_mean": 0.12511295194629882,
+    "label_tv_max": 0.15343082114735657,
+    "size_cv": 0.1192493528840526,
+    "client_sizes": [
+     252,
+     194,
+     254
+    ]
+   },
+   "alpha": 10.0,
+   "splitter": "corrected"
+  },
+  "alpha=10.0|split=corrected|seed=1": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.8256503153043899,
+   "f1_micro": 0.8266666666666667,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 124,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.8266666666666667,
+    "f1_macro": 0.8256503153043899,
+    "f1_weighted": 0.8263017703308451,
+    "precision": 0.827010019550342,
+    "precision_micro": 0.8266666666666667,
+    "recall": 0.8259991039426524,
+    "recall_micro": 0.8266666666666667,
+    "accuracy": 0.8266666666666667,
+    "accuracy_ci95_low": 0.7581400726100628,
+    "accuracy_ci95_high": 0.8788793677361272,
+    "per_class_f1": [
+     0.7936507936507936,
+     0.8421052631578947,
+     0.84375,
+     0.7777777777777778,
+     0.8709677419354839
+    ],
+    "f1_LEAF_BLIGHT": 0.7936507936507936,
+    "precision_LEAF_BLIGHT": 0.8064516129032258,
+    "recall_LEAF_BLIGHT": 0.78125,
+    "f1_LEAF_HOPPERS": 0.8421052631578947,
+    "precision_LEAF_HOPPERS": 0.8888888888888888,
+    "recall_LEAF_HOPPERS": 0.8,
+    "f1_LEAF_RUST": 0.84375,
+    "precision_LEAF_RUST": 0.8181818181818182,
+    "recall_LEAF_RUST": 0.8709677419354839,
+    "f1_LOOPER_CATERPILLARS": 0.7777777777777778,
+    "precision_LOOPER_CATERPILLARS": 0.7777777777777778,
+    "recall_LOOPER_CATERPILLARS": 0.7777777777777778,
+    "f1_MOSQUITO_BUG": 0.8709677419354839,
+    "precision_MOSQUITO_BUG": 0.84375,
+    "recall_MOSQUITO_BUG": 0.9,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.25275927943804527,
+     0.4565683064270484,
+     0.7448633419523311,
+     0.750962533009125,
+     0.7745936434198514,
+     0.7937941628264209,
+     0.8182342385101912,
+     0.8256503153043899
+    ],
+    "round_f1_micro": [
+     0.3,
+     0.47333333333333333,
+     0.7533333333333333,
+     0.76,
+     0.78,
+     0.7933333333333333,
+     0.82,
+     0.8266666666666667
+    ],
+    "round_seconds": [
+     5.90927791595459,
+     8.27909517288208,
+     11.066051721572876,
+     2.5980141162872314,
+     14.476114511489868,
+     15.456196308135986,
+     12.487526893615723,
+     8.099132061004639
+    ],
+    "round_peak_mib": [
+     834.6904296875,
+     835.3779296875,
+     836.0654296875,
+     835.5654296875,
+     836.6904296875,
+     835.2587890625,
+     834.6904296875,
+     834.6220703125
+    ]
+   },
+   "client_sizes": [
+    238,
+    242,
+    220
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 78.371408700943,
+   "peak_mib": 836.6904296875,
+   "partition": {
+    "label_tv_mean": 0.09107854712132786,
+    "label_tv_max": 0.11441558441558441,
+    "size_cv": 0.04100771455544949,
+    "client_sizes": [
+     238,
+     242,
+     220
+    ]
+   },
+   "alpha": 10.0,
+   "splitter": "corrected"
+  },
+  "alpha=10.0|split=legacy|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.866134604810816,
+   "f1_micro": 0.8666666666666667,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 130,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.8666666666666667,
+    "f1_macro": 0.866134604810816,
+    "f1_weighted": 0.8678854390711053,
+    "precision": 0.8680978865406006,
+    "precision_micro": 0.8666666666666667,
+    "recall": 0.8666472520908005,
+    "recall_micro": 0.8666666666666667,
+    "accuracy": 0.8666666666666667,
+    "accuracy_ci95_low": 0.803019825502258,
+    "accuracy_ci95_high": 0.9120019952944858,
+    "per_class_f1": [
+     0.8709677419354839,
+     0.8813559322033898,
+     0.9,
+     0.7931034482758621,
+     0.8852459016393442
+    ],
+    "f1_LEAF_BLIGHT": 0.8709677419354839,
+    "precision_LEAF_BLIGHT": 0.9,
+    "recall_LEAF_BLIGHT": 0.84375,
+    "f1_LEAF_HOPPERS": 0.8813559322033898,
+    "precision_LEAF_HOPPERS": 0.896551724137931,
+    "recall_LEAF_HOPPERS": 0.8666666666666667,
+    "f1_LEAF_RUST": 0.9,
+    "precision_LEAF_RUST": 0.9310344827586207,
+    "recall_LEAF_RUST": 0.8709677419354839,
+    "f1_LOOPER_CATERPILLARS": 0.7931034482758621,
+    "precision_LOOPER_CATERPILLARS": 0.7419354838709677,
+    "recall_LOOPER_CATERPILLARS": 0.8518518518518519,
+    "f1_MOSQUITO_BUG": 0.8852459016393442,
+    "precision_MOSQUITO_BUG": 0.8709677419354839,
+    "recall_MOSQUITO_BUG": 0.9,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.22131186174391204,
+     0.41118166779457105,
+     0.7555985815244532,
+     0.8406298045753449,
+     0.866134604810816,
+     0.8332600263335823,
+     0.8401883512920103,
+     0.8470456352818312
+    ],
+    "round_f1_micro": [
+     0.2866666666666667,
+     0.44666666666666666,
+     0.76,
+     0.84,
+     0.8666666666666667,
+     0.8333333333333334,
+     0.84,
+     0.8466666666666667
+    ],
+    "round_seconds": [
+     7.940850734710693,
+     6.518786907196045,
+     9.062731504440308,
+     6.778634071350098,
+     9.670886039733887,
+     6.8458263874053955,
+     5.244129419326782,
+     4.775115966796875
+    ],
+    "round_peak_mib": [
+     835.6220703125,
+     835.6220703125,
+     836.9404296875,
+     836.1904296875,
+     836.9404296875,
+     836.9404296875,
+     838.0654296875,
+     836.9404296875
+    ]
+   },
+   "client_sizes": [
+    316,
+    283,
+    101
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 56.83696103096008,
+   "peak_mib": 838.0654296875,
+   "partition": {
+    "label_tv_mean": 0.03837937702740938,
+    "label_tv_max": 0.0723903818953324,
+    "size_cv": 0.40516562498991615,
+    "client_sizes": [
+     316,
+     283,
+     101
+    ]
+   },
+   "alpha": 10.0,
+   "splitter": "legacy"
+  },
+  "alpha=10.0|split=legacy|seed=1": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.8191354327781379,
+   "f1_micro": 0.82,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 123,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.82,
+    "f1_macro": 0.8191354327781379,
+    "f1_weighted": 0.8193552868487983,
+    "precision": 0.8198831473803665,
+    "precision_micro": 0.82,
+    "recall": 0.820476403823178,
+    "recall_micro": 0.82,
+    "accuracy": 0.82,
+    "accuracy_ci95_low": 0.7507767216820398,
+    "accuracy_ci95_high": 0.873242321922391,
+    "per_class_f1": [
+     0.7419354838709677,
+     0.8421052631578947,
+     0.90625,
+     0.7857142857142857,
+     0.819672131147541
+    ],
+    "f1_LEAF_BLIGHT": 0.7419354838709677,
+    "precision_LEAF_BLIGHT": 0.7666666666666667,
+    "recall_LEAF_BLIGHT": 0.71875,
+    "f1_LEAF_HOPPERS": 0.8421052631578947,
+    "precision_LEAF_HOPPERS": 0.8888888888888888,
+    "recall_LEAF_HOPPERS": 0.8,
+    "f1_LEAF_RUST": 0.90625,
+    "precision_LEAF_RUST": 0.8787878787878788,
+    "recall_LEAF_RUST": 0.9354838709677419,
+    "f1_LOOPER_CATERPILLARS": 0.7857142857142857,
+    "precision_LOOPER_CATERPILLARS": 0.7586206896551724,
+    "recall_LOOPER_CATERPILLARS": 0.8148148148148148,
+    "f1_MOSQUITO_BUG": 0.819672131147541,
+    "precision_MOSQUITO_BUG": 0.8064516129032258,
+    "recall_MOSQUITO_BUG": 0.8333333333333334,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.2598570462667826,
+     0.46057351260741086,
+     0.688115431483542,
+     0.7360600792040953,
+     0.7782301511263896,
+     0.7914614121510674,
+     0.8063455836842237,
+     0.8191354327781379
+    ],
+    "round_f1_micro": [
+     0.32666666666666666,
+     0.4866666666666667,
+     0.7066666666666667,
+     0.7466666666666667,
+     0.7866666666666666,
+     0.7933333333333333,
+     0.8066666666666666,
+     0.82
+    ],
+    "round_seconds": [
+     8.287989854812622,
+     9.321665525436401,
+     11.085890293121338,
+     9.220192670822144,
+     10.813152551651001,
+     10.7085440158844,
+     9.066725969314575,
+     10.681602001190186
+    ],
+    "round_peak_mib": [
+     835.9970703125,
+     835.8154296875,
+     837.9404296875,
+     836.9404296875,
+     836.7529296875,
+     837.1337890625,
+     835.5087890625,
+     836.8154296875
+    ]
+   },
+   "client_sizes": [
+    245,
+    269,
+    186
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 79.18576288223267,
+   "peak_mib": 837.9404296875,
+   "partition": {
+    "label_tv_mean": 0.039821623336947214,
+    "label_tv_max": 0.0534562211981567,
+    "size_cv": 0.1494616188531493,
+    "client_sizes": [
+     245,
+     269,
+     186
+    ]
+   },
+   "alpha": 10.0,
+   "splitter": "legacy"
+  }
+ },
+ "E2_client_sweep": {
+  "K=2|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.88665370010188,
+   "f1_micro": 0.8866666666666667,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 133,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.8866666666666667,
+    "f1_macro": 0.88665370010188,
+    "f1_weighted": 0.888627334753481,
+    "precision": 0.8920108013767637,
+    "precision_micro": 0.8866666666666667,
+    "recall": 0.8875896057347671,
+    "recall_micro": 0.8866666666666667,
+    "accuracy": 0.8866666666666667,
+    "accuracy_ci95_low": 0.825997250162395,
+    "accuracy_ci95_high": 0.928025760859626,
+    "per_class_f1": [
+     0.8813559322033898,
+     0.9333333333333333,
+     0.9333333333333333,
+     0.8,
+     0.8852459016393442
+    ],
+    "f1_LEAF_BLIGHT": 0.8813559322033898,
+    "precision_LEAF_BLIGHT": 0.9629629629629629,
+    "recall_LEAF_BLIGHT": 0.8125,
+    "f1_LEAF_HOPPERS": 0.9333333333333333,
+    "precision_LEAF_HOPPERS": 0.9333333333333333,
+    "recall_LEAF_HOPPERS": 0.9333333333333333,
+    "f1_LEAF_RUST": 0.9333333333333333,
+    "precision_LEAF_RUST": 0.9655172413793104,
+    "recall_LEAF_RUST": 0.9032258064516129,
+    "f1_LOOPER_CATERPILLARS": 0.8,
+    "precision_LOOPER_CATERPILLARS": 0.7272727272727273,
+    "recall_LOOPER_CATERPILLARS": 0.8888888888888888,
+    "f1_MOSQUITO_BUG": 0.8852459016393442,
+    "precision_MOSQUITO_BUG": 0.8709677419354839,
+    "recall_MOSQUITO_BUG": 0.9,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.3421337434495329,
+     0.6672148211608482,
+     0.8091484989102617,
+     0.8526097606934238,
+     0.8574376442518726,
+     0.8581790525858324,
+     0.8708369408369407,
+     0.88665370010188
+    ],
+    "round_f1_micro": [
+     0.41333333333333333,
+     0.68,
+     0.8133333333333334,
+     0.8533333333333334,
+     0.86,
+     0.86,
+     0.8733333333333333,
+     0.8866666666666667
+    ],
+    "round_seconds": [
+     11.987844228744507,
+     7.27575945854187,
+     6.539946794509888,
+     6.440131187438965,
+     7.251186370849609,
+     8.76450514793396,
+     5.738754749298096,
+     8.051738977432251
+    ],
+    "round_peak_mib": [
+     834.6904296875,
+     834.3154296875,
+     836.9404296875,
+     837.6962890625,
+     836.5654296875,
+     837.4404296875,
+     836.8154296875,
+     836.8154296875
+    ]
+   },
+   "client_sizes": [
+    534,
+    166
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 1997505152,
+   "wall_seconds": 62.049866914749146,
+   "peak_mib": 837.6962890625,
+   "partition": {
+    "label_tv_mean": 0.22924281395243895,
+    "label_tv_max": 0.3497590361445783,
+    "size_cv": 0.5257142857142857,
+    "client_sizes": [
+     534,
+     166
+    ]
+   },
+   "num_clients": 2
+  },
+  "K=3|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.8135038596055544,
+   "f1_micro": 0.8133333333333334,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 122,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.8133333333333334,
+    "f1_macro": 0.8135038596055544,
+    "f1_weighted": 0.8149207728868746,
+    "precision": 0.8308543563715978,
+    "precision_micro": 0.8133333333333334,
+    "recall": 0.8162440262843489,
+    "recall_micro": 0.8133333333333334,
+    "accuracy": 0.8133333333333334,
+    "accuracy_ci95_low": 0.7434428016958636,
+    "accuracy_ci95_high": 0.8675758451668085,
+    "per_class_f1": [
+     0.7777777777777778,
+     0.8813559322033898,
+     0.847457627118644,
+     0.7301587301587301,
+     0.8307692307692308
+    ],
+    "f1_LEAF_BLIGHT": 0.7777777777777778,
+    "precision_LEAF_BLIGHT": 0.9545454545454546,
+    "recall_LEAF_BLIGHT": 0.65625,
+    "f1_LEAF_HOPPERS": 0.8813559322033898,
+    "precision_LEAF_HOPPERS": 0.896551724137931,
+    "recall_LEAF_HOPPERS": 0.8666666666666667,
+    "f1_LEAF_RUST": 0.847457627118644,
+    "precision_LEAF_RUST": 0.8928571428571429,
+    "recall_LEAF_RUST": 0.8064516129032258,
+    "f1_LOOPER_CATERPILLARS": 0.7301587301587301,
+    "precision_LOOPER_CATERPILLARS": 0.6388888888888888,
+    "recall_LOOPER_CATERPILLARS": 0.8518518518518519,
+    "f1_MOSQUITO_BUG": 0.8307692307692308,
+    "precision_MOSQUITO_BUG": 0.7714285714285715,
+    "recall_MOSQUITO_BUG": 0.9,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.19130456643919092,
+     0.3292642312629222,
+     0.6645251424227165,
+     0.7889268521333739,
+     0.8010464087883443,
+     0.8066073723921319,
+     0.7937870159166489,
+     0.8135038596055544
+    ],
+    "round_f1_micro": [
+     0.2733333333333333,
+     0.38666666666666666,
+     0.6733333333333333,
+     0.7866666666666666,
+     0.8,
+     0.8066666666666666,
+     0.7933333333333333,
+     0.8133333333333334
+    ],
+    "round_seconds": [
+     10.03709626197815,
+     7.848484992980957,
+     6.850850820541382,
+     8.28083610534668,
+     7.978687286376953,
+     12.63851547241211,
+     9.414083242416382,
+     6.285121202468872
+    ],
+    "round_peak_mib": [
+     836.3154296875,
+     836.4404296875,
+     835.9404296875,
+     836.4404296875,
+     838.0654296875,
+     835.8837890625,
+     836.8154296875,
+     837.4404296875
+    ]
+   },
+   "client_sizes": [
+    298,
+    236,
+    166
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 69.33367538452148,
+   "peak_mib": 838.0654296875,
+   "partition": {
+    "label_tv_mean": 0.3306356981299591,
+    "label_tv_max": 0.3682271944922547,
+    "size_cv": 0.2310932314730422,
+    "client_sizes": [
+     298,
+     236,
+     166
+    ]
+   },
+   "num_clients": 3
+  },
+  "K=5|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.8321343472715605,
+   "f1_micro": 0.8333333333333334,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 125,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.8333333333333334,
+    "f1_macro": 0.8321343472715605,
+    "f1_weighted": 0.8324875853966913,
+    "precision": 0.8463023952943308,
+    "precision_micro": 0.8333333333333334,
+    "recall": 0.8377120669056154,
+    "recall_micro": 0.8333333333333334,
+    "accuracy": 0.8333333333333334,
+    "accuracy_ci95_low": 0.7655341358309921,
+    "accuracy_ci95_high": 0.884485701256957,
+    "per_class_f1": [
+     0.7407407407407407,
+     0.8709677419354839,
+     0.9152542372881356,
+     0.78125,
+     0.8524590163934426
+    ],
+    "f1_LEAF_BLIGHT": 0.7407407407407407,
+    "precision_LEAF_BLIGHT": 0.9090909090909091,
+    "recall_LEAF_BLIGHT": 0.625,
+    "f1_LEAF_HOPPERS": 0.8709677419354839,
+    "precision_LEAF_HOPPERS": 0.84375,
+    "recall_LEAF_HOPPERS": 0.9,
+    "f1_LEAF_RUST": 0.9152542372881356,
+    "precision_LEAF_RUST": 0.9642857142857143,
+    "recall_LEAF_RUST": 0.8709677419354839,
+    "f1_LOOPER_CATERPILLARS": 0.78125,
+    "precision_LOOPER_CATERPILLARS": 0.6756756756756757,
+    "recall_LOOPER_CATERPILLARS": 0.9259259259259259,
+    "f1_MOSQUITO_BUG": 0.8524590163934426,
+    "precision_MOSQUITO_BUG": 0.8387096774193549,
+    "recall_MOSQUITO_BUG": 0.8666666666666667,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.2521083978558666,
+     0.3710245423599705,
+     0.4440476190476191,
+     0.542,
+     0.6933482110985324,
+     0.7643487984764905,
+     0.8061114976759722,
+     0.8321343472715605
+    ],
+    "round_f1_micro": [
+     0.32666666666666666,
+     0.4,
+     0.4666666666666667,
+     0.5533333333333333,
+     0.7,
+     0.7666666666666667,
+     0.8066666666666666,
+     0.8333333333333334
+    ],
+    "round_seconds": [
+     11.443673133850098,
+     7.003682851791382,
+     7.179304599761963,
+     8.429400205612183,
+     8.793716669082642,
+     10.1026029586792,
+     5.52582049369812,
+     7.835550308227539
+    ],
+    "round_peak_mib": [
+     836.2529296875,
+     835.8154296875,
+     839.3154296875,
+     838.5712890625,
+     837.8154296875,
+     835.8154296875,
+     839.3154296875,
+     837.9404296875
+    ]
+   },
+   "client_sizes": [
+    200,
+    44,
+    269,
+    30,
+    157
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 4993762880,
+   "wall_seconds": 66.31375122070312,
+   "peak_mib": 839.3154296875,
+   "partition": {
+    "label_tv_mean": 0.2780395786188413,
+    "label_tv_max": 0.3642857142857143,
+    "size_cv": 0.6534523701081817,
+    "client_sizes": [
+     200,
+     44,
+     269,
+     30,
+     157
+    ]
+   },
+   "num_clients": 5
+  },
+  "K=10|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.6044758931613641,
+   "f1_micro": 0.6133333333333333,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 92,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.6133333333333333,
+    "f1_macro": 0.6044758931613641,
+    "f1_weighted": 0.6040069753153969,
+    "precision": 0.6094179838555365,
+    "precision_micro": 0.6133333333333333,
+    "recall": 0.6146878733572282,
+    "recall_micro": 0.6133333333333333,
+    "accuracy": 0.6133333333333333,
+    "accuracy_ci95_low": 0.5334979124018292,
+    "accuracy_ci95_high": 0.6875088322080735,
+    "per_class_f1": [
+     0.6229508196721312,
+     0.6129032258064516,
+     0.46153846153846156,
+     0.5925925925925926,
+     0.7323943661971831
+    ],
+    "f1_LEAF_BLIGHT": 0.6229508196721312,
+    "precision_LEAF_BLIGHT": 0.6551724137931034,
+    "recall_LEAF_BLIGHT": 0.59375,
+    "f1_LEAF_HOPPERS": 0.6129032258064516,
+    "precision_LEAF_HOPPERS": 0.59375,
+    "recall_LEAF_HOPPERS": 0.6333333333333333,
+    "f1_LEAF_RUST": 0.46153846153846156,
+    "precision_LEAF_RUST": 0.5714285714285714,
+    "recall_LEAF_RUST": 0.3870967741935484,
+    "f1_LOOPER_CATERPILLARS": 0.5925925925925926,
+    "precision_LOOPER_CATERPILLARS": 0.5925925925925926,
+    "recall_LOOPER_CATERPILLARS": 0.5925925925925926,
+    "f1_MOSQUITO_BUG": 0.7323943661971831,
+    "precision_MOSQUITO_BUG": 0.6341463414634146,
+    "recall_MOSQUITO_BUG": 0.8666666666666667,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.11083133493205435,
+     0.19026071967248437,
+     0.2706876456876457,
+     0.2880367336808141,
+     0.386316756914583,
+     0.43442190016103055,
+     0.5392104062903773,
+     0.6044758931613641
+    ],
+    "round_f1_micro": [
+     0.21333333333333335,
+     0.2866666666666667,
+     0.3,
+     0.34,
+     0.4,
+     0.4533333333333333,
+     0.5533333333333333,
+     0.6133333333333333
+    ],
+    "round_seconds": [
+     11.796061038970947,
+     9.047769546508789,
+     9.075348377227783,
+     10.342904090881348,
+     9.682662725448608,
+     8.288898944854736,
+     8.375128030776978,
+     11.30602765083313
+    ],
+    "round_peak_mib": [
+     837.5712890625,
+     837.8154296875,
+     835.9404296875,
+     838.5712890625,
+     836.9404296875,
+     836.4404296875,
+     836.9404296875,
+     837.9404296875
+    ]
+   },
+   "client_sizes": [
+    79,
+    111,
+    60,
+    61,
+    53,
+    125,
+    33,
+    57,
+    52,
+    69
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 9987525760,
+   "wall_seconds": 77.91480040550232,
+   "peak_mib": 838.5712890625,
+   "partition": {
+    "label_tv_mean": 0.3224672359784785,
+    "label_tv_max": 0.46164835164835166,
+    "size_cv": 0.381190401832181,
+    "client_sizes": [
+     79,
+     111,
+     60,
+     61,
+     53,
+     125,
+     33,
+     57,
+     52,
+     69
+    ]
+   },
+   "num_clients": 10
+  }
+ },
+ "E4_warmstart": {
+  "warm|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.851265585310378,
+   "f1_micro": 0.8533333333333334,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 128,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.8533333333333334,
+    "f1_macro": 0.851265585310378,
+    "f1_weighted": 0.851817309448309,
+    "precision": 0.8628833865422223,
+    "precision_micro": 0.8533333333333334,
+    "recall": 0.8558273596176823,
+    "recall_micro": 0.8533333333333334,
+    "accuracy": 0.8533333333333334,
+    "accuracy_ci95_low": 0.7879153994391072,
+    "accuracy_ci95_high": 0.9011056278741189,
+    "per_class_f1": [
+     0.8,
+     0.9354838709677419,
+     0.8620689655172413,
+     0.7931034482758621,
+     0.8656716417910447
+    ],
+    "f1_LEAF_BLIGHT": 0.8,
+    "precision_LEAF_BLIGHT": 0.9565217391304348,
+    "recall_LEAF_BLIGHT": 0.6875,
+    "f1_LEAF_HOPPERS": 0.9354838709677419,
+    "precision_LEAF_HOPPERS": 0.90625,
+    "recall_LEAF_HOPPERS": 0.9666666666666667,
+    "f1_LEAF_RUST": 0.8620689655172413,
+    "precision_LEAF_RUST": 0.9259259259259259,
+    "recall_LEAF_RUST": 0.8064516129032258,
+    "f1_LOOPER_CATERPILLARS": 0.7931034482758621,
+    "precision_LOOPER_CATERPILLARS": 0.7419354838709677,
+    "recall_LOOPER_CATERPILLARS": 0.8518518518518519,
+    "f1_MOSQUITO_BUG": 0.8656716417910447,
+    "precision_MOSQUITO_BUG": 0.7837837837837838,
+    "recall_MOSQUITO_BUG": 0.9666666666666667,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.18027413446768287,
+     0.3701866223207687,
+     0.6817468997657373,
+     0.8003238866396762,
+     0.8472132094773801,
+     0.8107597328400837,
+     0.851265585310378,
+     0.8329781442854447
+    ],
+    "round_f1_micro": [
+     0.26666666666666666,
+     0.4266666666666667,
+     0.6866666666666666,
+     0.8,
+     0.8466666666666667,
+     0.8133333333333334,
+     0.8533333333333334,
+     0.8333333333333334
+    ],
+    "round_seconds": [
+     6.069213390350342,
+     5.930680274963379,
+     7.594683408737183,
+     7.0709404945373535,
+     6.623243093490601,
+     6.526804208755493,
+     5.615386962890625,
+     7.3837456703186035
+    ],
+    "round_peak_mib": [
+     833.4970703125,
+     835.6904296875,
+     836.8154296875,
+     836.9404296875,
+     834.1337890625,
+     837.2470703125,
+     836.4462890625,
+     837.5654296875
+    ]
+   },
+   "client_sizes": [
+    298,
+    236,
+    166
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 52.81469750404358,
+   "peak_mib": 837.5654296875,
+   "mode": "warm"
+  },
+  "cold|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.8135038596055544,
+   "f1_micro": 0.8133333333333334,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 122,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.8133333333333334,
+    "f1_macro": 0.8135038596055544,
+    "f1_weighted": 0.8149207728868746,
+    "precision": 0.8308543563715978,
+    "precision_micro": 0.8133333333333334,
+    "recall": 0.8162440262843489,
+    "recall_micro": 0.8133333333333334,
+    "accuracy": 0.8133333333333334,
+    "accuracy_ci95_low": 0.7434428016958636,
+    "accuracy_ci95_high": 0.8675758451668085,
+    "per_class_f1": [
+     0.7777777777777778,
+     0.8813559322033898,
+     0.847457627118644,
+     0.7301587301587301,
+     0.8307692307692308
+    ],
+    "f1_LEAF_BLIGHT": 0.7777777777777778,
+    "precision_LEAF_BLIGHT": 0.9545454545454546,
+    "recall_LEAF_BLIGHT": 0.65625,
+    "f1_LEAF_HOPPERS": 0.8813559322033898,
+    "precision_LEAF_HOPPERS": 0.896551724137931,
+    "recall_LEAF_HOPPERS": 0.8666666666666667,
+    "f1_LEAF_RUST": 0.847457627118644,
+    "precision_LEAF_RUST": 0.8928571428571429,
+    "recall_LEAF_RUST": 0.8064516129032258,
+    "f1_LOOPER_CATERPILLARS": 0.7301587301587301,
+    "precision_LOOPER_CATERPILLARS": 0.6388888888888888,
+    "recall_LOOPER_CATERPILLARS": 0.8518518518518519,
+    "f1_MOSQUITO_BUG": 0.8307692307692308,
+    "precision_MOSQUITO_BUG": 0.7714285714285715,
+    "recall_MOSQUITO_BUG": 0.9,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.19130456643919092,
+     0.3292642312629222,
+     0.6645251424227165,
+     0.7889268521333739,
+     0.8010464087883443,
+     0.8066073723921319,
+     0.7937870159166489,
+     0.8135038596055544
+    ],
+    "round_f1_micro": [
+     0.2733333333333333,
+     0.38666666666666666,
+     0.6733333333333333,
+     0.7866666666666666,
+     0.8,
+     0.8066666666666666,
+     0.7933333333333333,
+     0.8133333333333334
+    ],
+    "round_seconds": [
+     7.130494117736816,
+     7.515900611877441,
+     7.165298223495483,
+     5.708435535430908,
+     7.314681529998779,
+     9.346838235855103,
+     5.679649829864502,
+     6.418730974197388
+    ],
+    "round_peak_mib": [
+     835.6337890625,
+     836.1337890625,
+     836.3154296875,
+     836.4462890625,
+     836.6962890625,
+     837.8154296875,
+     837.3212890625,
+     836.7587890625
+    ]
+   },
+   "client_sizes": [
+    298,
+    236,
+    166
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 56.28002905845642,
+   "peak_mib": 837.8154296875,
+   "mode": "cold"
+  },
+  "warm|seed=1": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.8525998441457237,
+   "f1_micro": 0.8533333333333334,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 128,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.8533333333333334,
+    "f1_macro": 0.8525998441457237,
+    "f1_weighted": 0.8550545489966881,
+    "precision": 0.8582815778641205,
+    "precision_micro": 0.8533333333333334,
+    "recall": 0.8532048984468339,
+    "recall_micro": 0.8533333333333334,
+    "accuracy": 0.8533333333333334,
+    "accuracy_ci95_low": 0.7879153994391072,
+    "accuracy_ci95_high": 0.9011056278741189,
+    "per_class_f1": [
+     0.8813559322033898,
+     0.8666666666666667,
+     0.8813559322033898,
+     0.7586206896551724,
+     0.875
+    ],
+    "f1_LEAF_BLIGHT": 0.8813559322033898,
+    "precision_LEAF_BLIGHT": 0.9629629629629629,
+    "recall_LEAF_BLIGHT": 0.8125,
+    "f1_LEAF_HOPPERS": 0.8666666666666667,
+    "precision_LEAF_HOPPERS": 0.8666666666666667,
+    "recall_LEAF_HOPPERS": 0.8666666666666667,
+    "f1_LEAF_RUST": 0.8813559322033898,
+    "precision_LEAF_RUST": 0.9285714285714286,
+    "recall_LEAF_RUST": 0.8387096774193549,
+    "f1_LOOPER_CATERPILLARS": 0.7586206896551724,
+    "precision_LOOPER_CATERPILLARS": 0.7096774193548387,
+    "recall_LOOPER_CATERPILLARS": 0.8148148148148148,
+    "f1_MOSQUITO_BUG": 0.875,
+    "precision_MOSQUITO_BUG": 0.8235294117647058,
+    "recall_MOSQUITO_BUG": 0.9333333333333333,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.27060692167577416,
+     0.42053525023034516,
+     0.571426569919656,
+     0.6945631394669171,
+     0.7789497837113831,
+     0.8367250609921388,
+     0.8393783219353047,
+     0.8525998441457237
+    ],
+    "round_f1_micro": [
+     0.32666666666666666,
+     0.4533333333333333,
+     0.5933333333333334,
+     0.7066666666666667,
+     0.78,
+     0.84,
+     0.84,
+     0.8533333333333334
+    ],
+    "round_seconds": [
+     6.219489336013794,
+     5.56533408164978,
+     5.9115002155303955,
+     6.493725299835205,
+     7.256940126419067,
+     5.631389617919922,
+     6.5509185791015625,
+     6.2860472202301025
+    ],
+    "round_peak_mib": [
+     835.3720703125,
+     835.7470703125,
+     836.8154296875,
+     836.3154296875,
+     834.9404296875,
+     834.9658203125,
+     834.6904296875,
+     834.8154296875
+    ]
+   },
+   "client_sizes": [
+    110,
+    330,
+    260
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 49.91534447669983,
+   "peak_mib": 836.8154296875,
+   "mode": "warm"
+  },
+  "cold|seed=1": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.8041710875331566,
+   "f1_micro": 0.8066666666666666,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 121,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.8066666666666666,
+    "f1_macro": 0.8041710875331566,
+    "f1_weighted": 0.8060068523430591,
+    "precision": 0.816114219114219,
+    "precision_micro": 0.8066666666666666,
+    "recall": 0.8051493428912784,
+    "recall_micro": 0.8066666666666666,
+    "accuracy": 0.8066666666666666,
+    "accuracy_ci95_low": 0.7361371418228314,
+    "accuracy_ci95_high": 0.8618811082980816,
+    "per_class_f1": [
+     0.8275862068965517,
+     0.8214285714285714,
+     0.8125,
+     0.7307692307692307,
+     0.8285714285714286
+    ],
+    "f1_LEAF_BLIGHT": 0.8275862068965517,
+    "precision_LEAF_BLIGHT": 0.9230769230769231,
+    "recall_LEAF_BLIGHT": 0.75,
+    "f1_LEAF_HOPPERS": 0.8214285714285714,
+    "precision_LEAF_HOPPERS": 0.8846153846153846,
+    "recall_LEAF_HOPPERS": 0.7666666666666667,
+    "f1_LEAF_RUST": 0.8125,
+    "precision_LEAF_RUST": 0.7878787878787878,
+    "recall_LEAF_RUST": 0.8387096774193549,
+    "f1_LOOPER_CATERPILLARS": 0.7307692307692307,
+    "precision_LOOPER_CATERPILLARS": 0.76,
+    "recall_LOOPER_CATERPILLARS": 0.7037037037037037,
+    "f1_MOSQUITO_BUG": 0.8285714285714286,
+    "precision_MOSQUITO_BUG": 0.725,
+    "recall_MOSQUITO_BUG": 0.9666666666666667,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.3194477620842878,
+     0.5062240267762877,
+     0.7223904374262903,
+     0.7488607550922015,
+     0.7566254430933608,
+     0.797862205801861,
+     0.7583632847147566,
+     0.8041710875331566
+    ],
+    "round_f1_micro": [
+     0.37333333333333335,
+     0.5533333333333333,
+     0.7333333333333333,
+     0.76,
+     0.76,
+     0.8,
+     0.76,
+     0.8066666666666666
+    ],
+    "round_seconds": [
+     8.017677068710327,
+     6.094772100448608,
+     5.775025844573975,
+     7.020082235336304,
+     5.936510801315308,
+     5.582301616668701,
+     5.862962961196899,
+     8.60637354850769
+    ],
+    "round_peak_mib": [
+     836.7646484375,
+     835.3779296875,
+     834.8720703125,
+     835.4404296875,
+     835.9404296875,
+     835.3154296875,
+     835.5087890625,
+     836.6337890625
+    ]
+   },
+   "client_sizes": [
+    110,
+    330,
+    260
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 52.89570617675781,
+   "peak_mib": 836.7646484375,
+   "mode": "cold"
+  }
+ },
+ "E5_fusion_seeds": {
+  "concat|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.8135038596055544,
+   "f1_micro": 0.8133333333333334,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 122,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.8133333333333334,
+    "f1_macro": 0.8135038596055544,
+    "f1_weighted": 0.8149207728868746,
+    "precision": 0.8308543563715978,
+    "precision_micro": 0.8133333333333334,
+    "recall": 0.8162440262843489,
+    "recall_micro": 0.8133333333333334,
+    "accuracy": 0.8133333333333334,
+    "accuracy_ci95_low": 0.7434428016958636,
+    "accuracy_ci95_high": 0.8675758451668085,
+    "per_class_f1": [
+     0.7777777777777778,
+     0.8813559322033898,
+     0.847457627118644,
+     0.7301587301587301,
+     0.8307692307692308
+    ],
+    "f1_LEAF_BLIGHT": 0.7777777777777778,
+    "precision_LEAF_BLIGHT": 0.9545454545454546,
+    "recall_LEAF_BLIGHT": 0.65625,
+    "f1_LEAF_HOPPERS": 0.8813559322033898,
+    "precision_LEAF_HOPPERS": 0.896551724137931,
+    "recall_LEAF_HOPPERS": 0.8666666666666667,
+    "f1_LEAF_RUST": 0.847457627118644,
+    "precision_LEAF_RUST": 0.8928571428571429,
+    "recall_LEAF_RUST": 0.8064516129032258,
+    "f1_LOOPER_CATERPILLARS": 0.7301587301587301,
+    "precision_LOOPER_CATERPILLARS": 0.6388888888888888,
+    "recall_LOOPER_CATERPILLARS": 0.8518518518518519,
+    "f1_MOSQUITO_BUG": 0.8307692307692308,
+    "precision_MOSQUITO_BUG": 0.7714285714285715,
+    "recall_MOSQUITO_BUG": 0.9,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.19130456643919092,
+     0.3292642312629222,
+     0.6645251424227165,
+     0.7889268521333739,
+     0.8010464087883443,
+     0.8066073723921319,
+     0.7937870159166489,
+     0.8135038596055544
+    ],
+    "round_f1_micro": [
+     0.2733333333333333,
+     0.38666666666666666,
+     0.6733333333333333,
+     0.7866666666666666,
+     0.8,
+     0.8066666666666666,
+     0.7933333333333333,
+     0.8133333333333334
+    ],
+    "round_seconds": [
+     5.249202013015747,
+     12.374888896942139,
+     7.801578760147095,
+     2.812652826309204,
+     2.312351942062378,
+     2.727125883102417,
+     2.7401468753814697,
+     2.8650662899017334
+    ],
+    "round_peak_mib": [
+     835.2587890625,
+     836.7587890625,
+     836.8837890625,
+     835.6337890625,
+     836.6337890625,
+     837.8212890625,
+     836.5712890625,
+     837.1337890625
+    ]
+   },
+   "client_sizes": [
+    298,
+    236,
+    166
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 38.88301348686218,
+   "peak_mib": 837.8212890625,
+   "fusion_type": "concat"
+  },
+  "concat|seed=1": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.8041710875331566,
+   "f1_micro": 0.8066666666666666,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 121,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.8066666666666666,
+    "f1_macro": 0.8041710875331566,
+    "f1_weighted": 0.8060068523430591,
+    "precision": 0.816114219114219,
+    "precision_micro": 0.8066666666666666,
+    "recall": 0.8051493428912784,
+    "recall_micro": 0.8066666666666666,
+    "accuracy": 0.8066666666666666,
+    "accuracy_ci95_low": 0.7361371418228314,
+    "accuracy_ci95_high": 0.8618811082980816,
+    "per_class_f1": [
+     0.8275862068965517,
+     0.8214285714285714,
+     0.8125,
+     0.7307692307692307,
+     0.8285714285714286
+    ],
+    "f1_LEAF_BLIGHT": 0.8275862068965517,
+    "precision_LEAF_BLIGHT": 0.9230769230769231,
+    "recall_LEAF_BLIGHT": 0.75,
+    "f1_LEAF_HOPPERS": 0.8214285714285714,
+    "precision_LEAF_HOPPERS": 0.8846153846153846,
+    "recall_LEAF_HOPPERS": 0.7666666666666667,
+    "f1_LEAF_RUST": 0.8125,
+    "precision_LEAF_RUST": 0.7878787878787878,
+    "recall_LEAF_RUST": 0.8387096774193549,
+    "f1_LOOPER_CATERPILLARS": 0.7307692307692307,
+    "precision_LOOPER_CATERPILLARS": 0.76,
+    "recall_LOOPER_CATERPILLARS": 0.7037037037037037,
+    "f1_MOSQUITO_BUG": 0.8285714285714286,
+    "precision_MOSQUITO_BUG": 0.725,
+    "recall_MOSQUITO_BUG": 0.9666666666666667,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.3194477620842878,
+     0.5062240267762877,
+     0.7223904374262903,
+     0.7488607550922015,
+     0.7566254430933608,
+     0.797862205801861,
+     0.7583632847147566,
+     0.8041710875331566
+    ],
+    "round_f1_micro": [
+     0.37333333333333335,
+     0.5533333333333333,
+     0.7333333333333333,
+     0.76,
+     0.76,
+     0.8,
+     0.76,
+     0.8066666666666666
+    ],
+    "round_seconds": [
+     2.976898193359375,
+     2.0397186279296875,
+     2.6594178676605225,
+     2.7941858768463135,
+     2.804393768310547,
+     2.4314749240875244,
+     3.0642902851104736,
+     2.460078477859497
+    ],
+    "round_peak_mib": [
+     836.7587890625,
+     836.7587890625,
+     835.8837890625,
+     836.9462890625,
+     837.0087890625,
+     836.7587890625,
+     836.6337890625,
+     836.5087890625
+    ]
+   },
+   "client_sizes": [
+    110,
+    330,
+    260
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 21.23045802116394,
+   "peak_mib": 837.0087890625,
+   "fusion_type": "concat"
+  },
+  "attention|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.860841832237919,
+   "f1_micro": 0.86,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 129,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.86,
+    "f1_macro": 0.860841832237919,
+    "f1_weighted": 0.8626764624411374,
+    "precision": 0.8704316965940994,
+    "precision_micro": 0.86,
+    "recall": 0.8615681003584228,
+    "recall_micro": 0.86,
+    "accuracy": 0.86,
+    "accuracy_ci95_low": 0.7954479122405028,
+    "accuracy_ci95_high": 0.9065735118144821,
+    "per_class_f1": [
+     0.8524590163934426,
+     0.9180327868852459,
+     0.8928571428571429,
+     0.7741935483870968,
+     0.8666666666666667
+    ],
+    "f1_LEAF_BLIGHT": 0.8524590163934426,
+    "precision_LEAF_BLIGHT": 0.896551724137931,
+    "recall_LEAF_BLIGHT": 0.8125,
+    "f1_LEAF_HOPPERS": 0.9180327868852459,
+    "precision_LEAF_HOPPERS": 0.9032258064516129,
+    "recall_LEAF_HOPPERS": 0.9333333333333333,
+    "f1_LEAF_RUST": 0.8928571428571429,
+    "precision_LEAF_RUST": 1.0,
+    "recall_LEAF_RUST": 0.8064516129032258,
+    "f1_LOOPER_CATERPILLARS": 0.7741935483870968,
+    "precision_LOOPER_CATERPILLARS": 0.6857142857142857,
+    "recall_LOOPER_CATERPILLARS": 0.8888888888888888,
+    "f1_MOSQUITO_BUG": 0.8666666666666667,
+    "precision_MOSQUITO_BUG": 0.8666666666666667,
+    "recall_MOSQUITO_BUG": 0.8666666666666667,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.21060984285612055,
+     0.2917183699236352,
+     0.500586313217892,
+     0.75497335997336,
+     0.8262923509503498,
+     0.8340201041895957,
+     0.8525457001541511,
+     0.860841832237919
+    ],
+    "round_f1_micro": [
+     0.2733333333333333,
+     0.34,
+     0.5266666666666666,
+     0.7533333333333333,
+     0.8266666666666667,
+     0.8333333333333334,
+     0.8533333333333334,
+     0.86
+    ],
+    "round_seconds": [
+     3.1542723178863525,
+     3.0670340061187744,
+     3.6190972328186035,
+     2.719139814376831,
+     3.1906979084014893,
+     3.3674206733703613,
+     3.0547258853912354,
+     3.0921993255615234
+    ],
+    "round_peak_mib": [
+     840.232421875,
+     841.732421875,
+     841.857421875,
+     841.357421875,
+     841.732421875,
+     843.857421875,
+     842.857421875,
+     842.232421875
+    ]
+   },
+   "client_sizes": [
+    298,
+    236,
+    166
+   ],
+   "num_params": 15867909,
+   "upload_bytes_per_client_per_round": 63471636,
+   "total_comm_bytes": 3046638528,
+   "wall_seconds": 25.26458716392517,
+   "peak_mib": 843.857421875,
+   "fusion_type": "attention"
+  },
+  "attention|seed=1": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.8583129262769665,
+   "f1_micro": 0.86,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 129,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.86,
+    "f1_macro": 0.8583129262769665,
+    "f1_weighted": 0.8590137809778213,
+    "precision": 0.8606724722146923,
+    "precision_micro": 0.86,
+    "recall": 0.8591173835125447,
+    "recall_micro": 0.86,
+    "accuracy": 0.86,
+    "accuracy_ci95_low": 0.7954479122405028,
+    "accuracy_ci95_high": 0.9065735118144821,
+    "per_class_f1": [
+     0.8333333333333334,
+     0.9180327868852459,
+     0.8615384615384616,
+     0.8076923076923077,
+     0.8709677419354839
+    ],
+    "f1_LEAF_BLIGHT": 0.8333333333333334,
+    "precision_LEAF_BLIGHT": 0.8928571428571429,
+    "recall_LEAF_BLIGHT": 0.78125,
+    "f1_LEAF_HOPPERS": 0.9180327868852459,
+    "precision_LEAF_HOPPERS": 0.9032258064516129,
+    "recall_LEAF_HOPPERS": 0.9333333333333333,
+    "f1_LEAF_RUST": 0.8615384615384616,
+    "precision_LEAF_RUST": 0.8235294117647058,
+    "recall_LEAF_RUST": 0.9032258064516129,
+    "f1_LOOPER_CATERPILLARS": 0.8076923076923077,
+    "precision_LOOPER_CATERPILLARS": 0.84,
+    "recall_LOOPER_CATERPILLARS": 0.7777777777777778,
+    "f1_MOSQUITO_BUG": 0.8709677419354839,
+    "precision_MOSQUITO_BUG": 0.84375,
+    "recall_MOSQUITO_BUG": 0.9,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.2658947368421053,
+     0.3516414885139115,
+     0.6891824977266772,
+     0.7640121430336404,
+     0.7513850666249821,
+     0.770840199227296,
+     0.7983965428276573,
+     0.8583129262769665
+    ],
+    "round_f1_micro": [
+     0.32,
+     0.41333333333333333,
+     0.7066666666666667,
+     0.78,
+     0.7533333333333333,
+     0.7733333333333333,
+     0.8,
+     0.86
+    ],
+    "round_seconds": [
+     3.079312324523926,
+     3.066518783569336,
+     3.3246982097625732,
+     3.2341437339782715,
+     3.1430063247680664,
+     3.8010940551757812,
+     3.5345335006713867,
+     5.265034437179565
+    ],
+    "round_peak_mib": [
+     840.1640625,
+     840.982421875,
+     840.107421875,
+     841.107421875,
+     841.232421875,
+     841.107421875,
+     842.919921875,
+     842.73828125
+    ]
+   },
+   "client_sizes": [
+    110,
+    330,
+    260
+   ],
+   "num_params": 15867909,
+   "upload_bytes_per_client_per_round": 63471636,
+   "total_comm_bytes": 3046638528,
+   "wall_seconds": 28.448341369628906,
+   "peak_mib": 842.919921875,
+   "fusion_type": "attention"
+  },
+  "gated|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.8997521414251868,
+   "f1_micro": 0.9,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 135,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.9,
+    "f1_macro": 0.8997521414251868,
+    "f1_weighted": 0.9011645708037179,
+    "precision": 0.9051461038961038,
+    "precision_micro": 0.9,
+    "recall": 0.9016771206690561,
+    "recall_micro": 0.9,
+    "accuracy": 0.9,
+    "accuracy_ci95_low": 0.8415651883318529,
+    "accuracy_ci95_high": 0.9384586161736859,
+    "per_class_f1": [
+     0.9152542372881356,
+     0.9333333333333333,
+     0.8813559322033898,
+     0.8333333333333334,
+     0.9354838709677419
+    ],
+    "f1_LEAF_BLIGHT": 0.9152542372881356,
+    "precision_LEAF_BLIGHT": 1.0,
+    "recall_LEAF_BLIGHT": 0.84375,
+    "f1_LEAF_HOPPERS": 0.9333333333333333,
+    "precision_LEAF_HOPPERS": 0.9333333333333333,
+    "recall_LEAF_HOPPERS": 0.9333333333333333,
+    "f1_LEAF_RUST": 0.8813559322033898,
+    "precision_LEAF_RUST": 0.9285714285714286,
+    "recall_LEAF_RUST": 0.8387096774193549,
+    "f1_LOOPER_CATERPILLARS": 0.8333333333333334,
+    "precision_LOOPER_CATERPILLARS": 0.7575757575757576,
+    "recall_LOOPER_CATERPILLARS": 0.9259259259259259,
+    "f1_MOSQUITO_BUG": 0.9354838709677419,
+    "precision_MOSQUITO_BUG": 0.90625,
+    "recall_MOSQUITO_BUG": 0.9666666666666667,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.1464406581864862,
+     0.26145950134463736,
+     0.4650292553907011,
+     0.7624587841536994,
+     0.8336668042347555,
+     0.8542390763087276,
+     0.8733879996792616,
+     0.8997521414251868
+    ],
+    "round_f1_micro": [
+     0.23333333333333334,
+     0.31333333333333335,
+     0.4866666666666667,
+     0.76,
+     0.8333333333333334,
+     0.8533333333333334,
+     0.8733333333333333,
+     0.9
+    ],
+    "round_seconds": [
+     13.473403453826904,
+     5.824656009674072,
+     6.134125232696533,
+     6.957126140594482,
+     5.924170732498169,
+     11.998006343841553,
+     6.194060325622559,
+     8.605528593063354
+    ],
+    "round_peak_mib": [
+     837.7060546875,
+     839.3427734375,
+     840.8427734375,
+     842.5927734375,
+     840.0927734375,
+     840.8427734375,
+     840.1494140625,
+     841.2177734375
+    ]
+   },
+   "client_sizes": [
+    298,
+    236,
+    166
+   ],
+   "num_params": 15801605,
+   "upload_bytes_per_client_per_round": 63206420,
+   "total_comm_bytes": 3033908160,
+   "wall_seconds": 65.11107683181763,
+   "peak_mib": 842.5927734375,
+   "fusion_type": "gated"
+  },
+  "gated|seed=1": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.8793019934195628,
+   "f1_micro": 0.88,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 132,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.88,
+    "f1_macro": 0.8793019934195628,
+    "f1_weighted": 0.8804350431655159,
+    "precision": 0.8811301072153,
+    "precision_micro": 0.88,
+    "recall": 0.8795504778972522,
+    "recall_micro": 0.88,
+    "accuracy": 0.88,
+    "accuracy_ci95_low": 0.818291645158672,
+    "accuracy_ci95_high": 0.9227309691215898,
+    "per_class_f1": [
+     0.8709677419354839,
+     0.896551724137931,
+     0.8923076923076924,
+     0.8214285714285714,
+     0.9152542372881356
+    ],
+    "f1_LEAF_BLIGHT": 0.8709677419354839,
+    "precision_LEAF_BLIGHT": 0.9,
+    "recall_LEAF_BLIGHT": 0.84375,
+    "f1_LEAF_HOPPERS": 0.896551724137931,
+    "precision_LEAF_HOPPERS": 0.9285714285714286,
+    "recall_LEAF_HOPPERS": 0.8666666666666667,
+    "f1_LEAF_RUST": 0.8923076923076924,
+    "precision_LEAF_RUST": 0.8529411764705882,
+    "recall_LEAF_RUST": 0.9354838709677419,
+    "f1_LOOPER_CATERPILLARS": 0.8214285714285714,
+    "precision_LOOPER_CATERPILLARS": 0.7931034482758621,
+    "recall_LOOPER_CATERPILLARS": 0.8518518518518519,
+    "f1_MOSQUITO_BUG": 0.9152542372881356,
+    "precision_MOSQUITO_BUG": 0.9310344827586207,
+    "recall_MOSQUITO_BUG": 0.9,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.2884868922964161,
+     0.5870945134810681,
+     0.7421619098089687,
+     0.7611118501825127,
+     0.8071779743950398,
+     0.8398441549060506,
+     0.8457704868231184,
+     0.8793019934195628
+    ],
+    "round_f1_micro": [
+     0.37333333333333335,
+     0.62,
+     0.7666666666666667,
+     0.7733333333333333,
+     0.82,
+     0.84,
+     0.8466666666666667,
+     0.88
+    ],
+    "round_seconds": [
+     4.612163543701172,
+     2.79190731048584,
+     3.36031436920166,
+     3.640076160430908,
+     6.104766845703125,
+     11.355586528778076,
+     4.98147988319397,
+     5.710365056991577
+    ],
+    "round_peak_mib": [
+     838.8427734375,
+     838.3994140625,
+     838.3994140625,
+     838.3994140625,
+     838.3994140625,
+     840.4677734375,
+     840.4677734375,
+     839.7177734375
+    ]
+   },
+   "client_sizes": [
+    110,
+    330,
+    260
+   ],
+   "num_params": 15801605,
+   "upload_bytes_per_client_per_round": 63206420,
+   "total_comm_bytes": 3033908160,
+   "wall_seconds": 42.55665969848633,
+   "peak_mib": 840.4677734375,
+   "fusion_type": "gated"
+  }
+ },
+ "E6_cost": {
+  "concat_cost|concat": {
+   "fusion_type": "concat",
+   "num_params": 15605509,
+   "trainable_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "upload_mib_per_client_per_round": 59.53029251098633,
+   "round_trip_bytes_per_client": 124844072,
+   "note": "analytic size; wall-clock and peak memory come from the per-round history recorded in E1/E2/E8"
+  },
+  "concat_cost|attention": {
+   "fusion_type": "attention",
+   "num_params": 15867909,
+   "trainable_params": 15867909,
+   "upload_bytes_per_client_per_round": 63471636,
+   "upload_mib_per_client_per_round": 60.53126907348633,
+   "round_trip_bytes_per_client": 126943272,
+   "note": "analytic size; wall-clock and peak memory come from the per-round history recorded in E1/E2/E8"
+  },
+  "concat_cost|gated": {
+   "fusion_type": "gated",
+   "num_params": 15801605,
+   "trainable_params": 15801605,
+   "upload_bytes_per_client_per_round": 63206420,
+   "upload_mib_per_client_per_round": 60.27833938598633,
+   "round_trip_bytes_per_client": 126412840,
+   "note": "analytic size; wall-clock and peak memory come from the per-round history recorded in E1/E2/E8"
+  }
+ },
+ "E8_baselines": {
+  "fedavg|alpha=1.0|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.8135038596055544,
+   "f1_micro": 0.8133333333333334,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 122,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.8133333333333334,
+    "f1_macro": 0.8135038596055544,
+    "f1_weighted": 0.8149207728868746,
+    "precision": 0.8308543563715978,
+    "precision_micro": 0.8133333333333334,
+    "recall": 0.8162440262843489,
+    "recall_micro": 0.8133333333333334,
+    "accuracy": 0.8133333333333334,
+    "accuracy_ci95_low": 0.7434428016958636,
+    "accuracy_ci95_high": 0.8675758451668085,
+    "per_class_f1": [
+     0.7777777777777778,
+     0.8813559322033898,
+     0.847457627118644,
+     0.7301587301587301,
+     0.8307692307692308
+    ],
+    "f1_LEAF_BLIGHT": 0.7777777777777778,
+    "precision_LEAF_BLIGHT": 0.9545454545454546,
+    "recall_LEAF_BLIGHT": 0.65625,
+    "f1_LEAF_HOPPERS": 0.8813559322033898,
+    "precision_LEAF_HOPPERS": 0.896551724137931,
+    "recall_LEAF_HOPPERS": 0.8666666666666667,
+    "f1_LEAF_RUST": 0.847457627118644,
+    "precision_LEAF_RUST": 0.8928571428571429,
+    "recall_LEAF_RUST": 0.8064516129032258,
+    "f1_LOOPER_CATERPILLARS": 0.7301587301587301,
+    "precision_LOOPER_CATERPILLARS": 0.6388888888888888,
+    "recall_LOOPER_CATERPILLARS": 0.8518518518518519,
+    "f1_MOSQUITO_BUG": 0.8307692307692308,
+    "precision_MOSQUITO_BUG": 0.7714285714285715,
+    "recall_MOSQUITO_BUG": 0.9,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.19130456643919092,
+     0.3292642312629222,
+     0.6645251424227165,
+     0.7889268521333739,
+     0.8010464087883443,
+     0.8066073723921319,
+     0.7937870159166489,
+     0.8135038596055544
+    ],
+    "round_f1_micro": [
+     0.2733333333333333,
+     0.38666666666666666,
+     0.6733333333333333,
+     0.7866666666666666,
+     0.8,
+     0.8066666666666666,
+     0.7933333333333333,
+     0.8133333333333334
+    ],
+    "round_seconds": [
+     5.136255979537964,
+     5.473642349243164,
+     5.937445402145386,
+     5.006284952163696,
+     4.8347814083099365,
+     5.9459147453308105,
+     4.728272199630737,
+     3.8285741806030273
+    ],
+    "round_peak_mib": [
+     835.3837890625,
+     836.2587890625,
+     836.3837890625,
+     836.5712890625,
+     837.1337890625,
+     838.8837890625,
+     836.3837890625,
+     837.1337890625
+    ]
+   },
+   "client_sizes": [
+    298,
+    236,
+    166
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 40.89117121696472,
+   "peak_mib": 838.8837890625,
+   "alpha": 1.0,
+   "partition": {
+    "label_tv_mean": 0.3306356981299591,
+    "label_tv_max": 0.3682271944922547,
+    "size_cv": 0.2310932314730422,
+    "client_sizes": [
+     298,
+     236,
+     166
+    ]
+   }
+  },
+  "fedavg|alpha=1.0|seed=1": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.8041710875331566,
+   "f1_micro": 0.8066666666666666,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 121,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.8066666666666666,
+    "f1_macro": 0.8041710875331566,
+    "f1_weighted": 0.8060068523430591,
+    "precision": 0.816114219114219,
+    "precision_micro": 0.8066666666666666,
+    "recall": 0.8051493428912784,
+    "recall_micro": 0.8066666666666666,
+    "accuracy": 0.8066666666666666,
+    "accuracy_ci95_low": 0.7361371418228314,
+    "accuracy_ci95_high": 0.8618811082980816,
+    "per_class_f1": [
+     0.8275862068965517,
+     0.8214285714285714,
+     0.8125,
+     0.7307692307692307,
+     0.8285714285714286
+    ],
+    "f1_LEAF_BLIGHT": 0.8275862068965517,
+    "precision_LEAF_BLIGHT": 0.9230769230769231,
+    "recall_LEAF_BLIGHT": 0.75,
+    "f1_LEAF_HOPPERS": 0.8214285714285714,
+    "precision_LEAF_HOPPERS": 0.8846153846153846,
+    "recall_LEAF_HOPPERS": 0.7666666666666667,
+    "f1_LEAF_RUST": 0.8125,
+    "precision_LEAF_RUST": 0.7878787878787878,
+    "recall_LEAF_RUST": 0.8387096774193549,
+    "f1_LOOPER_CATERPILLARS": 0.7307692307692307,
+    "precision_LOOPER_CATERPILLARS": 0.76,
+    "recall_LOOPER_CATERPILLARS": 0.7037037037037037,
+    "f1_MOSQUITO_BUG": 0.8285714285714286,
+    "precision_MOSQUITO_BUG": 0.725,
+    "recall_MOSQUITO_BUG": 0.9666666666666667,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.3194477620842878,
+     0.5062240267762877,
+     0.7223904374262903,
+     0.7488607550922015,
+     0.7566254430933608,
+     0.797862205801861,
+     0.7583632847147566,
+     0.8041710875331566
+    ],
+    "round_f1_micro": [
+     0.37333333333333335,
+     0.5533333333333333,
+     0.7333333333333333,
+     0.76,
+     0.76,
+     0.8,
+     0.76,
+     0.8066666666666666
+    ],
+    "round_seconds": [
+     4.015248775482178,
+     3.470332145690918,
+     2.92645525932312,
+     12.574631214141846,
+     17.36538815498352,
+     8.035792589187622,
+     8.490356206893921,
+     8.737502813339233
+    ],
+    "round_peak_mib": [
+     835.3837890625,
+     836.7587890625,
+     835.9462890625,
+     835.5087890625,
+     836.1279296875,
+     836.2587890625,
+     836.1337890625,
+     837.9462890625
+    ]
+   },
+   "client_sizes": [
+    110,
+    330,
+    260
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 65.61570715904236,
+   "peak_mib": 837.9462890625,
+   "alpha": 1.0,
+   "partition": {
+    "label_tv_mean": 0.3476490176490176,
+    "label_tv_max": 0.4584415584415584,
+    "size_cv": 0.39331142565532007,
+    "client_sizes": [
+     110,
+     330,
+     260
+    ]
+   }
+  },
+  "fedprox|alpha=1.0|seed=0": {
+   "algorithm": "fedprox",
+   "f1_macro": 0.85785794241929,
+   "f1_micro": 0.86,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 129,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.86,
+    "f1_macro": 0.85785794241929,
+    "f1_weighted": 0.8577105763813987,
+    "precision": 0.8696380825057295,
+    "precision_micro": 0.86,
+    "recall": 0.8641771206690562,
+    "recall_micro": 0.86,
+    "accuracy": 0.86,
+    "accuracy_ci95_low": 0.7954479122405028,
+    "accuracy_ci95_high": 0.9065735118144821,
+    "per_class_f1": [
+     0.7777777777777778,
+     0.9354838709677419,
+     0.8813559322033898,
+     0.819672131147541,
+     0.875
+    ],
+    "f1_LEAF_BLIGHT": 0.7777777777777778,
+    "precision_LEAF_BLIGHT": 0.9545454545454546,
+    "recall_LEAF_BLIGHT": 0.65625,
+    "f1_LEAF_HOPPERS": 0.9354838709677419,
+    "precision_LEAF_HOPPERS": 0.90625,
+    "recall_LEAF_HOPPERS": 0.9666666666666667,
+    "f1_LEAF_RUST": 0.8813559322033898,
+    "precision_LEAF_RUST": 0.9285714285714286,
+    "recall_LEAF_RUST": 0.8387096774193549,
+    "f1_LOOPER_CATERPILLARS": 0.819672131147541,
+    "precision_LOOPER_CATERPILLARS": 0.7352941176470589,
+    "recall_LOOPER_CATERPILLARS": 0.9259259259259259,
+    "f1_MOSQUITO_BUG": 0.875,
+    "precision_MOSQUITO_BUG": 0.8235294117647058,
+    "recall_MOSQUITO_BUG": 0.9333333333333333,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.16132983377077864,
+     0.2983783277967529,
+     0.46612470115380616,
+     0.738187943845746,
+     0.7851699350316862,
+     0.8059478586855799,
+     0.8325281790733964,
+     0.85785794241929
+    ],
+    "round_f1_micro": [
+     0.25333333333333335,
+     0.34,
+     0.5,
+     0.74,
+     0.7866666666666666,
+     0.8066666666666666,
+     0.8333333333333334,
+     0.86
+    ],
+    "round_seconds": [
+     11.872838735580444,
+     12.762094736099243,
+     9.856752395629883,
+     3.5240700244903564,
+     3.467686176300049,
+     3.292747735977173,
+     3.1199867725372314,
+     3.3235855102539062
+    ],
+    "round_peak_mib": [
+     931.50634765625,
+     928.87548828125,
+     928.50634765625,
+     930.01220703125,
+     929.31298828125,
+     929.88134765625,
+     927.87548828125,
+     928.99462890625
+    ]
+   },
+   "client_sizes": [
+    298,
+    236,
+    166
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 51.219762086868286,
+   "peak_mib": 931.50634765625,
+   "alpha": 1.0,
+   "partition": {
+    "label_tv_mean": 0.3306356981299591,
+    "label_tv_max": 0.3682271944922547,
+    "size_cv": 0.2310932314730422,
+    "client_sizes": [
+     298,
+     236,
+     166
+    ]
+   }
+  },
+  "fedprox|alpha=1.0|seed=1": {
+   "algorithm": "fedprox",
+   "f1_macro": 0.8457671580464396,
+   "f1_micro": 0.8466666666666667,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 127,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.8466666666666667,
+    "f1_macro": 0.8457671580464396,
+    "f1_weighted": 0.8479256925439571,
+    "precision": 0.852090267607509,
+    "precision_micro": 0.8466666666666667,
+    "recall": 0.8457974910394265,
+    "recall_micro": 0.8466666666666667,
+    "accuracy": 0.8466666666666667,
+    "accuracy_ci95_low": 0.7804201682766676,
+    "accuracy_ci95_high": 0.8956004622947993,
+    "per_class_f1": [
+     0.8666666666666667,
+     0.8813559322033898,
+     0.8813559322033898,
+     0.7636363636363637,
+     0.835820895522388
+    ],
+    "f1_LEAF_BLIGHT": 0.8666666666666667,
+    "precision_LEAF_BLIGHT": 0.9285714285714286,
+    "recall_LEAF_BLIGHT": 0.8125,
+    "f1_LEAF_HOPPERS": 0.8813559322033898,
+    "precision_LEAF_HOPPERS": 0.896551724137931,
+    "recall_LEAF_HOPPERS": 0.8666666666666667,
+    "f1_LEAF_RUST": 0.8813559322033898,
+    "precision_LEAF_RUST": 0.9285714285714286,
+    "recall_LEAF_RUST": 0.8387096774193549,
+    "f1_LOOPER_CATERPILLARS": 0.7636363636363637,
+    "precision_LOOPER_CATERPILLARS": 0.75,
+    "recall_LOOPER_CATERPILLARS": 0.7777777777777778,
+    "f1_MOSQUITO_BUG": 0.835820895522388,
+    "precision_MOSQUITO_BUG": 0.7567567567567568,
+    "recall_MOSQUITO_BUG": 0.9333333333333333,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.24166044355638977,
+     0.46840845429080724,
+     0.6614535621088427,
+     0.7373682408190578,
+     0.7848248153866503,
+     0.7834706458552162,
+     0.7854239459966411,
+     0.8457671580464396
+    ],
+    "round_f1_micro": [
+     0.32,
+     0.5,
+     0.68,
+     0.7533333333333333,
+     0.7866666666666666,
+     0.7866666666666666,
+     0.7866666666666666,
+     0.8466666666666667
+    ],
+    "round_seconds": [
+     3.83099365234375,
+     3.4342055320739746,
+     3.1545026302337646,
+     3.7259678840637207,
+     2.921416759490967,
+     3.3801982402801514,
+     5.662172079086304,
+     3.3019487857818604
+    ],
+    "round_peak_mib": [
+     930.18798828125,
+     932.07470703125,
+     928.57470703125,
+     930.56298828125,
+     930.93798828125,
+     929.36962890625,
+     928.38134765625,
+     930.00634765625
+    ]
+   },
+   "client_sizes": [
+    110,
+    330,
+    260
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 29.411405563354492,
+   "peak_mib": 932.07470703125,
+   "alpha": 1.0,
+   "partition": {
+    "label_tv_mean": 0.3476490176490176,
+    "label_tv_max": 0.4584415584415584,
+    "size_cv": 0.39331142565532007,
+    "client_sizes": [
+     110,
+     330,
+     260
+    ]
+   }
+  },
+  "scaffold|alpha=1.0|seed=0": {
+   "algorithm": "scaffold",
+   "f1_macro": 0.19130456643919092,
+   "f1_micro": 0.2733333333333333,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 41,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.2733333333333333,
+    "f1_macro": 0.19130456643919092,
+    "f1_weighted": 0.19208741825652548,
+    "precision": 0.32846511627906977,
+    "precision_micro": 0.2733333333333333,
+    "recall": 0.27282407407407405,
+    "recall_micro": 0.2733333333333333,
+    "accuracy": 0.2733333333333333,
+    "accuracy_ci95_low": 0.20834143203423522,
+    "accuracy_ci95_high": 0.34964507874595946,
+    "per_class_f1": [
+     0.16216216216216217,
+     0.36923076923076925,
+     0.0,
+     0.06896551724137931,
+     0.3561643835616438
+    ],
+    "f1_LEAF_BLIGHT": 0.16216216216216217,
+    "precision_LEAF_BLIGHT": 0.6,
+    "recall_LEAF_BLIGHT": 0.09375,
+    "f1_LEAF_HOPPERS": 0.36923076923076925,
+    "precision_LEAF_HOPPERS": 0.24,
+    "recall_LEAF_HOPPERS": 0.8,
+    "f1_LEAF_RUST": 0.0,
+    "precision_LEAF_RUST": 0.0,
+    "recall_LEAF_RUST": 0.0,
+    "f1_LOOPER_CATERPILLARS": 0.06896551724137931,
+    "precision_LOOPER_CATERPILLARS": 0.5,
+    "recall_LOOPER_CATERPILLARS": 0.037037037037037035,
+    "f1_MOSQUITO_BUG": 0.3561643835616438,
+    "precision_MOSQUITO_BUG": 0.3023255813953488,
+    "recall_MOSQUITO_BUG": 0.43333333333333335,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.19130456643919092,
+     0.1523117449359615,
+     0.12795597484276727,
+     0.15200655200655203,
+     0.12795597484276727,
+     0.1508466819221968,
+     0.12756738138293292,
+     0.15084372707263388
+    ],
+    "round_f1_micro": [
+     0.2733333333333333,
+     0.26666666666666666,
+     0.23333333333333334,
+     0.26666666666666666,
+     0.23333333333333334,
+     0.26666666666666666,
+     0.23333333333333334,
+     0.26666666666666666
+    ],
+    "round_seconds": [
+     18.739967346191406,
+     20.76689314842224,
+     21.817379474639893,
+     22.77534818649292,
+     20.655139684677124,
+     23.348686456680298,
+     22.452594757080078,
+     20.981107711791992
+    ],
+    "round_peak_mib": [
+     834.7587890625,
+     837.1337890625,
+     837.3271484375,
+     837.3837890625,
+     836.2587890625,
+     837.6337890625,
+     838.6337890625,
+     837.6337890625
+    ]
+   },
+   "client_sizes": [
+    298,
+    236,
+    166
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 171.53711676597595,
+   "peak_mib": 838.6337890625,
+   "alpha": 1.0,
+   "partition": {
+    "label_tv_mean": 0.3306356981299591,
+    "label_tv_max": 0.3682271944922547,
+    "size_cv": 0.2310932314730422,
+    "client_sizes": [
+     298,
+     236,
+     166
+    ]
+   }
+  },
+  "scaffold|alpha=1.0|seed=1": {
+   "algorithm": "scaffold",
+   "f1_macro": 0.3194477620842878,
+   "f1_micro": 0.37333333333333335,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 56,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.37333333333333335,
+    "f1_macro": 0.3194477620842878,
+    "f1_weighted": 0.3263203243229662,
+    "precision": 0.537997557997558,
+    "precision_micro": 0.37333333333333335,
+    "recall": 0.3621400836320191,
+    "recall_micro": 0.37333333333333335,
+    "accuracy": 0.37333333333333335,
+    "accuracy_ci95_low": 0.2999983138911522,
+    "accuracy_ci95_high": 0.4529941480154272,
+    "per_class_f1": [
+     0.5074626865671642,
+     0.15,
+     0.4297520661157025,
+     0.13793103448275862,
+     0.37209302325581395
+    ],
+    "f1_LEAF_BLIGHT": 0.5074626865671642,
+    "precision_LEAF_BLIGHT": 0.4857142857142857,
+    "recall_LEAF_BLIGHT": 0.53125,
+    "f1_LEAF_HOPPERS": 0.15,
+    "precision_LEAF_HOPPERS": 0.3,
+    "recall_LEAF_HOPPERS": 0.1,
+    "f1_LEAF_RUST": 0.4297520661157025,
+    "precision_LEAF_RUST": 0.28888888888888886,
+    "recall_LEAF_RUST": 0.8387096774193549,
+    "f1_LOOPER_CATERPILLARS": 0.13793103448275862,
+    "precision_LOOPER_CATERPILLARS": 1.0,
+    "recall_LOOPER_CATERPILLARS": 0.07407407407407407,
+    "f1_MOSQUITO_BUG": 0.37209302325581395,
+    "precision_MOSQUITO_BUG": 0.6153846153846154,
+    "recall_MOSQUITO_BUG": 0.26666666666666666,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.3194477620842878,
+     0.07032967032967033,
+     0.19688546598706927,
+     0.07032967032967033,
+     0.19006492908454595,
+     0.07032967032967033,
+     0.18075757575757576,
+     0.07032967032967033
+    ],
+    "round_f1_micro": [
+     0.37333333333333335,
+     0.21333333333333335,
+     0.32,
+     0.21333333333333335,
+     0.31333333333333335,
+     0.21333333333333335,
+     0.30666666666666664,
+     0.21333333333333335
+    ],
+    "round_seconds": [
+     23.52339816093445,
+     19.632506370544434,
+     9.061408042907715,
+     25.744808673858643,
+     22.093122482299805,
+     21.983711004257202,
+     20.494274377822876,
+     23.41759443283081
+    ],
+    "round_peak_mib": [
+     836.1904296875,
+     834.9404296875,
+     836.6337890625,
+     837.0087890625,
+     836.1337890625,
+     835.1337890625,
+     838.0146484375,
+     838.5712890625
+    ]
+   },
+   "client_sizes": [
+    110,
+    330,
+    260
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 165.95082354545593,
+   "peak_mib": 838.5712890625,
+   "alpha": 1.0,
+   "partition": {
+    "label_tv_mean": 0.3476490176490176,
+    "label_tv_max": 0.4584415584415584,
+    "size_cv": 0.39331142565532007,
+    "client_sizes": [
+     110,
+     330,
+     260
+    ]
+   }
+  },
+  "fedbn|alpha=1.0|seed=0": {
+   "algorithm": "fedbn",
+   "f1_macro": 0.6786129334582942,
+   "f1_micro": 0.6733333333333333,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 101,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.6733333333333333,
+    "f1_macro": 0.6786129334582942,
+    "f1_weighted": 0.6830748724356972,
+    "precision": 0.8320448179271709,
+    "precision_micro": 0.6733333333333333,
+    "recall": 0.6803091397849463,
+    "recall_micro": 0.6733333333333333,
+    "accuracy": 0.6733333333333333,
+    "accuracy_ci95_low": 0.5947685286976767,
+    "accuracy_ci95_high": 0.7432417865880567,
+    "per_class_f1": [
+     0.8363636363636363,
+     0.5,
+     0.6666666666666666,
+     0.5567010309278351,
+     0.8333333333333334
+    ],
+    "f1_LEAF_BLIGHT": 0.8363636363636363,
+    "precision_LEAF_BLIGHT": 1.0,
+    "recall_LEAF_BLIGHT": 0.71875,
+    "f1_LEAF_HOPPERS": 0.5,
+    "precision_LEAF_HOPPERS": 1.0,
+    "recall_LEAF_HOPPERS": 0.3333333333333333,
+    "f1_LEAF_RUST": 0.6666666666666666,
+    "precision_LEAF_RUST": 0.9411764705882353,
+    "recall_LEAF_RUST": 0.5161290322580645,
+    "f1_LOOPER_CATERPILLARS": 0.5567010309278351,
+    "precision_LOOPER_CATERPILLARS": 0.38571428571428573,
+    "recall_LOOPER_CATERPILLARS": 1.0,
+    "f1_MOSQUITO_BUG": 0.8333333333333334,
+    "precision_MOSQUITO_BUG": 0.8333333333333334,
+    "recall_MOSQUITO_BUG": 0.8333333333333334,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.0939882697947214,
+     0.19913326110509208,
+     0.38785272075594657,
+     0.606052036199095,
+     0.6786129334582942,
+     0.4853121981590859,
+     0.615095879232966,
+     0.40683796718800147
+    ],
+    "round_f1_micro": [
+     0.21333333333333335,
+     0.31333333333333335,
+     0.4533333333333333,
+     0.6266666666666667,
+     0.6733333333333333,
+     0.5333333333333333,
+     0.64,
+     0.44666666666666666
+    ],
+    "round_seconds": [
+     5.4387526512146,
+     5.2803239822387695,
+     5.517595052719116,
+     6.351613759994507,
+     7.734231233596802,
+     6.078900337219238,
+     5.684351682662964,
+     5.653202056884766
+    ],
+    "round_peak_mib": [
+     836.1904296875,
+     836.2587890625,
+     836.6337890625,
+     836.2587890625,
+     837.2587890625,
+     836.7587890625,
+     837.1337890625,
+     837.2587890625
+    ]
+   },
+   "client_sizes": [
+    298,
+    236,
+    166
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 47.73897075653076,
+   "peak_mib": 837.2587890625,
+   "alpha": 1.0,
+   "partition": {
+    "label_tv_mean": 0.3306356981299591,
+    "label_tv_max": 0.3682271944922547,
+    "size_cv": 0.2310932314730422,
+    "client_sizes": [
+     298,
+     236,
+     166
+    ]
+   }
+  },
+  "fedbn|alpha=1.0|seed=1": {
+   "algorithm": "fedbn",
+   "f1_macro": 0.44996077299257287,
+   "f1_micro": 0.5266666666666666,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 79,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.5266666666666666,
+    "f1_macro": 0.44996077299257287,
+    "f1_weighted": 0.45122251937627056,
+    "precision": 0.4656355173648407,
+    "precision_micro": 0.5266666666666666,
+    "recall": 0.5309528076463561,
+    "recall_micro": 0.5266666666666666,
+    "accuracy": 0.5266666666666666,
+    "accuracy_ci95_low": 0.44710055355423833,
+    "accuracy_ci95_high": 0.6049010334127976,
+    "per_class_f1": [
+     0.2926829268292683,
+     0.0,
+     0.8181818181818182,
+     0.40476190476190477,
+     0.7341772151898734
+    ],
+    "f1_LEAF_BLIGHT": 0.2926829268292683,
+    "precision_LEAF_BLIGHT": 0.6666666666666666,
+    "recall_LEAF_BLIGHT": 0.1875,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.8181818181818182,
+    "precision_LEAF_RUST": 0.7714285714285715,
+    "recall_LEAF_RUST": 0.8709677419354839,
+    "f1_LOOPER_CATERPILLARS": 0.40476190476190477,
+    "precision_LOOPER_CATERPILLARS": 0.2982456140350877,
+    "recall_LOOPER_CATERPILLARS": 0.6296296296296297,
+    "f1_MOSQUITO_BUG": 0.7341772151898734,
+    "precision_MOSQUITO_BUG": 0.5918367346938775,
+    "recall_MOSQUITO_BUG": 0.9666666666666667,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.13063310213598295,
+     0.24027480210686317,
+     0.44996077299257287,
+     0.44982642466513434,
+     0.3855244755244755,
+     0.430905388471178,
+     0.13260233918128655,
+     0.30544021294021295
+    ],
+    "round_f1_micro": [
+     0.22666666666666666,
+     0.31333333333333335,
+     0.5266666666666666,
+     0.5133333333333333,
+     0.44,
+     0.5066666666666667,
+     0.22,
+     0.4
+    ],
+    "round_seconds": [
+     10.501352071762085,
+     4.915773868560791,
+     8.38017201423645,
+     5.5327537059783936,
+     5.9304444789886475,
+     5.4786200523376465,
+     5.520144462585449,
+     7.778252363204956
+    ],
+    "round_peak_mib": [
+     834.5087890625,
+     836.6337890625,
+     836.9404296875,
+     836.2080078125,
+     835.9404296875,
+     835.9404296875,
+     835.4404296875,
+     836.6337890625
+    ]
+   },
+   "client_sizes": [
+    110,
+    330,
+    260
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 54.03751301765442,
+   "peak_mib": 836.9404296875,
+   "alpha": 1.0,
+   "partition": {
+    "label_tv_mean": 0.3476490176490176,
+    "label_tv_max": 0.4584415584415584,
+    "size_cv": 0.39331142565532007,
+    "client_sizes": [
+     110,
+     330,
+     260
+    ]
+   }
+  },
+  "local_only|alpha=1.0|seed=0": {
+   "per_client_f1": [
+    0.6064957264957265,
+    0.548689809049398,
+    0.6662354708335367
+   ],
+   "mean_f1": 0.6071403354595538,
+   "std_f1": 0.04798998014589412,
+   "best_f1": 0.6662354708335367,
+   "worst_f1": 0.548689809049398,
+   "num_clients": 3,
+   "local_epochs": 24,
+   "alpha": 1.0
+  },
+  "fedavg|alpha=0.1|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.7510077169207603,
+   "f1_micro": 0.7733333333333333,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 116,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.7733333333333333,
+    "f1_macro": 0.7510077169207603,
+    "f1_weighted": 0.7555918439048874,
+    "precision": 0.8170273586063062,
+    "precision_micro": 0.7733333333333333,
+    "recall": 0.7638097371565113,
+    "recall_micro": 0.7733333333333333,
+    "accuracy": 0.7733333333333333,
+    "accuracy_ci95_low": 0.6999980606806022,
+    "accuracy_ci95_high": 0.8330182057315159,
+    "per_class_f1": [
+     0.8857142857142857,
+     0.8405797101449275,
+     0.7733333333333333,
+     0.6190476190476191,
+     0.6363636363636364
+    ],
+    "f1_LEAF_BLIGHT": 0.8857142857142857,
+    "precision_LEAF_BLIGHT": 0.8157894736842105,
+    "recall_LEAF_BLIGHT": 0.96875,
+    "f1_LEAF_HOPPERS": 0.8405797101449275,
+    "precision_LEAF_HOPPERS": 0.7435897435897436,
+    "recall_LEAF_HOPPERS": 0.9666666666666667,
+    "f1_LEAF_RUST": 0.7733333333333333,
+    "precision_LEAF_RUST": 0.6590909090909091,
+    "recall_LEAF_RUST": 0.9354838709677419,
+    "f1_LOOPER_CATERPILLARS": 0.6190476190476191,
+    "precision_LOOPER_CATERPILLARS": 0.8666666666666667,
+    "recall_LOOPER_CATERPILLARS": 0.48148148148148145,
+    "f1_MOSQUITO_BUG": 0.6363636363636364,
+    "precision_MOSQUITO_BUG": 1.0,
+    "recall_MOSQUITO_BUG": 0.4666666666666667,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.24502718985177308,
+     0.3654739783772042,
+     0.44659517019775236,
+     0.6084339788007768,
+     0.6504354660188307,
+     0.7117525736867276,
+     0.7471099945821887,
+     0.7510077169207603
+    ],
+    "round_f1_micro": [
+     0.32,
+     0.4266666666666667,
+     0.5733333333333334,
+     0.6666666666666666,
+     0.7,
+     0.7466666666666667,
+     0.7733333333333333,
+     0.7733333333333333
+    ],
+    "round_seconds": [
+     6.2108073234558105,
+     4.9136881828308105,
+     5.942885875701904,
+     5.996929407119751,
+     6.424200057983398,
+     6.107255935668945,
+     5.153769493103027,
+     5.126863241195679
+    ],
+    "round_peak_mib": [
+     835.0712890625,
+     836.6337890625,
+     838.5087890625,
+     836.9462890625,
+     835.3154296875,
+     836.0087890625,
+     836.9404296875,
+     835.9404296875
+    ]
+   },
+   "client_sizes": [
+    224,
+    423,
+    53
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 45.876399517059326,
+   "peak_mib": 838.5087890625,
+   "alpha": 0.1,
+   "partition": {
+    "label_tv_mean": 0.5967857142857143,
+    "label_tv_max": 0.8171428571428572,
+    "size_cv": 0.647982741014806,
+    "client_sizes": [
+     224,
+     423,
+     53
+    ]
+   }
+  },
+  "fedavg|alpha=0.1|seed=1": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.6789123953291216,
+   "f1_micro": 0.7066666666666667,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 106,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.7066666666666667,
+    "f1_macro": 0.6789123953291216,
+    "f1_weighted": 0.6795076451826139,
+    "precision": 0.7636986160415702,
+    "precision_micro": 0.7066666666666667,
+    "recall": 0.7102120669056153,
+    "recall_micro": 0.7066666666666667,
+    "accuracy": 0.7066666666666667,
+    "accuracy_ci95_low": 0.6293765082407161,
+    "accuracy_ci95_high": 0.7736357907538123,
+    "per_class_f1": [
+     0.7096774193548387,
+     0.819672131147541,
+     0.782608695652174,
+     0.704225352112676,
+     0.3783783783783784
+    ],
+    "f1_LEAF_BLIGHT": 0.7096774193548387,
+    "precision_LEAF_BLIGHT": 0.7333333333333333,
+    "recall_LEAF_BLIGHT": 0.6875,
+    "f1_LEAF_HOPPERS": 0.819672131147541,
+    "precision_LEAF_HOPPERS": 0.8064516129032258,
+    "recall_LEAF_HOPPERS": 0.8333333333333334,
+    "f1_LEAF_RUST": 0.782608695652174,
+    "precision_LEAF_RUST": 0.7105263157894737,
+    "recall_LEAF_RUST": 0.8709677419354839,
+    "f1_LOOPER_CATERPILLARS": 0.704225352112676,
+    "precision_LOOPER_CATERPILLARS": 0.5681818181818182,
+    "recall_LOOPER_CATERPILLARS": 0.9259259259259259,
+    "f1_MOSQUITO_BUG": 0.3783783783783784,
+    "precision_MOSQUITO_BUG": 1.0,
+    "recall_MOSQUITO_BUG": 0.23333333333333334,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.1918006176829706,
+     0.4189062693058541,
+     0.5250045846323125,
+     0.5886496097641609,
+     0.5435426787066115,
+     0.655850395574303,
+     0.643129407073069,
+     0.6789123953291216
+    ],
+    "round_f1_micro": [
+     0.2733333333333333,
+     0.4533333333333333,
+     0.5866666666666667,
+     0.62,
+     0.5933333333333334,
+     0.68,
+     0.68,
+     0.7066666666666667
+    ],
+    "round_seconds": [
+     6.013410329818726,
+     7.726658821105957,
+     6.87007999420166,
+     7.6117002964019775,
+     7.291885614395142,
+     5.6547276973724365,
+     6.919742107391357,
+     6.216409206390381
+    ],
+    "round_peak_mib": [
+     835.3212890625,
+     835.0087890625,
+     835.5087890625,
+     835.0712890625,
+     835.4404296875,
+     834.3212890625,
+     835.4404296875,
+     834.3212890625
+    ]
+   },
+   "client_sizes": [
+    306,
+    249,
+    145
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 54.30461406707764,
+   "peak_mib": 835.5087890625,
+   "alpha": 0.1,
+   "partition": {
+    "label_tv_mean": 0.5454171856620597,
+    "label_tv_max": 0.7819211822660098,
+    "size_cv": 0.28566428133851995,
+    "client_sizes": [
+     306,
+     249,
+     145
+    ]
+   }
+  },
+  "fedprox|alpha=0.1|seed=0": {
+   "algorithm": "fedprox",
+   "f1_macro": 0.7677464490763722,
+   "f1_micro": 0.7866666666666666,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 118,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.7866666666666666,
+    "f1_macro": 0.7677464490763722,
+    "f1_weighted": 0.7714030468506172,
+    "precision": 0.8220632081097197,
+    "precision_micro": 0.7866666666666666,
+    "recall": 0.7790412186379928,
+    "recall_micro": 0.7866666666666666,
+    "accuracy": 0.7866666666666666,
+    "accuracy_ci95_low": 0.7143794210903474,
+    "accuracy_ci95_high": 0.8446376388052887,
+    "per_class_f1": [
+     0.8823529411764706,
+     0.8695652173913043,
+     0.7837837837837838,
+     0.6666666666666666,
+     0.6363636363636364
+    ],
+    "f1_LEAF_BLIGHT": 0.8823529411764706,
+    "precision_LEAF_BLIGHT": 0.8333333333333334,
+    "recall_LEAF_BLIGHT": 0.9375,
+    "f1_LEAF_HOPPERS": 0.8695652173913043,
+    "precision_LEAF_HOPPERS": 0.7692307692307693,
+    "recall_LEAF_HOPPERS": 1.0,
+    "f1_LEAF_RUST": 0.7837837837837838,
+    "precision_LEAF_RUST": 0.6744186046511628,
+    "recall_LEAF_RUST": 0.9354838709677419,
+    "f1_LOOPER_CATERPILLARS": 0.6666666666666666,
+    "precision_LOOPER_CATERPILLARS": 0.8333333333333334,
+    "recall_LOOPER_CATERPILLARS": 0.5555555555555556,
+    "f1_MOSQUITO_BUG": 0.6363636363636364,
+    "precision_MOSQUITO_BUG": 1.0,
+    "recall_MOSQUITO_BUG": 0.4666666666666667,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.23770609318996416,
+     0.302561669829222,
+     0.4986621211792211,
+     0.5832721592274583,
+     0.649755700756994,
+     0.7112049062049062,
+     0.7677464490763722,
+     0.7340936669847371
+    ],
+    "round_f1_micro": [
+     0.30666666666666664,
+     0.36,
+     0.6,
+     0.6533333333333333,
+     0.7,
+     0.74,
+     0.7866666666666666,
+     0.76
+    ],
+    "round_seconds": [
+     6.907321453094482,
+     6.397268295288086,
+     6.633901834487915,
+     6.984723091125488,
+     6.3904032707214355,
+     5.996384620666504,
+     6.989646911621094,
+     7.33003044128418
+    ],
+    "round_peak_mib": [
+     930.38134765625,
+     931.25048828125,
+     930.94384765625,
+     930.13720703125,
+     929.55712890625,
+     928.49462890625,
+     928.75048828125,
+     932.18798828125
+    ]
+   },
+   "client_sizes": [
+    224,
+    423,
+    53
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 53.629679918289185,
+   "peak_mib": 932.18798828125,
+   "alpha": 0.1,
+   "partition": {
+    "label_tv_mean": 0.5967857142857143,
+    "label_tv_max": 0.8171428571428572,
+    "size_cv": 0.647982741014806,
+    "client_sizes": [
+     224,
+     423,
+     53
+    ]
+   }
+  },
+  "fedprox|alpha=0.1|seed=1": {
+   "algorithm": "fedprox",
+   "f1_macro": 0.6435270774976658,
+   "f1_micro": 0.6866666666666666,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 103,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.6866666666666666,
+    "f1_macro": 0.6435270774976658,
+    "f1_weighted": 0.6440231092436975,
+    "precision": 0.7513769271664008,
+    "precision_micro": 0.6866666666666666,
+    "recall": 0.6899178614097969,
+    "recall_micro": 0.6866666666666666,
+    "accuracy": 0.6866666666666666,
+    "accuracy_ci95_low": 0.6085602497894558,
+    "accuracy_ci95_high": 0.7554508589797957,
+    "per_class_f1": [
+     0.7142857142857143,
+     0.7333333333333333,
+     0.8125,
+     0.7222222222222222,
+     0.23529411764705882
+    ],
+    "f1_LEAF_BLIGHT": 0.7142857142857143,
+    "precision_LEAF_BLIGHT": 0.6578947368421053,
+    "recall_LEAF_BLIGHT": 0.78125,
+    "f1_LEAF_HOPPERS": 0.7333333333333333,
+    "precision_LEAF_HOPPERS": 0.7333333333333333,
+    "recall_LEAF_HOPPERS": 0.7333333333333333,
+    "f1_LEAF_RUST": 0.8125,
+    "precision_LEAF_RUST": 0.7878787878787878,
+    "recall_LEAF_RUST": 0.8387096774193549,
+    "f1_LOOPER_CATERPILLARS": 0.7222222222222222,
+    "precision_LOOPER_CATERPILLARS": 0.5777777777777777,
+    "recall_LOOPER_CATERPILLARS": 0.9629629629629629,
+    "f1_MOSQUITO_BUG": 0.23529411764705882,
+    "precision_MOSQUITO_BUG": 1.0,
+    "recall_MOSQUITO_BUG": 0.13333333333333333,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.18732852824924434,
+     0.390111199178631,
+     0.5335719546324937,
+     0.514044530612873,
+     0.5732426001601862,
+     0.5918018018018018,
+     0.6001968206291313,
+     0.6435270774976658
+    ],
+    "round_f1_micro": [
+     0.26666666666666666,
+     0.44666666666666666,
+     0.6,
+     0.58,
+     0.6466666666666666,
+     0.6466666666666666,
+     0.6533333333333333,
+     0.6866666666666666
+    ],
+    "round_seconds": [
+     7.573636054992676,
+     8.063544750213623,
+     14.22742772102356,
+     8.199880599975586,
+     7.549198865890503,
+     7.161689281463623,
+     8.410414934158325,
+     5.953258275985718
+    ],
+    "round_peak_mib": [
+     931.43798828125,
+     930.49462890625,
+     931.19384765625,
+     930.92626953125,
+     930.31298828125,
+     930.63134765625,
+     931.08056640625,
+     933.07470703125
+    ]
+   },
+   "client_sizes": [
+    306,
+    249,
+    145
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 67.13905048370361,
+   "peak_mib": 933.07470703125,
+   "alpha": 0.1,
+   "partition": {
+    "label_tv_mean": 0.5454171856620597,
+    "label_tv_max": 0.7819211822660098,
+    "size_cv": 0.28566428133851995,
+    "client_sizes": [
+     306,
+     249,
+     145
+    ]
+   }
+  },
+  "scaffold|alpha=0.1|seed=0": {
+   "algorithm": "scaffold",
+   "f1_macro": 0.33722914593865083,
+   "f1_micro": 0.4533333333333333,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 68,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.4533333333333333,
+    "f1_macro": 0.33722914593865083,
+    "f1_weighted": 0.3488295500510892,
+    "precision": 0.27872405372405373,
+    "precision_micro": 0.4533333333333333,
+    "recall": 0.4398521505376344,
+    "recall_micro": 0.4533333333333333,
+    "accuracy": 0.4533333333333333,
+    "accuracy_ci95_low": 0.375824986079277,
+    "accuracy_ci95_high": 0.5331722367284102,
+    "per_class_f1": [
+     0.5915492957746479,
+     0.5376344086021505,
+     0.5569620253164557,
+     0.0,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.5915492957746479,
+    "precision_LEAF_BLIGHT": 0.5384615384615384,
+    "recall_LEAF_BLIGHT": 0.65625,
+    "f1_LEAF_HOPPERS": 0.5376344086021505,
+    "precision_LEAF_HOPPERS": 0.3968253968253968,
+    "recall_LEAF_HOPPERS": 0.8333333333333334,
+    "f1_LEAF_RUST": 0.5569620253164557,
+    "precision_LEAF_RUST": 0.4583333333333333,
+    "recall_LEAF_RUST": 0.7096774193548387,
+    "f1_LOOPER_CATERPILLARS": 0.0,
+    "precision_LOOPER_CATERPILLARS": 0.0,
+    "recall_LOOPER_CATERPILLARS": 0.0,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.24502718985177308,
+     0.061016949152542375,
+     0.33722914593865083,
+     0.061016949152542375,
+     0.32657771312102685,
+     0.061016949152542375,
+     0.3312119971493124,
+     0.061016949152542375
+    ],
+    "round_f1_micro": [
+     0.32,
+     0.18,
+     0.4533333333333333,
+     0.18,
+     0.44,
+     0.18,
+     0.44666666666666666,
+     0.18
+    ],
+    "round_seconds": [
+     22.583894968032837,
+     22.824240684509277,
+     22.296104192733765,
+     27.775280714035034,
+     21.140854835510254,
+     21.948538541793823,
+     22.21107506752014,
+     22.97620391845703
+    ],
+    "round_peak_mib": [
+     834.3154296875,
+     835.9462890625,
+     837.4462890625,
+     837.4462890625,
+     836.9404296875,
+     836.9404296875,
+     836.9404296875,
+     836.9404296875
+    ]
+   },
+   "client_sizes": [
+    224,
+    423,
+    53
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 183.75619292259216,
+   "peak_mib": 837.4462890625,
+   "alpha": 0.1,
+   "partition": {
+    "label_tv_mean": 0.5967857142857143,
+    "label_tv_max": 0.8171428571428572,
+    "size_cv": 0.647982741014806,
+    "client_sizes": [
+     224,
+     423,
+     53
+    ]
+   }
+  },
+  "scaffold|alpha=0.1|seed=1": {
+   "algorithm": "scaffold",
+   "f1_macro": 0.1918006176829706,
+   "f1_micro": 0.2733333333333333,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 41,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.2733333333333333,
+    "f1_macro": 0.1918006176829706,
+    "f1_weighted": 0.18950676338911634,
+    "precision": 0.16666666666666669,
+    "precision_micro": 0.2733333333333333,
+    "recall": 0.27462365591397847,
+    "recall_micro": 0.2733333333333333,
+    "accuracy": 0.2733333333333333,
+    "accuracy_ci95_low": 0.20834143203423522,
+    "accuracy_ci95_high": 0.34964507874595946,
+    "per_class_f1": [
+     0.0,
+     0.27450980392156865,
+     0.42735042735042733,
+     0.2571428571428571,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.0,
+    "precision_LEAF_BLIGHT": 0.0,
+    "recall_LEAF_BLIGHT": 0.0,
+    "f1_LEAF_HOPPERS": 0.27450980392156865,
+    "precision_LEAF_HOPPERS": 0.3333333333333333,
+    "recall_LEAF_HOPPERS": 0.23333333333333334,
+    "f1_LEAF_RUST": 0.42735042735042733,
+    "precision_LEAF_RUST": 0.29069767441860467,
+    "recall_LEAF_RUST": 0.8064516129032258,
+    "f1_LOOPER_CATERPILLARS": 0.2571428571428571,
+    "precision_LOOPER_CATERPILLARS": 0.20930232558139536,
+    "recall_LOOPER_CATERPILLARS": 0.3333333333333333,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.1918006176829706,
+     0.06666666666666667,
+     0.11653746770025838,
+     0.06666666666666667,
+     0.14238562091503265,
+     0.06666666666666667,
+     0.11653746770025838,
+     0.06666666666666667
+    ],
+    "round_f1_micro": [
+     0.2733333333333333,
+     0.2,
+     0.23333333333333334,
+     0.2,
+     0.24666666666666667,
+     0.2,
+     0.23333333333333334,
+     0.2
+    ],
+    "round_seconds": [
+     23.19457221031189,
+     22.966525554656982,
+     21.32889223098755,
+     22.913113355636597,
+     21.454334497451782,
+     22.27599334716797,
+     24.66655421257019,
+     21.408106565475464
+    ],
+    "round_peak_mib": [
+     836.0654296875,
+     835.4404296875,
+     834.3212890625,
+     835.2587890625,
+     834.7529296875,
+     836.9404296875,
+     836.3154296875,
+     835.6337890625
+    ]
+   },
+   "client_sizes": [
+    306,
+    249,
+    145
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 180.20809197425842,
+   "peak_mib": 836.9404296875,
+   "alpha": 0.1,
+   "partition": {
+    "label_tv_mean": 0.5454171856620597,
+    "label_tv_max": 0.7819211822660098,
+    "size_cv": 0.28566428133851995,
+    "client_sizes": [
+     306,
+     249,
+     145
+    ]
+   }
+  },
+  "fedbn|alpha=0.1|seed=0": {
+   "algorithm": "fedbn",
+   "f1_macro": 0.6763439801940162,
+   "f1_micro": 0.68,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 102,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.68,
+    "f1_macro": 0.6763439801940162,
+    "f1_weighted": 0.6796673113529639,
+    "precision": 0.6863688751830047,
+    "precision_micro": 0.68,
+    "recall": 0.6758706690561528,
+    "recall_micro": 0.68,
+    "accuracy": 0.68,
+    "accuracy_ci95_low": 0.6016560026038712,
+    "accuracy_ci95_high": 0.7493547094236214,
+    "per_class_f1": [
+     0.7397260273972602,
+     0.7407407407407407,
+     0.7333333333333333,
+     0.5714285714285714,
+     0.5964912280701754
+    ],
+    "f1_LEAF_BLIGHT": 0.7397260273972602,
+    "precision_LEAF_BLIGHT": 0.6585365853658537,
+    "recall_LEAF_BLIGHT": 0.84375,
+    "f1_LEAF_HOPPERS": 0.7407407407407407,
+    "precision_LEAF_HOPPERS": 0.8333333333333334,
+    "recall_LEAF_HOPPERS": 0.6666666666666666,
+    "f1_LEAF_RUST": 0.7333333333333333,
+    "precision_LEAF_RUST": 0.7586206896551724,
+    "recall_LEAF_RUST": 0.7096774193548387,
+    "f1_LOOPER_CATERPILLARS": 0.5714285714285714,
+    "precision_LOOPER_CATERPILLARS": 0.5517241379310345,
+    "recall_LOOPER_CATERPILLARS": 0.5925925925925926,
+    "f1_MOSQUITO_BUG": 0.5964912280701754,
+    "precision_MOSQUITO_BUG": 0.6296296296296297,
+    "recall_MOSQUITO_BUG": 0.5666666666666667,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.3219301661474559,
+     0.6763439801940162,
+     0.4191978609625668,
+     0.48393549584877327,
+     0.5832679492849772,
+     0.6623894793231178,
+     0.6761485517080926,
+     0.6449122409906723
+    ],
+    "round_f1_micro": [
+     0.4266666666666667,
+     0.68,
+     0.56,
+     0.5933333333333334,
+     0.66,
+     0.7133333333333334,
+     0.72,
+     0.7
+    ],
+    "round_seconds": [
+     9.665718793869019,
+     6.627607822418213,
+     6.366729736328125,
+     5.100784063339233,
+     6.2766032218933105,
+     6.710099458694458,
+     5.885136127471924,
+     4.5205934047698975
+    ],
+    "round_peak_mib": [
+     835.5087890625,
+     836.1337890625,
+     836.5087890625,
+     836.1337890625,
+     836.5087890625,
+     836.1337890625,
+     836.5087890625,
+     836.1337890625
+    ]
+   },
+   "client_sizes": [
+    224,
+    423,
+    53
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 51.15327262878418,
+   "peak_mib": 836.5087890625,
+   "alpha": 0.1,
+   "partition": {
+    "label_tv_mean": 0.5967857142857143,
+    "label_tv_max": 0.8171428571428572,
+    "size_cv": 0.647982741014806,
+    "client_sizes": [
+     224,
+     423,
+     53
+    ]
+   }
+  },
+  "fedbn|alpha=0.1|seed=1": {
+   "algorithm": "fedbn",
+   "f1_macro": 0.4670653436490735,
+   "f1_micro": 0.52,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 78,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.52,
+    "f1_macro": 0.4670653436490735,
+    "f1_weighted": 0.4645823371571716,
+    "precision": 0.6612290423415743,
+    "precision_micro": 0.52,
+    "recall": 0.5305361409796893,
+    "recall_micro": 0.52,
+    "accuracy": 0.52,
+    "accuracy_ci95_low": 0.4405523690431856,
+    "accuracy_ci95_high": 0.5984488211820913,
+    "per_class_f1": [
+     0.2545454545454545,
+     0.7083333333333334,
+     0.7605633802816901,
+     0.5473684210526316,
+     0.06451612903225806
+    ],
+    "f1_LEAF_BLIGHT": 0.2545454545454545,
+    "precision_LEAF_BLIGHT": 0.30434782608695654,
+    "recall_LEAF_BLIGHT": 0.21875,
+    "f1_LEAF_HOPPERS": 0.7083333333333334,
+    "precision_LEAF_HOPPERS": 0.9444444444444444,
+    "recall_LEAF_HOPPERS": 0.5666666666666667,
+    "f1_LEAF_RUST": 0.7605633802816901,
+    "precision_LEAF_RUST": 0.675,
+    "recall_LEAF_RUST": 0.8709677419354839,
+    "f1_LOOPER_CATERPILLARS": 0.5473684210526316,
+    "precision_LOOPER_CATERPILLARS": 0.38235294117647056,
+    "recall_LOOPER_CATERPILLARS": 0.9629629629629629,
+    "f1_MOSQUITO_BUG": 0.06451612903225806,
+    "precision_MOSQUITO_BUG": 1.0,
+    "recall_MOSQUITO_BUG": 0.03333333333333333,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.061016949152542375,
+     0.20952380952380953,
+     0.3241849060030878,
+     0.30221979698031537,
+     0.46689577747222233,
+     0.4670653436490735,
+     0.41216503514725134,
+     0.39715818759936405
+    ],
+    "round_f1_micro": [
+     0.18,
+     0.32,
+     0.41333333333333333,
+     0.36666666666666664,
+     0.5066666666666667,
+     0.52,
+     0.49333333333333335,
+     0.5066666666666667
+    ],
+    "round_seconds": [
+     6.363163232803345,
+     6.116346597671509,
+     4.954913377761841,
+     5.223100662231445,
+     5.047246217727661,
+     6.842419862747192,
+     6.570290565490723,
+     6.497268199920654
+    ],
+    "round_peak_mib": [
+     836.1904296875,
+     835.6337890625,
+     835.1337890625,
+     835.1337890625,
+     835.5087890625,
+     837.3837890625,
+     835.4404296875,
+     834.8837890625
+    ]
+   },
+   "client_sizes": [
+    306,
+    249,
+    145
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 47.61474871635437,
+   "peak_mib": 837.3837890625,
+   "alpha": 0.1,
+   "partition": {
+    "label_tv_mean": 0.5454171856620597,
+    "label_tv_max": 0.7819211822660098,
+    "size_cv": 0.28566428133851995,
+    "client_sizes": [
+     306,
+     249,
+     145
+    ]
+   }
+  },
+  "local_only|alpha=0.1|seed=0": {
+   "per_client_f1": [
+    0.3297565179918121,
+    0.44581934919013577,
+    0.061016949152542375
+   ],
+   "mean_f1": 0.2788642721114968,
+   "std_f1": 0.16116396885724774,
+   "best_f1": 0.44581934919013577,
+   "worst_f1": 0.061016949152542375,
+   "num_clients": 3,
+   "local_epochs": 24,
+   "alpha": 0.1
+  }
+ },
+ "E3_anticollapse": {
+  "both|alpha=1.0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.906422154302121,
+   "f1_micro": 0.9066666666666666,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 136,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.9066666666666666,
+    "f1_macro": 0.906422154302121,
+    "f1_weighted": 0.9077966101694916,
+    "precision": 0.9102284946236558,
+    "precision_micro": 0.9066666666666666,
+    "recall": 0.9079136798088412,
+    "recall_micro": 0.9066666666666666,
+    "accuracy": 0.9066666666666666,
+    "accuracy_ci95_low": 0.8494360687243842,
+    "accuracy_ci95_high": 0.9435881325229135,
+    "per_class_f1": [
+     0.9152542372881356,
+     0.9333333333333333,
+     0.9180327868852459,
+     0.847457627118644,
+     0.9180327868852459
+    ],
+    "f1_LEAF_BLIGHT": 0.9152542372881356,
+    "precision_LEAF_BLIGHT": 1.0,
+    "recall_LEAF_BLIGHT": 0.84375,
+    "f1_LEAF_HOPPERS": 0.9333333333333333,
+    "precision_LEAF_HOPPERS": 0.9333333333333333,
+    "recall_LEAF_HOPPERS": 0.9333333333333333,
+    "f1_LEAF_RUST": 0.9180327868852459,
+    "precision_LEAF_RUST": 0.9333333333333333,
+    "recall_LEAF_RUST": 0.9032258064516129,
+    "f1_LOOPER_CATERPILLARS": 0.847457627118644,
+    "precision_LOOPER_CATERPILLARS": 0.78125,
+    "recall_LOOPER_CATERPILLARS": 0.9259259259259259,
+    "f1_MOSQUITO_BUG": 0.9180327868852459,
+    "precision_MOSQUITO_BUG": 0.9032258064516129,
+    "recall_MOSQUITO_BUG": 0.9333333333333333,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.4705230807056364,
+     0.6690625218032358,
+     0.8123399746116841,
+     0.8608853578810993,
+     0.8667449117375267,
+     0.8664168187778547,
+     0.906422154302121,
+     0.906422154302121
+    ],
+    "round_f1_micro": [
+     0.5066666666666667,
+     0.6733333333333333,
+     0.8133333333333334,
+     0.86,
+     0.8666666666666667,
+     0.8666666666666667,
+     0.9066666666666666,
+     0.9066666666666666
+    ],
+    "round_seconds": [
+     29.90119981765747,
+     32.76557469367981,
+     21.72536611557007,
+     22.71170401573181,
+     28.54620671272278,
+     24.749637842178345,
+     27.895875215530396,
+     30.608014583587646
+    ],
+    "round_peak_mib": [
+     834.99755859375,
+     834.62255859375,
+     834.39013671875,
+     835.19091796875,
+     835.19091796875,
+     835.57177734375,
+     835.57177734375,
+     835.99755859375
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    298,
+    236,
+    166
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 218.90357899665833,
+   "peak_mib": 835.99755859375,
+   "balanced_sampler": true,
+   "diversity_weight": 1.0,
+   "unique_predicted_classes": 5,
+   "diversity_ratio": 1.0,
+   "arm": "both",
+   "alpha": 1.0,
+   "partition": {
+    "label_tv_mean": 0.3306356981299591,
+    "label_tv_max": 0.3682271944922547,
+    "size_cv": 0.2310932314730422,
+    "client_sizes": [
+     298,
+     236,
+     166
+    ]
+   }
+  },
+  "no_diversity|alpha=1.0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.9194752613951589,
+   "f1_micro": 0.92,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 138,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.92,
+    "f1_macro": 0.9194752613951589,
+    "f1_weighted": 0.9204960647697156,
+    "precision": 0.92125,
+    "precision_micro": 0.92,
+    "recall": 0.9208303464755078,
+    "recall_micro": 0.92,
+    "accuracy": 0.92,
+    "accuracy_ci95_low": 0.8653786362494686,
+    "accuracy_ci95_high": 0.953646358481347,
+    "per_class_f1": [
+     0.9333333333333333,
+     0.9333333333333333,
+     0.9180327868852459,
+     0.8771929824561403,
+     0.9354838709677419
+    ],
+    "f1_LEAF_BLIGHT": 0.9333333333333333,
+    "precision_LEAF_BLIGHT": 1.0,
+    "recall_LEAF_BLIGHT": 0.875,
+    "f1_LEAF_HOPPERS": 0.9333333333333333,
+    "precision_LEAF_HOPPERS": 0.9333333333333333,
+    "recall_LEAF_HOPPERS": 0.9333333333333333,
+    "f1_LEAF_RUST": 0.9180327868852459,
+    "precision_LEAF_RUST": 0.9333333333333333,
+    "recall_LEAF_RUST": 0.9032258064516129,
+    "f1_LOOPER_CATERPILLARS": 0.8771929824561403,
+    "precision_LOOPER_CATERPILLARS": 0.8333333333333334,
+    "recall_LOOPER_CATERPILLARS": 0.9259259259259259,
+    "f1_MOSQUITO_BUG": 0.9354838709677419,
+    "precision_MOSQUITO_BUG": 0.90625,
+    "recall_MOSQUITO_BUG": 0.9666666666666667,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.4551262291200372,
+     0.6852134012752898,
+     0.8117830738852918,
+     0.8741727570055723,
+     0.8729729819129652,
+     0.8930255724055902,
+     0.8998542008383451,
+     0.9194752613951589
+    ],
+    "round_f1_micro": [
+     0.5,
+     0.6866666666666666,
+     0.8133333333333334,
+     0.8733333333333333,
+     0.8733333333333333,
+     0.8933333333333333,
+     0.9,
+     0.92
+    ],
+    "round_seconds": [
+     24.225608348846436,
+     23.220812559127808,
+     30.05227303504944,
+     28.40590763092041,
+     25.07392120361328,
+     25.8641357421875,
+     28.00577425956726,
+     24.967721223831177
+    ],
+    "round_peak_mib": [
+     834.3037109375,
+     835.1220703125,
+     835.4404296875,
+     834.8837890625,
+     835.1337890625,
+     834.7470703125,
+     834.7470703125,
+     834.7470703125
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    298,
+    236,
+    166
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 209.8161540031433,
+   "peak_mib": 835.4404296875,
+   "balanced_sampler": true,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 5,
+   "diversity_ratio": 1.0,
+   "arm": "no_diversity",
+   "alpha": 1.0,
+   "partition": {
+    "label_tv_mean": 0.3306356981299591,
+    "label_tv_max": 0.3682271944922547,
+    "size_cv": 0.2310932314730422,
+    "client_sizes": [
+     298,
+     236,
+     166
+    ]
+   }
+  },
+  "no_balanced|alpha=1.0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.8130864989167597,
+   "f1_micro": 0.8133333333333334,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 122,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.8133333333333334,
+    "f1_macro": 0.8130864989167597,
+    "f1_weighted": 0.8138921434533257,
+    "precision": 0.8299269322798735,
+    "precision_micro": 0.8133333333333334,
+    "recall": 0.8164590800477898,
+    "recall_micro": 0.8133333333333334,
+    "accuracy": 0.8133333333333334,
+    "accuracy_ci95_low": 0.7434428016958636,
+    "accuracy_ci95_high": 0.8675758451668085,
+    "per_class_f1": [
+     0.7777777777777778,
+     0.9,
+     0.8275862068965517,
+     0.7540983606557377,
+     0.8059701492537313
+    ],
+    "f1_LEAF_BLIGHT": 0.7777777777777778,
+    "precision_LEAF_BLIGHT": 0.9545454545454546,
+    "recall_LEAF_BLIGHT": 0.65625,
+    "f1_LEAF_HOPPERS": 0.9,
+    "precision_LEAF_HOPPERS": 0.9,
+    "recall_LEAF_HOPPERS": 0.9,
+    "f1_LEAF_RUST": 0.8275862068965517,
+    "precision_LEAF_RUST": 0.8888888888888888,
+    "recall_LEAF_RUST": 0.7741935483870968,
+    "f1_LOOPER_CATERPILLARS": 0.7540983606557377,
+    "precision_LOOPER_CATERPILLARS": 0.6764705882352942,
+    "recall_LOOPER_CATERPILLARS": 0.8518518518518519,
+    "f1_MOSQUITO_BUG": 0.8059701492537313,
+    "precision_MOSQUITO_BUG": 0.7297297297297297,
+    "recall_MOSQUITO_BUG": 0.9,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.1609469684738502,
+     0.3612656721097066,
+     0.7032837969888593,
+     0.7860272482258981,
+     0.8084266077014467,
+     0.7944063183286004,
+     0.787872766455624,
+     0.8130864989167597
+    ],
+    "round_f1_micro": [
+     0.24666666666666667,
+     0.38666666666666666,
+     0.7066666666666667,
+     0.7866666666666666,
+     0.8066666666666666,
+     0.7933333333333333,
+     0.7866666666666666,
+     0.8133333333333334
+    ],
+    "round_seconds": [
+     12.771304845809937,
+     10.671460390090942,
+     9.678920030593872,
+     11.132251024246216,
+     15.94041395187378,
+     9.123323917388916,
+     13.791037559509277,
+     9.113515853881836
+    ],
+    "round_peak_mib": [
+     833.49755859375,
+     834.69091796875,
+     836.06591796875,
+     835.31591796875,
+     835.44091796875,
+     836.49755859375,
+     835.13427734375,
+     835.87255859375
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    298,
+    236,
+    166
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 92.22222757339478,
+   "peak_mib": 836.49755859375,
+   "balanced_sampler": false,
+   "diversity_weight": 1.0,
+   "unique_predicted_classes": 5,
+   "diversity_ratio": 1.0,
+   "arm": "no_balanced",
+   "alpha": 1.0,
+   "partition": {
+    "label_tv_mean": 0.3306356981299591,
+    "label_tv_max": 0.3682271944922547,
+    "size_cv": 0.2310932314730422,
+    "client_sizes": [
+     298,
+     236,
+     166
+    ]
+   }
+  },
+  "neither|alpha=1.0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.8396320406462111,
+   "f1_micro": 0.84,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 126,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.84,
+    "f1_macro": 0.8396320406462111,
+    "f1_weighted": 0.8411521718996017,
+    "precision": 0.8498137378118404,
+    "precision_micro": 0.84,
+    "recall": 0.8420773596176823,
+    "recall_micro": 0.84,
+    "accuracy": 0.84,
+    "accuracy_ci95_low": 0.7729603179581628,
+    "accuracy_ci95_high": 0.890059915871545,
+    "per_class_f1": [
+     0.8214285714285714,
+     0.9180327868852459,
+     0.847457627118644,
+     0.7540983606557377,
+     0.8571428571428571
+    ],
+    "f1_LEAF_BLIGHT": 0.8214285714285714,
+    "precision_LEAF_BLIGHT": 0.9583333333333334,
+    "recall_LEAF_BLIGHT": 0.71875,
+    "f1_LEAF_HOPPERS": 0.9180327868852459,
+    "precision_LEAF_HOPPERS": 0.9032258064516129,
+    "recall_LEAF_HOPPERS": 0.9333333333333333,
+    "f1_LEAF_RUST": 0.847457627118644,
+    "precision_LEAF_RUST": 0.8928571428571429,
+    "recall_LEAF_RUST": 0.8064516129032258,
+    "f1_LOOPER_CATERPILLARS": 0.7540983606557377,
+    "precision_LOOPER_CATERPILLARS": 0.6764705882352942,
+    "recall_LOOPER_CATERPILLARS": 0.8518518518518519,
+    "f1_MOSQUITO_BUG": 0.8571428571428571,
+    "precision_MOSQUITO_BUG": 0.8181818181818182,
+    "recall_MOSQUITO_BUG": 0.9,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.12850877192982457,
+     0.37843137254901965,
+     0.6953942335016505,
+     0.7716866800117257,
+     0.8207824127227112,
+     0.7790813957096571,
+     0.7780169842906755,
+     0.8396320406462111
+    ],
+    "round_f1_micro": [
+     0.22666666666666666,
+     0.41333333333333333,
+     0.7,
+     0.7733333333333333,
+     0.82,
+     0.78,
+     0.78,
+     0.84
+    ],
+    "round_seconds": [
+     11.060753107070923,
+     13.103233337402344,
+     11.406363248825073,
+     14.41697883605957,
+     11.9942786693573,
+     14.221689701080322,
+     9.948244571685791,
+     5.2928478717803955
+    ],
+    "round_peak_mib": [
+     833.4970703125,
+     834.6904296875,
+     836.0654296875,
+     835.3154296875,
+     835.4404296875,
+     836.3154296875,
+     835.6396484375,
+     836.5029296875
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    298,
+    236,
+    166
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 91.44438934326172,
+   "peak_mib": 836.5029296875,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 5,
+   "diversity_ratio": 1.0,
+   "arm": "neither",
+   "alpha": 1.0,
+   "partition": {
+    "label_tv_mean": 0.3306356981299591,
+    "label_tv_max": 0.3682271944922547,
+    "size_cv": 0.2310932314730422,
+    "client_sizes": [
+     298,
+     236,
+     166
+    ]
+   }
+  },
+  "both|alpha=0.1": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.6509395316266041,
+   "f1_micro": 0.7,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 105,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.7,
+    "f1_macro": 0.6509395316266041,
+    "f1_weighted": 0.6624766231298721,
+    "precision": 0.7520673125324289,
+    "precision_micro": 0.7,
+    "recall": 0.6841338112305854,
+    "recall_micro": 0.7,
+    "accuracy": 0.7,
+    "accuracy_ci95_low": 0.6224201960400859,
+    "accuracy_ci95_high": 0.7675917062126834,
+    "per_class_f1": [
+     0.8533333333333334,
+     0.6428571428571429,
+     0.90625,
+     0.29411764705882354,
+     0.5581395348837209
+    ],
+    "f1_LEAF_BLIGHT": 0.8533333333333334,
+    "precision_LEAF_BLIGHT": 0.7441860465116279,
+    "recall_LEAF_BLIGHT": 1.0,
+    "f1_LEAF_HOPPERS": 0.6428571428571429,
+    "precision_LEAF_HOPPERS": 0.5,
+    "recall_LEAF_HOPPERS": 0.9,
+    "f1_LEAF_RUST": 0.90625,
+    "precision_LEAF_RUST": 0.8787878787878788,
+    "recall_LEAF_RUST": 0.9354838709677419,
+    "f1_LOOPER_CATERPILLARS": 0.29411764705882354,
+    "precision_LOOPER_CATERPILLARS": 0.7142857142857143,
+    "recall_LOOPER_CATERPILLARS": 0.18518518518518517,
+    "f1_MOSQUITO_BUG": 0.5581395348837209,
+    "precision_MOSQUITO_BUG": 0.9230769230769231,
+    "recall_MOSQUITO_BUG": 0.4,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.2940169143070741,
+     0.6392837803389515,
+     0.510275289241735,
+     0.4837171836112078,
+     0.5711083173699751,
+     0.5414796462961091,
+     0.6112225754465301,
+     0.6509395316266041
+    ],
+    "round_f1_micro": [
+     0.38,
+     0.6466666666666666,
+     0.6,
+     0.5933333333333334,
+     0.66,
+     0.62,
+     0.6666666666666666,
+     0.7
+    ],
+    "round_seconds": [
+     9.795721769332886,
+     11.819454908370972,
+     13.05924940109253,
+     9.798572778701782,
+     14.636083602905273,
+     13.730006456375122,
+     12.45500373840332,
+     11.931150197982788
+    ],
+    "round_peak_mib": [
+     834.69091796875,
+     835.49755859375,
+     835.12255859375,
+     835.69091796875,
+     836.12255859375,
+     836.13427734375,
+     838.05419921875,
+     836.31591796875
+    ],
+    "balanced_fallback_clients": [
+     {
+      "round": 1,
+      "client": 0,
+      "present_classes": [
+       0,
+       3,
+       4
+      ]
+     },
+     {
+      "round": 1,
+      "client": 1,
+      "present_classes": [
+       0,
+       1,
+       2
+      ]
+     },
+     {
+      "round": 1,
+      "client": 2,
+      "present_classes": [
+       3
+      ]
+     },
+     {
+      "round": 2,
+      "client": 0,
+      "present_classes": [
+       0,
+       3,
+       4
+      ]
+     },
+     {
+      "round": 2,
+      "client": 1,
+      "present_classes": [
+       0,
+       1,
+       2
+      ]
+     },
+     {
+      "round": 2,
+      "client": 2,
+      "present_classes": [
+       3
+      ]
+     },
+     {
+      "round": 3,
+      "client": 0,
+      "present_classes": [
+       0,
+       3,
+       4
+      ]
+     },
+     {
+      "round": 3,
+      "client": 1,
+      "present_classes": [
+       0,
+       1,
+       2
+      ]
+     },
+     {
+      "round": 3,
+      "client": 2,
+      "present_classes": [
+       3
+      ]
+     },
+     {
+      "round": 4,
+      "client": 0,
+      "present_classes": [
+       0,
+       3,
+       4
+      ]
+     },
+     {
+      "round": 4,
+      "client": 1,
+      "present_classes": [
+       0,
+       1,
+       2
+      ]
+     },
+     {
+      "round": 4,
+      "client": 2,
+      "present_classes": [
+       3
+      ]
+     },
+     {
+      "round": 5,
+      "client": 0,
+      "present_classes": [
+       0,
+       3,
+       4
+      ]
+     },
+     {
+      "round": 5,
+      "client": 1,
+      "present_classes": [
+       0,
+       1,
+       2
+      ]
+     },
+     {
+      "round": 5,
+      "client": 2,
+      "present_classes": [
+       3
+      ]
+     },
+     {
+      "round": 6,
+      "client": 0,
+      "present_classes": [
+       0,
+       3,
+       4
+      ]
+     },
+     {
+      "round": 6,
+      "client": 1,
+      "present_classes": [
+       0,
+       1,
+       2
+      ]
+     },
+     {
+      "round": 6,
+      "client": 2,
+      "present_classes": [
+       3
+      ]
+     },
+     {
+      "round": 7,
+      "client": 0,
+      "present_classes": [
+       0,
+       3,
+       4
+      ]
+     },
+     {
+      "round": 7,
+      "client": 1,
+      "present_classes": [
+       0,
+       1,
+       2
+      ]
+     },
+     {
+      "round": 7,
+      "client": 2,
+      "present_classes": [
+       3
+      ]
+     },
+     {
+      "round": 8,
+      "client": 0,
+      "present_classes": [
+       0,
+       3,
+       4
+      ]
+     },
+     {
+      "round": 8,
+      "client": 1,
+      "present_classes": [
+       0,
+       1,
+       2
+      ]
+     },
+     {
+      "round": 8,
+      "client": 2,
+      "present_classes": [
+       3
+      ]
+     }
+    ]
+   },
+   "client_sizes": [
+    224,
+    423,
+    53
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 97.22524285316467,
+   "peak_mib": 838.05419921875,
+   "balanced_sampler": true,
+   "diversity_weight": 1.0,
+   "unique_predicted_classes": 5,
+   "diversity_ratio": 1.0,
+   "arm": "both",
+   "alpha": 0.1,
+   "partition": {
+    "label_tv_mean": 0.5967857142857143,
+    "label_tv_max": 0.8171428571428572,
+    "size_cv": 0.647982741014806,
+    "client_sizes": [
+     224,
+     423,
+     53
+    ]
+   }
+  },
+  "no_diversity|alpha=0.1": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.5607923634729294,
+   "f1_micro": 0.56,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 84,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.56,
+    "f1_macro": 0.5607923634729294,
+    "f1_weighted": 0.5653468658531949,
+    "precision": 0.6396453900709221,
+    "precision_micro": 0.56,
+    "recall": 0.5576732377538829,
+    "recall_micro": 0.56,
+    "accuracy": 0.56,
+    "accuracy_ci95_low": 0.4800485326362731,
+    "accuracy_ci95_high": 0.6369550380395579,
+    "per_class_f1": [
+     0.6582278481012658,
+     0.6666666666666666,
+     0.7450980392156863,
+     0.4594594594594595,
+     0.27450980392156865
+    ],
+    "f1_LEAF_BLIGHT": 0.6582278481012658,
+    "precision_LEAF_BLIGHT": 0.5531914893617021,
+    "recall_LEAF_BLIGHT": 0.8125,
+    "f1_LEAF_HOPPERS": 0.6666666666666666,
+    "precision_LEAF_HOPPERS": 1.0,
+    "recall_LEAF_HOPPERS": 0.5,
+    "f1_LEAF_RUST": 0.7450980392156863,
+    "precision_LEAF_RUST": 0.95,
+    "recall_LEAF_RUST": 0.6129032258064516,
+    "f1_LOOPER_CATERPILLARS": 0.4594594594594595,
+    "precision_LOOPER_CATERPILLARS": 0.3617021276595745,
+    "recall_LOOPER_CATERPILLARS": 0.6296296296296297,
+    "f1_MOSQUITO_BUG": 0.27450980392156865,
+    "precision_MOSQUITO_BUG": 0.3333333333333333,
+    "recall_MOSQUITO_BUG": 0.23333333333333334,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.3399496503496503,
+     0.5607923634729294,
+     0.48506715506715514,
+     0.5194987060808861,
+     0.4950665406724939,
+     0.5195809617718224,
+     0.5341574495410812,
+     0.5535990730244128
+    ],
+    "round_f1_micro": [
+     0.43333333333333335,
+     0.56,
+     0.6,
+     0.62,
+     0.6266666666666667,
+     0.62,
+     0.6266666666666667,
+     0.64
+    ],
+    "round_seconds": [
+     7.6699464321136475,
+     13.506642818450928,
+     12.990617513656616,
+     14.866583585739136,
+     9.66349172592163,
+     11.324705362319946,
+     10.83473825454712,
+     10.54017972946167
+    ],
+    "round_peak_mib": [
+     834.6904296875,
+     835.4970703125,
+     835.1220703125,
+     835.8154296875,
+     836.4462890625,
+     838.2529296875,
+     836.3037109375,
+     836.5087890625
+    ],
+    "balanced_fallback_clients": [
+     {
+      "round": 1,
+      "client": 0,
+      "present_classes": [
+       0,
+       3,
+       4
+      ]
+     },
+     {
+      "round": 1,
+      "client": 1,
+      "present_classes": [
+       0,
+       1,
+       2
+      ]
+     },
+     {
+      "round": 1,
+      "client": 2,
+      "present_classes": [
+       3
+      ]
+     },
+     {
+      "round": 2,
+      "client": 0,
+      "present_classes": [
+       0,
+       3,
+       4
+      ]
+     },
+     {
+      "round": 2,
+      "client": 1,
+      "present_classes": [
+       0,
+       1,
+       2
+      ]
+     },
+     {
+      "round": 2,
+      "client": 2,
+      "present_classes": [
+       3
+      ]
+     },
+     {
+      "round": 3,
+      "client": 0,
+      "present_classes": [
+       0,
+       3,
+       4
+      ]
+     },
+     {
+      "round": 3,
+      "client": 1,
+      "present_classes": [
+       0,
+       1,
+       2
+      ]
+     },
+     {
+      "round": 3,
+      "client": 2,
+      "present_classes": [
+       3
+      ]
+     },
+     {
+      "round": 4,
+      "client": 0,
+      "present_classes": [
+       0,
+       3,
+       4
+      ]
+     },
+     {
+      "round": 4,
+      "client": 1,
+      "present_classes": [
+       0,
+       1,
+       2
+      ]
+     },
+     {
+      "round": 4,
+      "client": 2,
+      "present_classes": [
+       3
+      ]
+     },
+     {
+      "round": 5,
+      "client": 0,
+      "present_classes": [
+       0,
+       3,
+       4
+      ]
+     },
+     {
+      "round": 5,
+      "client": 1,
+      "present_classes": [
+       0,
+       1,
+       2
+      ]
+     },
+     {
+      "round": 5,
+      "client": 2,
+      "present_classes": [
+       3
+      ]
+     },
+     {
+      "round": 6,
+      "client": 0,
+      "present_classes": [
+       0,
+       3,
+       4
+      ]
+     },
+     {
+      "round": 6,
+      "client": 1,
+      "present_classes": [
+       0,
+       1,
+       2
+      ]
+     },
+     {
+      "round": 6,
+      "client": 2,
+      "present_classes": [
+       3
+      ]
+     },
+     {
+      "round": 7,
+      "client": 0,
+      "present_classes": [
+       0,
+       3,
+       4
+      ]
+     },
+     {
+      "round": 7,
+      "client": 1,
+      "present_classes": [
+       0,
+       1,
+       2
+      ]
+     },
+     {
+      "round": 7,
+      "client": 2,
+      "present_classes": [
+       3
+      ]
+     },
+     {
+      "round": 8,
+      "client": 0,
+      "present_classes": [
+       0,
+       3,
+       4
+      ]
+     },
+     {
+      "round": 8,
+      "client": 1,
+      "present_classes": [
+       0,
+       1,
+       2
+      ]
+     },
+     {
+      "round": 8,
+      "client": 2,
+      "present_classes": [
+       3
+      ]
+     }
+    ]
+   },
+   "client_sizes": [
+    224,
+    423,
+    53
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 91.3969054222107,
+   "peak_mib": 838.2529296875,
+   "balanced_sampler": true,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 5,
+   "diversity_ratio": 1.0,
+   "arm": "no_diversity",
+   "alpha": 0.1,
+   "partition": {
+    "label_tv_mean": 0.5967857142857143,
+    "label_tv_max": 0.8171428571428572,
+    "size_cv": 0.647982741014806,
+    "client_sizes": [
+     224,
+     423,
+     53
+    ]
+   }
+  },
+  "no_balanced|alpha=0.1": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.770691344935427,
+   "f1_micro": 0.7866666666666666,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 118,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.7866666666666666,
+    "f1_macro": 0.770691344935427,
+    "f1_weighted": 0.7740760038855528,
+    "precision": 0.8242063492063492,
+    "precision_micro": 0.7866666666666666,
+    "recall": 0.7783004778972521,
+    "recall_micro": 0.7866666666666666,
+    "accuracy": 0.7866666666666666,
+    "accuracy_ci95_low": 0.7143794210903474,
+    "accuracy_ci95_high": 0.8446376388052887,
+    "per_class_f1": [
+     0.8333333333333334,
+     0.8787878787878788,
+     0.7945205479452054,
+     0.6511627906976745,
+     0.6956521739130435
+    ],
+    "f1_LEAF_BLIGHT": 0.8333333333333334,
+    "precision_LEAF_BLIGHT": 0.75,
+    "recall_LEAF_BLIGHT": 0.9375,
+    "f1_LEAF_HOPPERS": 0.8787878787878788,
+    "precision_LEAF_HOPPERS": 0.8055555555555556,
+    "recall_LEAF_HOPPERS": 0.9666666666666667,
+    "f1_LEAF_RUST": 0.7945205479452054,
+    "precision_LEAF_RUST": 0.6904761904761905,
+    "recall_LEAF_RUST": 0.9354838709677419,
+    "f1_LOOPER_CATERPILLARS": 0.6511627906976745,
+    "precision_LOOPER_CATERPILLARS": 0.875,
+    "recall_LOOPER_CATERPILLARS": 0.5185185185185185,
+    "f1_MOSQUITO_BUG": 0.6956521739130435,
+    "precision_MOSQUITO_BUG": 1.0,
+    "recall_MOSQUITO_BUG": 0.5333333333333333,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.34452563718371326,
+     0.6869449419111907,
+     0.5638495276653172,
+     0.716928295585012,
+     0.6709443842542434,
+     0.7193278521658741,
+     0.7527865921925934,
+     0.770691344935427
+    ],
+    "round_f1_micro": [
+     0.46,
+     0.7066666666666667,
+     0.6333333333333333,
+     0.74,
+     0.7133333333333334,
+     0.7466666666666667,
+     0.7733333333333333,
+     0.7866666666666666
+    ],
+    "round_seconds": [
+     9.150671005249023,
+     13.896912097930908,
+     12.748425245285034,
+     12.446844577789307,
+     7.303411245346069,
+     14.794391870498657,
+     10.778691053390503,
+     11.069400072097778
+    ],
+    "round_peak_mib": [
+     834.69091796875,
+     835.49755859375,
+     835.12255859375,
+     835.69091796875,
+     836.12255859375,
+     836.13427734375,
+     838.05419921875,
+     836.31591796875
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    224,
+    423,
+    53
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 92.18874716758728,
+   "peak_mib": 838.05419921875,
+   "balanced_sampler": false,
+   "diversity_weight": 1.0,
+   "unique_predicted_classes": 5,
+   "diversity_ratio": 1.0,
+   "arm": "no_balanced",
+   "alpha": 0.1,
+   "partition": {
+    "label_tv_mean": 0.5967857142857143,
+    "label_tv_max": 0.8171428571428572,
+    "size_cv": 0.647982741014806,
+    "client_sizes": [
+     224,
+     423,
+     53
+    ]
+   }
+  },
+  "neither|alpha=0.1": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.736439102772892,
+   "f1_micro": 0.76,
+   "metrics": {
+    "n_samples": 150,
+    "n_correct": 114,
+    "micro_f1_step": 0.006666666666666667,
+    "f1_micro": 0.76,
+    "f1_macro": 0.736439102772892,
+    "f1_weighted": 0.7400951874289768,
+    "precision": 0.8069632106357784,
+    "precision_micro": 0.76,
+    "recall": 0.7508930704898447,
+    "recall_micro": 0.76,
+    "accuracy": 0.76,
+    "accuracy_ci95_low": 0.6857086062445535,
+    "accuracy_ci95_high": 0.8213068666840467,
+    "per_class_f1": [
+     0.8,
+     0.8529411764705882,
+     0.8055555555555556,
+     0.6190476190476191,
+     0.6046511627906976
+    ],
+    "f1_LEAF_BLIGHT": 0.8,
+    "precision_LEAF_BLIGHT": 0.6976744186046512,
+    "recall_LEAF_BLIGHT": 0.9375,
+    "f1_LEAF_HOPPERS": 0.8529411764705882,
+    "precision_LEAF_HOPPERS": 0.7631578947368421,
+    "recall_LEAF_HOPPERS": 0.9666666666666667,
+    "f1_LEAF_RUST": 0.8055555555555556,
+    "precision_LEAF_RUST": 0.7073170731707317,
+    "recall_LEAF_RUST": 0.9354838709677419,
+    "f1_LOOPER_CATERPILLARS": 0.6190476190476191,
+    "precision_LOOPER_CATERPILLARS": 0.8666666666666667,
+    "recall_LOOPER_CATERPILLARS": 0.48148148148148145,
+    "f1_MOSQUITO_BUG": 0.6046511627906976,
+    "precision_MOSQUITO_BUG": 1.0,
+    "recall_MOSQUITO_BUG": 0.43333333333333335,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.30915750915750917,
+     0.44698955870982165,
+     0.46953485104697557,
+     0.6035207319571734,
+     0.6558502262163589,
+     0.6753175375960186,
+     0.7349374391009568,
+     0.736439102772892
+    ],
+    "round_f1_micro": [
+     0.41333333333333333,
+     0.48,
+     0.5933333333333334,
+     0.6666666666666666,
+     0.7,
+     0.7133333333333334,
+     0.76,
+     0.76
+    ],
+    "round_seconds": [
+     16.444154977798462,
+     10.024807453155518,
+     9.17615032196045,
+     11.364058017730713,
+     12.730847835540771,
+     9.685762882232666,
+     11.834515571594238,
+     13.199015855789185
+    ],
+    "round_peak_mib": [
+     834.6904296875,
+     835.4970703125,
+     835.1220703125,
+     835.8154296875,
+     836.4462890625,
+     838.2529296875,
+     836.3037109375,
+     836.5087890625
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    224,
+    423,
+    53
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 2996257728,
+   "wall_seconds": 94.459312915802,
+   "peak_mib": 838.2529296875,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 5,
+   "diversity_ratio": 1.0,
+   "arm": "neither",
+   "alpha": 0.1,
+   "partition": {
+    "label_tv_mean": 0.5967857142857143,
+    "label_tv_max": 0.8171428571428572,
+    "size_cv": 0.647982741014806,
+    "client_sizes": [
+     224,
+     423,
+     53
+    ]
+   }
+  }
+ }
+}

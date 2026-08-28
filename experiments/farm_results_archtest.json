@@ -1,0 +1,403 @@
+{
+ "_meta": {
+  "data": {
+   "pairing_mode": "genuine_box_linked_observation",
+   "num_paired": 371,
+   "num_real_images": 371,
+   "train": 260,
+   "val": 53,
+   "class_counts": [
+    129,
+    9,
+    67,
+    102,
+    64
+   ],
+   "note": "image-text pairs are genuine box-linked observations: each note was written about the exact crop it is paired with; no synthetic images are used",
+   "synthetic_images_used": false,
+   "num_independent_source_groups": 153
+  }
+ },
+ "E2_client_sweep": {
+  "K=2|seed=0|arch=concat_vlm": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.200859291084855,
+   "f1_micro": 0.41509433962264153,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 22,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.41509433962264153,
+    "f1_macro": 0.200859291084855,
+    "f1_weighted": 0.3242810530369049,
+    "precision": 0.16492753623188405,
+    "precision_micro": 0.41509433962264153,
+    "recall": 0.25684210526315787,
+    "recall_micro": 0.41509433962264153,
+    "accuracy": 0.41509433962264153,
+    "accuracy_ci95_low": 0.29260908779813966,
+    "accuracy_ci95_high": 0.549055778186556,
+    "per_class_f1": [
+     0.47368421052631576,
+     0.0,
+     0.0,
+     0.5306122448979592,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.47368421052631576,
+    "precision_LEAF_BLIGHT": 0.391304347826087,
+    "recall_LEAF_BLIGHT": 0.6,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.0,
+    "precision_LEAF_RUST": 0.0,
+    "recall_LEAF_RUST": 0.0,
+    "f1_LOOPER_CATERPILLARS": 0.5306122448979592,
+    "precision_LOOPER_CATERPILLARS": 0.43333333333333335,
+    "recall_LOOPER_CATERPILLARS": 0.6842105263157895,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.08823529411764705,
+     0.200859291084855
+    ],
+    "round_f1_micro": [
+     0.2830188679245283,
+     0.41509433962264153
+    ],
+    "round_seconds": [
+     28.640808582305908,
+     25.24326229095459
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    100,
+    160
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 499376288,
+   "wall_seconds": 53.8840708732605,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 2,
+   "diversity_ratio": 0.4,
+   "partition": {
+    "label_tv_mean": 0.129375,
+    "label_tv_max": 0.15923076923076923,
+    "size_cv": 0.23076923076923078,
+    "client_sizes": [
+     100,
+     160
+    ]
+   },
+   "num_clients": 2,
+   "arch": "concat_vlm",
+   "model_type": "multimodal",
+   "shared_partition": true
+  },
+  "K=2|seed=0|arch=text_only": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.6138658474142346,
+   "f1_micro": 0.8113207547169812,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 43,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.8113207547169812,
+    "f1_macro": 0.6138658474142346,
+    "f1_weighted": 0.7642156720671632,
+    "precision": 0.6836538461538462,
+    "precision_micro": 0.8113207547169812,
+    "recall": 0.65,
+    "recall_micro": 0.8113207547169812,
+    "accuracy": 0.8113207547169812,
+    "accuracy_ci95_low": 0.6864154091329746,
+    "accuracy_ci95_high": 0.8941467489231409,
+    "per_class_f1": [
+     0.967741935483871,
+     0.0,
+     0.8571428571428571,
+     0.8444444444444444,
+     0.4
+    ],
+    "f1_LEAF_BLIGHT": 0.967741935483871,
+    "precision_LEAF_BLIGHT": 0.9375,
+    "recall_LEAF_BLIGHT": 1.0,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.8571428571428571,
+    "precision_LEAF_RUST": 0.75,
+    "recall_LEAF_RUST": 1.0,
+    "f1_LOOPER_CATERPILLARS": 0.8444444444444444,
+    "precision_LOOPER_CATERPILLARS": 0.7307692307692307,
+    "recall_LOOPER_CATERPILLARS": 1.0,
+    "f1_MOSQUITO_BUG": 0.4,
+    "precision_MOSQUITO_BUG": 1.0,
+    "recall_MOSQUITO_BUG": 0.25,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.3793939393939394,
+     0.6138658474142346
+    ],
+    "round_f1_micro": [
+     0.5471698113207547,
+     0.8113207547169812
+    ],
+    "round_seconds": [
+     18.770732641220093,
+     20.704801321029663
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    100,
+    160
+   ],
+   "num_params": 11105797,
+   "upload_bytes_per_client_per_round": 44423188,
+   "total_comm_bytes": 355385504,
+   "wall_seconds": 39.475533962249756,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 4,
+   "diversity_ratio": 0.8,
+   "partition": {
+    "label_tv_mean": 0.129375,
+    "label_tv_max": 0.15923076923076923,
+    "size_cv": 0.23076923076923078,
+    "client_sizes": [
+     100,
+     160
+    ]
+   },
+   "num_clients": 2,
+   "arch": "text_only",
+   "model_type": "text",
+   "shared_partition": true
+  },
+  "K=3|seed=0|arch=concat_vlm": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.18,
+   "f1_micro": 0.37735849056603776,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 20,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.37735849056603776,
+    "f1_macro": 0.18,
+    "f1_weighted": 0.29245283018867924,
+    "precision": 0.14878787878787877,
+    "precision_micro": 0.37735849056603776,
+    "recall": 0.23017543859649123,
+    "recall_micro": 0.37735849056603776,
+    "accuracy": 0.37735849056603776,
+    "accuracy_ci95_low": 0.2593626547287611,
+    "accuracy_ci95_high": 0.5119310405824662,
+    "per_class_f1": [
+     0.4,
+     0.0,
+     0.0,
+     0.5,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.4,
+    "precision_LEAF_BLIGHT": 0.35,
+    "recall_LEAF_BLIGHT": 0.4666666666666667,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.0,
+    "precision_LEAF_RUST": 0.0,
+    "recall_LEAF_RUST": 0.0,
+    "f1_LOOPER_CATERPILLARS": 0.5,
+    "precision_LOOPER_CATERPILLARS": 0.3939393939393939,
+    "recall_LOOPER_CATERPILLARS": 0.6842105263157895,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.10555555555555556,
+     0.18
+    ],
+    "round_f1_micro": [
+     0.3584905660377358,
+     0.37735849056603776
+    ],
+    "round_seconds": [
+     22.94536018371582,
+     26.239630937576294
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    81,
+    74,
+    105
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 49.184991121292114,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 2,
+   "diversity_ratio": 0.4,
+   "partition": {
+    "label_tv_mean": 0.23353885020551687,
+    "label_tv_max": 0.2951566951566952,
+    "size_cv": 0.15317159809030673,
+    "client_sizes": [
+     81,
+     74,
+     105
+    ]
+   },
+   "num_clients": 3,
+   "arch": "concat_vlm",
+   "model_type": "multimodal",
+   "shared_partition": true
+  },
+  "K=3|seed=0|arch=text_only": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.5474768474768474,
+   "f1_micro": 0.7547169811320755,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 40,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.7547169811320755,
+    "f1_macro": 0.5474768474768474,
+    "f1_weighted": 0.6768292900368372,
+    "precision": 0.6883636363636363,
+    "precision_micro": 0.7547169811320755,
+    "recall": 0.5833333333333334,
+    "recall_micro": 0.7547169811320755,
+    "accuracy": 0.7547169811320755,
+    "accuracy_ci95_low": 0.6243344231264808,
+    "accuracy_ci95_high": 0.8506709789194319,
+    "per_class_f1": [
+     0.8108108108108109,
+     0.0,
+     0.9090909090909091,
+     0.8636363636363636,
+     0.15384615384615385
+    ],
+    "f1_LEAF_BLIGHT": 0.8108108108108109,
+    "precision_LEAF_BLIGHT": 0.6818181818181818,
+    "recall_LEAF_BLIGHT": 1.0,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.9090909090909091,
+    "precision_LEAF_RUST": 1.0,
+    "recall_LEAF_RUST": 0.8333333333333334,
+    "f1_LOOPER_CATERPILLARS": 0.8636363636363636,
+    "precision_LOOPER_CATERPILLARS": 0.76,
+    "recall_LOOPER_CATERPILLARS": 1.0,
+    "f1_MOSQUITO_BUG": 0.15384615384615385,
+    "precision_MOSQUITO_BUG": 1.0,
+    "recall_MOSQUITO_BUG": 0.08333333333333333,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.25252747252747254,
+     0.5474768474768474
+    ],
+    "round_f1_micro": [
+     0.5094339622641509,
+     0.7547169811320755
+    ],
+    "round_seconds": [
+     19.30843687057495,
+     25.311466693878174
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    81,
+    74,
+    105
+   ],
+   "num_params": 11105797,
+   "upload_bytes_per_client_per_round": 44423188,
+   "total_comm_bytes": 533078256,
+   "wall_seconds": 44.619903564453125,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 4,
+   "diversity_ratio": 0.8,
+   "partition": {
+    "label_tv_mean": 0.23353885020551687,
+    "label_tv_max": 0.2951566951566952,
+    "size_cv": 0.15317159809030673,
+    "client_sizes": [
+     81,
+     74,
+     105
+    ]
+   },
+   "num_clients": 3,
+   "arch": "text_only",
+   "model_type": "text",
+   "shared_partition": true
+  }
+ }
+}

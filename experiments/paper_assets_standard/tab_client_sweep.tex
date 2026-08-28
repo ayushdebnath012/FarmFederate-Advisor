@@ -1,0 +1,19 @@
+\begin{table}[t]
+\caption{Scalability in the number of clients $K$ at fixed $\alpha$. Communication is the measured round-trip volume over the whole run; wall-clock and peak memory are measured on the training GPU.}
+\label{tab:client_sweep}
+\centering\footnotesize
+\setlength\tabcolsep{5pt}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{$K$} & TV & \textbf{Macro F1} & Comm.\ (MiB) & Time (min) & Peak (MiB)\\
+\midrule
+2 & 0.229 & 0.887 & 1905 & 1.0 & 838 \\
+3 & 0.331 & 0.814 & 2857 & 1.2 & 838 \\
+5 & 0.278 & 0.832 & 4762 & 1.1 & 839 \\
+10 & 0.322 & 0.604 & 9525 & 1.3 & 839 \\
+\bottomrule
+\end{tabular}
+\vspace{1pt}
+
+{\scriptsize Total data and all other hyperparameters are held fixed as $K$ grows, so each client's shard shrinks as $K$ increases.}
+\end{table}

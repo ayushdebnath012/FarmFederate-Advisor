@@ -1,0 +1,166 @@
+{
+  "experiment": "multimodal_architecture_ablation",
+  "protocol": "each variant retrained from scratch on the identical source-grouped split and scored on the same locked test crops",
+  "seed": 42,
+  "epochs": 15,
+  "data_audit": {
+    "train_crops": 222,
+    "validation_crops": 74,
+    "test_crops": 75,
+    "source_group_overlap": 0,
+    "masked_shortcut_tokens": 178,
+    "test_class_counts": {
+      "3": 21,
+      "0": 26,
+      "1": 2,
+      "2": 13,
+      "4": 13
+    }
+  },
+  "variants": [
+    {
+      "variant": "full",
+      "label": "Proposed (unchanged)",
+      "overrides": {},
+      "val_macro_f1": 0.90988862988863,
+      "test_accuracy": 0.9466666666666667,
+      "test_macro_f1": 0.8957476174110383,
+      "test_correct": 71,
+      "total_parameters": 32197206,
+      "trainable_parameters": 8689174,
+      "seconds": 142.1,
+      "delta_accuracy": 0.0,
+      "delta_macro_f1": 0.0
+    },
+    {
+      "variant": "no_cross_attention",
+      "label": "No cross-attention",
+      "overrides": {
+        "use_cross_attention": "False"
+      },
+      "val_macro_f1": 0.8711571858940278,
+      "test_accuracy": 0.8133333333333334,
+      "test_macro_f1": 0.7476803118908382,
+      "test_correct": 61,
+      "total_parameters": 32197206,
+      "trainable_parameters": 8689174,
+      "seconds": 167.6,
+      "delta_accuracy": -0.1333333333333333,
+      "delta_macro_f1": -0.1480673055202001
+    },
+    {
+      "variant": "no_reliability_gate",
+      "label": "No reliability gate",
+      "overrides": {
+        "use_reliability_gate": "False"
+      },
+      "val_macro_f1": 0.8964905192273612,
+      "test_accuracy": 0.88,
+      "test_macro_f1": 0.8478658536585366,
+      "test_correct": 66,
+      "total_parameters": 32197206,
+      "trainable_parameters": 8689174,
+      "seconds": 145.3,
+      "delta_accuracy": -0.06666666666666665,
+      "delta_macro_f1": -0.04788176375250164
+    },
+    {
+      "variant": "no_expert_residual",
+      "label": "No expert residual",
+      "overrides": {
+        "expert_residual_weight": "0.0"
+      },
+      "val_macro_f1": 0.90988862988863,
+      "test_accuracy": 0.8666666666666667,
+      "test_macro_f1": 0.709311817750356,
+      "test_correct": 65,
+      "total_parameters": 32197206,
+      "trainable_parameters": 8689174,
+      "seconds": 181.3,
+      "delta_accuracy": -0.07999999999999996,
+      "delta_macro_f1": -0.18643579966068224
+    },
+    {
+      "variant": "no_interaction_feats",
+      "label": "No interaction features",
+      "overrides": {
+        "use_interaction_features": "False"
+      },
+      "val_macro_f1": 0.8574672854672855,
+      "test_accuracy": 0.8266666666666667,
+      "test_macro_f1": 0.7502058375275901,
+      "test_correct": 62,
+      "total_parameters": 31934038,
+      "trainable_parameters": 8426006,
+      "seconds": 178.7,
+      "delta_accuracy": -0.12,
+      "delta_macro_f1": -0.14554177988344819
+    },
+    {
+      "variant": "lightweight_vision",
+      "label": "Lightweight CNN vision",
+      "overrides": {
+        "vision_backbone": "lightweight",
+        "freeze_vision_backbone": "False"
+      },
+      "val_macro_f1": 0.8794406124329399,
+      "test_accuracy": 0.88,
+      "test_macro_f1": 0.8471386918833728,
+      "test_correct": 66,
+      "total_parameters": 8435286,
+      "trainable_parameters": 8435286,
+      "seconds": 602.9,
+      "delta_accuracy": -0.06666666666666665,
+      "delta_macro_f1": -0.04860892552766549
+    },
+    {
+      "variant": "text_1_layer",
+      "label": "Text encoder: 1 layer",
+      "overrides": {
+        "text_layers": "1"
+      },
+      "val_macro_f1": 0.9640797720797721,
+      "test_accuracy": 0.8533333333333334,
+      "test_macro_f1": 0.7807150777593389,
+      "test_correct": 64,
+      "total_parameters": 31826262,
+      "trainable_parameters": 8318230,
+      "seconds": 176.7,
+      "delta_accuracy": -0.09333333333333327,
+      "delta_macro_f1": -0.11503253965169935
+    },
+    {
+      "variant": "no_aux_losses",
+      "label": "No auxiliary parent losses",
+      "overrides": {
+        "text_auxiliary_weight": "0.0",
+        "vision_auxiliary_weight": "0.0"
+      },
+      "val_macro_f1": 0.8401329901329901,
+      "test_accuracy": 0.8133333333333334,
+      "test_macro_f1": 0.681025641025641,
+      "test_correct": 61,
+      "total_parameters": 32197206,
+      "trainable_parameters": 8689174,
+      "seconds": 219.9,
+      "delta_accuracy": -0.1333333333333333,
+      "delta_macro_f1": -0.21472197638539725
+    },
+    {
+      "variant": "no_alignment_loss",
+      "label": "No alignment loss",
+      "overrides": {
+        "alignment_weight": "0.0"
+      },
+      "val_macro_f1": 0.90988862988863,
+      "test_accuracy": 0.88,
+      "test_macro_f1": 0.8449317643420517,
+      "test_correct": 66,
+      "total_parameters": 32197206,
+      "trainable_parameters": 8689174,
+      "seconds": 203.2,
+      "delta_accuracy": -0.06666666666666665,
+      "delta_macro_f1": -0.050815853068986505
+    }
+  ]
+}

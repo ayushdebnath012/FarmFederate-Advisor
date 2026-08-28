@@ -1,0 +1,47 @@
+\begin{table}[t]
+\caption{Federated robustness on the audited split: macro-F1 after 50 rounds with 10 clients, mean over 3 seeds. Each arm shares its client partition with the matching control at the same seed. Dropout, straggler and poisoning blocks fix $\alpha=0.5$; the poisoning block uses 30\% malicious clients under both mean and coordinate-wise-median aggregation. Bold marks the worst setting in each column.}
+\label{tab:robustness}
+\centering\footnotesize
+\setlength\tabcolsep{4.5pt}
+\begin{tabular}{lccc}
+\toprule
+Condition & Text & Image & Text$+$Image\\
+\midrule
+\addlinespace[1pt]
+\multicolumn{5}{l}{\emph{Severe label skew}}\\
+~~$\alpha=10$ & 0.583 & 0.660 & 0.776\\
+~~$\alpha=1$ & 0.589 & 0.660 & 0.756\\
+~~$\alpha=0.5$ & 0.609 & 0.660 & 0.772\\
+~~$\alpha=0.1$ & 0.617 & 0.658 & 0.756\\
+~~$\alpha=0.05$ & 0.611 & \textbf{0.589} & 0.760\\
+~~$\alpha=0.01$ & 0.586 & \textbf{0.589} & \textbf{0.741}\\
+~~one class per client & \textbf{0.566} & \textbf{0.589} & 0.742\\
+\midrule
+\addlinespace[1pt]
+\multicolumn{5}{l}{\emph{Client dropout}}\\
+~~0\% drop per round & 0.609 & 0.660 & 0.772\\
+~~10\% drop per round & 0.598 & 0.669 & \textbf{0.769}\\
+~~30\% drop per round & \textbf{0.582} & 0.661 & \textbf{0.769}\\
+~~50\% drop per round & 0.634 & 0.671 & 0.795\\
+~~70\% drop per round & 0.586 & \textbf{0.639} & 0.773\\
+\midrule
+\addlinespace[1pt]
+\multicolumn{5}{l}{\emph{Straggler staleness}}\\
+~~0\% stale per round & 0.609 & 0.660 & 0.772\\
+~~25\% stale per round & 0.592 & 0.656 & 0.709\\
+~~50\% stale per round & 0.580 & 0.622 & 0.699\\
+~~75\% stale per round & \textbf{0.546} & \textbf{0.537} & \textbf{0.657}\\
+\midrule
+\addlinespace[1pt]
+\multicolumn{5}{l}{\emph{Poisoned updates}}\\
+~~no attack, mean & 0.609 & 0.660 & 0.772\\
+~~label flip, mean & 0.408 & 0.437 & 0.539\\
+~~sign flip, mean & \textbf{0.136} & \textbf{0.104} & \textbf{0.123}\\
+~~Gaussian noise, mean & 0.433 & 0.449 & 0.446\\
+~~no attack, median & 0.562 & 0.568 & 0.715\\
+~~label flip, median & 0.375 & 0.446 & 0.510\\
+~~sign flip, median & 0.336 & 0.407 & 0.420\\
+~~Gaussian noise, median & 0.468 & 0.535 & 0.564\\
+\bottomrule
+\end{tabular}
+\end{table}

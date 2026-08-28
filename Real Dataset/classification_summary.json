@@ -1,0 +1,24 @@
+{
+  "yolo_id_to_disease": {
+    "0": "Leaf-Hopper",
+    "1": "Leaf-Hopper",
+    "2": "Leaf-Hopper",
+    "3": "Leaf-Hopper",
+    "4": "Leaf-Hopper"
+  },
+  "class_distribution_in_real_dataset": {
+    "Leaf-Hopper": 256,
+    "Looper Caterpillar": 73,
+    "Leaf Rust": 29,
+    "Leaf-blight": 10,
+    "Mosquito bug": 3
+  },
+  "num_images": 200,
+  "reference_classes": [
+    "Leaf Rust",
+    "Leaf-Hopper",
+    "Leaf-blight",
+    "Looper Caterpillar",
+    "Mosquito bug"
+  ]
+}

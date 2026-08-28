@@ -1,0 +1,2 @@
+# Removed LFS tracking for .pt files (GitHub LFS budget exceeded)
+# Models are stored locally and excluded via .gitignore

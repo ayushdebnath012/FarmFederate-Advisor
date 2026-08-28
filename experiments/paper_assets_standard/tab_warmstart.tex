@@ -1,0 +1,17 @@
+\begin{table}[t]
+\caption{Effect of initializing federated training from a centralized checkpoint. The round-1 column shows how much of the benefit is simply a better starting point.}
+\label{tab:warmstart}
+\centering\footnotesize
+\setlength\tabcolsep{5pt}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Initialization} & Round 1 F1 & \textbf{Best Macro F1}\\
+\midrule
+Warm start (centralized init) & 0.225 & 0.852\,$\pm$\,0.001 \\
+Cold start (random init) & 0.255 & 0.809\,$\pm$\,0.005 \\
+\bottomrule
+\end{tabular}
+\vspace{1pt}
+
+{\scriptsize Both arms share the partition, budget and seeds; only the initial weights differ.}
+\end{table}

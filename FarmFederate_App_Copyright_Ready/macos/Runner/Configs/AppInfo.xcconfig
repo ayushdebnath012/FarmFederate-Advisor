@@ -1,0 +1,12 @@
+// Application-level settings for the Runner target.
+//
+// Application metadata for the macOS runner.
+
+// The application's name. By default this is also the title of the Flutter window.
+PRODUCT_NAME = FarmFederate Advisor
+
+// The application's bundle identifier
+PRODUCT_BUNDLE_IDENTIFIER = com.farmfederate.advisor
+
+// The copyright displayed in application information
+PRODUCT_COPYRIGHT = Copyright (C) 2026 FarmFederate Advisor. All rights reserved.

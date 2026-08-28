@@ -1,0 +1,2675 @@
+{
+ "_meta": {
+  "data": {
+   "pairing_mode": "genuine_box_linked_observation",
+   "num_paired": 371,
+   "num_real_images": 371,
+   "train": 260,
+   "val": 53,
+   "class_counts": [
+    129,
+    9,
+    67,
+    102,
+    64
+   ],
+   "note": "image-text pairs are label-matched resamples, not genuine co-observations; fusion results must be read with that caveat"
+  }
+ },
+ "E1_alpha_sweep": {
+  "alpha=0.1|split=corrected|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.22361702127659572,
+   "f1_micro": 0.4528301886792453,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 24,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.4528301886792453,
+    "f1_macro": 0.22361702127659572,
+    "f1_weighted": 0.3654957848253714,
+    "precision": 0.19255952380952382,
+    "precision_micro": 0.4528301886792453,
+    "recall": 0.28350877192982454,
+    "recall_micro": 0.4528301886792453,
+    "accuracy": 0.4528301886792453,
+    "accuracy_ci95_low": 0.3265757915292224,
+    "accuracy_ci95_high": 0.5854602451289419,
+    "per_class_f1": [
+     0.46808510638297873,
+     0.0,
+     0.0,
+     0.65,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.46808510638297873,
+    "precision_LEAF_BLIGHT": 0.34375,
+    "recall_LEAF_BLIGHT": 0.7333333333333333,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.0,
+    "precision_LEAF_RUST": 0.0,
+    "recall_LEAF_RUST": 0.0,
+    "f1_LOOPER_CATERPILLARS": 0.65,
+    "precision_LOOPER_CATERPILLARS": 0.6190476190476191,
+    "recall_LOOPER_CATERPILLARS": 0.6842105263157895,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.10955223880597016,
+     0.22361702127659572
+    ],
+    "round_f1_micro": [
+     0.3018867924528302,
+     0.4528301886792453
+    ],
+    "round_seconds": [
+     24.075674295425415,
+     23.46920418739319
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    53,
+    96,
+    111
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 47.5448784828186,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 2,
+   "diversity_ratio": 0.4,
+   "partition": {
+    "label_tv_mean": 0.4430106085766463,
+    "label_tv_max": 0.544121915820029,
+    "size_cv": 0.2836261394551788,
+    "client_sizes": [
+     53,
+     96,
+     111
+    ]
+   },
+   "alpha": 0.1,
+   "splitter": "corrected"
+  },
+  "alpha=0.1|split=legacy|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.23262178434592226,
+   "f1_micro": 0.4339622641509434,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 23,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.4339622641509434,
+    "f1_macro": 0.23262178434592226,
+    "f1_weighted": 0.32472038913157975,
+    "precision": 0.33076923076923076,
+    "precision_micro": 0.4339622641509434,
+    "recall": 0.3,
+    "recall_micro": 0.4339622641509434,
+    "accuracy": 0.4339622641509434,
+    "accuracy_ci95_low": 0.30950396559750293,
+    "accuracy_ci95_high": 0.5673464857239271,
+    "per_class_f1": [
+     0.0,
+     0.0,
+     0.2222222222222222,
+     0.6551724137931034,
+     0.2857142857142857
+    ],
+    "f1_LEAF_BLIGHT": 0.0,
+    "precision_LEAF_BLIGHT": 0.0,
+    "recall_LEAF_BLIGHT": 0.0,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.2222222222222222,
+    "precision_LEAF_RUST": 0.16666666666666666,
+    "recall_LEAF_RUST": 0.3333333333333333,
+    "f1_LOOPER_CATERPILLARS": 0.6551724137931034,
+    "precision_LOOPER_CATERPILLARS": 0.48717948717948717,
+    "recall_LOOPER_CATERPILLARS": 1.0,
+    "f1_MOSQUITO_BUG": 0.2857142857142857,
+    "precision_MOSQUITO_BUG": 1.0,
+    "recall_MOSQUITO_BUG": 0.16666666666666666,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.23262178434592226,
+     0.18204545454545454
+    ],
+    "round_f1_micro": [
+     0.4339622641509434,
+     0.37735849056603776
+    ],
+    "round_seconds": [
+     26.39745807647705,
+     25.83695936203003
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    182,
+    77,
+    1
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 52.23441743850708,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 3,
+   "diversity_ratio": 0.6,
+   "partition": {
+    "label_tv_mean": 0.2688977688977689,
+    "label_tv_max": 0.7307692307692308,
+    "size_cv": 0.8562509448014483,
+    "client_sizes": [
+     182,
+     77,
+     1
+    ]
+   },
+   "alpha": 0.1,
+   "splitter": "legacy"
+  },
+  "alpha=1.0|split=corrected|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.18,
+   "f1_micro": 0.37735849056603776,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 20,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.37735849056603776,
+    "f1_macro": 0.18,
+    "f1_weighted": 0.29245283018867924,
+    "precision": 0.14878787878787877,
+    "precision_micro": 0.37735849056603776,
+    "recall": 0.23017543859649123,
+    "recall_micro": 0.37735849056603776,
+    "accuracy": 0.37735849056603776,
+    "accuracy_ci95_low": 0.2593626547287611,
+    "accuracy_ci95_high": 0.5119310405824662,
+    "per_class_f1": [
+     0.4,
+     0.0,
+     0.0,
+     0.5,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.4,
+    "precision_LEAF_BLIGHT": 0.35,
+    "recall_LEAF_BLIGHT": 0.4666666666666667,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.0,
+    "precision_LEAF_RUST": 0.0,
+    "recall_LEAF_RUST": 0.0,
+    "f1_LOOPER_CATERPILLARS": 0.5,
+    "precision_LOOPER_CATERPILLARS": 0.3939393939393939,
+    "recall_LOOPER_CATERPILLARS": 0.6842105263157895,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.10555555555555556,
+     0.18
+    ],
+    "round_f1_micro": [
+     0.3584905660377358,
+     0.37735849056603776
+    ],
+    "round_seconds": [
+     24.90370512008667,
+     24.72676420211792
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    81,
+    74,
+    105
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 49.63046932220459,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 2,
+   "diversity_ratio": 0.4,
+   "partition": {
+    "label_tv_mean": 0.23353885020551687,
+    "label_tv_max": 0.2951566951566952,
+    "size_cv": 0.15317159809030673,
+    "client_sizes": [
+     81,
+     74,
+     105
+    ]
+   },
+   "alpha": 1.0,
+   "splitter": "corrected"
+  },
+  "alpha=1.0|split=legacy|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.22897607655502394,
+   "f1_micro": 0.39622641509433965,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 21,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.39622641509433965,
+    "f1_macro": 0.22897607655502394,
+    "f1_weighted": 0.3302988173693238,
+    "precision": 0.28904761904761905,
+    "precision_micro": 0.39622641509433965,
+    "recall": 0.2787719298245614,
+    "recall_micro": 0.39622641509433965,
+    "accuracy": 0.39622641509433965,
+    "accuracy_ci95_low": 0.27589406738001676,
+    "accuracy_ci95_high": 0.5305852132679447,
+    "per_class_f1": [
+     0.509090909090909,
+     0.0,
+     0.0,
+     0.32,
+     0.3157894736842105
+    ],
+    "f1_LEAF_BLIGHT": 0.509090909090909,
+    "precision_LEAF_BLIGHT": 0.35,
+    "recall_LEAF_BLIGHT": 0.9333333333333333,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.0,
+    "precision_LEAF_RUST": 0.0,
+    "recall_LEAF_RUST": 0.0,
+    "f1_LOOPER_CATERPILLARS": 0.32,
+    "precision_LOOPER_CATERPILLARS": 0.6666666666666666,
+    "recall_LOOPER_CATERPILLARS": 0.21052631578947367,
+    "f1_MOSQUITO_BUG": 0.3157894736842105,
+    "precision_MOSQUITO_BUG": 0.42857142857142855,
+    "recall_MOSQUITO_BUG": 0.25,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.10955223880597016,
+     0.22897607655502394
+    ],
+    "round_f1_micro": [
+     0.3018867924528302,
+     0.39622641509433965
+    ],
+    "round_seconds": [
+     30.195866107940674,
+     33.253231048583984
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    128,
+    25,
+    107
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 63.44909715652466,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 3,
+   "diversity_ratio": 0.6,
+   "partition": {
+    "label_tv_mean": 0.08428259046249702,
+    "label_tv_max": 0.1376923076923077,
+    "size_cv": 0.5127660227460866,
+    "client_sizes": [
+     128,
+     25,
+     107
+    ]
+   },
+   "alpha": 1.0,
+   "splitter": "legacy"
+  }
+ },
+ "E2_client_sweep": {
+  "K=2|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.200859291084855,
+   "f1_micro": 0.41509433962264153,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 22,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.41509433962264153,
+    "f1_macro": 0.200859291084855,
+    "f1_weighted": 0.3242810530369049,
+    "precision": 0.16492753623188405,
+    "precision_micro": 0.41509433962264153,
+    "recall": 0.25684210526315787,
+    "recall_micro": 0.41509433962264153,
+    "accuracy": 0.41509433962264153,
+    "accuracy_ci95_low": 0.29260908779813966,
+    "accuracy_ci95_high": 0.549055778186556,
+    "per_class_f1": [
+     0.47368421052631576,
+     0.0,
+     0.0,
+     0.5306122448979592,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.47368421052631576,
+    "precision_LEAF_BLIGHT": 0.391304347826087,
+    "recall_LEAF_BLIGHT": 0.6,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.0,
+    "precision_LEAF_RUST": 0.0,
+    "recall_LEAF_RUST": 0.0,
+    "f1_LOOPER_CATERPILLARS": 0.5306122448979592,
+    "precision_LOOPER_CATERPILLARS": 0.43333333333333335,
+    "recall_LOOPER_CATERPILLARS": 0.6842105263157895,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.08823529411764705,
+     0.200859291084855
+    ],
+    "round_f1_micro": [
+     0.2830188679245283,
+     0.41509433962264153
+    ],
+    "round_seconds": [
+     37.95170760154724,
+     30.501352071762085
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    100,
+    160
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 499376288,
+   "wall_seconds": 68.45305967330933,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 2,
+   "diversity_ratio": 0.4,
+   "partition": {
+    "label_tv_mean": 0.129375,
+    "label_tv_max": 0.15923076923076923,
+    "size_cv": 0.23076923076923078,
+    "client_sizes": [
+     100,
+     160
+    ]
+   },
+   "num_clients": 2
+  },
+  "K=3|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.18,
+   "f1_micro": 0.37735849056603776,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 20,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.37735849056603776,
+    "f1_macro": 0.18,
+    "f1_weighted": 0.29245283018867924,
+    "precision": 0.14878787878787877,
+    "precision_micro": 0.37735849056603776,
+    "recall": 0.23017543859649123,
+    "recall_micro": 0.37735849056603776,
+    "accuracy": 0.37735849056603776,
+    "accuracy_ci95_low": 0.2593626547287611,
+    "accuracy_ci95_high": 0.5119310405824662,
+    "per_class_f1": [
+     0.4,
+     0.0,
+     0.0,
+     0.5,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.4,
+    "precision_LEAF_BLIGHT": 0.35,
+    "recall_LEAF_BLIGHT": 0.4666666666666667,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.0,
+    "precision_LEAF_RUST": 0.0,
+    "recall_LEAF_RUST": 0.0,
+    "f1_LOOPER_CATERPILLARS": 0.5,
+    "precision_LOOPER_CATERPILLARS": 0.3939393939393939,
+    "recall_LOOPER_CATERPILLARS": 0.6842105263157895,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.10555555555555556,
+     0.18
+    ],
+    "round_f1_micro": [
+     0.3584905660377358,
+     0.37735849056603776
+    ],
+    "round_seconds": [
+     30.800722122192383,
+     24.28868341445923
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    81,
+    74,
+    105
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 55.08940553665161,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 2,
+   "diversity_ratio": 0.4,
+   "partition": {
+    "label_tv_mean": 0.23353885020551687,
+    "label_tv_max": 0.2951566951566952,
+    "size_cv": 0.15317159809030673,
+    "client_sizes": [
+     81,
+     74,
+     105
+    ]
+   },
+   "num_clients": 3
+  }
+ },
+ "E3_anticollapse": {
+  "both|alpha=1.0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.3637552103069345,
+   "f1_micro": 0.5094339622641509,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 27,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.5094339622641509,
+    "f1_macro": 0.3637552103069345,
+    "f1_weighted": 0.4763847083300564,
+    "precision": 0.39472215763775864,
+    "precision_micro": 0.5094339622641509,
+    "recall": 0.37964912280701757,
+    "recall_micro": 0.5094339622641509,
+    "accuracy": 0.5094339622641509,
+    "accuracy_ci95_low": 0.3788352911467995,
+    "accuracy_ci95_high": 0.6387575015215675,
+    "per_class_f1": [
+     0.3076923076923077,
+     0.0,
+     0.25,
+     0.5714285714285714,
+     0.6896551724137931
+    ],
+    "f1_LEAF_BLIGHT": 0.3076923076923077,
+    "precision_LEAF_BLIGHT": 0.36363636363636365,
+    "recall_LEAF_BLIGHT": 0.26666666666666666,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.25,
+    "precision_LEAF_RUST": 0.5,
+    "recall_LEAF_RUST": 0.16666666666666666,
+    "f1_LOOPER_CATERPILLARS": 0.5714285714285714,
+    "precision_LOOPER_CATERPILLARS": 0.5217391304347826,
+    "recall_LOOPER_CATERPILLARS": 0.631578947368421,
+    "f1_MOSQUITO_BUG": 0.6896551724137931,
+    "precision_MOSQUITO_BUG": 0.5882352941176471,
+    "recall_MOSQUITO_BUG": 0.8333333333333334,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.19663865546218487,
+     0.3637552103069345
+    ],
+    "round_f1_micro": [
+     0.3584905660377358,
+     0.5094339622641509
+    ],
+    "round_seconds": [
+     42.10328531265259,
+     53.7663414478302
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": [
+     {
+      "round": 1,
+      "client": 1,
+      "present_classes": [
+       0,
+       2,
+       3,
+       4
+      ]
+     },
+     {
+      "round": 2,
+      "client": 1,
+      "present_classes": [
+       0,
+       2,
+       3,
+       4
+      ]
+     }
+    ]
+   },
+   "client_sizes": [
+    81,
+    74,
+    105
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 95.86962676048279,
+   "peak_mib": 0.0,
+   "balanced_sampler": true,
+   "diversity_weight": 1.0,
+   "unique_predicted_classes": 4,
+   "diversity_ratio": 0.8,
+   "arm": "both",
+   "alpha": 1.0,
+   "partition": {
+    "label_tv_mean": 0.23353885020551687,
+    "label_tv_max": 0.2951566951566952,
+    "size_cv": 0.15317159809030673,
+    "client_sizes": [
+     81,
+     74,
+     105
+    ]
+   }
+  },
+  "no_diversity|alpha=1.0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.3637552103069345,
+   "f1_micro": 0.5094339622641509,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 27,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.5094339622641509,
+    "f1_macro": 0.3637552103069345,
+    "f1_weighted": 0.4763847083300564,
+    "precision": 0.39472215763775864,
+    "precision_micro": 0.5094339622641509,
+    "recall": 0.37964912280701757,
+    "recall_micro": 0.5094339622641509,
+    "accuracy": 0.5094339622641509,
+    "accuracy_ci95_low": 0.3788352911467995,
+    "accuracy_ci95_high": 0.6387575015215675,
+    "per_class_f1": [
+     0.3076923076923077,
+     0.0,
+     0.25,
+     0.5714285714285714,
+     0.6896551724137931
+    ],
+    "f1_LEAF_BLIGHT": 0.3076923076923077,
+    "precision_LEAF_BLIGHT": 0.36363636363636365,
+    "recall_LEAF_BLIGHT": 0.26666666666666666,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.25,
+    "precision_LEAF_RUST": 0.5,
+    "recall_LEAF_RUST": 0.16666666666666666,
+    "f1_LOOPER_CATERPILLARS": 0.5714285714285714,
+    "precision_LOOPER_CATERPILLARS": 0.5217391304347826,
+    "recall_LOOPER_CATERPILLARS": 0.631578947368421,
+    "f1_MOSQUITO_BUG": 0.6896551724137931,
+    "precision_MOSQUITO_BUG": 0.5882352941176471,
+    "recall_MOSQUITO_BUG": 0.8333333333333334,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.24222222222222226,
+     0.3637552103069345
+    ],
+    "round_f1_micro": [
+     0.41509433962264153,
+     0.5094339622641509
+    ],
+    "round_seconds": [
+     52.8736207485199,
+     55.412912130355835
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": [
+     {
+      "round": 1,
+      "client": 1,
+      "present_classes": [
+       0,
+       2,
+       3,
+       4
+      ]
+     },
+     {
+      "round": 2,
+      "client": 1,
+      "present_classes": [
+       0,
+       2,
+       3,
+       4
+      ]
+     }
+    ]
+   },
+   "client_sizes": [
+    81,
+    74,
+    105
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 108.28653287887573,
+   "peak_mib": 0.0,
+   "balanced_sampler": true,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 4,
+   "diversity_ratio": 0.8,
+   "arm": "no_diversity",
+   "alpha": 1.0,
+   "partition": {
+    "label_tv_mean": 0.23353885020551687,
+    "label_tv_max": 0.2951566951566952,
+    "size_cv": 0.15317159809030673,
+    "client_sizes": [
+     81,
+     74,
+     105
+    ]
+   }
+  },
+  "no_balanced|alpha=1.0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.3274689186019235,
+   "f1_micro": 0.49056603773584906,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 26,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.49056603773584906,
+    "f1_macro": 0.3274689186019235,
+    "f1_weighted": 0.4603189356419211,
+    "precision": 0.3358730158730159,
+    "precision_micro": 0.49056603773584906,
+    "recall": 0.3368421052631579,
+    "recall_micro": 0.49056603773584906,
+    "accuracy": 0.49056603773584906,
+    "accuracy_ci95_low": 0.3612424984784323,
+    "accuracy_ci95_high": 0.6211647088532004,
+    "per_class_f1": [
+     0.3448275862068966,
+     0.0,
+     0.0,
+     0.5306122448979592,
+     0.7619047619047619
+    ],
+    "f1_LEAF_BLIGHT": 0.3448275862068966,
+    "precision_LEAF_BLIGHT": 0.35714285714285715,
+    "recall_LEAF_BLIGHT": 0.3333333333333333,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.0,
+    "precision_LEAF_RUST": 0.0,
+    "recall_LEAF_RUST": 0.0,
+    "f1_LOOPER_CATERPILLARS": 0.5306122448979592,
+    "precision_LOOPER_CATERPILLARS": 0.43333333333333335,
+    "recall_LOOPER_CATERPILLARS": 0.6842105263157895,
+    "f1_MOSQUITO_BUG": 0.7619047619047619,
+    "precision_MOSQUITO_BUG": 0.8888888888888888,
+    "recall_MOSQUITO_BUG": 0.6666666666666666,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.10555555555555556,
+     0.3274689186019235
+    ],
+    "round_f1_micro": [
+     0.3584905660377358,
+     0.49056603773584906
+    ],
+    "round_seconds": [
+     38.55391883850098,
+     38.63014221191406
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    81,
+    74,
+    105
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 77.18406105041504,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 1.0,
+   "unique_predicted_classes": 3,
+   "diversity_ratio": 0.6,
+   "arm": "no_balanced",
+   "alpha": 1.0,
+   "partition": {
+    "label_tv_mean": 0.23353885020551687,
+    "label_tv_max": 0.2951566951566952,
+    "size_cv": 0.15317159809030673,
+    "client_sizes": [
+     81,
+     74,
+     105
+    ]
+   }
+  },
+  "neither|alpha=1.0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.18,
+   "f1_micro": 0.37735849056603776,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 20,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.37735849056603776,
+    "f1_macro": 0.18,
+    "f1_weighted": 0.29245283018867924,
+    "precision": 0.14878787878787877,
+    "precision_micro": 0.37735849056603776,
+    "recall": 0.23017543859649123,
+    "recall_micro": 0.37735849056603776,
+    "accuracy": 0.37735849056603776,
+    "accuracy_ci95_low": 0.2593626547287611,
+    "accuracy_ci95_high": 0.5119310405824662,
+    "per_class_f1": [
+     0.4,
+     0.0,
+     0.0,
+     0.5,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.4,
+    "precision_LEAF_BLIGHT": 0.35,
+    "recall_LEAF_BLIGHT": 0.4666666666666667,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.0,
+    "precision_LEAF_RUST": 0.0,
+    "recall_LEAF_RUST": 0.0,
+    "f1_LOOPER_CATERPILLARS": 0.5,
+    "precision_LOOPER_CATERPILLARS": 0.3939393939393939,
+    "recall_LOOPER_CATERPILLARS": 0.6842105263157895,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.10555555555555556,
+     0.18
+    ],
+    "round_f1_micro": [
+     0.3584905660377358,
+     0.37735849056603776
+    ],
+    "round_seconds": [
+     28.291134357452393,
+     26.350116968154907
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    81,
+    74,
+    105
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 54.6412513256073,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 2,
+   "diversity_ratio": 0.4,
+   "arm": "neither",
+   "alpha": 1.0,
+   "partition": {
+    "label_tv_mean": 0.23353885020551687,
+    "label_tv_max": 0.2951566951566952,
+    "size_cv": 0.15317159809030673,
+    "client_sizes": [
+     81,
+     74,
+     105
+    ]
+   }
+  },
+  "both|alpha=0.1": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.15458937198067632,
+   "f1_micro": 0.37735849056603776,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 20,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.37735849056603776,
+    "f1_macro": 0.15458937198067632,
+    "f1_weighted": 0.22258681979764836,
+    "precision": 0.14266666666666666,
+    "precision_micro": 0.37735849056603776,
+    "recall": 0.23333333333333334,
+    "recall_micro": 0.37735849056603776,
+    "accuracy": 0.37735849056603776,
+    "accuracy_ci95_low": 0.2593626547287611,
+    "accuracy_ci95_high": 0.5119310405824662,
+    "per_class_f1": [
+     0.0,
+     0.0,
+     0.2222222222222222,
+     0.5507246376811594,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.0,
+    "precision_LEAF_BLIGHT": 0.0,
+    "recall_LEAF_BLIGHT": 0.0,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.2222222222222222,
+    "precision_LEAF_RUST": 0.3333333333333333,
+    "recall_LEAF_RUST": 0.16666666666666666,
+    "f1_LOOPER_CATERPILLARS": 0.5507246376811594,
+    "precision_LOOPER_CATERPILLARS": 0.38,
+    "recall_LOOPER_CATERPILLARS": 1.0,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.15458937198067632,
+     0.14615384615384616
+    ],
+    "round_f1_micro": [
+     0.37735849056603776,
+     0.3018867924528302
+    ],
+    "round_seconds": [
+     33.67338824272156,
+     34.25116038322449
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": [
+     {
+      "round": 1,
+      "client": 0,
+      "present_classes": [
+       0,
+       2,
+       3
+      ]
+     },
+     {
+      "round": 1,
+      "client": 2,
+      "present_classes": [
+       0,
+       2,
+       3
+      ]
+     },
+     {
+      "round": 2,
+      "client": 0,
+      "present_classes": [
+       0,
+       2,
+       3
+      ]
+     },
+     {
+      "round": 2,
+      "client": 2,
+      "present_classes": [
+       0,
+       2,
+       3
+      ]
+     }
+    ]
+   },
+   "client_sizes": [
+    53,
+    96,
+    111
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 67.92454862594604,
+   "peak_mib": 0.0,
+   "balanced_sampler": true,
+   "diversity_weight": 1.0,
+   "unique_predicted_classes": 2,
+   "diversity_ratio": 0.4,
+   "arm": "both",
+   "alpha": 0.1,
+   "partition": {
+    "label_tv_mean": 0.4430106085766463,
+    "label_tv_max": 0.544121915820029,
+    "size_cv": 0.2836261394551788,
+    "client_sizes": [
+     53,
+     96,
+     111
+    ]
+   }
+  },
+  "no_diversity|alpha=0.1": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.14615384615384616,
+   "f1_micro": 0.3018867924528302,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 16,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.3018867924528302,
+    "f1_macro": 0.14615384615384616,
+    "f1_weighted": 0.2053701015965167,
+    "precision": 0.1087878787878788,
+    "precision_micro": 0.3018867924528302,
+    "recall": 0.23684210526315788,
+    "recall_micro": 0.3018867924528302,
+    "accuracy": 0.3018867924528302,
+    "accuracy_ci95_low": 0.19518302727578896,
+    "accuracy_ci95_high": 0.4353683266885011,
+    "per_class_f1": [
+     0.0,
+     0.0,
+     0.23076923076923078,
+     0.5,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.0,
+    "precision_LEAF_BLIGHT": 0.0,
+    "recall_LEAF_BLIGHT": 0.0,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.23076923076923078,
+    "precision_LEAF_RUST": 0.15,
+    "recall_LEAF_RUST": 0.5,
+    "f1_LOOPER_CATERPILLARS": 0.5,
+    "precision_LOOPER_CATERPILLARS": 0.3939393939393939,
+    "recall_LOOPER_CATERPILLARS": 0.6842105263157895,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.10555555555555556,
+     0.14615384615384616
+    ],
+    "round_f1_micro": [
+     0.3584905660377358,
+     0.3018867924528302
+    ],
+    "round_seconds": [
+     33.5694260597229,
+     36.546499252319336
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": [
+     {
+      "round": 1,
+      "client": 0,
+      "present_classes": [
+       0,
+       2,
+       3
+      ]
+     },
+     {
+      "round": 1,
+      "client": 2,
+      "present_classes": [
+       0,
+       2,
+       3
+      ]
+     },
+     {
+      "round": 2,
+      "client": 0,
+      "present_classes": [
+       0,
+       2,
+       3
+      ]
+     },
+     {
+      "round": 2,
+      "client": 2,
+      "present_classes": [
+       0,
+       2,
+       3
+      ]
+     }
+    ]
+   },
+   "client_sizes": [
+    53,
+    96,
+    111
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 70.11592531204224,
+   "peak_mib": 0.0,
+   "balanced_sampler": true,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 2,
+   "diversity_ratio": 0.4,
+   "arm": "no_diversity",
+   "alpha": 0.1,
+   "partition": {
+    "label_tv_mean": 0.4430106085766463,
+    "label_tv_max": 0.544121915820029,
+    "size_cv": 0.2836261394551788,
+    "client_sizes": [
+     53,
+     96,
+     111
+    ]
+   }
+  },
+  "no_balanced|alpha=0.1": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.26074592074592073,
+   "f1_micro": 0.4528301886792453,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 24,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.4528301886792453,
+    "f1_macro": 0.26074592074592073,
+    "f1_weighted": 0.37961472489774384,
+    "precision": 0.23733333333333334,
+    "precision_micro": 0.4528301886792453,
+    "recall": 0.30350877192982456,
+    "recall_micro": 0.4528301886792453,
+    "accuracy": 0.4528301886792453,
+    "accuracy_ci95_low": 0.3265757915292224,
+    "accuracy_ci95_high": 0.5854602451289419,
+    "per_class_f1": [
+     0.5128205128205128,
+     0.0,
+     0.2,
+     0.5909090909090909,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.5128205128205128,
+    "precision_LEAF_BLIGHT": 0.4166666666666667,
+    "recall_LEAF_BLIGHT": 0.6666666666666666,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.2,
+    "precision_LEAF_RUST": 0.25,
+    "recall_LEAF_RUST": 0.16666666666666666,
+    "f1_LOOPER_CATERPILLARS": 0.5909090909090909,
+    "precision_LOOPER_CATERPILLARS": 0.52,
+    "recall_LOOPER_CATERPILLARS": 0.6842105263157895,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.13204225352112675,
+     0.26074592074592073
+    ],
+    "round_f1_micro": [
+     0.37735849056603776,
+     0.4528301886792453
+    ],
+    "round_seconds": [
+     25.15305519104004,
+     25.37091565132141
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    53,
+    96,
+    111
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 50.52397084236145,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 1.0,
+   "unique_predicted_classes": 3,
+   "diversity_ratio": 0.6,
+   "arm": "no_balanced",
+   "alpha": 0.1,
+   "partition": {
+    "label_tv_mean": 0.4430106085766463,
+    "label_tv_max": 0.544121915820029,
+    "size_cv": 0.2836261394551788,
+    "client_sizes": [
+     53,
+     96,
+     111
+    ]
+   }
+  },
+  "neither|alpha=0.1": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.22361702127659572,
+   "f1_micro": 0.4528301886792453,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 24,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.4528301886792453,
+    "f1_macro": 0.22361702127659572,
+    "f1_weighted": 0.3654957848253714,
+    "precision": 0.19255952380952382,
+    "precision_micro": 0.4528301886792453,
+    "recall": 0.28350877192982454,
+    "recall_micro": 0.4528301886792453,
+    "accuracy": 0.4528301886792453,
+    "accuracy_ci95_low": 0.3265757915292224,
+    "accuracy_ci95_high": 0.5854602451289419,
+    "per_class_f1": [
+     0.46808510638297873,
+     0.0,
+     0.0,
+     0.65,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.46808510638297873,
+    "precision_LEAF_BLIGHT": 0.34375,
+    "recall_LEAF_BLIGHT": 0.7333333333333333,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.0,
+    "precision_LEAF_RUST": 0.0,
+    "recall_LEAF_RUST": 0.0,
+    "f1_LOOPER_CATERPILLARS": 0.65,
+    "precision_LOOPER_CATERPILLARS": 0.6190476190476191,
+    "recall_LOOPER_CATERPILLARS": 0.6842105263157895,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.10955223880597016,
+     0.22361702127659572
+    ],
+    "round_f1_micro": [
+     0.3018867924528302,
+     0.4528301886792453
+    ],
+    "round_seconds": [
+     25.55488157272339,
+     24.68377685546875
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    53,
+    96,
+    111
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 50.23865842819214,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 2,
+   "diversity_ratio": 0.4,
+   "arm": "neither",
+   "alpha": 0.1,
+   "partition": {
+    "label_tv_mean": 0.4430106085766463,
+    "label_tv_max": 0.544121915820029,
+    "size_cv": 0.2836261394551788,
+    "client_sizes": [
+     53,
+     96,
+     111
+    ]
+   }
+  }
+ },
+ "E4_warmstart": {
+  "warm|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.3954927425515661,
+   "f1_micro": 0.5849056603773585,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 31,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.5849056603773585,
+    "f1_macro": 0.3954927425515661,
+    "f1_weighted": 0.5557389336523633,
+    "precision": 0.39873684210526317,
+    "precision_micro": 0.5849056603773585,
+    "recall": 0.4068421052631579,
+    "recall_micro": 0.5849056603773585,
+    "accuracy": 0.5849056603773585,
+    "accuracy_ci95_low": 0.45094422181344374,
+    "accuracy_ci95_high": 0.7073909122018601,
+    "per_class_f1": [
+     0.5294117647058824,
+     0.0,
+     0.0,
+     0.5909090909090909,
+     0.8571428571428571
+    ],
+    "f1_LEAF_BLIGHT": 0.5294117647058824,
+    "precision_LEAF_BLIGHT": 0.47368421052631576,
+    "recall_LEAF_BLIGHT": 0.6,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.0,
+    "precision_LEAF_RUST": 0.0,
+    "recall_LEAF_RUST": 0.0,
+    "f1_LOOPER_CATERPILLARS": 0.5909090909090909,
+    "precision_LOOPER_CATERPILLARS": 0.52,
+    "recall_LOOPER_CATERPILLARS": 0.6842105263157895,
+    "f1_MOSQUITO_BUG": 0.8571428571428571,
+    "precision_MOSQUITO_BUG": 1.0,
+    "recall_MOSQUITO_BUG": 0.75,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.2686558681443592,
+     0.3954927425515661
+    ],
+    "round_f1_micro": [
+     0.4339622641509434,
+     0.5849056603773585
+    ],
+    "round_seconds": [
+     31.675875663757324,
+     30.661454677581787
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    81,
+    74,
+    105
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 62.33733034133911,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 3,
+   "diversity_ratio": 0.6,
+   "mode": "warm"
+  },
+  "cold|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.18,
+   "f1_micro": 0.37735849056603776,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 20,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.37735849056603776,
+    "f1_macro": 0.18,
+    "f1_weighted": 0.29245283018867924,
+    "precision": 0.14878787878787877,
+    "precision_micro": 0.37735849056603776,
+    "recall": 0.23017543859649123,
+    "recall_micro": 0.37735849056603776,
+    "accuracy": 0.37735849056603776,
+    "accuracy_ci95_low": 0.2593626547287611,
+    "accuracy_ci95_high": 0.5119310405824662,
+    "per_class_f1": [
+     0.4,
+     0.0,
+     0.0,
+     0.5,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.4,
+    "precision_LEAF_BLIGHT": 0.35,
+    "recall_LEAF_BLIGHT": 0.4666666666666667,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.0,
+    "precision_LEAF_RUST": 0.0,
+    "recall_LEAF_RUST": 0.0,
+    "f1_LOOPER_CATERPILLARS": 0.5,
+    "precision_LOOPER_CATERPILLARS": 0.3939393939393939,
+    "recall_LOOPER_CATERPILLARS": 0.6842105263157895,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.10555555555555556,
+     0.18
+    ],
+    "round_f1_micro": [
+     0.3584905660377358,
+     0.37735849056603776
+    ],
+    "round_seconds": [
+     35.18322944641113,
+     32.07279849052429
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    81,
+    74,
+    105
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 67.25602793693542,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 2,
+   "diversity_ratio": 0.4,
+   "mode": "cold"
+  }
+ },
+ "E5_fusion_seeds": {
+  "concat|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.18,
+   "f1_micro": 0.37735849056603776,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 20,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.37735849056603776,
+    "f1_macro": 0.18,
+    "f1_weighted": 0.29245283018867924,
+    "precision": 0.14878787878787877,
+    "precision_micro": 0.37735849056603776,
+    "recall": 0.23017543859649123,
+    "recall_micro": 0.37735849056603776,
+    "accuracy": 0.37735849056603776,
+    "accuracy_ci95_low": 0.2593626547287611,
+    "accuracy_ci95_high": 0.5119310405824662,
+    "per_class_f1": [
+     0.4,
+     0.0,
+     0.0,
+     0.5,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.4,
+    "precision_LEAF_BLIGHT": 0.35,
+    "recall_LEAF_BLIGHT": 0.4666666666666667,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.0,
+    "precision_LEAF_RUST": 0.0,
+    "recall_LEAF_RUST": 0.0,
+    "f1_LOOPER_CATERPILLARS": 0.5,
+    "precision_LOOPER_CATERPILLARS": 0.3939393939393939,
+    "recall_LOOPER_CATERPILLARS": 0.6842105263157895,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.10555555555555556,
+     0.18
+    ],
+    "round_f1_micro": [
+     0.3584905660377358,
+     0.37735849056603776
+    ],
+    "round_seconds": [
+     38.47218680381775,
+     39.56328868865967
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    81,
+    74,
+    105
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 78.03547549247742,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 2,
+   "diversity_ratio": 0.4,
+   "fusion_type": "concat"
+  },
+  "attention|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.08823529411764705,
+   "f1_micro": 0.2830188679245283,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 15,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.2830188679245283,
+    "f1_macro": 0.08823529411764705,
+    "f1_weighted": 0.12486126526082131,
+    "precision": 0.05660377358490566,
+    "precision_micro": 0.2830188679245283,
+    "recall": 0.2,
+    "recall_micro": 0.2830188679245283,
+    "accuracy": 0.2830188679245283,
+    "accuracy_ci95_low": 0.1796629044633857,
+    "accuracy_ci95_high": 0.4157028641641701,
+    "per_class_f1": [
+     0.4411764705882353,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.4411764705882353,
+    "precision_LEAF_BLIGHT": 0.2830188679245283,
+    "recall_LEAF_BLIGHT": 1.0,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.0,
+    "precision_LEAF_RUST": 0.0,
+    "recall_LEAF_RUST": 0.0,
+    "f1_LOOPER_CATERPILLARS": 0.0,
+    "precision_LOOPER_CATERPILLARS": 0.0,
+    "recall_LOOPER_CATERPILLARS": 0.0,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.08823529411764705,
+     0.08823529411764705
+    ],
+    "round_f1_micro": [
+     0.2830188679245283,
+     0.2830188679245283
+    ],
+    "round_seconds": [
+     34.179258823394775,
+     40.50054407119751
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    81,
+    74,
+    105
+   ],
+   "num_params": 15867909,
+   "upload_bytes_per_client_per_round": 63471636,
+   "total_comm_bytes": 761659632,
+   "wall_seconds": 74.67980289459229,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 1,
+   "diversity_ratio": 0.2,
+   "fusion_type": "attention"
+  },
+  "gated|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.08823529411764705,
+   "f1_micro": 0.2830188679245283,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 15,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.2830188679245283,
+    "f1_macro": 0.08823529411764705,
+    "f1_weighted": 0.12486126526082131,
+    "precision": 0.05660377358490566,
+    "precision_micro": 0.2830188679245283,
+    "recall": 0.2,
+    "recall_micro": 0.2830188679245283,
+    "accuracy": 0.2830188679245283,
+    "accuracy_ci95_low": 0.1796629044633857,
+    "accuracy_ci95_high": 0.4157028641641701,
+    "per_class_f1": [
+     0.4411764705882353,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.4411764705882353,
+    "precision_LEAF_BLIGHT": 0.2830188679245283,
+    "recall_LEAF_BLIGHT": 1.0,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.0,
+    "precision_LEAF_RUST": 0.0,
+    "recall_LEAF_RUST": 0.0,
+    "f1_LOOPER_CATERPILLARS": 0.0,
+    "precision_LOOPER_CATERPILLARS": 0.0,
+    "recall_LOOPER_CATERPILLARS": 0.0,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.08823529411764705,
+     0.08823529411764705
+    ],
+    "round_f1_micro": [
+     0.2830188679245283,
+     0.2830188679245283
+    ],
+    "round_seconds": [
+     32.185569047927856,
+     38.80714225769043
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    81,
+    74,
+    105
+   ],
+   "num_params": 15801605,
+   "upload_bytes_per_client_per_round": 63206420,
+   "total_comm_bytes": 758477040,
+   "wall_seconds": 70.99271130561829,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 1,
+   "diversity_ratio": 0.2,
+   "fusion_type": "gated"
+  }
+ },
+ "E6_cost": {
+  "concat_cost|concat": {
+   "fusion_type": "concat",
+   "num_params": 15605509,
+   "trainable_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "upload_mib_per_client_per_round": 59.53029251098633,
+   "round_trip_bytes_per_client": 124844072,
+   "note": "analytic size; wall-clock and peak memory come from the per-round history recorded in E1/E2/E8"
+  },
+  "concat_cost|attention": {
+   "fusion_type": "attention",
+   "num_params": 15867909,
+   "trainable_params": 15867909,
+   "upload_bytes_per_client_per_round": 63471636,
+   "upload_mib_per_client_per_round": 60.53126907348633,
+   "round_trip_bytes_per_client": 126943272,
+   "note": "analytic size; wall-clock and peak memory come from the per-round history recorded in E1/E2/E8"
+  },
+  "concat_cost|gated": {
+   "fusion_type": "gated",
+   "num_params": 15801605,
+   "trainable_params": 15801605,
+   "upload_bytes_per_client_per_round": 63206420,
+   "upload_mib_per_client_per_round": 60.27833938598633,
+   "round_trip_bytes_per_client": 126412840,
+   "note": "analytic size; wall-clock and peak memory come from the per-round history recorded in E1/E2/E8"
+  }
+ },
+ "E8_baselines": {
+  "fedavg|alpha=1.0|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.18,
+   "f1_micro": 0.37735849056603776,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 20,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.37735849056603776,
+    "f1_macro": 0.18,
+    "f1_weighted": 0.29245283018867924,
+    "precision": 0.14878787878787877,
+    "precision_micro": 0.37735849056603776,
+    "recall": 0.23017543859649123,
+    "recall_micro": 0.37735849056603776,
+    "accuracy": 0.37735849056603776,
+    "accuracy_ci95_low": 0.2593626547287611,
+    "accuracy_ci95_high": 0.5119310405824662,
+    "per_class_f1": [
+     0.4,
+     0.0,
+     0.0,
+     0.5,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.4,
+    "precision_LEAF_BLIGHT": 0.35,
+    "recall_LEAF_BLIGHT": 0.4666666666666667,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.0,
+    "precision_LEAF_RUST": 0.0,
+    "recall_LEAF_RUST": 0.0,
+    "f1_LOOPER_CATERPILLARS": 0.5,
+    "precision_LOOPER_CATERPILLARS": 0.3939393939393939,
+    "recall_LOOPER_CATERPILLARS": 0.6842105263157895,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.10555555555555556,
+     0.18
+    ],
+    "round_f1_micro": [
+     0.3584905660377358,
+     0.37735849056603776
+    ],
+    "round_seconds": [
+     31.88699984550476,
+     37.133811235427856
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    81,
+    74,
+    105
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 69.02081108093262,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 2,
+   "diversity_ratio": 0.4,
+   "alpha": 1.0,
+   "partition": {
+    "label_tv_mean": 0.23353885020551687,
+    "label_tv_max": 0.2951566951566952,
+    "size_cv": 0.15317159809030673,
+    "client_sizes": [
+     81,
+     74,
+     105
+    ]
+   }
+  },
+  "fedprox|alpha=1.0|seed=0": {
+   "algorithm": "fedprox",
+   "f1_macro": 0.18,
+   "f1_micro": 0.37735849056603776,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 20,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.37735849056603776,
+    "f1_macro": 0.18,
+    "f1_weighted": 0.29245283018867924,
+    "precision": 0.14878787878787877,
+    "precision_micro": 0.37735849056603776,
+    "recall": 0.23017543859649123,
+    "recall_micro": 0.37735849056603776,
+    "accuracy": 0.37735849056603776,
+    "accuracy_ci95_low": 0.2593626547287611,
+    "accuracy_ci95_high": 0.5119310405824662,
+    "per_class_f1": [
+     0.4,
+     0.0,
+     0.0,
+     0.5,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.4,
+    "precision_LEAF_BLIGHT": 0.35,
+    "recall_LEAF_BLIGHT": 0.4666666666666667,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.0,
+    "precision_LEAF_RUST": 0.0,
+    "recall_LEAF_RUST": 0.0,
+    "f1_LOOPER_CATERPILLARS": 0.5,
+    "precision_LOOPER_CATERPILLARS": 0.3939393939393939,
+    "recall_LOOPER_CATERPILLARS": 0.6842105263157895,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.10555555555555556,
+     0.18
+    ],
+    "round_f1_micro": [
+     0.3584905660377358,
+     0.37735849056603776
+    ],
+    "round_seconds": [
+     40.67615842819214,
+     57.569645166397095
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    81,
+    74,
+    105
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 98.24580359458923,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 2,
+   "diversity_ratio": 0.4,
+   "alpha": 1.0,
+   "partition": {
+    "label_tv_mean": 0.23353885020551687,
+    "label_tv_max": 0.2951566951566952,
+    "size_cv": 0.15317159809030673,
+    "client_sizes": [
+     81,
+     74,
+     105
+    ]
+   }
+  },
+  "scaffold|alpha=1.0|seed=0": {
+   "algorithm": "scaffold",
+   "f1_macro": 0.10555555555555556,
+   "f1_micro": 0.3584905660377358,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 19,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.3584905660377358,
+    "f1_macro": 0.10555555555555556,
+    "f1_weighted": 0.18920335429769394,
+    "precision": 0.07169811320754717,
+    "precision_micro": 0.3584905660377358,
+    "recall": 0.2,
+    "recall_micro": 0.3584905660377358,
+    "accuracy": 0.3584905660377358,
+    "accuracy_ci95_low": 0.2430195255280876,
+    "accuracy_ci95_high": 0.49308858444640524,
+    "per_class_f1": [
+     0.0,
+     0.0,
+     0.0,
+     0.5277777777777778,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.0,
+    "precision_LEAF_BLIGHT": 0.0,
+    "recall_LEAF_BLIGHT": 0.0,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.0,
+    "precision_LEAF_RUST": 0.0,
+    "recall_LEAF_RUST": 0.0,
+    "f1_LOOPER_CATERPILLARS": 0.5277777777777778,
+    "precision_LOOPER_CATERPILLARS": 0.3584905660377358,
+    "recall_LOOPER_CATERPILLARS": 1.0,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.10555555555555556,
+     0.10555555555555556
+    ],
+    "round_f1_micro": [
+     0.3584905660377358,
+     0.3584905660377358
+    ],
+    "round_seconds": [
+     40.091825008392334,
+     33.76236963272095
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    81,
+    74,
+    105
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 73.85419464111328,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 1,
+   "diversity_ratio": 0.2,
+   "alpha": 1.0,
+   "partition": {
+    "label_tv_mean": 0.23353885020551687,
+    "label_tv_max": 0.2951566951566952,
+    "size_cv": 0.15317159809030673,
+    "client_sizes": [
+     81,
+     74,
+     105
+    ]
+   }
+  },
+  "fedbn|alpha=1.0|seed=0": {
+   "algorithm": "fedbn",
+   "f1_macro": 0.10555555555555556,
+   "f1_micro": 0.3584905660377358,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 19,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.3584905660377358,
+    "f1_macro": 0.10555555555555556,
+    "f1_weighted": 0.18920335429769394,
+    "precision": 0.07169811320754717,
+    "precision_micro": 0.3584905660377358,
+    "recall": 0.2,
+    "recall_micro": 0.3584905660377358,
+    "accuracy": 0.3584905660377358,
+    "accuracy_ci95_low": 0.2430195255280876,
+    "accuracy_ci95_high": 0.49308858444640524,
+    "per_class_f1": [
+     0.0,
+     0.0,
+     0.0,
+     0.5277777777777778,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.0,
+    "precision_LEAF_BLIGHT": 0.0,
+    "recall_LEAF_BLIGHT": 0.0,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.0,
+    "precision_LEAF_RUST": 0.0,
+    "recall_LEAF_RUST": 0.0,
+    "f1_LOOPER_CATERPILLARS": 0.5277777777777778,
+    "precision_LOOPER_CATERPILLARS": 0.3584905660377358,
+    "recall_LOOPER_CATERPILLARS": 1.0,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.10555555555555556,
+     0.10555555555555556
+    ],
+    "round_f1_micro": [
+     0.3584905660377358,
+     0.3584905660377358
+    ],
+    "round_seconds": [
+     28.451356887817383,
+     29.895238637924194
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    81,
+    74,
+    105
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 58.34659552574158,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 1,
+   "diversity_ratio": 0.2,
+   "alpha": 1.0,
+   "partition": {
+    "label_tv_mean": 0.23353885020551687,
+    "label_tv_max": 0.2951566951566952,
+    "size_cv": 0.15317159809030673,
+    "client_sizes": [
+     81,
+     74,
+     105
+    ]
+   }
+  },
+  "local_only|alpha=1.0|seed=0": {
+   "per_client_f1": [
+    0.18361702127659574,
+    0.10555555555555556,
+    0.3386186186186186
+   ],
+   "mean_f1": 0.2092637318169233,
+   "std_f1": 0.09686042591357537,
+   "best_f1": 0.3386186186186186,
+   "worst_f1": 0.10555555555555556,
+   "num_clients": 3,
+   "local_epochs": 2,
+   "alpha": 1.0
+  },
+  "fedavg|alpha=0.1|seed=0": {
+   "algorithm": "fedavg",
+   "f1_macro": 0.22361702127659572,
+   "f1_micro": 0.4528301886792453,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 24,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.4528301886792453,
+    "f1_macro": 0.22361702127659572,
+    "f1_weighted": 0.3654957848253714,
+    "precision": 0.19255952380952382,
+    "precision_micro": 0.4528301886792453,
+    "recall": 0.28350877192982454,
+    "recall_micro": 0.4528301886792453,
+    "accuracy": 0.4528301886792453,
+    "accuracy_ci95_low": 0.3265757915292224,
+    "accuracy_ci95_high": 0.5854602451289419,
+    "per_class_f1": [
+     0.46808510638297873,
+     0.0,
+     0.0,
+     0.65,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.46808510638297873,
+    "precision_LEAF_BLIGHT": 0.34375,
+    "recall_LEAF_BLIGHT": 0.7333333333333333,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.0,
+    "precision_LEAF_RUST": 0.0,
+    "recall_LEAF_RUST": 0.0,
+    "f1_LOOPER_CATERPILLARS": 0.65,
+    "precision_LOOPER_CATERPILLARS": 0.6190476190476191,
+    "recall_LOOPER_CATERPILLARS": 0.6842105263157895,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.10955223880597016,
+     0.22361702127659572
+    ],
+    "round_f1_micro": [
+     0.3018867924528302,
+     0.4528301886792453
+    ],
+    "round_seconds": [
+     29.31488847732544,
+     29.968761205673218
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    53,
+    96,
+    111
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 59.28364968299866,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 2,
+   "diversity_ratio": 0.4,
+   "alpha": 0.1,
+   "partition": {
+    "label_tv_mean": 0.4430106085766463,
+    "label_tv_max": 0.544121915820029,
+    "size_cv": 0.2836261394551788,
+    "client_sizes": [
+     53,
+     96,
+     111
+    ]
+   }
+  },
+  "fedprox|alpha=0.1|seed=0": {
+   "algorithm": "fedprox",
+   "f1_macro": 0.21474358974358973,
+   "f1_micro": 0.4339622641509434,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 23,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.4339622641509434,
+    "f1_macro": 0.21474358974358973,
+    "f1_weighted": 0.35032656023222064,
+    "precision": 0.18666666666666668,
+    "precision_micro": 0.4339622641509434,
+    "recall": 0.2729824561403508,
+    "recall_micro": 0.4339622641509434,
+    "accuracy": 0.4339622641509434,
+    "accuracy_ci95_low": 0.30950396559750293,
+    "accuracy_ci95_high": 0.5673464857239271,
+    "per_class_f1": [
+     0.4583333333333333,
+     0.0,
+     0.0,
+     0.6153846153846154,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.4583333333333333,
+    "precision_LEAF_BLIGHT": 0.3333333333333333,
+    "recall_LEAF_BLIGHT": 0.7333333333333333,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.0,
+    "precision_LEAF_RUST": 0.0,
+    "recall_LEAF_RUST": 0.0,
+    "f1_LOOPER_CATERPILLARS": 0.6153846153846154,
+    "precision_LOOPER_CATERPILLARS": 0.6,
+    "recall_LOOPER_CATERPILLARS": 0.631578947368421,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.129004329004329,
+     0.21474358974358973
+    ],
+    "round_f1_micro": [
+     0.32075471698113206,
+     0.4339622641509434
+    ],
+    "round_seconds": [
+     32.29659128189087,
+     39.32392120361328
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    53,
+    96,
+    111
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 71.62051248550415,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 2,
+   "diversity_ratio": 0.4,
+   "alpha": 0.1,
+   "partition": {
+    "label_tv_mean": 0.4430106085766463,
+    "label_tv_max": 0.544121915820029,
+    "size_cv": 0.2836261394551788,
+    "client_sizes": [
+     53,
+     96,
+     111
+    ]
+   }
+  },
+  "scaffold|alpha=0.1|seed=0": {
+   "algorithm": "scaffold",
+   "f1_macro": 0.10955223880597016,
+   "f1_micro": 0.3018867924528302,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 16,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.3018867924528302,
+    "f1_macro": 0.10955223880597016,
+    "f1_weighted": 0.162573922838637,
+    "precision": 0.25769230769230766,
+    "precision_micro": 0.3018867924528302,
+    "recall": 0.21052631578947367,
+    "recall_micro": 0.3018867924528302,
+    "accuracy": 0.3018867924528302,
+    "accuracy_ci95_low": 0.19518302727578896,
+    "accuracy_ci95_high": 0.4353683266885011,
+    "per_class_f1": [
+     0.44776119402985076,
+     0.0,
+     0.0,
+     0.1,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.44776119402985076,
+    "precision_LEAF_BLIGHT": 0.28846153846153844,
+    "recall_LEAF_BLIGHT": 1.0,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.0,
+    "precision_LEAF_RUST": 0.0,
+    "recall_LEAF_RUST": 0.0,
+    "f1_LOOPER_CATERPILLARS": 0.1,
+    "precision_LOOPER_CATERPILLARS": 1.0,
+    "recall_LOOPER_CATERPILLARS": 0.05263157894736842,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.10955223880597016,
+     0.08823529411764705
+    ],
+    "round_f1_micro": [
+     0.3018867924528302,
+     0.2830188679245283
+    ],
+    "round_seconds": [
+     33.19615936279297,
+     35.674129247665405
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    53,
+    96,
+    111
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 68.87028861045837,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 2,
+   "diversity_ratio": 0.4,
+   "alpha": 0.1,
+   "partition": {
+    "label_tv_mean": 0.4430106085766463,
+    "label_tv_max": 0.544121915820029,
+    "size_cv": 0.2836261394551788,
+    "client_sizes": [
+     53,
+     96,
+     111
+    ]
+   }
+  },
+  "fedbn|alpha=0.1|seed=0": {
+   "algorithm": "fedbn",
+   "f1_macro": 0.10555555555555556,
+   "f1_micro": 0.3584905660377358,
+   "metrics": {
+    "n_samples": 53,
+    "n_correct": 19,
+    "micro_f1_step": 0.018867924528301886,
+    "f1_micro": 0.3584905660377358,
+    "f1_macro": 0.10555555555555556,
+    "f1_weighted": 0.18920335429769394,
+    "precision": 0.07169811320754717,
+    "precision_micro": 0.3584905660377358,
+    "recall": 0.2,
+    "recall_micro": 0.3584905660377358,
+    "accuracy": 0.3584905660377358,
+    "accuracy_ci95_low": 0.2430195255280876,
+    "accuracy_ci95_high": 0.49308858444640524,
+    "per_class_f1": [
+     0.0,
+     0.0,
+     0.0,
+     0.5277777777777778,
+     0.0
+    ],
+    "f1_LEAF_BLIGHT": 0.0,
+    "precision_LEAF_BLIGHT": 0.0,
+    "recall_LEAF_BLIGHT": 0.0,
+    "f1_LEAF_HOPPERS": 0.0,
+    "precision_LEAF_HOPPERS": 0.0,
+    "recall_LEAF_HOPPERS": 0.0,
+    "f1_LEAF_RUST": 0.0,
+    "precision_LEAF_RUST": 0.0,
+    "recall_LEAF_RUST": 0.0,
+    "f1_LOOPER_CATERPILLARS": 0.5277777777777778,
+    "precision_LOOPER_CATERPILLARS": 0.3584905660377358,
+    "recall_LOOPER_CATERPILLARS": 1.0,
+    "f1_MOSQUITO_BUG": 0.0,
+    "precision_MOSQUITO_BUG": 0.0,
+    "recall_MOSQUITO_BUG": 0.0,
+    "confusion_matrix_labels": [
+     "LEAF_BLIGHT",
+     "LEAF_HOPPERS",
+     "LEAF_RUST",
+     "LOOPER_CATERPILLARS",
+     "MOSQUITO_BUG"
+    ]
+   },
+   "history": {
+    "round_f1_macro": [
+     0.10555555555555556,
+     0.10555555555555556
+    ],
+    "round_f1_micro": [
+     0.3584905660377358,
+     0.3584905660377358
+    ],
+    "round_seconds": [
+     32.85733938217163,
+     25.106899976730347
+    ],
+    "round_peak_mib": [
+     0.0,
+     0.0
+    ],
+    "balanced_fallback_clients": []
+   },
+   "client_sizes": [
+    53,
+    96,
+    111
+   ],
+   "num_params": 15605509,
+   "upload_bytes_per_client_per_round": 62422036,
+   "total_comm_bytes": 749064432,
+   "wall_seconds": 57.96423935890198,
+   "peak_mib": 0.0,
+   "balanced_sampler": false,
+   "diversity_weight": 0.0,
+   "unique_predicted_classes": 1,
+   "diversity_ratio": 0.2,
+   "alpha": 0.1,
+   "partition": {
+    "label_tv_mean": 0.4430106085766463,
+    "label_tv_max": 0.544121915820029,
+    "size_cv": 0.2836261394551788,
+    "client_sizes": [
+     53,
+     96,
+     111
+    ]
+   }
+  },
+  "local_only|alpha=0.1|seed=0": {
+   "per_client_f1": [
+    0.08823529411764705,
+    0.12285714285714286,
+    0.10555555555555556
+   ],
+   "mean_f1": 0.10554933084344849,
+   "std_f1": 0.014134311245934188,
+   "best_f1": 0.12285714285714286,
+   "worst_f1": 0.08823529411764705,
+   "num_clients": 3,
+   "local_epochs": 2,
+   "alpha": 0.1
+  }
+ }
+}

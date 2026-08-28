@@ -1,0 +1,144 @@
+% REQUIRES: \usetikzlibrary{arrows.meta,positioning,fit}   (nothing beyond the wrapper preamble)
+% Assumes these document colors are already defined in the preamble; if not, add:
+%   \definecolor{llmblue}{RGB}{174,210,225}   \definecolor{vitgreen}{RGB}{181,215,168}
+%   \definecolor{vlmred}{RGB}{234,153,153}    \definecolor{fedorange}{RGB}{255,229,153}
+%   \definecolor{outyyellow}{RGB}{255,242,204}\definecolor{smallgray}{RGB}{220,220,220}
+%   \definecolor{headblue}{RGB}{60,90,180}
+%
+% ROUTING ARITHMETIC (long dashed h_f branch, Encode -> Re-rank), so the path can be
+% sanity-checked without compiling:
+%   Stage panels are 5.0cm tall, centered at y=5.9  -> every panel spans y=[3.4, 8.4].
+%   Panel x-spans:  Query [0.4,4.6]  Encode [5.4,10.2]  Retrieve [11.0,15.6]
+%                   Re-rank [16.4,21.0]  Adjust [21.8,27.4]   (0.8cm gaps).
+%   Fallback box: center (10.55,1.9), 5.2cm x 1.0cm -> spans x=[7.95,13.15], y=[1.4,2.4].
+%   Branch: leaves Encode south at (6.4,3.4)  [6.4 is LEFT of the fallback box span 7.95..13.15],
+%           drops to y=0.7  [0.7cm BELOW the fallback box bottom y=1.4],
+%           runs right to x=19.6, rises into Re-rank south at (19.6,3.4)
+%           [19.6 is inside Re-rank span 16.4..21.0 and RIGHT of fallback edge 13.15].
+%   => the horizontal run at y=0.7 passes UNDER the fallback box and UNDER the Retrieve
+%      panel (whose lowest edge is y=3.4); the two vertical runs are outside every panel
+%      and outside the fallback box, so the branch crosses no panel it shouldn't.
+%   The gray fallback connectors, (9.5,2.4)->(8.4,3.4) and (11.7,2.4)->(12.8,3.4), stay in
+%   the band y=[2.4,3.4] and x=[8.4,12.8], so they never meet the blue branch either.
+\begin{tikzpicture}[
+  font=\footnotesize,
+  >={Stealth[length=2.2mm,width=1.9mm]},
+  gpanel/.style={rounded corners=9pt, draw=black!40, thin, fill=smallgray!35},
+  stgpanel/.style={rounded corners=5pt, draw=black, thin},
+  strip/.style={draw=black, thin, rounded corners=2pt, inner xsep=6pt,
+                inner ysep=2.5pt, font=\footnotesize\bfseries, anchor=west},
+  stagetitle/.style={font=\footnotesize\bfseries, inner sep=1pt},
+  inbox/.style={draw=black, thin, rounded corners=2pt, fill=white,
+                minimum width=3.6cm, minimum height=0.72cm, inner sep=2pt},
+  tagbox/.style={draw=black, thin, rounded corners=3pt, fill=outyyellow,
+                 minimum width=3.4cm, minimum height=0.56cm, align=center, font=\scriptsize},
+  ltag/.style={draw=black, thin, rounded corners=2pt, fill=outyyellow,
+               font=\scriptsize, inner xsep=4pt, inner ysep=2pt},
+  iottag/.style={draw=black, thin, rounded corners=1.5pt, fill=white,
+                 font=\tiny, inner xsep=2.5pt, inner ysep=1.5pt},
+  dnl/.style={->, dashed, draw=headblue, semithick, rounded corners=3pt},
+  ilab/.style={font=\scriptsize, align=center, inner sep=1.5pt},
+  mlab/.style={anchor=west, font=\scriptsize, inner sep=1pt},
+  pics/leafG/.style={code={%
+    \draw[black, line width=0.3pt, fill=vitgreen]
+      (0,-0.13) .. controls (0.12,-0.05) and (0.12,0.07) .. (0,0.14)
+                .. controls (-0.12,0.07) and (-0.12,-0.05) .. cycle;
+    \draw[black, line width=0.3pt] (0,-0.10) -- (0,0.10);}},
+  pics/docG/.style={code={%
+    \draw[black, line width=0.3pt, fill=white] (-0.09,-0.13) rectangle (0.09,0.13);
+    \foreach \yy in {0.06,0.00,-0.06}
+      \draw[black, line width=0.3pt] (-0.055,\yy) -- (0.055,\yy);}},
+  pics/gaugeG/.style={code={%
+    \draw[black, line width=0.3pt, fill=white] (0,0) circle (0.12);
+    \draw[headblue, line width=0.6pt] (0,0) -- (50:0.085);
+    \fill[headblue] (0,0) circle (0.6pt);}}
+]
+
+%=====================================================================
+% Single group panel: RAG Diagnosis Pipeline
+%=====================================================================
+\draw[gpanel] (0,0) rectangle (27.8,9.4);
+\node[strip, fill=llmblue!70] at (0.35,9.0) {RAG Diagnosis Pipeline};
+
+% ---- stage 1: Query
+\node[stgpanel, fill=llmblue!55, minimum width=4.2cm, minimum height=5.0cm] (stgQ) at (2.5,5.9) {};
+\node[stagetitle] at (2.5,8.05) {Query};
+\node[inbox] (qb1) at (2.55,6.75) {};
+\node[inbox, below=0.35cm of qb1] (qb2) {};
+\pic at ([xshift=0.40cm]qb1.west) {docG};
+\pic at ([xshift=0.40cm]qb2.west) {leafG};
+\node[ilab] at ([xshift=0.22cm]qb1.center) {Text description};
+\node[ilab] at ([xshift=0.22cm]qb2.center) {Leaf photo\\[-1pt] (optional)};
+
+% ---- stage 2: Encode
+\node[stgpanel, fill=vlmred!30, minimum width=4.8cm, minimum height=5.0cm] (stgEnc) at (7.8,5.9) {};
+\node[stagetitle] at (7.8,8.05) {Encode};
+\node[inbox, minimum width=3.4cm, minimum height=0.86cm, align=center] (sbert) at (7.8,6.6)
+  {\textbf{Sentence-BERT}\\[-1pt]{\tiny all-MiniLM-L6-v2}};
+\node[ltag] (qtag) at (7.8,5.35) {$\mathbf{q}$ (dense vector)};
+\draw[->, thin] (sbert.south) -- (qtag.north);
+
+% ---- stage 3: Retrieve
+\node[stgpanel, fill=fedorange!80, minimum width=4.6cm, minimum height=5.0cm] (stgRet) at (13.3,5.9) {};
+\node[stagetitle] at (13.3,8.05) {Retrieve};
+\node[inbox, minimum width=3.7cm, minimum height=1.05cm, align=center] (faiss) at (13.3,6.55)
+  {\textbf{FAISS}\\[-1pt]{\tiny 5-class treatment KB}\\[-2pt]{\tiny cosine similarity}};
+\node[ltag] (ktag) at (13.3,5.3) {top-$k$ passages};
+\draw[->, thin] (faiss.south) -- (ktag.north);
+
+% ---- stage 4: Re-rank (optional)
+\node[stgpanel, fill=outyyellow, minimum width=4.6cm, minimum height=5.0cm] (stgRR) at (18.7,5.9) {};
+\node[stagetitle] at (18.7,8.05) {Re-rank (optional)};
+\node[inbox, minimum width=3.4cm] (vlmrr) at (18.7,6.6) {\textbf{VLM Re-ranker}};
+\node[ltag, fill=white] (rrtag) at (18.7,5.35) {re-ranked passages};
+\draw[->, thin] (vlmrr.south) -- (rrtag.north);
+\node[font=\tiny\itshape, text=black!60] at (18.7,4.7) {skipped if no photo};
+
+% ---- stage 5: Adjust + Recommend
+\node[stgpanel, fill=vitgreen!35, minimum width=5.6cm, minimum height=5.0cm] (stgAdj) at (24.6,5.9) {};
+\node[stagetitle] at (24.6,8.05) {Adjust + Recommend};
+% side-input row of IoT sensor tags (gauge glyph marks the row)
+\pic at (22.55,7.35) {gaugeG};
+\node[iottag] at (23.05,7.35) {T};
+\node[iottag] at (23.55,7.35) {H};
+\node[iottag] at (24.20,7.35) {soil};
+\node[iottag] at (24.90,7.35) {pH};
+\node[iottag] at (25.55,7.35) {EC};
+\node[inbox, minimum width=3.6cm] (iot) at (24.6,6.5) {\textbf{IoT Confidence Shift}};
+\draw[->, thin] (24.3,7.18) -- (24.3,6.87);
+\node[tagbox, minimum width=4.2cm, minimum height=0.86cm] (rec) at (24.6,5.2)
+  {\textbf{Treatment Recommendation}\\[-1pt]{\tiny sorted by urgency: high / medium / low}};
+\draw[->, thin] (iot.south) -- (rec.north);
+
+% ---- primary pipeline flow (solid, panel border to panel border)
+\draw[->, semithick] (stgQ.east)   -- (stgEnc.west);
+\draw[->, semithick] (stgEnc.east) -- (stgRet.west);
+\draw[->, semithick] (stgRet.east) -- (stgRR.west);
+\draw[->, semithick] (stgRR.east)  -- (stgAdj.west);
+
+% ---- multimodal re-rank branch (dashed headblue): Encode -> under fallback -> Re-rank
+% coordinates justified in the ROUTING ARITHMETIC header comment
+\draw[dnl] (6.4,3.4) -- (6.4,0.7) -- (19.6,0.7) -- (19.6,3.4);
+\node[font=\tiny, text=headblue, anchor=west, inner sep=1pt] at (6.55,3.1) {if photo present};
+\node[font=\scriptsize, text=headblue, anchor=west, inner sep=1pt] at (19.75,2.95) {$h_f$};
+
+% ---- fallback annotation (not part of the main flow)
+\node[stgpanel, fill=smallgray!40, align=center,
+      minimum width=5.2cm, minimum height=1.0cm] (fback) at (10.55,1.9)
+  {\textbf{Fallback: TF-IDF sparse retrieval}\\[-1pt]
+   {\tiny used if Sentence-BERT / FAISS unavailable}};
+\draw[->, dashed, thin, draw=black!55] (9.5,2.42)  -- (8.4,3.38);
+\draw[->, dashed, thin, draw=black!55] (11.7,2.42) -- (12.8,3.38);
+
+%=====================================================================
+% Legend (bottom of figure)
+%=====================================================================
+\node[inner sep=0pt, minimum size=0pt] (legA) at (7.95,-0.75) {};
+\draw[->, semithick] (8.05,-0.75) -- (8.95,-0.75);
+\node[mlab] (legSt) at (9.10,-0.75) {primary pipeline (text query)};
+\draw[dnl] (13.1,-0.75) -- (14.0,-0.75);
+\node[mlab] (legDt) at (14.15,-0.75) {multimodal re-rank signal (photo present)};
+\node[draw=black!50, thin, rounded corners=3pt, inner sep=5pt,
+      fit=(legA)(legSt)(legDt)] {};
+
+\end{tikzpicture}

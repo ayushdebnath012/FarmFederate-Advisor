@@ -1,0 +1,8 @@
+comparison,kind,estimate,ci_low,ci_high,bootstrap_fraction_above_zero
+unimodal_image,model_macro_f1,0.5027260458839405,0.38525469924812034,0.6236924603174603,
+unimodal_text,model_macro_f1,0.8876767676767677,0.7789743589743591,0.971291866028708,
+standard_vlm_fusion,model_macro_f1,0.5114285714285713,0.35579658385093166,0.636812865497076,
+proposed_multimodal_vlm,model_macro_f1,0.8876767676767677,0.7789743589743591,0.971291866028708,
+proposed_minus_unimodal_image,paired_macro_f1_delta,0.3849507217928272,0.24488859459254197,0.5190161159360074,1.0
+proposed_minus_unimodal_text,paired_macro_f1_delta,0.0,0.0,0.0,0.0
+proposed_minus_standard_vlm_fusion,paired_macro_f1_delta,0.3762481962481964,0.24967703282606027,0.5259615058144468,1.0

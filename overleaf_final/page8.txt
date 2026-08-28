@@ -1,0 +1,109 @@
+TABLE VIII: Metric and evidence ledger. Support is stated explicitly so separate current-test, standard-diagnostic, prior-
+screening, and federated tracks are not silently pooled.
+     System or probe                                        Accuracy / count            F1, interval, or change                                     Fact established
+     Actual text PLM                                        65.33%; 49/75               macro F1 0.6732                                             Frozen DistilBERT with a validation-selected ridge head on common sparse
+                                                                                                                                                    notes.
+     Actual image ViT                                       66.67%; 50/75               macro F1 0.5830                                             Frozen ViT-tiny specialist on the identical labels; this is the pure ViT
+                                                                                                                                                    baseline.
+     Raw image+text VLM                                     77.33%; 58/75               macro F1 0.7155                                             Unchanged cross-attention output without a post-hoc class gate.
+     ViT+DistilBERT VLM                                     82.67%; 62/75               macro F1 0.8192                                             Pooled late-fusion candidate; validation accuracy is below the incumbent, so
+                                                                                                                                                    it is not selected.
+     Proposed model                                         81.33%; 61/75               macro F1 0.6679; selected on                                Existing router has 89.19% validation accuracy versus 82.43% for the
+                                                                                        validation                                                  candidate.
+     Same-checkpoint alignment                              92.00→33.33%                F1 0.8753→0.2804                                            Class-mismatched text causes a 58.67-point loss under original-note paired
+                                                                                                                                                    input.
+     Enhanced image ensemble                                72.00%; 54/75               F1 0.6759; CI 60.23–85.14%                                  Five-expert gate adds eight crops over the core image path; it is not a pure
+                                                                                                                                                    ViT.
+     Retrieval / reliability                                1.33% exact R@1             60.00/61.33%       class  R@1;                              Evidence is class-compatible, not instance-retrieval quality; both modalities
+                                                                                        0.575/0.425 weights                                         remain active.
+     Centralized → FedAvg                                   74 validation crops         0.9099 init.; 0.8924–0.9099 final                           Warm-start multimodal adaptation across K = 2–8, not a from-scratch
+                                                                                        F1                                                          contest.
+     Prior family screens                                   15 / 30 / 30 supports       within-panel macro F1 only                                  Template text, source-image vision, and unlinked proxy-fusion panels cannot
+                                                                                                                                                    be cross-ranked.
+
+
+                         (a)                                                                                  (b)                                                                    (c)
+  Advisory precision@1
+
+
+
+
+                                                                 95.5                 Advisory precision@1           Retrieve only       Classify then retrieve
+                         1.0           90.0                                                                  1.2
+                                                                                                                                                                            Blight (40)
+
+                                                                                                                   99.2
+                                                                                                                                                                         Hoppers (40)
+                                                                                                                          98.5
+                                                                                                             1.0
+                                                                                                                                                              89.9           Rust (40)
+                         0.5
+                                               chance 20%                                                    0.8                                       72.5                Looper (40)
+
+                         0.0                                                                                  0.6                                                       Mosq. bug (41)
+                                     Retrieve              Classify then                                        Class-specific                       Generic only                     0.0      0.2        0.4     0.6     0.8      1.0
+                                       only                  retrieve                                        sentence (n = 132)                        (n = 69)                                 Advisory precision@1
+Fig. 6: Measured Classify–Retrieve–Advise quality on the templated symptom corpus: 472 passages, 201 queries, exact inner-
+product search. (a) Precision@1 with bootstrap intervals against chance; (b) split by whether the query holds a class-unique
+sentence; (c) per class. Same five classes as the diagnostic experiments, but a different corpus and support, never pooled with
+them.
+
+                                                   Direct image                                                                      Enhanced image                                                      Proposed router
+                               Blight (26)   13       2      8       3                                         Blight (26)       18             1       7                            Blight (26)     20            3       3
+
+                            Hoppers (2)                              2                                        Hoppers (2)               1               1                           Hoppers (2)                            2
+
+                                                             9                                                                                  8                                                                  10
+  True
+
+
+
+
+                                Rust (13)     1       2              1                                             Rust (13)     3      1               1                              Rust (13)     2                     1
+
+                            Looper (21)       4       3      3      11                                         Looper (21)       4      2              15                           Looper (21)      2                    19
+                         Mosq. bug (13)                                    13                          Mosq. bug (13)            1                            12                Mosq. bug (13)       1                           12
+                                                 ht         s
+                                                          er Rus
+                                                                t
+                                                                      pe
+                                                                        r         g                                                ht         s
+                                                                                                                                            er Rus
+                                                                                                                                                  t
+                                                                                                                                                        pe
+                                                                                                                                                          r         g                                  ht         s
+                                                                                                                                                                                                                er Rus
+                                                                                                                                                                                                                      t
+                                                                                                                                                                                                                            pe
+                                                                                                                                                                                                                              r         g
+                                               ig                               bu                                               ig                               bu                                 ig                               bu
+                                             Bl       o pp        Loo        q.                                                Bl       o pp        Loo        q.                                  Bl       o pp        Loo        q.
+                                                    H                     o s                                                         H                     o s                                           H                     o s
+                                                                        M                                                                                 M                                                                   M
+                                                          Predicted                                                                         Predicted                                                           Predicted
+Fig. 7: Where the errors land on the fixed 75-crop test. Each matrix sums to 75; diagonals give the 46, 54, and 61 correct crops
+of the direct image path, the five-expert enhanced gate, and the exploratory router. All panels share one count colour scale,
+so shading is directly comparable. The off-diagonal cells are the part no count table records: leaf blight is confused with rust
+and looper rather than scattered, looper recovers most under the router, and the two leaf-hopper crops fall into looper except
+for one the enhanced gate recovers.
+initialization. A same-checkpoint diagnostic reaches 92.00%                                                                                                                    R EFERENCES
+with paired input and 33.33% after class-mismatching text,                                                                                  [1] J. Yang, G. Xu, M. Yang, and Z. Lin, “Lightweight wavelet-CNN tea leaf disease
+confirming alignment sensitivity without relabelling its com-                                                                                   detection,” PLOS ONE, vol. 20, no. 5, art. e0323322, 2025.
+                                                                                                                                            [2] Y. Hu, J. Tang, and J. Yang, “Introducing artificial intelligence technology to plant dis-
+pact Transformer or ResNet paths as the independent PLM                                                                                         ease management for sustainable agriculture,” Crop Protection, vol. 184, art. 106764,
+                                                                                                                                                2024.
+and ViT baselines.                                                                                                                          [3] X. Deng and C. Photong, “Evaluation of tea leaf disease identification based on CNNs
+                                                                                                                                                VGG16, ResNet50, and DenseNet169,” in Proc. iEECON, 2024, pp. 1–4.
+   These internal development results do not establish                                                                                      [4] K. He, X. Zhang, S. Ren, and J. Sun, “Deep residual learning for image recognition,”
+category-best performance, privacy, or deployment readiness.                                                                                    in Proc. IEEE Conf. Comput. Vis. Pattern Recognit., 2016, pp. 770–778.
+                                                                                                                                            [5] D. S. Joseph, P. M. Pawar, and K. Chakradeo, “Real-time plant disease dataset
+The decisive next step is prospectively locked multi-estate                                                                                     development and detection of plant disease using deep learning,” IEEE Access, vol. 12,
+                                                                                                                                                pp. 16310–16333, 2024.
+evaluation with independent notes, real ownership, more rare-                                                                               [6] R. Maurya, S. Mahapatra, and L. Rajput, “A lightweight meta-ensemble approach for
+class cases, secure aggregation, communication accounting,                                                                                      plant disease detection suitable for IoT-based environments,” IEEE Access, vol. 12,
+                                                                                                                                                pp. 28096–28108, 2024.
+and repeated from-scratch federated runs.                                                                                                   [7] Md. S. H. Shovon et al., “PlantDet: A robust multi-model ensemble method based on
+                                                                                                                                                deep learning for plant disease detection,” IEEE Access, vol. 11, pp. 34846–34859,
+                                                                                                                                                2023.
+                                                                                                                                            [8] E. A. Al-Shahari et al., “Internet of Things assisted plant disease detection and crop
+

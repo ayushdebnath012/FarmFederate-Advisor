@@ -1,0 +1,5 @@
+condition,display_name,n,fed_minus_central_macro_f1,ci_low,ci_high,central_only_correct,fed_only_correct,p_exact,p_holm
+unimodal_image,Image only (unimodal),30,-0.03850707084453214,-0.19759364285898806,0.11455013983264753,4,3,1.0,1.0
+unimodal_text,Text only (unimodal),30,-0.0001680672268907779,-0.06014109651523447,0.0718053917294903,3,1,0.6249999999999994,1.0
+standard_vlm_fusion,Standard VLM fusion (concat),30,-0.1900854700854701,-0.33229070945693306,-0.02914413626520077,7,5,0.7744140624999998,1.0
+flexible_multimodal_vlm_matched_scratch,Flexible multimodal VLM (matched scratch),30,-0.0842857142857143,-0.2193869231903288,0.05203288404062395,8,5,0.5810546874999994,1.0

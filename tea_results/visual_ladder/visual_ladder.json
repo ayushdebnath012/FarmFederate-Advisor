@@ -1,0 +1,65 @@
+{
+  "_meta": {
+    "source": "tab:visual_gate as printed in overleaf_final/main.tex",
+    "extracted": "2026-08-24",
+    "note": "frozen here so the ladder figure no longer depends on the table remaining in the paper"
+  },
+  "rungs": [
+    {
+      "name": "Direct ResNet path",
+      "candidates": 1,
+      "validation_accuracy": 0.662,
+      "test_accuracy": 0.613,
+      "is_gate": false
+    },
+    {
+      "name": "Six-view TTA",
+      "candidates": 25,
+      "validation_accuracy": 0.73,
+      "test_accuracy": 0.613,
+      "is_gate": false
+    },
+    {
+      "name": "Deep-feature head",
+      "candidates": 40,
+      "validation_accuracy": 0.743,
+      "test_accuracy": 0.627,
+      "is_gate": false
+    },
+    {
+      "name": "Frozen ViT-tiny",
+      "candidates": 210,
+      "validation_accuracy": 0.797,
+      "test_accuracy": 0.667,
+      "is_gate": false
+    },
+    {
+      "name": "Calibrated base",
+      "candidates": 20,
+      "validation_accuracy": 0.77,
+      "test_accuracy": 0.68,
+      "is_gate": false
+    },
+    {
+      "name": "Three-expert gate",
+      "candidates": 243,
+      "validation_accuracy": 0.797,
+      "test_accuracy": 0.667,
+      "is_gate": true
+    },
+    {
+      "name": "Four-expert gate",
+      "candidates": 1024,
+      "validation_accuracy": 0.811,
+      "test_accuracy": 0.693,
+      "is_gate": true
+    },
+    {
+      "name": "Five-expert gate",
+      "candidates": 3125,
+      "validation_accuracy": 0.851,
+      "test_accuracy": 0.72,
+      "is_gate": true
+    }
+  ]
+}

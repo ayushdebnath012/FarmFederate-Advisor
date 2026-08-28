@@ -1,0 +1,62 @@
+%% ---------------------------------------------------------------------------
+%% REPLACEMENT for Table~\ref{tab:standard_suite} and the paragraph that cites it.
+%% Source: experiments/farm_results_standard_genuine.json (standard tier, H100).
+%% Corpus: 371 genuine (photograph, box) linked crop/note observations,
+%%         260/53/58 over 153 independent source groups, zero synthetic images.
+%% ---------------------------------------------------------------------------
+
+\begin{table*}[t]
+\caption{Federated results on 371 genuine box-linked crop--note observations
+(260/53/58 over 153 independent source groups; no synthetic images). Every
+architecture within a cell trains on the identical client partition, so
+differences are architectural rather than partition effects. Values are
+two-seed means of validation macro F1.}
+\label{tab:standard_suite}
+\centering\scriptsize
+\setlength\tabcolsep{2.7pt}
+\begin{minipage}[t]{0.38\textwidth}
+\centering
+\textbf{(a) FedAvg by architecture and skew}
+\begin{tabular}{lcccc}
+\toprule
+Architecture & $\alpha{=}.1$ & $\alpha{=}.5$ & $\alpha{=}1$ & $\alpha{=}10$\\
+\midrule
+Image only        & 0.327 & 0.505 & 0.499 & 0.494\\
+Text only         & 0.881 & 1.000 & 1.000 & 1.000\\
+Concat VLM        & 0.640 & 0.760 & 0.761 & 0.778\\
+Attention VLM     & 0.628 & 0.750 & 0.742 & 0.775\\
+Cross-attn.\ VLM  & 0.816 & 1.000 & 1.000 & 1.000\\
+\bottomrule
+\end{tabular}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.30\textwidth}
+\centering
+\textbf{(b) Aggregator at $\alpha{=}0.1$}
+\begin{tabular}{lcccc}
+\toprule
+Arch. & Avg & Prox & SCAF & BN\\
+\midrule
+Image     & \textbf{.327} & .323 & .211 & .178\\
+Text      & .881 & \textbf{.891} & .445 & .753\\
+Concat    & \textbf{.640} & .638 & .238 & .570\\
+Attention & .628 & \textbf{.628} & .088 & .588\\
+Cross-att & .816 & \textbf{.850} & .465 & .773\\
+\bottomrule
+\end{tabular}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.29\textwidth}
+\centering
+\textbf{(c) Cost and federation gain}
+\begin{tabular}{lcc}
+\toprule
+Architecture & MiB & $\Delta$ local\\
+\midrule
+Image only       & 18.9 & $+$0.121\\
+Text only        & 42.4 & $+$0.348\\
+Concat VLM       & 59.5 & $+$0.312\\
+Attention VLM    & 60.5 & $+$0.288\\
+Cross-attn.\ VLM & 67.2 & $+$0.339\\
+\bottomrule
+\end{tabular}
+\end{minipage}
+\end{table*}
