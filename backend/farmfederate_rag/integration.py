@@ -38,6 +38,7 @@ from rag_core import (
     STRESS_TYPES,
     QUERY_DIM,
 )
+from local_data_loader import LocalDatasetLoader, ImageCaptionLoader
 from federated_rag_training import (
     RetrieverContrastiveLoss,
     AdvisoryGenerator,
@@ -190,12 +191,25 @@ class KnowledgeBaseBuilder:
         tokenizer: AutoTokenizer,
         device: str = "cpu",
         max_length: int = 128,
+        data_dir: Optional[str] = None,
+        load_local_data: bool = True,
+        max_docs_per_class: int = 200,
     ):
         self.retriever = retriever
         self.tokenizer = tokenizer
         self.device = device
         self.max_length = max_length
         self.chunker = AgriculturalChunker(chunk_size=256, overlap=32)
+        self.load_local_data = load_local_data
+        self.max_docs_per_class = max_docs_per_class
+
+        # Auto-detect data directory relative to project root
+        if data_dir is None:
+            project_root = Path(__file__).parent.parent.parent
+            candidate = project_root / "data"
+            self.data_dir = str(candidate) if candidate.exists() else None
+        else:
+            self.data_dir = data_dir
 
     @torch.no_grad()
     def _embed_documents(self, docs: List[Document]) -> np.ndarray:
@@ -266,14 +280,45 @@ class KnowledgeBaseBuilder:
             for doc in extra_docs:
                 all_docs.extend(self.chunker.chunk(doc))
 
+        # --- load local dataset documents ---
+        local_doc_count = 0
+        if self.load_local_data and self.data_dir:
+            try:
+                loader = LocalDatasetLoader(max_docs_per_class=self.max_docs_per_class)
+                local_docs = loader.load_all(self.data_dir)
+
+                # Optionally filter by farm's crops/region (local data is mostly "general")
+                for doc in local_docs:
+                    all_docs.extend(self.chunker.chunk(doc))
+                local_doc_count = len(local_docs)
+
+                # Also load image captions (smaller set)
+                img_loader = ImageCaptionLoader()
+                img_docs = img_loader.load_image_captions(
+                    self.data_dir, max_per_class=50
+                )
+                for doc in img_docs:
+                    all_docs.extend(self.chunker.chunk(doc))
+                local_doc_count += len(img_docs)
+
+                logger.info(
+                    "KnowledgeBaseBuilder: loaded %d local documents for farm %s",
+                    local_doc_count, farm_id,
+                )
+            except Exception as e:
+                logger.warning(
+                    "KnowledgeBaseBuilder: failed to load local data: %s", e
+                )
+
         vs = FarmVectorStore(dim=QUERY_DIM, farm_id=farm_id)
         if all_docs:
             embs = self._embed_documents(all_docs)
             vs.add_documents(all_docs, embs)
 
         logger.info(
-            "KnowledgeBaseBuilder: farm %s KB has %d chunks (from %d seed docs)",
-            farm_id, len(vs), len(seed_docs),
+            "KnowledgeBaseBuilder: farm %s KB has %d chunks "
+            "(from %d seed + %d local docs)",
+            farm_id, len(vs), len(seed_docs), local_doc_count,
         )
         return vs
 

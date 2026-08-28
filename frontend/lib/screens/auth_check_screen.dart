@@ -100,7 +100,8 @@ class _AuthCheckScreenState extends State<AuthCheckScreen> {
             const SizedBox(height: 32),
             if (!_error) ...[
               const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryGreen),
+                valueColor:
+                    AlwaysStoppedAnimation<Color>(AppTheme.primaryGreen),
               ),
               const SizedBox(height: 20),
             ],
@@ -114,9 +115,7 @@ class _AuthCheckScreenState extends State<AuthCheckScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              _error
-                  ? 'Starting app...'
-                  : 'Your Smart Crop Health Assistant',
+              _error ? 'Starting app...' : 'Your Tea Disease Assistant',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.7),

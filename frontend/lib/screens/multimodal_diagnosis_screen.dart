@@ -22,7 +22,8 @@ class MultimodalDiagnosisScreen extends StatefulWidget {
   });
 
   @override
-  State<MultimodalDiagnosisScreen> createState() => _MultimodalDiagnosisScreenState();
+  State<MultimodalDiagnosisScreen> createState() =>
+      _MultimodalDiagnosisScreenState();
 }
 
 class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
@@ -47,27 +48,32 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
   bool _estimateUncertainty = false;
   bool _showAdvancedOptions = false;
 
-  // Example descriptions - simple farmer language
+  // Example tea disease descriptions - simple farmer language
   final List<Map<String, String>> _exampleSymptoms = [
     {
-      'class': 'Healthy',
-      'text': 'Leaves are bright green and look healthy. No spots or yellow patches. Plant is growing well.',
+      'class': 'Leaf Blight',
+      'text':
+          'Brown water-soaked patches are spreading from the leaf edge. Some areas look necrotic with a yellow halo.',
     },
     {
-      'class': 'Needs Water',
-      'text': 'Leaves are drooping and curling. Some brown dry patches. The soil looks very dry.',
+      'class': 'Leaf Hoppers',
+      'text':
+          'Young leaves show stippling and tip burn. There are small puncture marks and marginal scorch on the flush.',
     },
     {
-      'class': 'Needs Fertilizer',
-      'text': 'Leaves turning yellow but the veins are still green. Plant growth seems slow.',
+      'class': 'Leaf Rust',
+      'text':
+          'Orange yellow rust pustules are visible under the leaf. The upper surface has yellow spotting.',
     },
     {
-      'class': 'May Be Sick',
-      'text': 'Brown or black spots on the leaves. Some fuzzy or moldy patches. Leaves look damaged.',
+      'class': 'Looper Caterpillars',
+      'text':
+          'Leaves have ragged holes and skeletonised patches. Frass is visible near the feeding damage.',
     },
     {
-      'class': 'Bug Problem',
-      'text': 'Small holes in the leaves. Can see tiny bugs or insects. Some leaves have been eaten.',
+      'class': 'Mosquito Bug',
+      'text':
+          'Tender shoots have raised corky lesions with dark centres. Shoot tips are wilting and dying back.',
     },
   ];
 
@@ -101,7 +107,8 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
   Future<void> _pickCamera() async {
     try {
       if (kIsWeb) {
-        _showSnackBar('Camera not available on web. Use gallery instead.', isError: true);
+        _showSnackBar('Camera not available on web. Use gallery instead.',
+            isError: true);
         return;
       }
 
@@ -167,7 +174,8 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
     final sensorData = _sensorController.text.trim();
 
     if (symptomText.isEmpty && _imageBytes == null) {
-      _showSnackBar('Please provide a symptom description or crop image', isError: true);
+      _showSnackBar('Please provide a symptom description or crop image',
+          isError: true);
       return;
     }
 
@@ -274,7 +282,8 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
               color: AppTheme.primaryGreen.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: const Icon(Icons.check_circle, color: AppTheme.primaryGreen, size: 20),
+            child: const Icon(Icons.check_circle,
+                color: AppTheme.primaryGreen, size: 20),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -286,7 +295,7 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
                   style: TextStyle(color: Colors.white70, fontSize: 11),
                 ),
                 Text(
-                  _currentModel?.name ?? 'Smart Crop Analysis',
+                  _currentModel?.name ?? 'FarmFederate Tea VLM',
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -302,7 +311,7 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
-              '${((_currentModel?.accuracy ?? 0.847) * 100).toStringAsFixed(0)}% accurate',
+              '${((_currentModel?.accuracy ?? 0.949) * 100).toStringAsFixed(0)}% F1',
               style: const TextStyle(
                 color: AppTheme.primaryGreen,
                 fontSize: 12,
@@ -331,7 +340,7 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
               SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  'Take a Photo of Your Crop',
+                  'Take a Photo of Your Tea Leaf',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -433,7 +442,8 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
               height: 1.4,
             ),
             decoration: InputDecoration(
-              hintText: 'Tell us what you notice...\n(yellow leaves, drooping, spots, bugs, etc.)',
+              hintText:
+                  'Tell us what you notice...\n(rust pustules, blight patches, feeding holes, corky lesions, etc.)',
               hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.4)),
               prefixIcon: const Icon(Icons.description),
               filled: true,
@@ -472,7 +482,8 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
                     onPressed: () {
                       _symptomController.text = example['text']!;
                     },
-                    backgroundColor: _getStressColor(example['class']!).withValues(alpha: 0.2),
+                    backgroundColor: _getStressColor(example['class']!)
+                        .withValues(alpha: 0.2),
                     labelStyle: TextStyle(
                       color: _getStressColor(example['class']!),
                       fontSize: 12,
@@ -489,16 +500,21 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
 
   Color _getStressColor(String stressClass) {
     switch (stressClass.toLowerCase()) {
-      case 'healthy':
-        return AppTheme.healthyColor;
-      case 'drought':
-        return AppTheme.droughtColor;
-      case 'nutrient':
-        return AppTheme.nutrientColor;
-      case 'disease':
-        return AppTheme.diseaseColor;
-      case 'pest':
-        return AppTheme.pestColor;
+      case 'leaf blight':
+      case 'leaf_blight':
+        return const Color(0xFF22A822);
+      case 'leaf hoppers':
+      case 'leaf_hoppers':
+        return Colors.redAccent;
+      case 'leaf rust':
+      case 'leaf_rust':
+        return const Color(0xFF1E90FF);
+      case 'looper caterpillars':
+      case 'looper_caterpillars':
+        return Colors.purpleAccent;
+      case 'mosquito bug':
+      case 'mosquito_bug':
+        return const Color(0xFF00CED1);
       default:
         return Colors.grey;
     }
@@ -514,12 +530,14 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
         children: [
           ListTile(
             leading: const Icon(Icons.tune, color: Colors.white70),
-            title: const Text('More Options', style: TextStyle(color: Colors.white)),
+            title: const Text('More Options',
+                style: TextStyle(color: Colors.white)),
             trailing: Icon(
               _showAdvancedOptions ? Icons.expand_less : Icons.expand_more,
               color: Colors.white70,
             ),
-            onTap: () => setState(() => _showAdvancedOptions = !_showAdvancedOptions),
+            onTap: () =>
+                setState(() => _showAdvancedOptions = !_showAdvancedOptions),
           ),
           if (_showAdvancedOptions) ...[
             const Divider(color: Colors.white12),
@@ -536,7 +554,8 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
                     decoration: InputDecoration(
                       labelText: 'Weather & Soil Info (optional)',
                       hintText: 'e.g., hot weather, dry soil, rainy week',
-                      hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.4)),
+                      hintStyle:
+                          TextStyle(color: Colors.white.withValues(alpha: 0.4)),
                       prefixIcon: const Icon(Icons.wb_sunny),
                       filled: true,
                       fillColor: const Color(0xFF1A1A2E),
@@ -550,13 +569,15 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: AppTheme.primaryGreen),
+                        borderSide:
+                            const BorderSide(color: AppTheme.primaryGreen),
                       ),
                     ),
                   ),
                   const SizedBox(height: 16),
                   SwitchListTile(
-                    title: const Text('Double Check Results', style: TextStyle(color: Colors.white)),
+                    title: const Text('Double Check Results',
+                        style: TextStyle(color: Colors.white)),
                     subtitle: const Text(
                       'Takes longer but gives more reliable results',
                       style: TextStyle(color: Colors.white70, fontSize: 12),
@@ -616,7 +637,8 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
           const SizedBox(height: 8),
           Text(
             'This will take just a moment',
-            style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 12),
+            style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.5), fontSize: 12),
           ),
         ],
       ),
@@ -659,7 +681,7 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
               shape: BoxShape.circle,
             ),
             child: Icon(
-              _result!.hasStress ? Icons.warning_amber : Icons.check_circle,
+              Icons.warning_amber,
               color: _result!.severityColor,
               size: 32,
             ),
@@ -670,16 +692,16 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _result!.hasStress ? 'Problem Found' : 'Your Crop Looks Healthy!',
+                  'Tea Disease Identified',
                   style: TextStyle(
                     color: _result!.severityColor,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(
-                  _result!.hasStress ? 'See recommendations below' : 'Keep up the good work!',
-                  style: const TextStyle(color: Colors.white70),
+                const Text(
+                  'See recommendations below',
+                  style: TextStyle(color: Colors.white70),
                 ),
               ],
             ),
@@ -761,7 +783,8 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
               if (score.isActive) ...[
                 const SizedBox(width: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
                     color: Colors.red.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(4),
@@ -798,7 +821,8 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
                     boxShadow: isTop
                         ? [
                             BoxShadow(
-                              color: score.stressClass.color.withValues(alpha: 0.5),
+                              color: score.stressClass.color
+                                  .withValues(alpha: 0.5),
                               blurRadius: 8,
                             ),
                           ]
@@ -893,13 +917,15 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
                 children: [
                   Row(
                     children: [
-                      Icon(stressClass.icon, size: 16, color: stressClass.color),
+                      Icon(stressClass.icon,
+                          size: 16, color: stressClass.color),
                       const SizedBox(width: 8),
-                      Text(stressClass.displayName, style: const TextStyle(color: Colors.white70)),
+                      Text(stressClass.displayName,
+                          style: const TextStyle(color: Colors.white70)),
                     ],
                   ),
                   Text(
-                    '±${(entry.value * 100).toStringAsFixed(2)}%',
+                    '+/-${(entry.value * 100).toStringAsFixed(2)}%',
                     style: const TextStyle(
                       color: Colors.white,
                       fontFamily: 'monospace',
@@ -957,22 +983,25 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               const SizedBox(height: 16),
-              _buildHelpStep('1', 'Take a Photo', 'Snap a clear picture of the affected plant or leaves'),
+              _buildHelpStep('1', 'Take a Photo',
+                  'Snap a clear picture of the affected tea leaf or shoot'),
               const SizedBox(height: 12),
-              _buildHelpStep('2', 'Describe It', 'Tell us what you see - yellow leaves, spots, wilting, bugs, etc.'),
+              _buildHelpStep('2', 'Describe It',
+                  'Tell us what you see - rust, blight, holes, stippling, or corky wounds'),
               const SizedBox(height: 12),
-              _buildHelpStep('3', 'Get Results', 'Tap "Check My Crop" and we\'ll tell you what\'s wrong'),
+              _buildHelpStep('3', 'Get Results',
+                  'Tap "Check My Crop" for disease probabilities and remedies'),
               const SizedBox(height: 20),
               const Text(
                 'We can detect:',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
-              const Text('• Healthy crops - all is well!'),
-              const Text('• Water problems - needs more or less water'),
-              const Text('• Nutrient issues - needs fertilizer'),
-              const Text('• Diseases - plant may be sick'),
-              const Text('• Pest damage - bugs or insects'),
+              const Text('- Leaf blight'),
+              const Text('- Leaf hoppers'),
+              const Text('- Leaf rust'),
+              const Text('- Looper caterpillars'),
+              const Text('- Mosquito bug'),
               const SizedBox(height: 16),
               Container(
                 padding: const EdgeInsets.all(12),
@@ -987,7 +1016,8 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
                     Expanded(
                       child: Text(
                         'Your photos stay private on your device',
-                        style: TextStyle(color: AppTheme.primaryGreen, fontSize: 13),
+                        style: TextStyle(
+                            color: AppTheme.primaryGreen, fontSize: 13),
                       ),
                     ),
                   ],
@@ -1020,7 +1050,8 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
           child: Center(
             child: Text(
               number,
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -1031,11 +1062,13 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
             children: [
               Text(
                 title,
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.bold),
               ),
               Text(
                 description,
-                style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 13),
+                style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.7), fontSize: 13),
               ),
             ],
           ),
@@ -1043,5 +1076,4 @@ class _MultimodalDiagnosisScreenState extends State<MultimodalDiagnosisScreen> {
       ],
     );
   }
-
 }

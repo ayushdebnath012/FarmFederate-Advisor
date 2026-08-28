@@ -56,7 +56,8 @@ class _QdrantDemoScreenState extends State<QdrantDemoScreen> {
       final result = await _api.demoPopulate(n: 5);
       setState(() {
         _populatedIds = result['ids'] ?? [];
-        _statusMessage = "Populated ${_populatedIds.length} vectors into Qdrant";
+        _statusMessage =
+            "Populated ${_populatedIds.length} vectors into Qdrant";
       });
     } catch (e) {
       setState(() => _statusMessage = "Populate error: $e");
@@ -106,12 +107,14 @@ class _QdrantDemoScreenState extends State<QdrantDemoScreen> {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.storage, color: Colors.green.shade700, size: 32),
+                        Icon(Icons.storage,
+                            color: Colors.green.shade700, size: 32),
                         const SizedBox(width: 12),
                         const Expanded(
                           child: Text(
                             'Qdrant Vector Database Demo',
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                         ),
                       ],
@@ -138,8 +141,12 @@ class _QdrantDemoScreenState extends State<QdrantDemoScreen> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : Icon(
-                        _statusMessage.contains('error') ? Icons.error : Icons.check_circle,
-                        color: _statusMessage.contains('error') ? Colors.red : Colors.green,
+                        _statusMessage.contains('error')
+                            ? Icons.error
+                            : Icons.check_circle,
+                        color: _statusMessage.contains('error')
+                            ? Colors.red
+                            : Colors.green,
                       ),
                 title: Text(_statusMessage),
                 subtitle: Text('API: ${widget.apiBase}'),
@@ -181,8 +188,12 @@ class _QdrantDemoScreenState extends State<QdrantDemoScreen> {
                       Text('Populated IDs: ${_populatedIds.length}',
                           style: const TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 4),
-                      Text(_populatedIds.map((id) => id.toString().substring(0, 8)).join(', '),
-                          style: const TextStyle(fontSize: 11, fontFamily: 'monospace')),
+                      Text(
+                          _populatedIds
+                              .map((id) => id.toString().substring(0, 8))
+                              .join(', '),
+                          style: const TextStyle(
+                              fontSize: 11, fontFamily: 'monospace')),
                     ],
                   ),
                 ),
@@ -239,7 +250,9 @@ class _QdrantDemoScreenState extends State<QdrantDemoScreen> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
-              ..._searchResults.map((hit) => _buildSearchResultCard(hit)).toList(),
+              ..._searchResults
+                  .map((hit) => _buildSearchResultCard(hit))
+                  .toList(),
             ],
 
             const SizedBox(height: 24),
@@ -257,7 +270,8 @@ class _QdrantDemoScreenState extends State<QdrantDemoScreen> {
                         Icon(Icons.memory, color: Colors.orange.shade700),
                         const SizedBox(width: 8),
                         const Text('MEMORY: Session History',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold)),
                       ],
                     ),
                     const SizedBox(height: 8),
@@ -292,7 +306,8 @@ class _QdrantDemoScreenState extends State<QdrantDemoScreen> {
                         Icon(Icons.architecture, color: Colors.purple.shade700),
                         const SizedBox(width: 8),
                         const Text('Architecture',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold)),
                       ],
                     ),
                     const SizedBox(height: 8),
@@ -326,16 +341,18 @@ class _QdrantDemoScreenState extends State<QdrantDemoScreen> {
           backgroundColor: _getStressColor(payload['stress_type']),
           child: Text(
             (payload['severity']?.toString() ?? '?'),
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
-        title: Text(payload['stress_type'] ?? 'Unknown Stress'),
+        title: Text(payload['stress_type'] ?? 'Unknown Disease'),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Crop: ${payload['crop_name'] ?? 'unknown'}'),
             Text('Source: ${payload['source'] ?? 'unknown'}'),
-            Text('Score: $score', style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text('Score: $score',
+                style: const TextStyle(fontWeight: FontWeight.bold)),
           ],
         ),
         isThreeLine: true,
@@ -345,16 +362,16 @@ class _QdrantDemoScreenState extends State<QdrantDemoScreen> {
 
   Color _getStressColor(String? stressType) {
     switch (stressType) {
-      case 'water_stress':
-        return Colors.blue;
-      case 'nutrient_def':
-        return Colors.orange;
-      case 'pest_risk':
+      case 'LEAF_BLIGHT':
+        return Colors.green;
+      case 'LEAF_HOPPERS':
         return Colors.red;
-      case 'disease_risk':
+      case 'LEAF_RUST':
+        return Colors.blue;
+      case 'LOOPER_CATERPILLARS':
         return Colors.purple;
-      case 'heat_stress':
-        return Colors.deepOrange;
+      case 'MOSQUITO_BUG':
+        return Colors.teal;
       default:
         return Colors.grey;
     }

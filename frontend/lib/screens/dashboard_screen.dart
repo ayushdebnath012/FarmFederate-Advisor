@@ -9,6 +9,7 @@ import '../theme/app_theme.dart';
 import 'ai_chat_screen.dart';
 import 'multimodal_diagnosis_screen.dart';
 import 'analytics_screen.dart';
+import 'disease_detection_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   final String apiBase;
@@ -75,6 +76,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           MultimodalDiagnosisScreen(apiBase: widget.apiBase),
           AIChatScreen(apiBase: widget.apiBase),
           AnalyticsScreen(apiBase: widget.apiBase),
+          DiseaseDetectionScreen(apiBase: widget.apiBase),
         ],
       ),
       bottomNavigationBar: _buildBottomNav(),
@@ -169,6 +171,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
             activeIcon: Icon(Icons.bar_chart),
             label: 'Analytics',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.pest_control_outlined),
+            activeIcon: Icon(Icons.pest_control),
+            label: 'Disease',
+          ),
         ],
       ),
     );
@@ -196,7 +203,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(16),
-                    child: Image.asset('assets/logo.png', width: 56, height: 56),
+                    child:
+                        Image.asset('assets/logo.png', width: 56, height: 56),
                   ),
                   const SizedBox(height: 12),
                   const Text(
@@ -208,7 +216,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                   ),
                   const Text(
-                    'Smart Crop Health Assistant',
+                    'Tea Disease Health Assistant',
                     style: TextStyle(color: Colors.white70, fontSize: 13),
                   ),
                 ],
@@ -233,6 +241,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
             _drawerItem(Icons.bar_chart, 'Analytics', () {
               Navigator.pop(context);
               setState(() => _currentIndex = 3);
+            }),
+            _drawerItem(Icons.pest_control, 'Tea Disease Detector', () {
+              Navigator.pop(context);
+              setState(() => _currentIndex = 4);
             }),
 
             const Padding(
@@ -455,12 +467,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ],
         ),
+        const SizedBox(height: 12),
+        _quickAction(
+          'Tea Disease Detector',
+          'Identify leaf diseases with OBB annotation + remedies',
+          Icons.pest_control,
+          const Color(0xFF00CED1),
+          () => setState(() => _currentIndex = 4),
+        ),
       ],
     );
   }
 
-  Widget _quickAction(
-      String title, String subtitle, IconData icon, Color color, VoidCallback onTap) {
+  Widget _quickAction(String title, String subtitle, IconData icon, Color color,
+      VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -702,12 +722,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
           AppTheme.accentCyan,
           () => Navigator.pushNamed(context, '/federated'),
         ),
+        const SizedBox(height: 10),
+        _featureCard(
+          'Tea Disease Detector',
+          'OBB annotation + 5-class detection + remedies (image or text)',
+          Icons.pest_control,
+          const Color(0xFF00CED1),
+          () => setState(() => _currentIndex = 4),
+        ),
       ],
     );
   }
 
-  Widget _featureCard(
-      String title, String desc, IconData icon, Color color, VoidCallback onTap) {
+  Widget _featureCard(String title, String desc, IconData icon, Color color,
+      VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Container(

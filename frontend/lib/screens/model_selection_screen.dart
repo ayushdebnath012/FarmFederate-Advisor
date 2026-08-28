@@ -56,29 +56,35 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
           children: [
             _buildInfoCard(),
             const SizedBox(height: 20),
-            _buildSectionTitle('Federated LLM  —  Text Analysis', Icons.text_fields,
-                subtitle: 'MobileBERT · Fed F1 0.636 · 100.8% retention'),
+            _buildSectionTitle(
+                'Federated LLM - Text Analysis', Icons.text_fields,
+                subtitle:
+                    'BERT-tiny | Cent F1 0.487 | Fed F1 0.460 | 107.7% retention'),
             const SizedBox(height: 8),
             _buildModelCards(LLM_ENCODERS, _selectedLlm, (v) {
               setState(() => _selectedLlm = v);
             }),
             const SizedBox(height: 20),
-            _buildSectionTitle('Federated ViT  —  Image Analysis', Icons.image,
-                subtitle: 'ViT-Base · Fed F1 0.857 · 98.9% retention'),
+            _buildSectionTitle('Federated ViT - Image Analysis', Icons.image,
+                subtitle:
+                    'EfficientNet | Cent F1 0.911 | Fed F1 0.886 | 100.0% retention'),
             const SizedBox(height: 8),
             _buildModelCards(VIT_ENCODERS, _selectedVit, (v) {
               setState(() => _selectedVit = v);
             }),
             const SizedBox(height: 20),
-            _buildSectionTitle('Federated VLM  —  Multimodal Fusion', Icons.merge_type,
-                subtitle: 'Concatenation · Fed F1 0.848 · 97.9% retention'),
+            _buildSectionTitle(
+                'Federated VLM - Multimodal Fusion', Icons.merge_type,
+                subtitle:
+                    'CLIP | Cent F1 0.949 | Fed F1 0.861 | 98.6% retention'),
             const SizedBox(height: 8),
             _buildModelCards(VLM_FUSIONS, _selectedFusion, (v) {
               setState(() => _selectedFusion = v);
             }),
             const SizedBox(height: 20),
             _buildSectionTitle('Active Federated Paradigm', Icons.people,
-                subtitle: 'K=3 clients · T=8 rounds · FedAvg · no raw data shared'),
+                subtitle:
+                    'K=3 clients | T=8 rounds | FedAvg | no raw data shared'),
             const SizedBox(height: 8),
             _buildModelCards(FEDERATED_MODES, _selectedFederated ?? '', (v) {
               setState(() {
@@ -174,9 +180,7 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
                     : AppTheme.cardDark,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: isSelected
-                      ? AppTheme.primaryGreen
-                      : Colors.white12,
+                  color: isSelected ? AppTheme.primaryGreen : Colors.white12,
                   width: isSelected ? 1.5 : 1,
                 ),
               ),
@@ -192,9 +196,8 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
                           ? AppTheme.primaryGreen
                           : Colors.transparent,
                       border: Border.all(
-                        color: isSelected
-                            ? AppTheme.primaryGreen
-                            : Colors.white38,
+                        color:
+                            isSelected ? AppTheme.primaryGreen : Colors.white38,
                         width: 2,
                       ),
                     ),
@@ -213,7 +216,8 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
                             Text(
                               friendlyName,
                               style: TextStyle(
-                                color: isSelected ? Colors.white : Colors.white70,
+                                color:
+                                    isSelected ? Colors.white : Colors.white70,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
                               ),
@@ -224,7 +228,8 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 6, vertical: 2),
                                 decoration: BoxDecoration(
-                                  color: AppTheme.primaryGreen.withValues(alpha: 0.3),
+                                  color: AppTheme.primaryGreen
+                                      .withValues(alpha: 0.3),
                                   borderRadius: BorderRadius.circular(4),
                                 ),
                                 child: const Text(
@@ -299,11 +304,13 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.check_circle, color: AppTheme.primaryGreen, size: 16),
+                  Icon(Icons.check_circle,
+                      color: AppTheme.primaryGreen, size: 16),
                   SizedBox(width: 6),
                   Text(
-                    'Best paradigm config — VLM Fed F1 = 0.848 · avg retention 99.2%',
-                    style: TextStyle(color: AppTheme.primaryGreen, fontSize: 12),
+                    'Best paradigm config - CLIP VLM Fed F1 = 0.861 | avg retention 102.1%',
+                    style:
+                        TextStyle(color: AppTheme.primaryGreen, fontSize: 12),
                   ),
                 ],
               ),
@@ -338,7 +345,8 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
           Navigator.pop(context);
         },
         icon: const Icon(Icons.check_circle, size: 20),
-        label: const Text('Apply Settings', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        label: const Text('Apply Settings',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppTheme.primaryGreen,
           foregroundColor: Colors.white,
@@ -384,26 +392,26 @@ class _ModelSelectionScreenState extends State<ModelSelectionScreen> {
           const SizedBox(height: 12),
           _buildFeatureItem(
             Icons.text_fields,
-            'Federated LLM — Text Paradigm',
-            'MobileBERT achieves Fed F1 = 0.636 with 100.8% retention — marginally exceeds its centralized baseline via non-IID regularization. Lightest deployment option.',
+            'Federated LLM - Text Paradigm',
+            'BERT-tiny is the top text encoder: centralized F1 0.487 and federated F1 0.460 with 107.7% retention.',
           ),
           const SizedBox(height: 8),
           _buildFeatureItem(
             Icons.image,
-            'Federated ViT — Image Paradigm',
-            'ViT-Base achieves Fed F1 = 0.857 with 98.9% retention. Highest single-model accuracy; only 1.1% federated gap vs centralized.',
+            'Federated ViT - Image Paradigm',
+            'EfficientNet is the top image encoder: centralized F1 0.911. The federated ViT checkpoint reaches F1 0.886 with no measured loss.',
           ),
           const SizedBox(height: 8),
           _buildFeatureItem(
             Icons.merge_type,
-            'Federated VLM — Multimodal Paradigm',
-            'Concatenation fusion achieves Fed F1 = 0.848 with 97.9% retention. Simple concat outperforms all 7 complex fusions (CLIP, BLIP-2, Flamingo, etc.).',
+            'Federated VLM - Multimodal Paradigm',
+            'CLIP contrastive fusion is the best VLM: centralized F1 0.949 and federated F1 0.861 with 98.6% retention.',
           ),
           const SizedBox(height: 8),
           _buildFeatureItem(
             Icons.manage_search,
-            'Federated RAG — Advisory Layer',
-            'Privacy-preserving retrieval: per-farm FAISS stores never leave the device. 100% KB coverage; generates natural-language treatment recommendations.',
+            'Federated RAG - Advisory Layer',
+            'Privacy-preserving retrieval: per-estate FAISS stores never leave the device. 100% KB coverage; generates natural-language treatment recommendations.',
           ),
           const SizedBox(height: 8),
           _buildFeatureItem(

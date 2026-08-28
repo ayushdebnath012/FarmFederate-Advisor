@@ -207,193 +207,87 @@ def download_hf_class(stress: str, target_classes: list[str],
 
 
 # ---------------------------------------------------------------------------
-# Synthetic generation — uses real PlantVillage healthy images as base
-# then applies stress-specific visual transforms on top.
+# Synthetic generation (heat_stress + padding water_stress)
 # ---------------------------------------------------------------------------
 
-def _load_pv_healthy(n: int, rng: random.Random):
-    """Return up to n PIL images from PlantVillage 'healthy' class."""
+def generate_synthetic(stress: str, stress_idx: int, n: int,
+                        existing: int, rng: random.Random) -> int:
+    """Generate synthetic images using numpy/PIL — no model needed."""
+    import numpy as np
     try:
-        from datasets import load_dataset
         from PIL import Image as PILImage
     except ImportError:
-        return []
-    print(f"  Loading PlantVillage healthy base images from HuggingFace...")
-    try:
-        ds = load_dataset("BrandonFors/Plant-Diseases-PlantVillage-Dataset",
-                          split="train")
-        label_feature = ds.features.get("label") or ds.features.get("labels")
-        label_names = label_feature.names if hasattr(label_feature, "names") else []
-        healthy_idx = {i for i, nm in enumerate(label_names) if "healthy" in nm.lower()}
-        label_col = "label" if "label" in ds.column_names else "labels"
-        healthy = [ex for ex in ds if ex[label_col] in healthy_idx]
-        rng.shuffle(healthy)
-        healthy = healthy[:n]
-        imgs = []
-        for ex in healthy:
-            img = ex.get("image") or ex.get("img")
-            if img is None:
-                continue
-            if not isinstance(img, PILImage.Image):
-                import numpy as np
-                img = PILImage.fromarray(img)
-            imgs.append(img.convert("RGB").resize((224, 224)))
-        print(f"  Loaded {len(imgs)} healthy base images")
-        return imgs
-    except Exception as e:
-        print(f"  [WARN] HF load failed ({e}), using procedural base")
-        return []
-
-
-def _apply_heat_stress(img_arr, np_rng):
-    """Apply heat scorch: brown/tan leaf edges + bleached patches + tip burn."""
-    import numpy as np
-    H, W = img_arr.shape[:2]
-    out = img_arr.astype(np.float32) / 255.0
-
-    # 1. Tip burn — top 20-35% of image fades to tan/brown
-    burn_h = int(H * (0.20 + np_rng.random() * 0.15))
-    fade = np.linspace(1.0, 0.0, burn_h)
-    for row in range(burn_h):
-        f = fade[row]
-        out[row, :, 0] = out[row, :, 0] * (1 - f) + 0.72 * f   # tan R
-        out[row, :, 1] = out[row, :, 1] * (1 - f) + 0.52 * f   # tan G
-        out[row, :, 2] = out[row, :, 2] * (1 - f) + 0.18 * f   # tan B
-
-    # 2. Edge scorch — dark brown border
-    border = int(8 + np_rng.random() * 12)
-    scorch_color = np.array([0.45, 0.28, 0.08], dtype=np.float32)
-    for b in range(border):
-        alpha = (border - b) / border * 0.75
-        out[b, :] = out[b, :] * (1 - alpha) + scorch_color * alpha
-        out[H-1-b, :] = out[H-1-b, :] * (1 - alpha) + scorch_color * alpha
-        out[:, b] = out[:, b] * (1 - alpha) + scorch_color * alpha
-        out[:, W-1-b] = out[:, W-1-b] * (1 - alpha) + scorch_color * alpha
-
-    # 3. Irregular inter-veinal bleaching — uses accumulated Gaussian blobs
-    #    with per-patch color variation and soft distance-based alpha.
-    #    Bleaching is stronger where green channel is lower (inter-veinal areas).
-    bleach_map = np.zeros((H, W), dtype=np.float32)
-    n_seeds = int(12 + np_rng.random() * 18)          # many small seeds → organic shape
-    for _ in range(n_seeds):
-        cx = np_rng.integers(15, W - 15)
-        cy = np_rng.integers(15, H - 15)
-        sigma_x = 4 + np_rng.random() * 14            # anisotropic spread
-        sigma_y = 4 + np_rng.random() * 10
-        yy, xx = np.mgrid[:H, :W]
-        blob = np.exp(-((xx - cx)**2 / (2 * sigma_x**2) +
-                        (yy - cy)**2 / (2 * sigma_y**2)))
-        bleach_map += blob * (0.4 + np_rng.random() * 0.6)
-
-    # Normalise to 0–1
-    bleach_map = np.clip(bleach_map / (bleach_map.max() + 1e-6), 0, 1)
-
-    # Keep only the top 25-40% brightest regions (creates natural patch gaps)
-    threshold = 0.60 + np_rng.random() * 0.15
-    bleach_map = np.where(bleach_map > threshold,
-                          (bleach_map - threshold) / (1 - threshold), 0.0)
-
-    # Inter-veinal bias: bleach more where green is already lower
-    green_inv = 1.0 - out[:, :, 1]
-    bleach_map = bleach_map * (0.5 + 0.5 * green_inv)
-    bleach_map = np.clip(bleach_map, 0, 1)
-
-    # Per-pixel bleach color varies slightly (pale yellow → pale white)
-    bleach_r = np.full((H, W), 0.93, np.float32) + np_rng.uniform(-0.04,  0.04, (H, W)).astype(np.float32)
-    bleach_g = np.full((H, W), 0.87, np.float32) + np_rng.uniform(-0.05,  0.05, (H, W)).astype(np.float32)
-    bleach_b = np.full((H, W), 0.58, np.float32) + np_rng.uniform(-0.06,  0.10, (H, W)).astype(np.float32)
-    alpha_map = bleach_map * (0.50 + np_rng.random() * 0.30)   # max blend 50-80%
-    out[:, :, 0] = out[:, :, 0] * (1 - alpha_map) + bleach_r * alpha_map
-    out[:, :, 1] = out[:, :, 1] * (1 - alpha_map) + bleach_g * alpha_map
-    out[:, :, 2] = out[:, :, 2] * (1 - alpha_map) + bleach_b * alpha_map
-
-    # 4. Overall warm shift (heat look)
-    out[:, :, 0] = np.clip(out[:, :, 0] * 1.12, 0, 1)
-    out[:, :, 2] = np.clip(out[:, :, 2] * 0.82, 0, 1)
-
-    return (np.clip(out, 0, 1) * 255).astype(np.uint8)
-
-
-def _apply_water_stress(img_arr, np_rng):
-    """Apply water stress: grey-green shift + wilting gradient + rolled leaves."""
-    import numpy as np
-    H, W = img_arr.shape[:2]
-    out = img_arr.astype(np.float32) / 255.0
-
-    # 1. Desaturate toward grey-green (water stressed leaves look dull)
-    grey = out.mean(axis=2, keepdims=True)
-    desat = 0.35 + np_rng.random() * 0.25
-    out = out * (1 - desat) + grey * desat
-    # Slight blue-grey tint
-    out[:, :, 2] = np.clip(out[:, :, 2] * 1.08, 0, 1)
-    out[:, :, 0] = np.clip(out[:, :, 0] * 0.92, 0, 1)
-
-    # 2. Wilting gradient — bottom half slightly darker and drooping
-    wilt_strength = 0.25 + np_rng.random() * 0.20
-    gradient = np.linspace(0, wilt_strength, H)[:, None, None]
-    out = out * (1 - gradient)
-
-    # 3. Leaf roll / curl — darken thin vertical strips to simulate rolling
-    n_rolls = int(2 + np_rng.random() * 4)
-    for _ in range(n_rolls):
-        cx = np_rng.integers(10, W-10)
-        width = int(3 + np_rng.random() * 8)
-        x1, x2 = max(0, cx-width//2), min(W, cx+width//2)
-        out[:, x1:x2] *= 0.60 + np_rng.random() * 0.15
-
-    # 4. Dry leaf tips — top rows turn pale tan/yellow
-    tip_h = int(H * (0.08 + np_rng.random() * 0.12))
-    tan = np.array([0.78, 0.72, 0.45], dtype=np.float32)
-    for row in range(tip_h):
-        f = (tip_h - row) / tip_h * 0.70
-        out[row, :] = out[row, :] * (1 - f) + tan * f
-
-    return (np.clip(out, 0, 1) * 255).astype(np.uint8)
-
-
-def generate_stress_from_healthy(stress: str, apply_fn, n: int,
-                                  existing: int, rng: random.Random) -> int:
-    """Load healthy plant images, apply stress transform, save."""
-    import numpy as np
-    from PIL import Image as PILImage
+        import subprocess
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "-q", "pillow"])
+        from PIL import Image as PILImage
 
     dest = DATA_DIR / stress / "images"
     dest.mkdir(parents=True, exist_ok=True)
 
-    base_imgs = _load_pv_healthy(n, rng)
-
-    if not base_imgs:
-        # Procedural fallback: create a simple leaf-like background
-        print("  Using procedural leaf base (no HF images available)")
-        base_imgs = []
-        for _ in range(n):
-            np_rng2 = np.random.default_rng(rng.randint(0, 2**31))
-            H = W = 224
-            # Green gradient base simulating a leaf
-            r_base = 0.15 + np_rng2.random() * 0.10
-            g_base = 0.45 + np_rng2.random() * 0.15
-            b_base = 0.10 + np_rng2.random() * 0.08
-            arr = np.stack([
-                np.full((H, W), r_base, np.float32),
-                np.full((H, W), g_base, np.float32),
-                np.full((H, W), b_base, np.float32),
-            ], axis=2)
-            # Add leaf vein structure — lighter midrib and veins
-            for vein_x in [W//2] + [W//4, 3*W//4]:
-                arr[:, max(0,vein_x-2):vein_x+2, 1] += 0.08
-            # Add organic texture via perlin-like noise
-            noise = np_rng2.normal(0, 0.04, (H, W, 3)).astype(np.float32)
-            arr = np.clip(arr + noise, 0, 1)
-            base_imgs.append(PILImage.fromarray((arr * 255).astype(np.uint8)))
+    # Stress-type visual profiles
+    PROFILES = {
+        0: {"base": (0.35, 0.55, 0.25), "pattern": "wilting",  "name": "water_stress"},
+        1: {"base": (0.65, 0.65, 0.20), "pattern": "yellowing","name": "nutrient_def"},
+        2: {"base": (0.30, 0.50, 0.20), "pattern": "spots",    "name": "pest_risk"},
+        3: {"base": (0.25, 0.45, 0.15), "pattern": "lesion",   "name": "disease_risk"},
+        4: {"base": (0.70, 0.60, 0.30), "pattern": "scorch",   "name": "heat_stress"},
+    }
+    prof  = PROFILES[stress_idx]
+    base  = prof["base"]
+    pat   = prof["pattern"]
+    H = W = 224
 
     saved = 0
-    for i, pil_img in enumerate(base_imgs):
+    for i in range(n):
         np_rng = np.random.default_rng(rng.randint(0, 2**31))
-        arr = np.array(pil_img.resize((224, 224)))
-        stressed = apply_fn(arr, np_rng)
-        out = PILImage.fromarray(stressed)
+        img = np.zeros((H, W, 3), dtype=np.float32)
+
+        # Base color with per-pixel variation
+        for c, bv in enumerate(base):
+            img[:, :, c] = bv + np_rng.uniform(-0.06, 0.06, (H, W)).astype(np.float32)
+
+        # Pattern overlay (40-65% intensity)
+        intensity = 0.4 + np_rng.random() * 0.25
+        if pat == "wilting":
+            fade = np.linspace(1.0, 0.55, H)[:, None]
+            img[:, :, 1] *= (1 - intensity * (1 - fade))
+        elif pat == "yellowing":
+            yellow_mask = np_rng.uniform(0, 1, (H, W)) < intensity
+            img[:, :, 0][yellow_mask] += 0.25
+            img[:, :, 2][yellow_mask] -= 0.15
+        elif pat == "spots":
+            n_spots = int(10 + intensity * 30)
+            for _ in range(n_spots):
+                cx, cy = np_rng.integers(0, W), np_rng.integers(0, H)
+                r = int(3 + np_rng.random() * 10)
+                yy, xx = np.ogrid[:H, :W]
+                mask = (xx - cx)**2 + (yy - cy)**2 <= r**2
+                img[mask, 0] += 0.3 * intensity
+                img[mask, 1] -= 0.2 * intensity
+                img[mask, 2] -= 0.1 * intensity
+        elif pat == "lesion":
+            n_les = int(5 + intensity * 20)
+            for _ in range(n_les):
+                cx, cy = np_rng.integers(0, W), np_rng.integers(0, H)
+                r = int(5 + np_rng.random() * 15)
+                yy, xx = np.ogrid[:H, :W]
+                mask = (xx - cx)**2 + (yy - cy)**2 <= r**2
+                img[mask] *= (1 - 0.5 * intensity)
+                img[mask, 0] += 0.2 * intensity
+        elif pat == "scorch":
+            scorch = np_rng.uniform(0, 1, (H, W)) < (intensity * 0.4)
+            img[:, :, 0][scorch] += 0.35
+            img[:, :, 1][scorch] += 0.10
+            img[:, :, 2][scorch] -= 0.20
+
+        # Global noise + brightness
+        img += np_rng.normal(0, 0.03, img.shape).astype(np.float32)
+        img *= 0.90 + np_rng.random() * 0.20
+        img = np.clip(img, 0, 1)
+
+        pil = PILImage.fromarray((img * 255).astype(np.uint8))
         fname = dest / f"syn_{i + existing:05d}.jpg"
-        out.save(fname, quality=88)
+        pil.save(fname, quality=85)
         saved += 1
 
     return saved
@@ -413,22 +307,16 @@ def run():
     print("FIXING STRESS IMAGE DATASETS")
     print("=" * 60)
 
-    # -- water_stress: keep 90 real, replace synthetic with proper stress images
+    # -- water_stress: already have 90 real, pad with synthetic ---------------
     print("\n[water_stress]")
-    # Remove old flat-noise synthetics, keep real images
-    ws_dir = DATA_DIR / "water_stress" / "images"
-    old_syn = list(ws_dir.glob("syn_*.jpg"))
-    for f in old_syn:
-        f.unlink()
-    real_count = len(list(ws_dir.glob("wate_*.jpg")))
-    print(f"  Removed {len(old_syn)} old synthetic | Real images: {real_count}")
-    need = max(0, TARGET - real_count)
+    existing = len(list((DATA_DIR / "water_stress" / "images").glob("*.jpg")))
+    print(f"  Existing real images: {existing}")
+    need = max(0, TARGET - existing)
     if need > 0:
-        print(f"  Generating {need} water-stress images from healthy base")
-        n = generate_stress_from_healthy("water_stress", _apply_water_stress,
-                                         need, real_count, rng)
-        print(f"  Generated: {n}")
-    results["water_stress"] = real_count + need
+        print(f"  Generating {need} synthetic to reach {TARGET}")
+        n = generate_synthetic("water_stress", 0, need, existing, rng)
+        print(f"  Synthetic generated: {n}")
+    results["water_stress"] = existing + max(0, need)
 
     # -- nutrient_def: HuggingFace PlantVillage filtered ----------------------
     print("\n[nutrient_def]")
@@ -448,15 +336,14 @@ def run():
     print(f"  Already have {existing} images - skipping")
     results["disease_risk"] = existing
 
-    # -- heat_stress: healthy base + heat stress transform --------------------
+    # -- heat_stress: fully synthetic -----------------------------------------
     print("\n[heat_stress]")
     dest = DATA_DIR / "heat_stress" / "images"
     if dest.exists():
         shutil.rmtree(dest, onexc=_force_remove)
     dest.mkdir(parents=True, exist_ok=True)
-    n = generate_stress_from_healthy("heat_stress", _apply_heat_stress,
-                                     TARGET, 0, rng)
-    print(f"  Generated: {n}")
+    n = generate_synthetic("heat_stress", 4, TARGET, 0, rng)
+    print(f"  Synthetic generated: {n}")
     results["heat_stress"] = n
 
     # Cleanup

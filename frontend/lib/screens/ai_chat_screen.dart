@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 
 class Message {
@@ -30,12 +29,11 @@ class AIChatScreen extends StatefulWidget {
   State<AIChatScreen> createState() => _AIChatScreenState();
 }
 
-class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMixin {
+class _AIChatScreenState extends State<AIChatScreen>
+    with TickerProviderStateMixin {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final List<Message> _messages = [];
-  final ImagePicker _picker = ImagePicker();
-  
   bool _isTyping = false;
   Uint8List? _selectedImage;
   String? _imageName;
@@ -49,7 +47,8 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
   void _addWelcomeMessage() {
     setState(() {
       _messages.add(Message(
-        text: "👋 Hello! I'm your AI Farm Advisor. I can help you diagnose crop issues, analyze soil conditions, and provide expert agricultural advice. How can I assist you today?",
+        text:
+            "Hello! I'm your FarmFederate tea disease advisor. I can help diagnose leaf blight, leaf hoppers, leaf rust, looper caterpillars, and mosquito bug from symptoms and images. How can I assist you today?",
         isUser: false,
         timestamp: DateTime.now(),
       ));
@@ -62,7 +61,7 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
         type: FileType.image,
         withData: true,
       );
-      
+
       if (result != null && result.files.isNotEmpty) {
         setState(() {
           _selectedImage = result.files.first.bytes;
@@ -79,10 +78,10 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
 
     final userText = _controller.text.trim();
     final userImage = _selectedImage;
-    
+
     setState(() {
       _messages.add(Message(
-        text: userText.isEmpty ? "📷 Image uploaded" : userText,
+        text: userText.isEmpty ? "Image uploaded" : userText,
         isUser: true,
         timestamp: DateTime.now(),
         image: userImage,
@@ -97,7 +96,7 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
 
     try {
       final response = await _callAPI(userText, userImage);
-      
+
       setState(() {
         _messages.add(Message(
           text: _formatAIResponse(response),
@@ -110,7 +109,7 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
     } catch (e) {
       setState(() {
         _messages.add(Message(
-          text: "❌ Sorry, I encountered an error: $e\n\nPlease try again.",
+          text: "Sorry, I encountered an error: $e\n\nPlease try again.",
           isUser: false,
           timestamp: DateTime.now(),
         ));
@@ -121,7 +120,8 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
     _scrollToBottom();
   }
 
-  Future<Map<String, dynamic>> _callAPI(String text, Uint8List? imageBytes) async {
+  Future<Map<String, dynamic>> _callAPI(
+      String text, Uint8List? imageBytes) async {
     final uri = Uri.parse('${widget.apiBase}/predict');
 
     if (imageBytes != null) {
@@ -135,8 +135,10 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
         filename: _imageName ?? 'image.jpg',
       ));
 
-      final streamedResponse = await request.send().timeout(const Duration(seconds: 30));
-      final response = await http.Response.fromStream(streamedResponse).timeout(const Duration(seconds: 30));
+      final streamedResponse =
+          await request.send().timeout(const Duration(seconds: 30));
+      final response = await http.Response.fromStream(streamedResponse)
+          .timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -145,11 +147,13 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
       }
     } else {
       // JSON request without image
-      final response = await http.post(
-        uri,
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode({'text': text, 'client_id': 'mobile_client'}),
-      ).timeout(const Duration(seconds: 30));
+      final response = await http
+          .post(
+            uri,
+            headers: {'Content-Type': 'application/json'},
+            body: json.encode({'text': text, 'client_id': 'mobile_client'}),
+          )
+          .timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -165,16 +169,14 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
         result?['advice'] as String? ??
         'Analysis complete.';
 
-    String formatted = '🌾 Analysis Results:\n\n';
+    String formatted = 'Tea Disease Analysis Results:\n\n';
 
     if (result != null) {
-      // Check for active_labels (can be List<String> or List<Map>)
       final activeLabels = result['active_labels'] as List?;
-      // Backend uses 'all_scores' key
       final allScores = (result['all_scores'] ?? result['scores']) as List?;
 
       if (activeLabels != null && activeLabels.isNotEmpty) {
-        formatted += '⚠️ Active Issues Detected:\n';
+        formatted += 'Active Tea Disease Signals:\n';
         for (var issue in activeLabels) {
           String label;
           double prob = 0.0;
@@ -188,15 +190,17 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
           } else {
             label = issue.toString();
           }
-          final emoji = _getIssueEmoji(label);
-          final probStr = prob > 0 ? ': ${(prob * 100).toStringAsFixed(1)}%' : '';
-          formatted += '  $emoji ${_formatLabel(label)}$probStr\n';
+          final marker = _getIssueEmoji(label);
+          final probStr =
+              prob > 0 ? ': ${(prob * 100).toStringAsFixed(1)}%' : '';
+          formatted += '  $marker ${_formatLabel(label)}$probStr\n';
         }
         formatted += '\n';
       } else if (allScores != null && allScores.isNotEmpty) {
-        formatted += '📊 Risk Assessment:\n';
-        final sortedScores = List<Map<String, dynamic>>.from(
-            allScores.whereType<Map>().map((e) => Map<String, dynamic>.from(e)));
+        formatted += 'Confidence Ranking:\n';
+        final sortedScores = List<Map<String, dynamic>>.from(allScores
+            .whereType<Map>()
+            .map((e) => Map<String, dynamic>.from(e)));
         sortedScores.sort((a, b) {
           final pa = (a['prob'] is num) ? (a['prob'] as num).toDouble() : 0.0;
           final pb = (b['prob'] is num) ? (b['prob'] as num).toDouble() : 0.0;
@@ -205,34 +209,39 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
 
         for (int i = 0; i < sortedScores.length && i < 3; i++) {
           final score = sortedScores[i];
-          final label = (score['label'] ?? score['name'] ?? 'Unknown').toString();
-          double prob = (score['prob'] is num) ? (score['prob'] as num).toDouble() : 0.0;
+          final label =
+              (score['label'] ?? score['name'] ?? 'Unknown').toString();
+          double prob =
+              (score['prob'] is num) ? (score['prob'] as num).toDouble() : 0.0;
           if (prob > 1.0) prob /= 100.0;
-          final emoji = _getIssueEmoji(label);
-          formatted += '  $emoji ${_formatLabel(label)}: ${(prob * 100).toStringAsFixed(1)}%\n';
+          final marker = _getIssueEmoji(label);
+          formatted +=
+              '  $marker ${_formatLabel(label)}: ${(prob * 100).toStringAsFixed(1)}%\n';
         }
         formatted += '\n';
       }
     }
 
-    formatted += '💡 Recommendations:\n$advice';
+    formatted += 'Recommendations:\n$advice';
 
     return formatted;
   }
 
   String _getIssueEmoji(String label) {
-    if (label.contains('water')) return '💧';
-    if (label.contains('nutrient')) return '🌱';
-    if (label.contains('pest')) return '🐛';
-    if (label.contains('disease')) return '🦠';
-    if (label.contains('heat')) return '🌡️';
-    return '⚠️';
+    final normalized = label.toUpperCase();
+    if (normalized.contains('LEAF_BLIGHT')) return '[BLIGHT]';
+    if (normalized.contains('LEAF_HOPPERS')) return '[HOPPER]';
+    if (normalized.contains('LEAF_RUST')) return '[RUST]';
+    if (normalized.contains('LOOPER')) return '[LOOPER]';
+    if (normalized.contains('MOSQUITO')) return '[MOSQUITO]';
+    return '[TEA]';
   }
 
   String _formatLabel(String label) {
-    return label.split('_').map((word) => 
-      word[0].toUpperCase() + word.substring(1)
-    ).join(' ');
+    return label
+        .split('_')
+        .map((word) => word[0].toUpperCase() + word.substring(1).toLowerCase())
+        .join(' ');
   }
 
   void _scrollToBottom() {
@@ -332,7 +341,8 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
                 ),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.agriculture, size: 64, color: Colors.white),
+              child:
+                  const Icon(Icons.agriculture, size: 64, color: Colors.white),
             ),
             const SizedBox(height: 24),
             const Text(
@@ -347,7 +357,7 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
             Text(
               'Ask me anything about your crops',
               style: TextStyle(
-                color: Colors.white.withOpacity(0.6),
+                color: Colors.white.withValues(alpha: 0.6),
                 fontSize: 16,
               ),
             ),
@@ -361,10 +371,10 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
 
   Widget _buildQuickSuggestions() {
     final suggestions = [
-      '💧 Check soil moisture',
-      '🌱 Nutrient deficiency',
-      '🐛 Pest detection',
-      '🌡️ Temperature stress',
+      'Leaf blight treatment',
+      'Leaf rust symptoms',
+      'Looper caterpillar damage',
+      'Mosquito bug control',
     ];
 
     return Wrap(
@@ -385,7 +395,7 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
         decoration: BoxDecoration(
           color: const Color(0xFF1D1E33),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white.withOpacity(0.2)),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
         ),
         child: Text(
           text,
@@ -410,7 +420,8 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Row(
-        mainAxisAlignment: message.isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment:
+            message.isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!message.isUser) _buildAvatar(false),
@@ -428,8 +439,9 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: (message.isUser ? const Color(0xFF667EEA) : Colors.grey)
-                        .withOpacity(0.3),
+                    color:
+                        (message.isUser ? const Color(0xFF667EEA) : Colors.grey)
+                            .withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),
@@ -458,7 +470,9 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
                   Text(
                     _formatTime(message.timestamp),
                     style: TextStyle(
-                      color: message.isUser ? Colors.white.withOpacity(0.5) : Colors.black45,
+                      color: message.isUser
+                          ? Colors.white.withValues(alpha: 0.5)
+                          : Colors.black45,
                       fontSize: 11,
                     ),
                   ),
@@ -479,8 +493,10 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
       height: 36,
       decoration: BoxDecoration(
         gradient: isUser
-            ? const LinearGradient(colors: [Color(0xFF667EEA), Color(0xFF764BA2)])
-            : const LinearGradient(colors: [Color(0xFF1D976C), Color(0xFF93F9B9)]),
+            ? const LinearGradient(
+                colors: [Color(0xFF667EEA), Color(0xFF764BA2)])
+            : const LinearGradient(
+                colors: [Color(0xFF1D976C), Color(0xFF93F9B9)]),
         shape: BoxShape.circle,
       ),
       child: Icon(
@@ -514,7 +530,10 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
           ),
           child: Text(
             '${_formatLabel(label)}: $prob%',
-            style: TextStyle(color: Colors.red.shade700, fontSize: 12, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: Colors.red.shade700,
+                fontSize: 12,
+                fontWeight: FontWeight.bold),
           ),
         );
       }).toList(),
@@ -536,45 +555,41 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
     // Parse and format AI responses with colored titles
     final lines = text.split('\n');
     final widgets = <Widget>[];
-    
+
     // Extract and sort issues by probability
     final issueLines = <MapEntry<String, double>>[];
     final nonIssueLines = <String>[];
     bool inIssuesSection = false;
-    
+
     for (final line in lines) {
-      if (line.contains('Active Issues Detected:')) {
+      if (line.contains('Active Tea Disease Signals:')) {
         inIssuesSection = true;
         nonIssueLines.add(line);
         continue;
-      } else if (line.contains('Recommendations:') || line.contains('Risk Assessment:')) {
+      } else if (line.contains('Recommendations:') ||
+          line.contains('Confidence Ranking:')) {
         inIssuesSection = false;
         nonIssueLines.add(line);
         continue;
       }
-      
-      if (inIssuesSection && (line.trim().startsWith('💧') || 
-          line.trim().startsWith('🌱') || 
-          line.trim().startsWith('🐛') ||
-          line.trim().startsWith('🦠') ||
-          line.trim().startsWith('🌡️') ||
-          line.trim().startsWith('⚠️'))) {
+
+      if (inIssuesSection && line.trim().startsWith('[')) {
         // Extract percentage from line (e.g., "67.6%" -> 67.6)
         final percentMatch = RegExp(r'(\d+\.?\d*)%').firstMatch(line);
-        final probability = percentMatch != null ? double.parse(percentMatch.group(1)!) : 0.0;
+        final probability =
+            percentMatch != null ? double.parse(percentMatch.group(1)!) : 0.0;
         issueLines.add(MapEntry(line, probability));
       } else {
         nonIssueLines.add(line);
       }
     }
-    
+
     // Sort issues by probability (highest first)
     issueLines.sort((a, b) => b.value.compareTo(a.value));
-    
+
     // Build widgets with sorted issues
-    int issueIndex = 0;
     int globalIssueCount = 0;
-    
+
     for (final line in nonIssueLines) {
       if (line.trim().isEmpty) {
         widgets.add(const SizedBox(height: 8));
@@ -582,7 +597,7 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
       }
 
       // Check if this is where issues should be inserted
-      if (line.contains('Active Issues Detected:')) {
+      if (line.contains('Active Tea Disease Signals:')) {
         // Add the header
         widgets.add(
           Padding(
@@ -598,7 +613,7 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
             ),
           ),
         );
-        
+
         // Add sorted issues
         for (final issue in issueLines) {
           TextStyle issueStyle;
@@ -627,7 +642,7 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
               height: 1.5,
             );
           }
-          
+
           widgets.add(
             Padding(
               padding: const EdgeInsets.only(bottom: 6),
@@ -640,8 +655,8 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
       }
 
       TextStyle style;
-      if (line.contains('Analysis Results:') || 
-          line.contains('Risk Assessment:') || 
+      if (line.contains('Tea Disease Analysis Results:') ||
+          line.contains('Confidence Ranking:') ||
           line.contains('Recommendations:')) {
         // Section headers in cyan
         style = const TextStyle(
@@ -650,7 +665,7 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
           fontWeight: FontWeight.bold,
           height: 1.6,
         );
-      } else if (line.trim().startsWith('-') || line.trim().startsWith('•')) {
+      } else if (line.trim().startsWith('-')) {
         // Recommendation items in darker text
         style = const TextStyle(
           color: Colors.black87,
@@ -694,7 +709,7 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.3),
+                  color: Colors.grey.withValues(alpha: 0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 4),
                 ),
@@ -726,7 +741,7 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
           width: 8,
           height: 8,
           decoration: BoxDecoration(
-            color: Colors.grey.withOpacity(0.3 + (animValue * 0.5)),
+            color: Colors.grey.withValues(alpha: 0.3 + (animValue * 0.5)),
             shape: BoxShape.circle,
           ),
         );
@@ -742,7 +757,7 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
         color: const Color(0xFF1D1E33),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withValues(alpha: 0.3),
             blurRadius: 10,
             offset: const Offset(0, -5),
           ),
@@ -763,14 +778,16 @@ class _AIChatScreenState extends State<AIChatScreen> with TickerProviderStateMix
                   decoration: BoxDecoration(
                     color: const Color(0xFF0A0E21),
                     borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: const Color(0xFF1D976C).withValues(alpha: 0.5)),
+                    border: Border.all(
+                        color: const Color(0xFF1D976C).withValues(alpha: 0.5)),
                   ),
                   child: TextField(
                     controller: _controller,
                     style: const TextStyle(color: Colors.white, fontSize: 15),
                     decoration: InputDecoration(
                       hintText: 'Ask about your crops...',
-                      hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.5)),
+                      hintStyle:
+                          TextStyle(color: Colors.white.withValues(alpha: 0.5)),
                       border: InputBorder.none,
                       filled: false,
                     ),

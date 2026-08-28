@@ -2,91 +2,104 @@ import 'package:flutter/material.dart';
 import '../constants.dart';
 
 // ============================================================
-// STRESS CLASS ENUM WITH DISPLAY PROPERTIES
+// TEA DISEASE CLASS ENUM
+// Matches backend STRESS_LABELS exactly (Colab / paper §3)
+// 0=LEAF_BLIGHT  1=LEAF_HOPPERS  2=LEAF_RUST
+// 3=LOOPER_CATERPILLARS  4=MOSQUITO_BUG
 // ============================================================
 
 enum StressClass {
-  healthy,
-  waterStress,
-  nutrientDef,
-  diseaseRisk,
-  pestRisk,
+  leafBlight,
+  leafHoppers,
+  leafRust,
+  looperCaterpillars,
+  mosquitoBug,
 }
 
 extension StressClassExtension on StressClass {
   String get label {
     switch (this) {
-      case StressClass.healthy:
-        return 'healthy';
-      case StressClass.waterStress:
-        return 'water_stress';
-      case StressClass.nutrientDef:
-        return 'nutrient_def';
-      case StressClass.diseaseRisk:
-        return 'disease_risk';
-      case StressClass.pestRisk:
-        return 'pest_risk';
+      case StressClass.leafBlight:
+        return 'LEAF_BLIGHT';
+      case StressClass.leafHoppers:
+        return 'LEAF_HOPPERS';
+      case StressClass.leafRust:
+        return 'LEAF_RUST';
+      case StressClass.looperCaterpillars:
+        return 'LOOPER_CATERPILLARS';
+      case StressClass.mosquitoBug:
+        return 'MOSQUITO_BUG';
     }
   }
 
-  String get displayName {
-    return STRESS_DISPLAY_NAMES[label] ?? label;
-  }
+  String get displayName => STRESS_DISPLAY_NAMES[label] ?? label;
+
+  String get shortName => STRESS_SHORT[label] ?? label;
 
   Color get color {
     switch (this) {
-      case StressClass.healthy:
-        return const Color(0xFF4CAF50);
-      case StressClass.waterStress:
-        return const Color(0xFFFF9800);
-      case StressClass.nutrientDef:
-        return const Color(0xFFFFEB3B);
-      case StressClass.diseaseRisk:
-        return const Color(0xFFF44336);
-      case StressClass.pestRisk:
-        return const Color(0xFF9C27B0);
+      case StressClass.leafBlight:
+        return const Color(0xFF22A822); // green
+      case StressClass.leafHoppers:
+        return Colors.redAccent;
+      case StressClass.leafRust:
+        return const Color(0xFF1E90FF); // blue
+      case StressClass.looperCaterpillars:
+        return Colors.purpleAccent;
+      case StressClass.mosquitoBug:
+        return const Color(0xFF00CED1); // teal
     }
   }
 
   IconData get icon {
     switch (this) {
-      case StressClass.healthy:
-        return Icons.check_circle;
-      case StressClass.waterStress:
-        return Icons.water_drop;
-      case StressClass.nutrientDef:
-        return Icons.grass;
-      case StressClass.diseaseRisk:
-        return Icons.coronavirus;
-      case StressClass.pestRisk:
+      case StressClass.leafBlight:
+        return Icons.blur_on;
+      case StressClass.leafHoppers:
         return Icons.bug_report;
+      case StressClass.leafRust:
+        return Icons.circle;
+      case StressClass.looperCaterpillars:
+        return Icons.pest_control;
+      case StressClass.mosquitoBug:
+        return Icons.pest_control_rodent;
     }
   }
 
-  static StressClass fromLabel(String label) {
-    switch (label.toLowerCase()) {
-      case 'healthy':
-        return StressClass.healthy;
-      case 'water_stress':
-      case 'needs water':
-        return StressClass.waterStress;
-      case 'nutrient_def':
-      case 'needs fertilizer':
-        return StressClass.nutrientDef;
-      case 'disease_risk':
-      case 'may be sick':
-        return StressClass.diseaseRisk;
-      case 'pest_risk':
-      case 'bug problem':
-        return StressClass.pestRisk;
+  static StressClass fromLabel(String raw) {
+    switch (raw.toUpperCase().trim()) {
+      case 'LEAF_BLIGHT':
+      case 'BLIGHT':
+      case 'BROWN_BLIGHT':
+        return StressClass.leafBlight;
+      case 'LEAF_HOPPERS':
+      case 'LEAF_HOPPER':
+      case 'HOPPERS':
+      case 'LEAFHOPPER':
+      case 'TIP_BURN':
+        return StressClass.leafHoppers;
+      case 'LEAF_RUST':
+      case 'RUST':
+      case 'ORANGE_PUSTULE':
+        return StressClass.leafRust;
+      case 'LOOPER_CATERPILLARS':
+      case 'LOOPER':
+      case 'CATERPILLAR':
+      case 'LOOPER_CATERPILLAR':
+        return StressClass.looperCaterpillars;
+      case 'MOSQUITO_BUG':
+      case 'MOSQUITO':
+      case 'HELOPELTIS':
+        return StressClass.mosquitoBug;
       default:
-        return StressClass.healthy;
+        // graceful fallback — pick highest-probability class instead of crashing
+        return StressClass.leafBlight;
     }
   }
 }
 
 // ============================================================
-// CLASS SCORE - Individual prediction score for a stress class
+// CLASS SCORE — individual prediction score for one disease
 // ============================================================
 
 class ClassScore {
@@ -105,7 +118,7 @@ class ClassScore {
   double get probabilityPercent => probability * 100;
 
   factory ClassScore.fromJson(Map<String, dynamic> json) {
-    final label = json['label'] as String? ?? 'healthy';
+    final label = json['label'] as String? ?? 'LEAF_BLIGHT';
     return ClassScore(
       stressClass: StressClassExtension.fromLabel(label),
       probability: (json['prob'] as num?)?.toDouble() ?? 0.0,
@@ -116,7 +129,7 @@ class ClassScore {
 }
 
 // ============================================================
-// MODEL INFO - Information about the current active model
+// MODEL INFO — current active model configuration
 // ============================================================
 
 class ModelInfo {
@@ -141,9 +154,11 @@ class ModelInfo {
   factory ModelInfo.fromJson(Map<String, dynamic> json) {
     return ModelInfo(
       id: json['id'] as String? ?? 'default',
-      name: json['name'] as String? ?? 'Smart Crop Analysis',
-      description: json['description'] as String? ?? 'Checks your crops using photos and descriptions',
-      accuracy: (json['accuracy'] as num?)?.toDouble() ?? BEST_MACRO_F1_CENTRALIZED,
+      name: json['name'] as String? ?? 'Tea Disease Analyser',
+      description: json['description'] as String? ??
+          'Multimodal tea leaf disease classifier',
+      accuracy:
+          (json['accuracy'] as num?)?.toDouble() ?? BEST_MACRO_F1_CENTRALIZED,
       llmEncoder: json['llm_encoder'] as String? ?? BEST_LLM,
       vitEncoder: json['vit_encoder'] as String? ?? BEST_VIT,
       fusionStrategy: json['fusion_strategy'] as String? ?? BEST_FUSION,
@@ -152,7 +167,7 @@ class ModelInfo {
 }
 
 // ============================================================
-// PREDICTION RESULT - Full result from /predict endpoint
+// PREDICTION RESULT — full result from /predict endpoint
 // ============================================================
 
 class PredictionResult {
@@ -172,11 +187,10 @@ class PredictionResult {
     this.modelUsed,
   });
 
-  bool get hasStress =>
-      predictedLabel.toLowerCase() != 'healthy' || activeStresses.isNotEmpty;
+  // All 5 classes are tea diseases — prediction always represents a disease
+  bool get hasStress => true;
 
   Color get severityColor {
-    if (!hasStress) return const Color(0xFF4CAF50);
     if (activeStresses.isNotEmpty) {
       return activeStresses.first.stressClass.color;
     }
@@ -192,19 +206,15 @@ class PredictionResult {
   factory PredictionResult.fromJson(Map<String, dynamic> json) {
     final result = json['result'] as Map<String, dynamic>? ?? {};
 
-    // Parse all scores
     final allScores = (result['all_scores'] as List? ?? [])
         .map((e) => ClassScore.fromJson(e as Map<String, dynamic>))
         .toList();
 
-    // Parse active labels
     final activeLabels = (result['active_labels'] as List? ?? [])
         .map((e) => ClassScore.fromJson(e as Map<String, dynamic>))
         .toList();
 
-    // Mark active scores
-    final activeSet =
-        activeLabels.map((a) => a.stressClass.label).toSet();
+    final activeSet = activeLabels.map((a) => a.stressClass.label).toSet();
     final scoredList = allScores.map((s) {
       if (activeSet.contains(s.stressClass.label)) {
         return ClassScore(
@@ -217,34 +227,29 @@ class PredictionResult {
       return s;
     }).toList();
 
-    // Parse uncertainty if present
     Map<String, double>? unc;
     if (result['uncertainty'] != null) {
       unc = (result['uncertainty'] as Map<String, dynamic>)
           .map((k, v) => MapEntry(k, (v as num).toDouble()));
     }
 
-    // Predicted label
     final predicted = result['predicted'] as String? ??
         (allScores.isNotEmpty
             ? (List<ClassScore>.from(allScores)
-                  ..sort(
-                      (a, b) => b.probability.compareTo(a.probability)))
+                  ..sort((a, b) => b.probability.compareTo(a.probability)))
                 .first
                 .stressClass
                 .label
-            : 'healthy');
+            : 'LEAF_BLIGHT');
 
-    // Advice
     final advice = json['advice'] as String? ??
-        STRESS_ADVICE[predicted] ??
+        STRESS_ADVICE[predicted.toUpperCase()] ??
         '';
 
     return PredictionResult(
       predictedLabel: predicted,
       scores: scoredList.isNotEmpty ? scoredList : allScores,
-      activeStresses:
-          scoredList.where((s) => s.isActive).toList(),
+      activeStresses: scoredList.where((s) => s.isActive).toList(),
       advice: advice,
       uncertainty: unc,
       modelUsed: result['model'] as String?,

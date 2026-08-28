@@ -42,6 +42,10 @@ from .advisory_and_eval import (
     RAGEvaluator,
     evaluation_protocol,
 )
+from .local_data_loader import (
+    LocalDatasetLoader,
+    ImageCaptionLoader,
+)
 
 __all__ = [
     # rag_core
@@ -66,4 +70,7 @@ __all__ = [
     "LLMAdvisoryGenerator",
     "RAGEvaluator",
     "evaluation_protocol",
+    # local_data_loader
+    "LocalDatasetLoader",
+    "ImageCaptionLoader",
 ]

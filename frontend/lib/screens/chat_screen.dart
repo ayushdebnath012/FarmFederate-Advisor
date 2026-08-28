@@ -33,7 +33,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   bool _loading = false;
   String _status = "idle";
-  List<Map<String, dynamic>> _scores = []; // each: {label: String, prob: double}
+  List<Map<String, dynamic>> _scores =
+      []; // each: {label: String, prob: double}
   String _advice = "";
   Map<String, dynamic> _debug = {};
 
@@ -46,10 +47,11 @@ class _ChatScreenState extends State<ChatScreen> {
     try {
       if (kIsWeb) {
         // camera via web is not supported by image_picker package in many setups.
-        _setStatus("camera not supported on web — use Upload");
+        _setStatus("camera not supported on web - use Upload");
         return;
       }
-      final XFile? photo = await _picker.pickImage(source: ImageSource.camera, imageQuality: 80);
+      final XFile? photo =
+          await _picker.pickImage(source: ImageSource.camera, imageQuality: 80);
       if (photo == null) return;
       setState(() {
         _imageFile = File(photo.path);
@@ -65,7 +67,8 @@ class _ChatScreenState extends State<ChatScreen> {
   // File picker (works on web and mobile)
   Future<void> _pickFile() async {
     try {
-      final res = await FilePicker.platform.pickFiles(type: FileType.image, withData: true);
+      final res = await FilePicker.platform
+          .pickFiles(type: FileType.image, withData: true);
       if (res == null || res.files.isEmpty) return;
       final picked = res.files.first;
       if (kIsWeb) {
@@ -133,7 +136,8 @@ class _ChatScreenState extends State<ChatScreen> {
       );
 
       final result = resp['result'] ?? resp['data'] ?? resp;
-      final allScores = result['all_scores'] as List<dynamic>? ?? result['scores'] as List<dynamic>?;
+      final allScores = result['all_scores'] as List<dynamic>? ??
+          result['scores'] as List<dynamic>?;
 
       final parsedScores = (allScores ?? []).map<Map<String, dynamic>>((e) {
         final label = (e['label'] ?? e['name'] ?? "unknown").toString();
@@ -151,11 +155,14 @@ class _ChatScreenState extends State<ChatScreen> {
       setState(() {
         _scores = parsedScores;
         // Defensive advice parsing
-        _advice = (resp['advice'] ?? result['advice'] ?? resp['advice_text'] ?? "")?.toString() ?? "";
+        _advice =
+            (resp['advice'] ?? result['advice'] ?? resp['advice_text'] ?? "")
+                    ?.toString() ??
+                "";
         _debug = resp['debug'] ?? {};
         _setStatus("ok");
       });
-        } catch (e, st) {
+    } catch (e, st) {
       _setStatus("error");
       debugPrint("predict error: $e\n$st");
       setState(() {
@@ -214,7 +221,7 @@ class _ChatScreenState extends State<ChatScreen> {
         _debug['retrieved'] = retrieved;
         _setStatus("ok");
       });
-        } catch (e, st) {
+    } catch (e, st) {
       _setStatus("error");
       debugPrint("rag error: $e\n$st");
       setState(() {
@@ -240,14 +247,19 @@ class _ChatScreenState extends State<ChatScreen> {
       final resp = await api.demoPopulate(n: 5);
       setState(() {
         _debug['demo_populate'] = resp;
-        _advice = "Populated collection: ${resp['collection']} with ${resp['ids']?.length ?? 0} items";
+        _advice =
+            "Populated collection: ${resp['collection']} with ${resp['ids']?.length ?? 0} items";
         _setStatus('ok');
       });
     } catch (e) {
       _setStatus('error');
-      setState(() { _advice = 'Populate failed: $e'; });
+      setState(() {
+        _advice = 'Populate failed: $e';
+      });
     } finally {
-      setState(() { _loading = false; });
+      setState(() {
+        _loading = false;
+      });
     }
   }
 
@@ -269,9 +281,13 @@ class _ChatScreenState extends State<ChatScreen> {
       });
     } catch (e) {
       _setStatus('error');
-      setState(() { _advice = 'Search failed: $e'; });
+      setState(() {
+        _advice = 'Search failed: $e';
+      });
     } finally {
-      setState(() { _loading = false; });
+      setState(() {
+        _loading = false;
+      });
     }
   }
 
@@ -284,8 +300,10 @@ class _ChatScreenState extends State<ChatScreen> {
 
     debugPrint('SCORES (sorted): $sorted');
 
-    final String? top1 = sorted.isNotEmpty ? sorted[0]['label'] as String : null;
-    final String? top2 = sorted.length > 1 ? sorted[1]['label'] as String : null;
+    final String? top1 =
+        sorted.isNotEmpty ? sorted[0]['label'] as String : null;
+    final String? top2 =
+        sorted.length > 1 ? sorted[1]['label'] as String : null;
 
     return Wrap(
       spacing: 12,
@@ -327,7 +345,8 @@ class _ChatScreenState extends State<ChatScreen> {
               scoreText,
               style: TextStyle(
                 color: textColor,
-                fontWeight: (isTop1 || isTop2) ? FontWeight.bold : FontWeight.normal,
+                fontWeight:
+                    (isTop1 || isTop2) ? FontWeight.bold : FontWeight.normal,
               ),
             ),
           ),
@@ -346,9 +365,11 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     Widget imagePreview;
     if (_imageBytes != null) {
-      imagePreview = Image.memory(_imageBytes!, width: 120, height: 120, fit: BoxFit.cover);
+      imagePreview = Image.memory(_imageBytes!,
+          width: 120, height: 120, fit: BoxFit.cover);
     } else if (_imageFile != null) {
-      imagePreview = Image.file(_imageFile!, width: 120, height: 120, fit: BoxFit.cover);
+      imagePreview =
+          Image.file(_imageFile!, width: 120, height: 120, fit: BoxFit.cover);
     } else {
       imagePreview = Container(
         width: 120,
@@ -382,23 +403,28 @@ class _ChatScreenState extends State<ChatScreen> {
 
           // image preview + buttons
           Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            ClipRRect(borderRadius: BorderRadius.circular(6), child: imagePreview),
+            ClipRRect(
+                borderRadius: BorderRadius.circular(6), child: imagePreview),
             const SizedBox(width: 14),
             Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                ElevatedButton.icon(
-                  onPressed: _pickCamera,
-                  icon: const Icon(Icons.camera_alt),
-                  label: const Text("Camera"),
-                ),
-                const SizedBox(height: 8),
-                ElevatedButton.icon(
-                  onPressed: _pickFile,
-                  icon: const Icon(Icons.upload_file),
-                  label: const Text("Upload"),
-                ),
-                TextButton(onPressed: _clearImage, child: const Text("Clear image")),
-              ]),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: _pickCamera,
+                      icon: const Icon(Icons.camera_alt),
+                      label: const Text("Camera"),
+                    ),
+                    const SizedBox(height: 8),
+                    ElevatedButton.icon(
+                      onPressed: _pickFile,
+                      icon: const Icon(Icons.upload_file),
+                      label: const Text("Upload"),
+                    ),
+                    TextButton(
+                        onPressed: _clearImage,
+                        child: const Text("Clear image")),
+                  ]),
             ),
           ]),
           const SizedBox(height: 18),
@@ -438,9 +464,9 @@ class _ChatScreenState extends State<ChatScreen> {
           //   onPressed: () {
           //     setState(() {
           //       _scores = [
-          //         {"label": "water_stress", "prob": 0.78},
-          //         {"label": "pest_risk", "prob": 0.64},
-          //         {"label": "nutrient_def", "prob": 0.33},
+          //         {"label": "LEAF_RUST", "prob": 0.78},
+          //         {"label": "LOOPER_CATERPILLARS", "prob": 0.64},
+          //         {"label": "MOSQUITO_BUG", "prob": 0.33},
           //       ];
           //       _advice = "Sample advice (debug)";
           //     });
@@ -454,19 +480,22 @@ class _ChatScreenState extends State<ChatScreen> {
             Wrap(
               spacing: 12,
               children: [
-                for (var s in _scores.take(2)) Chip(label: Text("${s['label']}")),
+                for (var s in _scores.take(2))
+                  Chip(label: Text("${s['label']}")),
               ],
             ),
             const SizedBox(height: 12),
           ],
 
-          const Text('All scores:', style: TextStyle(fontWeight: FontWeight.bold)),
+          const Text('All scores:',
+              style: TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           _buildScoreChips(),
           const SizedBox(height: 18),
 
           if (_advice.isNotEmpty) ...[
-            const Text("Advice:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            const Text("Advice:",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
             const SizedBox(height: 8),
             Text(_advice),
             const SizedBox(height: 12),

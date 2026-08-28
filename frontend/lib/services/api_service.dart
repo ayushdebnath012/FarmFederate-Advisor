@@ -30,12 +30,15 @@ class ApiService {
     // If image provided (bytes or path), send multipart; otherwise JSON
     if (imageBytes != null || (imagePath != null && imagePath.isNotEmpty)) {
       final request = http.MultipartRequest('POST', uri);
-      request.fields.addAll({"text": text, "sensors": sensors ?? "", "client_id": clientId});
+      request.fields.addAll(
+          {"text": text, "sensors": sensors ?? "", "client_id": clientId});
       if (imageBytes != null) {
-        request.files.add(http.MultipartFile.fromBytes('image', imageBytes, filename: imageName ?? 'upload.jpg'));
+        request.files.add(http.MultipartFile.fromBytes('image', imageBytes,
+            filename: imageName ?? 'upload.jpg'));
       } else {
         // fromPath may throw if file not present on web; callers should only pass imagePath on non-web platforms
-        final multipart = await http.MultipartFile.fromPath('image', imagePath!);
+        final multipart =
+            await http.MultipartFile.fromPath('image', imagePath!);
         request.files.add(multipart);
       }
       final streamed = await request.send();
@@ -61,11 +64,14 @@ class ApiService {
     // If image provided (bytes or path), send multipart; otherwise JSON
     if (imageBytes != null || (imagePath != null && imagePath.isNotEmpty)) {
       final request = http.MultipartRequest('POST', uri);
-      request.fields.addAll({"description": description, "client_id": clientId});
+      request.fields
+          .addAll({"description": description, "client_id": clientId});
       if (imageBytes != null) {
-        request.files.add(http.MultipartFile.fromBytes('image', imageBytes, filename: imageName ?? 'upload.jpg'));
+        request.files.add(http.MultipartFile.fromBytes('image', imageBytes,
+            filename: imageName ?? 'upload.jpg'));
       } else {
-        final multipart = await http.MultipartFile.fromPath('image', imagePath!);
+        final multipart =
+            await http.MultipartFile.fromPath('image', imagePath!);
         request.files.add(multipart);
       }
       final streamed = await request.send();
@@ -74,7 +80,8 @@ class ApiService {
     } else {
       final resp = await http.post(uri,
           headers: {"Content-Type": "application/json"},
-          body: json.encode({"description": description, "client_id": clientId}));
+          body:
+              json.encode({"description": description, "client_id": clientId}));
       return json.decode(resp.body) as Map<String, dynamic>;
     }
   }
@@ -114,9 +121,10 @@ class ApiService {
     // Fallback default model info
     return ModelInfo(
       id: 'default',
-      name: 'Smart Crop Analysis',
-      description: 'Checks your crops using photos and descriptions',
-      accuracy: 0.847,
+      name: 'FarmFederate Tea VLM',
+      description:
+          'CLIP-style tea disease classifier using image, text, and local advisory context',
+      accuracy: 0.949,
     );
   }
 
@@ -129,7 +137,12 @@ class ApiService {
     } catch (_) {
       return {
         "classification": {"macro_f1": 1.0, "micro_f1": 1.0},
-        "retrieval": {"recall_at_5": 0.129, "mrr": 0.100, "ndcg_at_5": 0.172, "kb_coverage": 1.0},
+        "retrieval": {
+          "recall_at_5": 0.129,
+          "mrr": 0.100,
+          "ndcg_at_5": 0.172,
+          "kb_coverage": 1.0
+        },
         "robustness": {"embedding_drift": 0.156},
         "demo_mode": true,
       };
@@ -150,7 +163,7 @@ class ApiService {
     return [];
   }
 
-  /// Health check — returns the health payload from /health
+  /// Health check - returns the health payload from /health
   Future<Map<String, dynamic>> healthCheck() async {
     try {
       final uri = Uri.parse("$baseUrl/health");
@@ -162,7 +175,8 @@ class ApiService {
   }
 
   /// Demo: populate Qdrant with demo points
-  Future<Map<String, dynamic>> demoPopulate({int n = 3, String? collection}) async {
+  Future<Map<String, dynamic>> demoPopulate(
+      {int n = 3, String? collection}) async {
     final collParam = collection != null ? '&collection_name=$collection' : '';
     final uri = Uri.parse("$baseUrl/demo_populate?n=$n$collParam");
     final resp = await http.post(uri);
@@ -170,11 +184,52 @@ class ApiService {
   }
 
   /// Demo: search Qdrant using the last demo vector
-  Future<Map<String, dynamic>> demoSearch({int topK = 3, String vectorType = 'visual', String? collection}) async {
+  Future<Map<String, dynamic>> demoSearch(
+      {int topK = 3, String vectorType = 'visual', String? collection}) async {
     final collParam = collection != null ? '&collection_name=$collection' : '';
-    final uri = Uri.parse("$baseUrl/demo_search?top_k=$topK&vector_type=$vectorType$collParam");
+    final uri = Uri.parse(
+        "$baseUrl/demo_search?top_k=$topK&vector_type=$vectorType$collParam");
     final resp = await http.post(uri);
     return json.decode(resp.body) as Map<String, dynamic>;
   }
 }
 
+/// Disease detection API - calls /disease/detect and /disease/text
+class DiseaseApiService {
+  final String baseUrl;
+  DiseaseApiService(this.baseUrl);
+
+  /// Upload an image and get back annotated image + class + remedies
+  Future<Map<String, dynamic>> detectDisease(
+      {required Uint8List imageBytes, String imageName = 'leaf.jpg'}) async {
+    try {
+      final uri = Uri.parse("$baseUrl/disease/detect");
+      final request = http.MultipartRequest('POST', uri)
+        ..files.add(http.MultipartFile.fromBytes('image', imageBytes,
+            filename: imageName));
+      final streamed =
+          await request.send().timeout(const Duration(seconds: 30));
+      final resp = await http.Response.fromStream(streamed);
+      return json.decode(resp.body) as Map<String, dynamic>;
+    } catch (e) {
+      return {'error': 'Connection failed: $e'};
+    }
+  }
+
+  /// Send a disease name or symptom description -> get reference image + remedies
+  Future<Map<String, dynamic>> diseaseFromText({required String query}) async {
+    try {
+      final uri = Uri.parse("$baseUrl/disease/text");
+      final resp = await http
+          .post(
+            uri,
+            headers: {'Content-Type': 'application/json'},
+            body: json.encode({'query': query}),
+          )
+          .timeout(const Duration(seconds: 15));
+      return json.decode(resp.body) as Map<String, dynamic>;
+    } catch (e) {
+      return {'error': 'Connection failed: $e'};
+    }
+  }
+}

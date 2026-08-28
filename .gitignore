@@ -6,12 +6,56 @@ models/
 backend/checkpoints/
 checkpoints/
 
-# Temporary files
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Temporary and scratch directories
 /tmp/
+rtmp/
+render_*/
 *.tmp
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz
 
 # Reserved device name on Windows (avoid git add errors)
 nul
 
 # Image datasets (too large for git — upload to Drive manually)
 data/*/images/
+
+# Superseded result bundles; keep only the active tea_results/ and the
+# legacy JSON under overleaf_final/ that Fig. 5 reads.
+farmfederate_results/
+farmfederate_results (*)/
+farmfederate_results_2*/
+/results/
+
+# Large data/result archives — exceed GitHub's 100 MB per-file limit
+data.zip
+data_linux.zip
+data_final*.zip*
+Real_Dataset.zip
+disease_annotated.zip
+farmfederate_colab_run.zip
+farmfederate_results*.zip
+overleaf_final*.zip
+
+# Reference papers kept locally only (copyrighted, ~122 MB)
+references/

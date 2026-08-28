@@ -21,6 +21,7 @@ import 'screens/multimodal_diagnosis_screen.dart';
 import 'screens/model_selection_screen.dart';
 import 'screens/benchmark_results_screen.dart';
 import 'screens/federated_learning_screen.dart';
+import 'screens/disease_detection_screen.dart';
 
 /// Application routes
 /// Following the paper's architecture (Figure 1):
@@ -55,6 +56,9 @@ final Map<String, WidgetBuilder> routes = {
 
   // Legacy chat (backward compatibility)
   '/chat-old': (context) => ChatScreen(apiBase: getBackendUrl()),
+
+  // Tea leaf disease detection
+  '/disease-detect': (context) => DiseaseDetectionScreen(apiBase: getBackendUrl()),
 };
 
 /// Route names for type-safe navigation
@@ -70,4 +74,5 @@ class AppRoutes {
   static const String benchmarks = '/benchmarks';
   static const String federated = '/federated';
   static const String chat = '/chat';
+  static const String diseaseDetect = '/disease-detect';
 }

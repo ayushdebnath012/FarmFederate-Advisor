@@ -1,4 +1,0 @@
-id,farm_id,report,timestamp,meta
-86f1fae6-d0ec-4def-852d-e2c3fe775e42,demo-farm-1,Severe water stress - leaves drooping,1769034236.5999231,{'severity': 'severe'}
-87ed7c23-86e7-4740-90ac-f28e20cb9117,demo-farm-1,Possible pest risk - small holes on leaves,1769034236.606555,{'severity': 'low'}
-963eea10-2ccd-4ef0-8016-6c66693aaa9e,demo-farm-1,Early signs of nutrient deficiency - yellowing,1769034236.6051102,{'severity': 'medium'}

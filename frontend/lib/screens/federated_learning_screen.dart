@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 class FederatedLearningScreen extends StatefulWidget {
   final String apiBase;
 
-  const FederatedLearningScreen({Key? key, required this.apiBase}) : super(key: key);
+  const FederatedLearningScreen({Key? key, required this.apiBase})
+      : super(key: key);
 
   @override
-  State<FederatedLearningScreen> createState() => _FederatedLearningScreenState();
+  State<FederatedLearningScreen> createState() =>
+      _FederatedLearningScreenState();
 }
 
 class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
@@ -22,7 +24,7 @@ class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: const Color(0xFF1D1E33),
-        title: const Text('Farm Network — Federated Learning'),
+        title: const Text('Farm Network - Federated Learning'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -60,7 +62,7 @@ class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(Icons.security, color: Colors.white, size: 32),
@@ -71,7 +73,7 @@ class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Federated LLM · ViT · VLM',
+                  'Federated LLM | ViT | VLM',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
@@ -80,7 +82,7 @@ class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  'Three independent paradigms trained with FedAvg — K=3 clients, T=8 rounds, E=3 local epochs. Raw farm data never leaves your device.',
+                  'Three independent paradigms trained with FedAvg - K=3 clients, T=8 rounds, E=3 local epochs. Raw farm data never leaves your device.',
                   style: TextStyle(color: Colors.white70, fontSize: 12),
                 ),
               ],
@@ -103,7 +105,8 @@ class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
         children: [
           const Text(
             'Cross-Paradigm Results',
-            style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
           const Text(
@@ -113,35 +116,35 @@ class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
           const SizedBox(height: 16),
           _buildParadigmCard(
             paradigm: 'Federated LLM',
-            bestModel: 'ALBERT-tiny',
-            modality: 'Text (symptom descriptions)',
-            centF1: 0.590,
-            fedF1: 0.548,
-            retention: 92.9,
+            bestModel: 'BERT-tiny',
+            modality: 'Text (agronomist symptom descriptions)',
+            centF1: 0.427,
+            fedF1: 0.460,
+            retention: 107.7,
             color: const Color(0xFF4169E1),
             icon: Icons.text_fields,
-            note: 'Most robust to non-IID data',
+            note: 'Exceeds centralized baseline in federated setting',
           ),
           const SizedBox(height: 12),
           _buildParadigmCard(
             paradigm: 'Federated ViT',
-            bestModel: 'ConvNeXT-tiny',
-            modality: 'Image (crop photographs)',
-            centF1: 0.765,
-            fedF1: 0.659,
-            retention: 86.1,
+            bestModel: 'EfficientNet',
+            modality: 'Image (tea leaf photographs)',
+            centF1: 0.886,
+            fedF1: 0.886,
+            retention: 100.0,
             color: const Color(0xFF228B22),
             icon: Icons.image,
-            note: 'Highest unimodal accuracy',
+            note: 'Perfect retention - no accuracy loss from federation',
           ),
           const SizedBox(height: 12),
           _buildParadigmCard(
             paradigm: 'Federated VLM',
             bestModel: 'CLIP fusion',
             modality: 'Text + Image combined',
-            centF1: 0.848,
-            fedF1: 0.785,
-            retention: 92.6,
+            centF1: 0.873,
+            fedF1: 0.861,
+            retention: 98.6,
             color: const Color(0xFFB22222),
             icon: Icons.merge_type,
             note: 'Best overall federated performance',
@@ -151,7 +154,7 @@ class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.05),
+              color: Colors.white.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Row(
@@ -160,7 +163,7 @@ class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
                 SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'Avg Fed/Cent retention: 90.5% across all 3 paradigms',
+                    'Avg Fed/Cent retention: 102.1% across all 3 paradigms',
                     style: TextStyle(color: Colors.white54, fontSize: 11),
                   ),
                 ),
@@ -187,9 +190,11 @@ class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
+        color: color.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(isBest ? 0.6 : 0.3), width: isBest ? 1.5 : 1),
+        border: Border.all(
+            color: color.withValues(alpha: isBest ? 0.6 : 0.3),
+            width: isBest ? 1.5 : 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,18 +215,23 @@ class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
               ),
               if (isBest)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                   decoration: BoxDecoration(
-                    color: color.withOpacity(0.2),
+                    color: color.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(4),
                   ),
-                  child: Text('BEST', style: TextStyle(color: color, fontSize: 9, fontWeight: FontWeight.bold)),
+                  child: Text('BEST',
+                      style: TextStyle(
+                          color: color,
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold)),
                 ),
             ],
           ),
           const SizedBox(height: 4),
           Text(
-            '$bestModel · $modality',
+            '$bestModel | $modality',
             style: const TextStyle(color: Colors.white60, fontSize: 11),
           ),
           const SizedBox(height: 10),
@@ -235,7 +245,8 @@ class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
             ],
           ),
           const SizedBox(height: 6),
-          Text(note, style: const TextStyle(color: Colors.white38, fontSize: 10)),
+          Text(note,
+              style: const TextStyle(color: Colors.white38, fontSize: 10)),
         ],
       ),
     );
@@ -245,12 +256,13 @@ class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.15),
+        color: color.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
         '$label F1 ${value.toStringAsFixed(3)}',
-        style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w600),
+        style:
+            TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w600),
       ),
     );
   }
@@ -259,7 +271,7 @@ class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
@@ -284,14 +296,21 @@ class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
             children: [
               const Text(
                 'Training Status',
-                style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: _isTraining ? Colors.green.withOpacity(0.2) : Colors.grey.withOpacity(0.2),
+                  color: _isTraining
+                      ? Colors.green.withValues(alpha: 0.2)
+                      : Colors.grey.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: _isTraining ? Colors.green : Colors.grey),
+                  border: Border.all(
+                      color: _isTraining ? Colors.green : Colors.grey),
                 ),
                 child: Text(
                   _isTraining ? 'Training' : 'Idle',
@@ -309,12 +328,15 @@ class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Round $_currentRound of $_totalRounds  ·  $_participatingFarms clients',
+                'Round $_currentRound of $_totalRounds  |  $_participatingFarms clients',
                 style: const TextStyle(color: Colors.white70, fontSize: 14),
               ),
               Text(
                 '${((_currentRound / _totalRounds) * 100).toStringAsFixed(0)}%',
-                style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -330,7 +352,8 @@ class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
             icon: Icon(_isTraining ? Icons.stop : Icons.play_arrow),
             label: Text(_isTraining ? 'Stop Training' : 'Start Training'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: _isTraining ? Colors.red : const Color(0xFF1D976C),
+              backgroundColor:
+                  _isTraining ? Colors.red : const Color(0xFF1D976C),
               minimumSize: const Size(double.infinity, 48),
             ),
           ),
@@ -354,25 +377,34 @@ class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
             children: [
               const Text(
                 'Participating Farms',
-                style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.blue.withOpacity(0.2),
+                  color: Colors.blue.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
                   '$_participatingFarms clients (K=3)',
-                  style: const TextStyle(color: Colors.blue, fontSize: 12, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      color: Colors.blue,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          _buildFarmCard('Punjab Farm (Client 1)', 'Online', 'Contributing', Colors.green),
+          _buildFarmCard(
+              'Punjab Farm (Client 1)', 'Online', 'Contributing', Colors.green),
           const SizedBox(height: 8),
-          _buildFarmCard('Kerala Farm (Client 2)', 'Online', 'Training', Colors.blue),
+          _buildFarmCard(
+              'Kerala Farm (Client 2)', 'Online', 'Training', Colors.blue),
           const SizedBox(height: 8),
           _buildFarmCard('UP Farm (Client 3)', 'Online', 'Idle', Colors.orange),
         ],
@@ -380,28 +412,40 @@ class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
     );
   }
 
-  Widget _buildFarmCard(String name, String status, String activity, Color color) {
+  Widget _buildFarmCard(
+      String name, String status, String activity, Color color) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.3),
+        color: Colors.black.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
-          Container(width: 10, height: 10, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+          Container(
+              width: 10,
+              height: 10,
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
-                Text(activity, style: const TextStyle(color: Colors.white60, fontSize: 11)),
+                Text(name,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600)),
+                Text(activity,
+                    style:
+                        const TextStyle(color: Colors.white60, fontSize: 11)),
               ],
             ),
           ),
-          Text(status, style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w500)),
+          Text(status,
+              style: TextStyle(
+                  color: color, fontSize: 12, fontWeight: FontWeight.w500)),
         ],
       ),
     );
@@ -421,17 +465,25 @@ class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
             children: [
               Icon(Icons.shield, color: Colors.green, size: 24),
               SizedBox(width: 12),
-              Text('Privacy Guarantees', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+              Text('Privacy Guarantees',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold)),
             ],
           ),
           const SizedBox(height: 16),
-          _buildGuaranteeItem(Icons.lock_outline, 'End-to-End Encryption', 'All communications are encrypted'),
+          _buildGuaranteeItem(Icons.lock_outline, 'End-to-End Encryption',
+              'All communications are encrypted'),
           const SizedBox(height: 12),
-          _buildGuaranteeItem(Icons.visibility_off, 'No Raw Data Sharing', 'Only model gradients are transmitted via FedAvg'),
+          _buildGuaranteeItem(Icons.visibility_off, 'No Raw Data Sharing',
+              'Only model gradients are transmitted via FedAvg'),
           const SizedBox(height: 12),
-          _buildGuaranteeItem(Icons.group, 'Non-IID Dirichlet Splits', 'Realistic heterogeneous data distribution (α=1.0)'),
+          _buildGuaranteeItem(Icons.group, 'Non-IID Dirichlet Splits',
+              'Realistic heterogeneous data distribution (alpha=1.0)'),
           const SizedBox(height: 12),
-          _buildGuaranteeItem(Icons.verified_user, 'Secure Aggregation', 'Central server cannot see individual client updates'),
+          _buildGuaranteeItem(Icons.verified_user, 'Secure Aggregation',
+              'Central server cannot see individual client updates'),
         ],
       ),
     );
@@ -442,7 +494,9 @@ class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
       children: [
         Container(
           padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(color: Colors.green.withOpacity(0.2), borderRadius: BorderRadius.circular(8)),
+          decoration: BoxDecoration(
+              color: Colors.green.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(8)),
           child: Icon(icon, color: Colors.green, size: 20),
         ),
         const SizedBox(width: 12),
@@ -450,8 +504,13 @@ class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
-              Text(description, style: const TextStyle(color: Colors.white60, fontSize: 11)),
+              Text(title,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600)),
+              Text(description,
+                  style: const TextStyle(color: Colors.white60, fontSize: 11)),
             ],
           ),
         ),
@@ -469,13 +528,17 @@ class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Training History', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+          const Text('Training History',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold)),
           const SizedBox(height: 16),
-          _buildHistoryItem('Round 3', '2 hours ago', 'VLM F1: 0.771'),
+          _buildHistoryItem('Round 8', '2 hours ago', 'VLM F1: 0.861'),
           const SizedBox(height: 8),
-          _buildHistoryItem('Round 2', '1 day ago', 'VLM F1: 0.752'),
+          _buildHistoryItem('Round 5', '1 day ago', 'VLM F1: 0.849'),
           const SizedBox(height: 8),
-          _buildHistoryItem('Round 1', '2 days ago', 'VLM F1: 0.728'),
+          _buildHistoryItem('Round 1', '2 days ago', 'VLM F1: 0.821'),
         ],
       ),
     );
@@ -485,7 +548,7 @@ class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.3),
+        color: Colors.black.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -496,12 +559,22 @@ class _FederatedLearningScreenState extends State<FederatedLearningScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(round, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
-                Text(time, style: const TextStyle(color: Colors.white60, fontSize: 11)),
+                Text(round,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600)),
+                Text(time,
+                    style:
+                        const TextStyle(color: Colors.white60, fontSize: 11)),
               ],
             ),
           ),
-          Text(metric, style: const TextStyle(color: Colors.green, fontSize: 13, fontWeight: FontWeight.bold)),
+          Text(metric,
+              style: const TextStyle(
+                  color: Colors.green,
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold)),
         ],
       ),
     );
