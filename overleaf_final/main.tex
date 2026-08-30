@@ -69,7 +69,7 @@
 \setcounter{topnumber}{6}
 
 %% ─────────────────────────────────────────────────────────────────────────────
-\title{Leakage-Audited Multimodal Federated Learning\\
+\title{Multimodal Federated Learning\\
 for Tea Pest and Disease Diagnosis}
 
 \author{
@@ -107,9 +107,10 @@ predictions (41 of 75 for the note, 49 for the image). The router retains
 2--8 simulated clients. Across five federated architectures, federation beats
 local-only training at 18.9--67.2\,MiB per client-round, and no aggregator
 dominates. Under severe skew, client dropout, straggler staleness and poisoned
-updates, fusion absorbs the first two and degrades under the last two, with no
-configuration Byzantine-tolerant. Nothing saturates, but clients are simulated
-and notes are templated, so multi-site validation remains necessary.
+updates, fusion absorbs the first two and degrades under the last two. However,
+none of the tested configurations demonstrated reliable tolerance to Byzantine
+clients. Nothing saturates, but clients are simulated and notes are templated,
+so multi-site validation remains necessary.
 \end{abstract}
 
 \begin{IEEEkeywords}
