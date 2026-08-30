@@ -30,7 +30,7 @@ IMAGE_ORDER = ["Colour+HOG SVM", "Swin-tiny", "ConvNeXT-tiny", "EfficientNet",
 MM_ORDER = ["TF-IDF + Colour/HOG SVM", "ViT-Base + BERT-tiny",
             "ViT-Base + BERT-mini", "ViT-Base + BERT-small",
             "ViT-Base + BERT-medium", "ViT-Base + DistilBERT"]
-PRETTY = {"EfficientNet": "EfficientNet-B0", "ViT-Base": "ViT-Base/16"}
+PRETTY = {"EfficientNet": "EfficientNet-B0", "ViT-Base": "ViT-Base/16", "ViT-Base + BERT-small": "ViT-Base + BERT-small (LEAF-V)"}
 
 
 def esc(s: str) -> str:
