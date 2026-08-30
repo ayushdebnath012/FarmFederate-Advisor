@@ -59,3 +59,6 @@ overleaf_final*.zip
 
 # Reference papers kept locally only (copyrighted, ~122 MB)
 references/
+
+# macOS Finder metadata
+.DS_Store
