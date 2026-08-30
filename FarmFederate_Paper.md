@@ -8,7 +8,7 @@
 
 ## Abstract
 
-Tea (*Camellia sinensis*) is among the world's most economically significant beverage crops, yet early detection of its foliar diseases remains hampered by limited annotated data, privacy constraints on farm data sharing, and the gap between single-modality diagnostic tools and real-world multi-cue observations. We present **FarmFederate v3**, a privacy-preserving multimodal federated learning framework specifically designed for five-class tea leaf disease detection: **Leaf Blight, Leaf Hoppers, Leaf Rust, Looper Caterpillars, and Mosquito Bug**. The system trains 18 model variants—5 Large Language Models (LLM), 5 Vision Transformers (ViT), and 8 Vision-Language Model (VLM) fusion architectures—under a federated protocol with 3 simulated farm clients and 8 communication rounds using FedAvg. Our real-world dataset comprises 200 tea leaf images in YOLO Oriented Bounding Box (OBB) format, sorted per disease class and augmented to **800 images per class (4,000 total)**, paired with 3,000 templated symptom descriptions (600 per class). Experimental results demonstrate that multimodal VLM fusion achieves macro-F1 up to **0.9494** (VLM-CLIP), ViT image models reach **0.9114** (EfficientNet-B0), and LLM text models attain **0.4867** (BERT-tiny). FarmFederate is ranked **12th among 35 systems** (including 34 state-of-the-art tea disease papers from 2015–2025), exceeding the mean SOTA macro-F1 of 0.892. New capabilities in v6.0 include an OBB disease box visualiser, a Retrieval-Augmented Generation (RAG) diagnostic module with federated encoder training, a Gradio web demo, IoT sensor integration, REST API server, and automated SOTA comparison against 34 tea-specific literature papers across 8 categories.
+Tea (*Camellia sinensis*) is among the world's most economically significant beverage crops, yet early detection of its foliar diseases remains hampered by limited annotated data, privacy constraints on farm data sharing, and the gap between single-modality diagnostic tools and real-world multi-cue observations. We present **FarmFederate v3**, a privacy-preserving multimodal federated learning framework specifically designed for five-class tea leaf disease detection: **Leaf Blight, Leaf Hoppers, Leaf Rust, Looper Caterpillars, and Mosquito Bug**. The system trains 18 model variants—5 Large Language Models (LLM), 5 Vision Transformers (ViT), and 8 Vision-Language Model (VLM) fusion architectures—under a federated protocol with 3 simulated farm clients and 8 communication rounds using FedAvg. Our real-world dataset comprises 200 tea leaf images in YOLO Oriented Bounding Box (OBB) format, sorted per disease class and augmented to **800 images per class (4,000 total)**, paired with 673 unique templated symptom descriptions (132–138 per class). Experimental results demonstrate that multimodal VLM fusion achieves macro-F1 up to **0.9494** (VLM-CLIP), ViT image models reach **0.9114** (EfficientNet-B0), and LLM text models attain **0.4867** (BERT-tiny). FarmFederate is ranked **12th among 35 systems** (including 34 state-of-the-art tea disease papers from 2015–2025), exceeding the mean SOTA macro-F1 of 0.892. New capabilities in v6.0 include an OBB disease box visualiser, a Retrieval-Augmented Generation (RAG) diagnostic module with federated encoder training, a Gradio web demo, IoT sensor integration, REST API server, and automated SOTA comparison against 34 tea-specific literature papers across 8 categories.
 
 **Keywords:** federated learning, tea leaf disease, vision-language models, YOLO OBB, retrieval-augmented generation, multimodal learning, precision agriculture
 
@@ -22,7 +22,7 @@ Recent advances in deep learning have demonstrated remarkable accuracy on plant 
 
 Federated Learning (FL) [McMahan et al., 2017] addresses the privacy barrier by training models locally and sharing only parameter updates. Multimodal architectures close the modality gap by jointly encoding leaf images and natural-language symptom descriptions. Together, they form the design philosophy of **FarmFederate**. This paper presents version 3 of the FarmFederate research programme—and version 6.0 of the software—with the following key contributions:
 
-1. **Tea-domain benchmark.** The first FL multimodal benchmark specifically targeting the five canonical tea leaf disease classes, built on 200 real annotated images (YOLO OBB format) augmented to 4,000 images and paired with 3,000 curated symptom descriptions.
+1. **Tea-domain benchmark.** The first FL multimodal benchmark specifically targeting the five canonical tea leaf disease classes, built on 200 real annotated images (YOLO OBB format) augmented to 4,000 images and paired with 673 unique curated symptom descriptions.
 
 2. **OBB disease box visualiser.** A novel post-processing pipeline that decodes YOLO Oriented Bounding Box annotations and overlays oriented disease region outlines on PIL images—enabling per-image spatial diagnosis verification.
 
@@ -98,21 +98,21 @@ Boxes are colour-coded per disease class; the module exports both annotated JPEG
 
 ### 3.3 Text Dataset
 
-**Symptom description generation.** 3,000 natural-language crop symptom descriptions were generated (600 per class) using class-specific vocabulary templates drawn from peer-reviewed tea pathology literature [Senanayake et al., 2021; Chen et al., 2022]. Each template instantiates 3–5 slot-filled phrases (location, severity, colour, pattern, environmental context) with 75% class-specific and 25% cross-class confusion terms, simulating realistic agronomist field notes with controlled ambiguity.
+**Symptom description generation.** Natural-language crop symptom descriptions were generated and deduplicated to 673 unique observations (132–138 per class) using class-specific vocabulary templates drawn from peer-reviewed tea pathology literature [Senanayake et al., 2021; Chen et al., 2022]. Each template instantiates 3–5 slot-filled phrases (location, severity, colour, pattern, environmental context) with 75% class-specific and 25% cross-class confusion terms, simulating realistic agronomist field notes with controlled ambiguity.
 
 Example templates per class:
 - **LEAF_BLIGHT**: *"Observed water-soaked necrotic lesion on {leaf_position} with brown margin rings; rapid progression under {humidity}% humidity."*
 - **MOSQUITO_BUG**: *"Angular dark puncture mark with {colour} halo on tender flush, consistent with Helopeltis feeding at {time_of_day}."*
 
-**Class balance.** All five classes are generated at exactly 600 samples each (balanced by construction), eliminating the 25:1 imbalance seen in corpus-derived keyword-filtered text approaches.
+**Class balance.** After deduplication the five classes hold 132–138 unique samples each (a 1.05:1 ratio, balanced by construction), eliminating the 25:1 imbalance seen in corpus-derived keyword-filtered text approaches.
 
 ### 3.4 Dataset Summary
 
 | Source | Modality | Total Samples | Samples/Class |
 |---|---|---|---|
 | Real YOLO OBB images (augmented) | Image | 4,000 | 800 |
-| Synthetic symptom descriptions | Text | 3,000 | 600 |
-| **Combined (VLM training)** | **Text + Image** | **7,000** | **~1,400** |
+| Synthetic symptom descriptions | Text | 673 | 132–138 |
+| **Combined (VLM training)** | **Text + Image** | **4,673** | **~935** |
 
 Train/validation/test split: **70/15/15** stratified by class.
 
@@ -378,7 +378,7 @@ Evaluation metrics:
 
 ### 9.2 LLM Results (Text Branch)
 
-Text models trained on 3,000 balanced symptom descriptions (600 per class). Macro-F1 scores reflect the inherent difficulty of five-way tea disease classification from text alone, where inter-class symptom overlap (e.g., LEAF_BLIGHT vs MOSQUITO_BUG both show leaf darkening) challenges text encoders.
+Text models trained on 673 unique balanced symptom descriptions (132–138 per class); duplicate instantiations are retained in the training file, so each unique description recurs ~4.5× on average and roughly 78% of rows are repeats. Macro-F1 scores reflect the inherent difficulty of five-way tea disease classification from text alone, where inter-class symptom overlap (e.g., LEAF_BLIGHT vs MOSQUITO_BUG both show leaf darkening) challenges text encoders.
 
 **Table 1: LLM Performance on Tea Leaf Disease Text Classification**
 
@@ -587,7 +587,7 @@ The finding that federated LLM outperforms centralised (0.4600 vs. 0.4267) is co
 
 ### 11.5 Privacy-Utility Analysis
 
-The federated privacy cost for VLM is modest: −0.0127 F1 relative to centralised, while guaranteeing that 4,000 proprietary tea estate images and 3,000 agronomist-quality symptom descriptions never leave the respective clients. For LLM, federated training actually improves performance (+0.0333). This asymmetry confirms that FarmFederate's FL protocol is not only privacy-preserving but can be performance-neutral or even advantageous for language-based components.
+The federated privacy cost for VLM is modest: −0.0127 F1 relative to centralised, while guaranteeing that 4,000 proprietary tea estate images and 673 agronomist-quality symptom descriptions never leave the respective clients. For LLM, federated training actually improves performance (+0.0333). This asymmetry confirms that FarmFederate's FL protocol is not only privacy-preserving but can be performance-neutral or even advantageous for language-based components.
 
 ---
 
@@ -661,8 +661,8 @@ The full system—training code, augmented dataset pipeline, OBB visualiser, 15+
 | Source | Modality | Raw Samples | Augmented Samples | Classes |
 |---|---|---|---|---|
 | Real YOLO OBB tea images | Image | 200 (annotated) | 4,000 (800/class) | 5 |
-| Synthetic symptom descriptions | Text | 3,000 | 3,000 | 5 |
-| Combined (VLM) | Text + Image | 3,200 raw | 7,000 | 5 |
+| Synthetic symptom descriptions | Text | 673 | 673 | 5 |
+| Combined (VLM) | Text + Image | 873 raw | 4,673 | 5 |
 
 ## Appendix C: FarmFederate v6.0 Execution Modes
 

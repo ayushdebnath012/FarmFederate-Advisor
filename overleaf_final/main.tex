@@ -242,7 +242,8 @@ privacy boundary, and the FedAvg server returns $\theta^{t+1}$.}
 \label{fig:arch}
 \end{figure*}
 
-Each estate keeps images and notes local; only model updates cross the boundary.
+Each estate keeps images and notes local; only model updates cross the
+boundary (Fig.~\ref{fig:edge_cloud}).
 The controlled ablations use one selected checkpoint, while FL adapts its
 trainable multimodal states with the visual backbone frozen. Field-note words
 are BLAKE2b-hashed into a fixed 30\,522-entry ID space and padded or truncated
@@ -270,11 +271,12 @@ and is not drawn as token-level cross-attention.}
 \subsection{Dataset and Leakage Audit}
 \label{sec:dataset}
 
-\emph{Held fixed.} This split. Every table in the paper is scored on the same 222/74/75
-source-grouped crops, the same exact box--note pairing, and the same
-train-fitted leakage mask; nothing below re-splits or re-pairs the corpus,
-so any difference between tables is the axis that table varies and not the
-data underneath it.
+\emph{Held fixed.} This split. Every table except Table~\ref{tab:standard_suite}
+is scored on the same 222/74/75 source-grouped crops, the same exact box--note
+pairing and the same train-fitted leakage mask, so any difference between them is
+the axis that table varies and not the data underneath it. The matched-setting
+federated suite of Table~\ref{tab:standard_suite} re-partitions those same 371
+observations as 260/55/56 over 199 source groups, and is read only against itself.
 
 The audited corpus (Table~\ref{tab:dataaudit}) contains 200 field
 photographs collected from the IIT
@@ -430,14 +432,7 @@ then evaluated once on 75 test crops.
 
 \subsection{Enhanced Image-Only Inference}
 
-\emph{Held fixed.} The encoder. The three pipeline ladders vary the pipeline and
-hold the model still: the visual ladder fixes the ResNet-50 image path with
-frozen ViT-tiny as a drop-in rung, the text ladder fixes DistilBERT, and the
-fusion ladder fixes the pair validation selects, ViT-Base/16 with DistilBERT
-(ViT-Base leads the five vision encoders at 0.734 validation macro F1,
-Fig.~\ref{fig:c_selection_gap}). Starting from the strongest pair is what makes a
-flat result meaningful: a pipeline that cannot help the best pair will not help
-a worse one. Gate rungs route among several encoders and are marked diagnostics.
+
 
 Five single deployable visual systems compete on the common support, ranked by
 the pre-declared validation score $0.6F_1+0.4$ accuracy, with the locked test
@@ -482,7 +477,7 @@ Five-expert gate        & 3125 & 0.851 & 0.818 & 0.720 & 0.676\\
 %%TRIM-BEGIN%% restore by deleting this line and the matching TRIM-END
 \iffalse
 \begin{table}[t]
-\caption{Text pipeline ladder on the common 75-crop support, with the same column structure as the visual table. \emph{Cand.} is the number of validation-fitted configurations. Each rung is repeated at three note sparsities; deletion is deterministic, so every rung sees the identical corruption of the identical notes. At complete notes a single-candidate path already reaches 0.987 accuracy and the ladder is flat, so the ceiling belongs to the corpus rather than to the pipeline. Bold marks the best single model per sparsity.}
+\caption{Text pipeline ladder on the common 75-crop support, with the same column structure as the visual table. \emph{Cand.} is the number of validation-fitted configurations. Each rung is repeated at three note sparsities; deletion is deterministic, so every rung sees the identical corruption of the identical notes. At complete notes a single-candidate path already reaches 0.987 accuracy and the ladder is flat, so the ceiling belongs to the corpus rather than to the pipeline. Bold marks the best single model per sparsity. This table varies the pipeline for one fixed encoder; Tables~\ref{tab:unimodal_cent_fed} and~\ref{tab:multimodal_cent_fed} vary the encoder for one fixed pipeline and add a federated column.}
 \label{tab:text_ladder}
 \centering\footnotesize
 \setlength\tabcolsep{2.6pt}
@@ -492,13 +487,13 @@ Five-expert gate        & 3125 & 0.851 & 0.818 & 0.720 & 0.676\\
 \cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}
 System & Cand. & Acc. & F1 & Acc. & F1 & Acc. & F1\\
 \midrule
-Direct CLS path & 1 & 0.987 & 0.930 & 0.707 & 0.549 & 0.520 & 0.397\\
-Masked-mean pooling & 6 & \textbf{1.000} & 1.000 & 0.813 & 0.842 & 0.600 & 0.466\\
-Last-4-layer concat & 24 & \textbf{1.000} & 1.000 & \textbf{0.827} & 0.793 & \textbf{0.653} & 0.508\\
-PCA-reduced head & 30 & \textbf{1.000} & 1.000 & 0.787 & 0.767 & 0.507 & 0.390\\
+Direct CLS path & 1 & 0.453 & 0.360 & 0.320 & 0.263 & 0.293 & 0.192\\
+Masked-mean pooling & 6 & \textbf{0.613} & 0.485 & \textbf{0.387} & 0.282 & \textbf{0.360} & 0.227\\
+Last-4-layer concat & 24 & \textbf{0.613} & 0.495 & 0.360 & 0.272 & 0.293 & 0.200\\
+PCA-reduced head & 30 & \textbf{0.613} & 0.501 & 0.347 & 0.249 & 0.293 & 0.197\\
 \midrule
 \multicolumn{8}{l}{\emph{Per-class gates (not single models)}}\\
-5-expert gate & 3125 & 1.000 & 1.000 & 0.760 & 0.795 & 0.587 & 0.431\\
+5-expert gate & 3125 & 0.587 & 0.470 & 0.440 & 0.316 & 0.333 & 0.222\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -508,7 +503,7 @@ PCA-reduced head & 30 & \textbf{1.000} & 1.000 & 0.787 & 0.767 & 0.507 & 0.390\\
 %%TRIM-BEGIN%% restore by deleting this line and the matching TRIM-END
 \iffalse
 \begin{table}[t]
-\caption{Text${+}$image pipeline ladder on the same 75 crops, selected by the pre-declared validation score $0.65F_{1,\mathrm{paired}}+0.35F_{1,\mathrm{image}}$. Fusion is saturated at complete notes and separates only once notes degrade. The gate attains the best validation accuracy at 50\% deletion (0.932) yet the worst test accuracy (0.747), so its search over 243 candidates on 74 validation crops does not transfer. Bold marks the best single model per sparsity.}
+\caption{Text${+}$image pipeline ladder on the same 75 crops, selected by the pre-declared validation score $0.65F_{1,\mathrm{paired}}+0.35F_{1,\mathrm{image}}$. Fusion is saturated at complete notes and separates only once notes degrade. The gate attains the best validation accuracy at 50\% deletion (0.932) yet the worst test accuracy (0.747), so its search over 243 candidates on 74 validation crops does not transfer. Bold marks the best single model per sparsity. This table varies the pipeline for one fixed encoder; Tables~\ref{tab:unimodal_cent_fed} and~\ref{tab:multimodal_cent_fed} vary the encoder for one fixed pipeline and add a federated column.}
 \label{tab:mm_ladder}
 \centering\footnotesize
 \setlength\tabcolsep{2.6pt}
@@ -518,14 +513,14 @@ PCA-reduced head & 30 & \textbf{1.000} & 1.000 & 0.787 & 0.767 & 0.507 & 0.390\\
 \cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}
 System & Cand. & Acc. & F1 & Acc. & F1 & Acc. & F1\\
 \midrule
-Direct concat path & 1 & \textbf{1.000} & 1.000 & 0.867 & 0.838 & 0.787 & 0.657\\
-Concat $+$ tuned head & 6 & \textbf{1.000} & 1.000 & 0.867 & 0.711 & 0.827 & 0.676\\
-Deep-feature concat & 24 & \textbf{1.000} & 1.000 & 0.907 & 0.926 & \textbf{0.853} & 0.687\\
-PCA-per-modality concat & 24 & \textbf{1.000} & 1.000 & 0.907 & 0.865 & 0.773 & 0.634\\
-Calibrated late fusion & 9 & 0.987 & 0.929 & \textbf{0.920} & 0.881 & 0.773 & 0.624\\
+Direct concat path & 1 & 0.667 & 0.558 & 0.613 & 0.521 & 0.560 & 0.467\\
+Concat $+$ tuned head & 6 & \textbf{0.773} & 0.645 & 0.600 & 0.507 & 0.627 & 0.518\\
+Deep-feature concat & 24 & \textbf{0.773} & 0.638 & 0.627 & 0.530 & 0.627 & 0.505\\
+PCA-per-modality concat & 24 & 0.760 & 0.638 & 0.547 & 0.460 & 0.547 & 0.457\\
+Calibrated late fusion & 9 & 0.720 & 0.592 & \textbf{0.760} & 0.637 & \textbf{0.773} & 0.642\\
 \midrule
 \multicolumn{8}{l}{\emph{Per-class gates (not single models)}}\\
-Three-expert gate & 243 & 1.000 & 1.000 & 0.747 & 0.608 & 0.733 & 0.615\\
+Three-expert gate & 243 & 0.747 & 0.617 & 0.680 & 0.571 & 0.693 & 0.576\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -549,6 +544,9 @@ only by fitting more routings on 74 crops, and Fig.~\ref{fig:c_selection_gap}
 shows what that costs. We carry the calibrated base as the visual path and
 report the gate as a diagnostic ceiling.
 
+%% STALE -- DO NOT RESTORE AS-IS: predates the note-leakage
+%% correction (caption cites 0.853/0.653, the pre-correction ladder values); regenerate the plot
+%% from current data and rewrite the caption first.
 %%TRIM-BEGIN%% restore by deleting this line and the matching TRIM-END
 \iffalse
 \begin{figure}[t]
@@ -564,7 +562,7 @@ report the gate as a diagnostic ceiling.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\figw]{plots/c15_client_scaling}
-\caption{The same systems against client count. Fusion leads from $K=10$ upward, where the shards become small.}
+\caption{The same systems against client count. Fusion leads at every count, 0.734--0.799 against 0.587--0.689 for text.}
 \label{fig:c_client_scaling}
 \end{figure}
 
@@ -584,7 +582,7 @@ report the gate as a diagnostic ceiling.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\figw]{plots/c02_fusion_ladder}
-\caption{Text${+}$image rungs under the same deletion. Fusion degrades far more gently: the best rung holds 0.773 at every sparsity where the best text rung falls to 0.360.}
+\caption{Text${+}$image rungs under the same deletion. Fusion degrades far more gently: the best rung holds 0.760 or better at every sparsity where the best text rung falls to 0.360.}
 \label{fig:c_fusion_ladder}
 \end{figure}
 %%COMPACT-END%%
@@ -642,7 +640,7 @@ The two halves of a round separate cleanly: every stage
 touching a photograph, box, or note runs on the client.
 
 %%TRIM-BEGIN%% restore by deleting this line and the matching TRIM-END
-\iffalse
+
 \begin{figure*}[tbp]
 \centering
 \resizebox{0.8363\textwidth}{!}{\input{fig_edge_cloud_tikz.tex}}
@@ -654,7 +652,7 @@ note, box, or per-sample quantity crosses the boundary; one float32 client-round
 costs 59.5--60.5\,MiB up in the matched-setting suite.}
 \label{fig:edge_cloud}
 \end{figure*}
-\fi
+
 %%TRIM-END%%
 
 
@@ -663,9 +661,11 @@ costs 59.5--60.5\,MiB up in the matched-setting suite.}
 
 The Classify--Retrieve--Advise module embeds a query with
 Sentence-BERT~\cite{Reimers2019} and performs exact FAISS inner-product
-search~\cite{Johnson2019,Lewis2020RAG}. Its separate templated corpus collapses
-3{,}000 annotations to 673 observations; a deduplicated split leaves 472 passages
-and 201 queries with no shared observation. Correctness requires a class match.
+search~\cite{Johnson2019,Lewis2020RAG}. Its corpus is textual only and shares no
+records with the box-linked crop set: 673 unique observations (132--138 per class)
+built from 131 distinct templated sentences. A deduplicated split leaves 472
+passages and 201 queries with no shared observation. Correctness requires a class
+match.
 
 %% ─────────────────────────────────────────────────────────────────────────────
 \section{Performance Evaluation}
@@ -753,10 +753,8 @@ whereas E2/E3 use seed 0.}
 
 %% generated by experiments/make_standard_suite_table.py -- do not hand-edit
 
-%% generated by experiments/make_standard_suite_table.py -- do not hand-edit
-
 \begin{table*}[t]
-\caption{Federated results on 371 genuine box-linked crop--note observations (260/53/58 over 153 independent source groups; no synthetic images). Every architecture within a cell trains on the identical client partition, so differences are architectural rather than partition effects. Values are 3-seed means of validation macro F1 over 50 federated rounds. Nothing saturates: the sweep spans 0.431--0.561.}
+\caption{Federated results on 371 genuine box-linked crop--note observations (260/55/56 over 199 independent source groups; no synthetic images). Every architecture within a cell trains on the identical client partition, so differences are architectural rather than partition effects. Values are 3-seed means of validation macro F1 over 50 federated rounds. Nothing saturates: panel (a) spans 0.431--0.561.}
 \label{tab:standard_suite}
 \centering\scriptsize
 \setlength\tabcolsep{2.7pt}
@@ -841,8 +839,7 @@ unstable on this support.}
 
 
 Table~\ref{tab:standard_suite} closes the remaining gaps without mixing
-supports: 371 genuine box-linked observations, an identical client partition
-per cell, so differences are architectural. The note correction rewrote text
+supports, with an identical client partition per cell. The note correction rewrote text
 only --- crops, labels and split are untouched --- so the corrected splitter
 still realizes label TV 0.451 against 0.265 at $\alpha=0.1$. Federation beats local-only training for all
 five architectures ($+$0.124 to $+$0.229), and nothing saturates: the
@@ -894,6 +891,9 @@ $\alpha=1$. Every system in a cell trains on the identical client partition.}
 %%TRIM-END%%
 
 
+%% STALE -- DO NOT RESTORE AS-IS: predates the note-leakage
+%% correction (caption asserts 1.0); regenerate the plot
+%% from current data and rewrite the caption first.
 %%TRIM-BEGIN%% restore by deleting this line and the matching TRIM-END
 \iffalse
 \begin{figure}[t]
@@ -988,6 +988,9 @@ base, tight-crop and context-crop views, and 64.00\% on the locked test (macro F
 This is an inference-time ensemble over one backbone, not a stronger encoder;
 rare-class behaviour remains unstable.
 
+%% STALE -- DO NOT RESTORE AS-IS: predates the note-leakage
+%% correction (caption asserts curves coinciding at 1.000); regenerate the plot
+%% from current data and rewrite the caption first.
 %%TRIM-BEGIN%% restore by deleting this line and the matching TRIM-END
 \iffalse
 \begin{figure}[t]
@@ -1033,7 +1036,7 @@ ViT-Base/16 & 768 & \textbf{0.733} & \textbf{0.615} & 0.667 & \textbf{0.577} & \
 \end{table*}
 
 \begin{table*}[t]
-\caption{Multimodal systems on the same 75 crops, under the same protocol as Table~\ref{tab:unimodal_cent_fed}. The best text-only and best image-only rows are repeated at the foot for reference. Fusion leads both parents at complete notes rather than only under note loss: the best fused system reaches 0.800 against 0.733 image-only and 0.640 text-only, and all 5 ViT-Base rows clear the best unimodal system. The margin then widens as notes are deleted, because only the text branch degrades. Bold marks the best value in each column.}
+\caption{Multimodal systems on the same 75 crops, under the same protocol as Table~\ref{tab:unimodal_cent_fed}. The best text-only and best image-only rows are repeated at the foot for reference. Fusion leads both parents at complete notes rather than only under note loss: the best fused system reaches 0.800 against 0.733 image-only and 0.640 text-only, and all 5 ViT-Base rows clear the best unimodal system. The margin over text then widens as notes are deleted; the image parent is flat by construction and is only matched at 50\% deletion. Bold marks the best value in each column.}
 \label{tab:multimodal_cent_fed}
 \centering\footnotesize
 \setlength\tabcolsep{4pt}
@@ -1062,22 +1065,7 @@ Image only: ViT-Base/16 & 768 & 0.733 & 0.615 & 0.667 & 0.577 & 0.733 & 0.615 & 
 
 \subsection{Unimodal and Multimodal Systems, Centralized and Federated}
 
-\emph{Held fixed.} The method. Every row uses frozen mean-pooled features --- no test-time
-augmentation, no layer concatenation, no calibration, no gating --- then one
-closed-form ridge head whose single penalty is chosen on the 74 validation
-crops, with plain concatenation for fusion. Four reasons. \emph{Isolation:}
-under an elaborate pipeline a good score cannot be attributed to the model
-rather than to the pipeline, so freezing the simplest method leaves the
-encoder as the only thing that moves. \emph{Determinism:} a closed-form solve
-has one exact solution, no seed and no initialization, so a gap between two
-rows is the encoder and not luck, which the TTA and gate rungs of
-Fig.~\ref{fig:c_fusion_ladder} cannot promise. \emph{Minimal search:} one penalty
-out of six, against the 243--3125 candidates of the ladders, which on 74
-validation crops is where those gates lose their selection advantage. The varied
-axes are the encoder --- classical, then five text and five vision
-transformers --- and the deployment. Only the federated column departs from
-the fixed method, because a closed-form solve has no gradients for FedAvg to
-average and its head must therefore be trained by SGD.
+
 
 
 Tables~\ref{tab:unimodal_cent_fed} and~\ref{tab:multimodal_cent_fed} place a
@@ -1127,12 +1115,7 @@ dropout is omitted because it is flat to 70\%; the released figure set carries i
 \label{fig:robustness}
 \end{figure*}
 
-\emph{Held fixed.} The split, the frozen encoders and the FedAvg protocol
-(10 clients, 50 rounds, 3 local epochs,
-3 seeds); the varied axis is the failure mode. Within every cell the
-arm and its control share the client partition at the same seed, so a difference
-is the failure mode and not the split. Heads are linear probes on standardized
-frozen features, which is what makes the sweep affordable.
+
 
 \textbf{Skew and dropout break nothing} (Fig.~\ref{fig:robustness}a)\textbf{.} From $\alpha{=}10$ down to
 $\alpha{=}0.01$, and under a pathological partition giving each client a
@@ -1169,11 +1152,7 @@ is a trade, not a free defence. Nothing here is Byzantine-tolerant.
 
 \subsection{Actual Model-Family and Inter-Model Comparison}
 
-\emph{Held fixed.} The support and the selection rule. All five families are screened on the
-same validation crops under the same pre-declared score, and test is read
-once afterwards; the varied axis is the model family. The text row alone
-also fixes the note condition at 50\% masking, which is why it must not be
-read against the complete-note rows of Table~\ref{tab:unimodal_cent_fed}.
+
 
 
 %% generated by experiments/make_encoder_selection_table.py -- do not hand-edit
@@ -1224,10 +1203,7 @@ recall@1 is 0.600/0.613, indicating class organization rather than crop identity
 \subsection{Missing-Modality and Corruption Probes}
 \label{sec:modality_inertness}
 
-\emph{Held fixed.} The checkpoint. One trained model is held constant and the \emph{input}
-is varied instead --- each modality corrupted in turn and the image ablated
-outright --- so a change in prediction is attributable to the evidence the
-model consumes rather than to retraining.
+
 
 
 The mismatch result above shows dependence on the note; it does not show whether
@@ -1288,14 +1264,18 @@ Image uniform noise & \textbf{0.2800} & 0.0875 & \textbf{61/75}\\
 
 %%COMPACT-BEGIN%%
 %%TRIM-BEGIN%% restore by deleting this line and the matching TRIM-END
-\iffalse
+%% Caption and plot REGENERATED from current data (was: "Text overtakes fusion
+%% at round 33", which is false -- fusion leads at all 50 rounds). Safe to restore,
+%% but it needs ~110pt: it does not fit without dropping another float.
+
 \begin{figure}[t]
 \centering
-\includegraphics[width=\linewidth]{plots/c14_round_curves}
-\caption{Per-round convergence of the frozen-encoder systems at $\alpha=1$, three seeds. Text overtakes fusion at round 33.}
+\includegraphics[width=0.92\linewidth]{plots/c14_round_curves}
+\caption{Per-round convergence at $\alpha{=}1$ (three seeds $\times$ six client
+counts). Fusion leads at every round: 0.775 against 0.628 text, 0.559 image.}
 \label{fig:c_round_curves}
 \end{figure}
-\fi
+
 %%TRIM-END%%
 
 %%COMPACT-END%%
@@ -2039,7 +2019,7 @@ class per client, unchanged at 70\% dropout) but not staleness or poisoning: 30\
 sign-flipping clients take it from 0.772 to 0.123, and coordinate-wise median
 recovers only part of that. In the matched
 suite, FedAvg averages 0.510/0.492 across the five architectures at
-$\alpha=0.1/1$, warm start no longer helps, and updates cost about 60\,MiB. No E3 arm collapses, so the stack is not claimed
+$\alpha=0.1/1$, warm start no longer helps, and updates cost 18.9--67.2\,MiB. No E3 arm collapses, so the stack is not claimed
 necessary. Multi-estate, co-observed evaluation remains required.
 
 %% ─────────────────────────────────────────────────────────────────────────────
