@@ -83,7 +83,7 @@ Framework for Tea Pest and Disease Diagnosis}
 Tea pest and disease diagnosis draws on both lesion imagery and written field
 notes, but small agricultural corpora make multimodal and privacy claims easy
 to overstate. We present LEAF (Leakage-audited Evidence-Aware Fusion), a
-multimodal federated framework for tea pest and disease diagnosis, and
+reliability-routed multimodal federated framework for tea pest and disease diagnosis, and
 report a leakage-audited comparison of five vision--language systems on one
 five-class tea corpus, under source-grouped splitting, exact image-box/text
 linkage, missing-modality tests, reliability-aware fusion, and measured FedAvg
@@ -99,12 +99,12 @@ Selection is validation-only: the ViT--DistilBERT candidate's 72.97\% validation
 accuracy stays below the routed incumbent's 77.03\%, so the incumbent is
 retained; on test the candidate leads by 2 crops of 75, an 11--9 discordance that is not
 significant (McNemar $p=0.82$). Fusion of frozen encoders is what pays: on that
-support LEAF-V (ViT-Base with BERT-small) reaches 80.00\% against 73.33\% image-only and
+support ViT-Base with BERT-small reaches 80.00\% against 73.33\% image-only and
 64.00\% text-only, beating both parents outright rather than only under
-note sparsity. LEAF-R, the trained router, does not exploit the note channel
+note sparsity. LEAF, the trained router, does not exploit the note channel
 the same way ---
 mismatching the note costs it only 2.67 points --- though ablating either modality moves
-predictions (41 of 75 for the note, 49 for the image). LEAF-R retains
+predictions (41 of 75 for the note, 49 for the image). LEAF retains
 84--94\% of its 0.6919 centralized validation macro F1 under FedAvg over
 2--8 simulated clients. Across five federated architectures, federation beats
 local-only training at 18.9--67.2\,MiB per client-round, and no aggregator
@@ -150,7 +150,7 @@ description?'' to ``does each modality contribute on unseen source leaves?''
 \textbf{Contributions.} We advance LEAF, a multimodal federated framework whose
 components are selected by the comparison reported here rather than asserted:
 the core carried into the routing and federated experiments is the one
-validation selected, and LEAF-V leads on the common support. We provide
+validation selected. We provide
 (i) exact crop--note linkage with
 source-disjoint splits and train-only leakage control; (ii) common-support
 unimodal, paired, mismatched, and model-family comparisons, extended by
@@ -1055,7 +1055,7 @@ System & Dim. & Acc. & F1 & Acc. & F1 & Acc. & F1 & Acc. & F1 & Acc. & F1 & Acc.
 TF-IDF $+$ Colour/HOG SVM & 1494 & 0.667 & 0.537 & 0.631 & 0.526 & 0.587 & 0.480 & 0.547 & 0.451 & 0.547 & 0.451 & 0.449 & 0.381\\
 ViT-Base $+$ BERT-tiny & 896 & 0.747 & 0.625 & \textbf{0.693} & 0.597 & \textbf{0.733} & \textbf{0.614} & \textbf{0.684} & \textbf{0.645} & 0.600 & 0.513 & 0.698 & 0.610\\
 ViT-Base $+$ BERT-mini & 1024 & 0.773 & 0.643 & 0.676 & 0.585 & 0.667 & 0.574 & \textbf{0.684} & 0.619 & \textbf{0.787} & \textbf{0.655} & \textbf{0.716} & \textbf{0.614}\\
-ViT-Base $+$ BERT-small (LEAF-V) & 1280 & \textbf{0.800} & \textbf{0.664} & 0.667 & \textbf{0.600} & 0.627 & 0.543 & 0.631 & 0.545 & 0.613 & 0.528 & 0.676 & 0.572\\
+ViT-Base $+$ BERT-small & 1280 & \textbf{0.800} & \textbf{0.664} & 0.667 & \textbf{0.600} & 0.627 & 0.543 & 0.631 & 0.545 & 0.613 & 0.528 & 0.676 & 0.572\\
 ViT-Base $+$ BERT-medium & 1280 & 0.773 & 0.642 & 0.676 & 0.566 & 0.720 & 0.593 & 0.653 & 0.561 & 0.680 & 0.571 & 0.622 & 0.515\\
 ViT-Base $+$ DistilBERT & 1536 & 0.773 & 0.645 & 0.653 & 0.553 & 0.693 & 0.579 & 0.636 & 0.554 & 0.693 & 0.581 & 0.640 & 0.531\\
 \midrule
@@ -1177,14 +1177,14 @@ Text PLM (DistilBERT) & 0.2297 & 0.2400 & 0.2167\\
 Image ViT (ViT-tiny) & 0.7432 & \textbf{0.6400} & \textbf{0.5532}\\
 Raw ResNet$+$compact VLM & 0.7568 & 0.5867 & 0.5076\\
 ViT$+$DistilBERT VLM & 0.7297 & \textbf{0.6400} & 0.5334\\
-Routed ResNet$+$compact (LEAF-R) & \textbf{0.7703} & 0.6133 & 0.5319\\
+Routed ResNet$+$compact (LEAF) & \textbf{0.7703} & 0.6133 & 0.5319\\
 \bottomrule
 \end{tabular}
 \end{table}
 
 
 
-In Table~\ref{tab:family_comparison} the routed ResNet--compact model, LEAF-R, is the
+In Table~\ref{tab:family_comparison} the routed ResNet--compact model, LEAF, is the
 \emph{incumbent} --- the core already carried into the routing and federated
 experiments --- and the pooled ViT--DistilBERT model is the \emph{candidate},
 adopted only if it beats the incumbent on validation. Validation selects the
@@ -2012,7 +2012,7 @@ unevaluated.
 \section{Conclusion}
 \label{sec:conc}
 
-On 371 linked crops, validation retains LEAF-R, the ResNet--compact-Transformer router;
+On 371 linked crops, validation retains LEAF, the ResNet--compact-Transformer router;
 the ViT--DistilBERT candidate's 2-crop test edge is non-significant
 ($p=0.82$), and a 33-run multi-seed sweep leaves only vision-encoder
 capacity clearing the seed noise floor. FedAvg retains 84--94\% of the

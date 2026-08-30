@@ -51,7 +51,7 @@ def main() -> None:
         ("Image ViT (ViT-tiny)", v["image_only"], t["image_only"]),
         ("Raw ResNet$+$compact VLM", v["fusion"], t["text_image_fusion"]),
         ("ViT$+$DistilBERT VLM", cand["selected_validation"], cand["fixed_test"]),
-        ("Routed ResNet$+$compact (LEAF-R)", inc["selected_validation"], inc["fixed_test"]),
+        ("Routed ResNet$+$compact (LEAF)", inc["selected_validation"], inc["fixed_test"]),
     ]
     best_val = max(a["accuracy"] for _, a, _ in rows)
     best_acc = max(b["accuracy"] for _, _, b in rows)
