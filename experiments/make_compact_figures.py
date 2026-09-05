@@ -33,6 +33,7 @@ MML = ROOT / "tea_results" / "multimodal_pipeline_ladder" / "multimodal_pipeline
 VISUAL = ROOT / "tea_results" / "visual_ladder" / "visual_ladder.json"
 FARM = ROOT / "experiments" / "farm_results_full_genuine.json"
 SYSTEMS = ROOT / "tea_results" / "federated_all_systems_full" / "federated_all_systems.json"
+CORE = ROOT / "tea_results" / "federated_adaptation_v6" / "federated_adaptation_results.json"
 ADVISORY = ROOT / "tea_results" / "advisory_retrieval_v1" / "advisory_retrieval_results.json"
 
 C = ["#0072B2", "#D55E00", "#009E73", "#CC79A7", "#E69F00", "#56B4E9"]
@@ -303,6 +304,15 @@ def c13_aggregators():
     finish(fig, ax, "c13_aggregators")
 
 
+SYSLABEL = {"image_vit_tiny": "Image (ViT-tiny)",
+            "text_distilbert": "Text (DistilBERT)",
+            "vit_distilbert": "ViT$+$DistilBERT"}
+
+
+def syslabel(s):
+    return SYSLABEL.get(s, s.replace("_", " "))
+
+
 def c14_round_curves():
     d = json.load(open(SYSTEMS, encoding="utf-8"))
     curves = defaultdict(list)
@@ -314,9 +324,11 @@ def c14_round_curves():
         runs = curves[s]; n = min(len(r) for r in runs)
         mean = [st.mean([r[j] for r in runs]) for j in range(n)]
         ax.plot(range(1, n + 1), mean, color=C[i], lw=1.3,
-                label=s.replace("_", " "), zorder=3)
+                label=syslabel(s), zorder=3)
     ax.set_xlabel("Federated round"); ax.set_ylabel("Val. macro F1")
-    ax.set_ylim(0, 1.0); ax.legend(frameon=False, loc="lower right")
+    ax.set_ylim(0.30, 0.85)
+    ax.legend(frameon=False, loc="lower right", ncol=3, columnspacing=0.9,
+              handlelength=1.4, borderpad=0.0)
     finish(fig, ax, "c14_round_curves", "both")
 
 
@@ -330,30 +342,116 @@ def c15_client_scaling():
     fig, ax = new()
     for i, s in enumerate(sorted({s for s, _ in g})):
         ax.plot(pos, [st.mean(g[(s, k)]) for k in ks], color=C[i], marker="o",
-                ms=2.8, lw=1.3, label=s.replace("_", " "), zorder=3)
+                ms=2.8, lw=1.3, label=syslabel(s), zorder=3)
     ax.set_xticks(pos); ax.set_xticklabels([str(k) for k in ks])
     ax.set_xlabel("Clients $K$"); ax.set_ylabel("Val. macro F1")
-    ax.set_ylim(0, 1.06); ax.legend(frameon=False, loc="lower left")
+    ax.set_ylim(0.34, 0.90)
+    ax.legend(frameon=False, loc="lower left", ncol=3, columnspacing=0.9,
+              handlelength=1.4, borderpad=0.0)
     finish(fig, ax, "c15_client_scaling", "both")
 
 
+# --- warm-start core scaling ------------------------------------------------
+def _core():
+    d = json.load(open(CORE, encoding="utf-8"))
+    ks = sorted(d["summary"], key=int)
+    base = d["runs"][0]["baseline_validation"]["f1_macro"]
+    return d["summary"], ks, base
+
+
+def c22_core_rounds():
+    """Rounds against macro F1 for the retained core, one line per client count.
+
+    The subsection quotes a round-wise band and one transient peak; a reader
+    cannot see from the numbers alone that the K=2 and K=3 curves climb while
+    K=5 and K=8 are flat from round 1. The dashed rule is the centralized
+    initialization every run starts from, so the gap to it is the adaptation
+    cost the text reports as a retention percentage.
+    """
+    summ, ks, base = _core()
+    fig, ax = new()
+    ax.axhline(base, color=INK, lw=0.8, ls=(0, (2, 1.4)), zorder=2)
+    ax.text(8.0, base + 0.004, "centralized init 0.692", ha="right", va="bottom",
+            fontsize=5.0, color=INK)
+    for i, k in enumerate(ks):
+        ys = summ[k]["round_mean_macro_f1"]
+        ax.plot(range(1, len(ys) + 1), ys, color=C[i], marker="o", ms=2.4,
+                lw=1.2, label=f"$K={k}$", zorder=3)
+    ax.set_xlabel("Federated round"); ax.set_ylabel("Val. macro F1")
+    ax.set_xticks(range(1, 9)); ax.set_ylim(0.52, 0.73)
+    ax.legend(frameon=False, loc="lower left", ncol=4, columnspacing=0.9,
+              handlelength=1.4, borderpad=0.0)
+    finish(fig, ax, "c22_core_rounds", "both")
+
+
+def c23_core_clients():
+    """Client count against macro F1 for the retained core, final and best round.
+
+    Splitting the same fixed training set over more owners is the scaling
+    question the deployment story rests on, and it is the one axis the paper
+    otherwise reports only as a range. Realized label total variation is printed
+    under each tick rather than drawn on a second y-axis.
+    """
+    summ, ks, base = _core()
+    x = np.arange(len(ks))
+    fin = [summ[k]["final_macro_f1_mean"] for k in ks]
+    fsd = [summ[k]["final_macro_f1_std"] for k in ks]
+    bst = [summ[k]["best_macro_f1_mean"] for k in ks]
+    bsd = [summ[k]["best_macro_f1_std"] for k in ks]
+    fig, ax = new()
+    ax.axhline(base, color=INK, lw=0.8, ls=(0, (2, 1.4)), zorder=2)
+    ax.text(x[-1] + 0.06, base, "centralized init", ha="right", va="bottom",
+            fontsize=5.0, color=INK)
+    ax.errorbar(x, bst, yerr=bsd, color=C[2], marker="s", ms=2.8, lw=1.2,
+                ls=(0, (3, 1.5)), capsize=1.6, elinewidth=0.7,
+                label="best round", zorder=3)
+    ax.errorbar(x, fin, yerr=fsd, color=C[0], marker="o", ms=2.8, lw=1.3,
+                capsize=1.6, elinewidth=0.7, label="final round", zorder=4)
+    ax.set_xticks(x)
+    ax.set_xticklabels([f"{k}\n{summ[k]['mean_label_total_variation']:.2f}"
+                        for k in ks])
+    ax.set_xlim(-0.25, len(ks) - 0.75)
+    ax.set_xlabel("Clients $K$ / realized label TV")
+    ax.set_ylabel("Val. macro F1"); ax.set_ylim(0.52, 0.76)
+    ax.legend(frameon=False, loc="lower left", ncol=2, columnspacing=0.9,
+              handlelength=1.6, borderpad=0.0)
+    finish(fig, ax, "c23_core_clients", "both")
+
+
 def c16_cost_pareto():
+    """Uplink against accuracy as a cost-ordered line.
+
+    Architectures are joined in ascending uplink so the shape of the trade-off
+    is readable: the line is an ordering, not an interpolation, and the caption
+    says so. Points stay direct-labelled -- five marks, two of them 1.0 MiB
+    apart, are not separable by colour.
+    """
     d = json.load(open(FARM, encoding="utf-8"))
     cost = {k.split("|", 1)[1]: v["upload_mib_per_client_per_round"]
             for k, v in d["E6_cost"].items() if k.startswith("arch_cost|")}
     acc = defaultdict(list)
     for k, v in d["E8_baselines"].items():
         f = parse(k)
-        if f["_tag"] == "fedavg" and f["alpha"] == "1.0":
+        if f["_tag"] == "fedavg" and f["alpha"] == "0.1":
             acc[f["arch"]].append(score(v))
+    short = {"image_only": ("Image", 0, 7, "center"),
+             "text_only": ("Text", 0, 7, "center"),
+             "concat_vlm": ("Concat", -4, -11, "right"),
+             "attention_vlm": ("Attn", 2, 7, "left"),
+             "cross_attention_vlm": ("X-attn", 0, 7, "center")}
+    pts = sorted(((cost[a], st.mean(acc[a]), a) for a in short), key=lambda t: t[0])
     fig, ax = new()
-    for i, a in enumerate(sorted(cost)):
-        if a in acc:
-            ax.scatter(cost[a], st.mean(acc[a]), s=34, color=C[i % len(C)],
-                       edgecolors="white", linewidths=0.6, zorder=3,
-                       label=a.replace("_", " "))
-    ax.set_xlabel("Uplink per client-round (MiB)"); ax.set_ylabel("Val. macro F1")
-    ax.set_ylim(0, 1.08); ax.legend(frameon=False, loc="lower right")
+    ax.plot([x for x, _, _ in pts], [y for _, y, _ in pts], color=MUTED, lw=1.0,
+            zorder=2)
+    for i, (x, y, a) in enumerate(pts):
+        ax.plot(x, y, "o", ms=4.0, color=C[i % len(C)], mec="white", mew=0.6,
+                zorder=4)
+        lab, dx, dy, ha = short[a]
+        ax.annotate(lab, (x, y), textcoords="offset points", xytext=(dx, dy),
+                    ha=ha, fontsize=5.6, color=INK, zorder=5)
+    ax.set_xlabel("Uplink per client-round (MiB)")
+    ax.set_ylabel("Val. macro F1")
+    ax.set_xlim(12, 76); ax.set_ylim(0.43, 0.585)
     finish(fig, ax, "c16_cost_pareto", "both")
 
 
@@ -394,6 +492,75 @@ def c18_warm_cold():
 
 
 # --- advisory --------------------------------------------------------------
+# --- matched-suite arms the paper asserts but never shows -------------------
+def c24_anticollapse_arms():
+    """E3 arms as grouped bars from zero, with the values printed.
+
+    Bars start at zero because the finding is that no arm collapses, and four
+    near-equal bars say that honestly; a truncated axis would manufacture a
+    difference. The 0.044 spread that a zero baseline hides is recoverable from
+    the printed values.
+    """
+    d = json.load(open(FARM, encoding="utf-8"))
+    g = {}
+    for k, v in d["E3_anticollapse"].items():
+        f = parse(k)
+        g[(f["_tag"], f["alpha"])] = score(v)
+    arms = ["both", "no_diversity", "no_balanced", "neither"]
+    short = {"both": "Both", "no_diversity": "No div.",
+             "no_balanced": "No bal.", "neither": "Neither"}
+    alphas = ["0.1", "1.0"]
+    x = np.arange(len(arms)); w = 0.38
+    fig, ax = plt.subplots(figsize=(3.4, 0.85))
+    for j, a in enumerate(alphas):
+        vals = [g[(arm, a)] for arm in arms]
+        ax.bar(x + (j - 0.5) * w, vals, w * 0.86, color=C[j], edgecolor="white",
+               lw=0.5, label=rf"$\alpha={a}$", zorder=3)
+        for xi, v in zip(x + (j - 0.5) * w, vals):
+            ax.text(xi, v + 0.012, f"{v:.3f}", ha="center", va="bottom",
+                    fontsize=4.4, color=INK, zorder=5)
+    ax.set_xticks(x); ax.set_xticklabels([short[a] for a in arms])
+    ax.set_ylabel("Val. macro F1"); ax.set_ylim(0, 0.78)
+    ax.set_yticks([0, 0.25, 0.5])
+    ax.legend(frameon=False, loc="upper right", ncol=2, columnspacing=0.8,
+              handlelength=1.2, handletextpad=0.3, borderpad=0.0)
+    finish(fig, ax, "c24_anticollapse_arms")
+
+
+def c25_seed_floor():
+    """Matched-setting arms as horizontal bars, whiskers spanning the seeds.
+
+    Horizontal because four arm names read better along the axis than under it,
+    and it keeps this figure from looking like the one above it. Bars are
+    3-seed means from zero; the whisker is the observed seed range, and the
+    ranges overlapping is the whole claim.
+    """
+    d = json.load(open(FARM, encoding="utf-8"))
+    g = defaultdict(list)
+    for k, v in d["E4_warmstart"].items():
+        g[parse(k)["_tag"]].append(score(v))
+    for k, v in d["E5_fusion_seeds"].items():
+        tag = parse(k)["_tag"]
+        if tag != "concat":          # identical runs to the cold arm
+            g[tag].append(score(v))
+    arms = [("warm", "Warm"), ("cold", "Cold (concat)"),
+            ("attention", "Attention"), ("gated", "Gated")]
+    y = np.arange(len(arms))[::-1]
+    fig, ax = plt.subplots(figsize=(3.4, 0.85))
+    for i, (key, _) in enumerate(arms):
+        vals = g[key]; m = st.mean(vals)
+        ax.barh(y[i], m, 0.62, color=C[i], edgecolor="white", lw=0.5, zorder=3)
+        ax.plot([min(vals), max(vals)], [y[i]] * 2, color=INK, lw=0.8, zorder=5)
+        ax.plot([min(vals), max(vals)], [y[i]] * 2, "|", ms=2.6, color=INK,
+                mew=0.8, zorder=5)
+        ax.text(max(vals) + 0.012, y[i], f"{m:.3f}", va="center", ha="left",
+                fontsize=4.8, color=INK, zorder=5)
+    ax.set_yticks(y); ax.set_yticklabels([lab for _, lab in arms])
+    ax.set_xlabel("Val. macro F1"); ax.set_xlim(0, 0.68)
+    ax.set_xticks([0, 0.2, 0.4, 0.6])
+    finish(fig, ax, "c25_seed_floor", "x")
+
+
 def c19_retrieval_box():
     a = json.load(open(ADVISORY, encoding="utf-8"))
     pretty = {"LEAF_BLIGHT": "Blight", "LEAF_HOPPERS": "Hoppers", "LEAF_RUST": "Rust",
@@ -497,9 +664,11 @@ def main() -> None:
                c05_aligned_text, c06_aligned_image, c07_aligned_fusion,
                c08_clubbed_text, c09_clubbed_fusion, c10_federation_cost,
                c11_alpha_corrected, c12_alpha_legacy, c13_aggregators,
-               c14_round_curves, c15_client_scaling, c16_cost_pareto,
+               c14_round_curves, c15_client_scaling,
+               c22_core_rounds, c23_core_clients, c16_cost_pareto,
                c17_anticollapse, c18_warm_cold, c19_retrieval_box,
-               c20_advisory_perclass, c21_retrieval_heatmap):
+               c20_advisory_perclass, c21_retrieval_heatmap,
+               c24_anticollapse_arms, c25_seed_floor):
         fn()
     print(f"generated {len(MADE)} compact figures in {LOCAL}")
     for n in MADE:

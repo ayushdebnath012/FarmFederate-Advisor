@@ -138,19 +138,16 @@ records~\cite{Dembani2025FLPrivacy,Puppala2025SelfReg}; Federated
 Learning~\cite{McMahan2017} addresses that, but FL work on tea pathology has not
 integrated the two kinds of evidence.
 
-A second, methodological motivation became dominant during this study. One
+A second, methodological motivation dominates. One
 source photograph may contain several annotated regions, so crop-level random
 splits place near-identical leaf context on both sides of the boundary. Text can
 leak the target even more directly when disease names or class-pure terms remain
 in descriptions. We therefore group by source image, link text at the exact box
-level, and learn the blocked vocabulary from training annotations only. This
-changes the scientific question from ``can a model memorise a disease
-description?'' to ``does each modality contribute on unseen source leaves?''
+level, and learn the blocked vocabulary from training annotations only.
 
 \textbf{Contributions.} We advance LEAF, a multimodal federated framework whose
-components are selected by the comparison reported here rather than asserted:
-the core carried into the routing and federated experiments is the one
-validation selected. We provide
+components are selected by the comparison reported here rather than asserted. We
+provide
 (i) exact crop--note linkage with
 source-disjoint splits and train-only leakage control; (ii) common-support
 unimodal, paired, mismatched, and model-family comparisons, extended by
@@ -185,10 +182,10 @@ updates~\cite{Ding2025Bc2FL}, cloud coordination~\cite{Caminha2024CloudFL}, and
 coordinator-free edge federation~\cite{Kundjanasith2023DFL}, with trust and
 continual-update duties reviewed
 in~\cite{Baee2025Trustworthy,Dimitri2026Continual}. Those clients are almost
-always image-only, and federation is reported as a headline accuracy rather than
-a measured cost, so communication per round, warm start, realized skew, and
-matched-budget aggregator comparison are rarely reported together; we report them
-here.
+always image-only, and federation is reported as headline accuracy rather than
+measured cost: communication per round, warm start, realized skew and
+matched-budget aggregator comparison are rarely reported together. We report
+them here.
 
 \emph{Vision--language fusion.} Contrastive alignment~\cite{Radford2021}, query
 transformers over frozen encoders~\cite{Li2023}, gated
@@ -275,10 +272,10 @@ and is not drawn as token-level cross-attention.}
 \subsection{Dataset and Leakage Audit}
 \label{sec:dataset}
 
-\emph{Held fixed.} This split. Every table except Table~\ref{tab:standard_suite}
-is scored on the same 222/74/75 source-grouped crops, the same exact box--note
-pairing and the same train-fitted leakage mask, so any difference between them is
-the axis that table varies and not the data underneath it. The matched-setting
+\emph{Held fixed.} Every table except Table~\ref{tab:standard_suite} is scored
+on the same 222/74/75 source-grouped crops, the same exact box--note pairing and
+the same train-fitted leakage mask, so any difference between them is the axis
+that table varies. The matched-setting
 federated suite of Table~\ref{tab:standard_suite} re-partitions those same 371
 observations as 260/55/56 over 199 source groups, and is read only against itself.
 
@@ -314,14 +311,14 @@ Seed 42 splits source filenames, never crops: overlap is zero and the test holds
 75 crops from 38 unseen photographs. All 371 records link by exact (photograph,
 box index); the nine-example leaf-hopper class remains the bottleneck. Notes are
 templated from manually written phrase pools, not independent farmer prose.
-Recording observations against a controlled vocabulary is standard practice ---
-crop trait ontologies supply harmonized trait/method/scale
-terms~\cite{Shrestha2010CropOntology,Andres2021FAIRVocab} and severity is scored on
-fixed ordinal scales and standard area diagrams~\cite{Bock2021Severity,DelPonte2017SAD}
---- so templating is a fair proxy for the \emph{structure} of real records, not their
+Recording observations against a controlled vocabulary is standard practice:
+crop trait ontologies supply harmonized
+terms~\cite{Shrestha2010CropOntology,Andres2021FAIRVocab} and severity is scored
+on fixed ordinal scales~\cite{Bock2021Severity,DelPonte2017SAD}. Templating is
+therefore a fair proxy for the \emph{structure} of real records, not their
 diversity: the 371 notes draw on 140 distinct sentences, 61\% of which occur in
 more than one class, and a class's diagnostic sign appears in only 45\% of its
-notes --- a scout does not always see it. A
+notes. A
 bag-of-words classifier consequently reaches 0.640 rather than saturating, so
 the note channel is informative without being label-determining, and the
 comparison between modalities is not decided by the corpus. A
@@ -331,23 +328,21 @@ frozen. No external tea images are pooled; ImageNet supplies weights only.
 \subsection{Model Variants and Objective}
 \label{sec:variants}
 
-The reliability network is a two-layer MLP over the concatenated text and
-image embeddings whose two outputs are softmax-normalized, giving weights
-$(r_t,r_v)$ with $r_t+r_v=1$: $r_t$ is how far the fused prediction leans on
-the note and $r_v$ on the image. An absent modality has its logit set to
-$-10^{4}$ before the softmax, so its weight goes to zero and the surviving
-modality takes the full unit of mass. The final logits are
+The reliability network is a two-layer MLP over the concatenated embeddings
+whose two softmax-normalized outputs give weights $r_t+r_v=1$ --- how far the
+fused prediction leans on the note and on the image. An absent modality's logit
+is set to $-10^{4}$ before the softmax, so its weight goes to zero and the
+survivor takes the full unit of mass. The final logits are
 \begin{equation}
 \mathbf{z}=\mathbf{z}_f+\lambda\left(r_t\mathbf{z}_t+r_v\mathbf{z}_v\right),\qquad\lambda=2,
 \label{eq:logits}
 \end{equation}
-where $\mathbf{z}_f$ is the five-way output of the fusion head and $\mathbf{z}_t$,
-$\mathbf{z}_v$ are the outputs of two linear \emph{expert} heads reading the
-text and image embeddings directly. The residual weight $\lambda=2$ is
-fixed rather than learned: it makes the two single-modality experts count
-twice as much as the fused head, which is what leaves a usable prediction
-when one branch is absent. A missing modality's expert is zeroed, and the
-residual stays active at test time rather than being a training-only crutch.
+where $\mathbf{z}_f$ is the fusion head's five-way output and $\mathbf{z}_t$,
+$\mathbf{z}_v$ come from two linear \emph{expert} heads reading each embedding
+directly. The residual weight $\lambda=2$ is
+fixed rather than learned, so the two single-modality experts count twice the
+fused head and a usable prediction survives when one branch is absent; a
+missing modality's expert is zeroed and the residual stays active at test time.
 
 \textbf{Comparison models.} Frozen DistilBERT~\cite{Sanh2019} and
 ViT-tiny~\cite{Dosovitskiy2021} use validation-selected ridge heads. Their
@@ -366,19 +361,16 @@ auxiliary parent losses and supervised cross-modal alignment:
  +0.05\mathcal{L}_{align}.
 \label{eq:loss}
 \end{equation}
-Here $\mathcal{L}_{f}$ is the loss on the fused logits $\mathbf{z}$; $\mathcal{L}_{t}$ and
-$\mathcal{L}_{v}$ apply the same criterion to the two expert heads, each averaged
-only over samples in which that modality is present, so a text-only batch
-never trains the image expert; and $\mathcal{L}_{align}$ is a supervised contrastive
-term over the $\ell_2$-normalized text and image embeddings of the paired
-samples, treating same-class pairs as positives and averaging both
-directions. It is evaluated only when a batch holds at least two paired
-crops. The three weights are fixed by construction rather than tuned: $1.25$
-on the visual expert against $0.20$ on the text expert, because image-only
-learning is the harder path while the templated notes make the text expert
-easy to satisfy, and $0.05$ on alignment because it is a regularizer, large
-enough to shape the embedding geometry and small enough not to compete with
-the classification objective. Modality dropout samples image-only, text-only and paired batches with
+Here $\mathcal{L}_{f}$ is the loss on the fused logits; $\mathcal{L}_{t}$ and
+$\mathcal{L}_{v}$ apply it to the two expert heads, averaged only over samples
+where that modality is present, so a text-only batch never trains the image
+expert; $\mathcal{L}_{align}$ is a supervised contrastive term over the
+$\ell_2$-normalized paired embeddings, evaluated only when a batch holds at
+least two paired crops. The
+three weights are fixed by construction rather than tuned: image-only learning
+is the harder path while templated notes make the text expert easy to satisfy,
+and alignment is a regularizer that must not compete with the classification
+objective. Modality dropout samples image-only, text-only and paired batches with
 probabilities 0.50, 0.10, 0.40; checkpoints are selected by
 $0.65F_{1,\mathrm{paired}}+0.35F_{1,\mathrm{image}}$ on validation.
 
@@ -429,10 +421,9 @@ Complete model & 32.20M parameters
 \subsection{Base Cross-Modal Checkpoint}
 \label{sec:proposed}
 
-The checkpoint trains for at most 15 AdamW epochs (batch 16, peak $10^{-4}$).
-Two cached augmentations per training crop remain views of 222 crops, not new
-samples. Selection uses 74 validation crops; the strict-reloaded checkpoint is
-then evaluated once on 75 test crops.
+The checkpoint trains in PyTorch~\cite{Paszke2019} for at most 15 AdamW epochs
+(batch 16, peak $10^{-4}$). Two cached augmentations per training crop remain
+views of 222 crops, not new samples.
 
 \subsection{Enhanced Image-Only Inference}
 
@@ -531,22 +522,19 @@ Three-expert gate & 243 & 0.747 & 0.617 & 0.680 & 0.571 & 0.693 & 0.576\\
 \fi
 %%TRIM-END%%
 
-The same ladder is run for text and for text${+}$image on the identical
-222/74/75 crop--note support, so every rung is comparable with the others and
-with the visual ladder. Neither ladder is flat now that the notes no
+The same ladder runs for text and text${+}$image on the identical support, so
+every rung is comparable with the others and with the visual ladder. Neither ladder is flat now that the notes no
 longer determine the label. The best text rung reaches 0.613 at complete notes
 and 0.360 once three quarters of the tokens are gone, while the best fusion rung
 holds 0.773 at both (Fig.~\ref{fig:c_fusion_ladder}): the fused pipeline is what
 survives note loss, and the validation-to-test gap still widens with search
-(Fig.~\ref{fig:c_selection_gap}). Representation depth is measurable throughout
-rather than only after a shortcut is removed, because there is no longer a
-shortcut to remove.
+(Fig.~\ref{fig:c_selection_gap}).
 
 The calibrated base wins on both sides of the split on the smallest search in
-the table (validation score 0.771, test accuracy 0.680). The gates score higher
-only by fitting more routings on 74 crops, and Fig.~\ref{fig:c_selection_gap}
-shows what that costs. We carry the calibrated base as the visual path and
-report the gate as a diagnostic ceiling.
+the table (validation 0.771, test accuracy 0.680); the gates score higher only by
+fitting more routings on 74 crops, and Fig.~\ref{fig:c_selection_gap} shows what
+that costs. We carry the calibrated base as the visual path and report the gate
+as a diagnostic ceiling.
 
 %% STALE -- DO NOT RESTORE AS-IS: predates the note-leakage
 %% correction (caption cites 0.853/0.653, the pre-correction ladder values); regenerate the plot
@@ -561,17 +549,6 @@ report the gate as a diagnostic ceiling.
 \end{figure}
 \fi
 %%TRIM-END%%
-
-%%COMPACT-BEGIN%%
-\begin{figure}[t]
-\centering
-\includegraphics[width=\figw]{plots/c15_client_scaling}
-\caption{The same systems against client count. Fusion leads at every count, 0.734--0.799 against 0.587--0.689 for text.}
-\label{fig:c_client_scaling}
-\end{figure}
-
-
-%%COMPACT-END%%
 
 %%COMPACT-BEGIN%%
 \begin{figure}[t]
@@ -677,21 +654,18 @@ match.
 
 \subsection{Protocol}
 
-The base checkpoint was trained in PyTorch~\cite{Paszke2019} for at most 15
-epochs. All crops from a source photograph remain in one partition. Model
-selection and the five-expert visual gate use only the 74-crop validation
-partition; every number below uses the same 75-crop, 38-source internal test
-support. Accuracy is accompanied by macro F1 because the class distribution is
-imbalanced. Source-group bootstrap intervals (5,000 replicates) resample source
-photographs rather than treating multiple crops from one photograph as
-independent observations.
+All crops from a source photograph remain in one partition. Model selection and
+the five-expert visual gate use only the 74-crop validation partition; every
+number below uses the same 75-crop, 38-source internal test support. Macro F1
+accompanies accuracy because the classes are imbalanced. Source-group bootstrap
+intervals (5,000 replicates) resample source photographs rather than crops.
 
 Five evidence tracks remain separate: the exact-pair same-checkpoint ablation;
 the validation-selected family comparison on the common 75-crop support; the
 74-crop validation-only FedAvg sweep; earlier text, vision, and proxy-fusion
 screens whose differing supports permit only within-panel ranking; and the
-371-pair matched-setting suite. The last runs on the same genuine box-linked
-observations, with no label-matched resampling and no synthetic images.
+371-pair matched-setting suite on genuine box-linked observations, with no
+label-matched resampling and no synthetic images.
 
 \subsection{Federated Client and Round Scaling}
 
@@ -719,21 +693,42 @@ $K$ & Final F1 & Best F1 & Retained & Label TV \\
 %%TRIM-END%%
 
 
-The client and round sweep answers the two federated scaling questions directly. Final-round macro F1 ranges from 0.5846 to 0.6527 over
-$K=2$ to 8, against a centralized initialization of 0.6919 --- 84--94\% retained,
-so adaptation costs something on the corrected corpus where it cost almost
-nothing on the saturated one. At the predeclared $K=3$ setting the final mean is
-0.6525 (94\%). Round-wise means stay between 0.5735 and 0.6857; the
-highest transient mean occurs for $K=3$ at round 7, reported as a validation
-peak rather than the final model. Increasing $K$ raises realized
-label-distribution total variation from 0.151 to 0.281 without a monotone
-final-score penalty, over 3 partition seeds.
+%%COMPACT-BEGIN%%
+\begin{figure}[t]
+\centering
+\includegraphics[width=\figw]{plots/c22_core_rounds}
+\caption{Rounds against performance for the retained core, one line per client
+count. Dashed: the centralized initialization each run adapts from. $K{=}2$ and
+3 climb toward it; $K{=}5$ and 8 are flat.}
+\label{fig:c_core_rounds}
+\end{figure}
+%%COMPACT-END%%
 
-This stability result is useful but narrow. Every run begins from the same
-centrally selected checkpoint, so it supports federated adaptation of the
-multimodal core, not superiority over training from scratch. Three partition
-seeds measure ownership-split variability, not full checkpoint-training
-variance, and simulated clients cannot establish estate-level privacy.
+%%COMPACT-BEGIN%%
+\begin{figure}[t]
+\centering
+\includegraphics[width=\figw]{plots/c23_core_clients}
+\caption{Clients against performance for the retained core: the same fixed
+training set split over more owners. Bars are $\pm$1 SD over 3 seeds; realized
+label TV is printed under each tick.}
+\label{fig:c_core_clients}
+\end{figure}
+%%COMPACT-END%%
+
+Figs.~\ref{fig:c_core_rounds} and~\ref{fig:c_core_clients} answer the two
+federated scaling questions directly. Final-round macro F1 falls from 0.6527 at
+$K=2$ to 0.5846 at $K=8$ against a centralized initialization of 0.6919, so
+84--94\% is retained: adaptation costs something on the corrected corpus where
+it cost almost nothing on the saturated one. Round-wise means stay between 0.5735 and 0.6857, the
+highest a $K=3$ transient at round 7 rather than the final model. Realized
+label-distribution total variation rises with $K$ from 0.151 to 0.281 without a
+monotone final-score penalty, over 3 partition seeds.
+
+This result is narrow: every run begins from the same centrally selected
+checkpoint, so it supports federated adaptation of the multimodal core, not
+superiority over training from scratch. Three partition seeds measure
+ownership-split variability, not checkpoint-training variance, and simulated
+clients cannot establish estate-level privacy.
 
 \subsection{Matched-Setting Controlled Ablations}
 
@@ -842,21 +837,55 @@ unstable on this support.}
 %%TRIM-END%%
 
 
+%%COMPACT-BEGIN%%
+\begin{figure}[t]
+\centering
+\includegraphics[width=\figw]{plots/c16_cost_pareto}
+\caption{Uplink cost against accuracy at $\alpha{=}0.1$; the line orders
+architectures by uplink rather than interpolating. Cost spans $3.5\times$,
+accuracy 0.073.}
+\label{fig:c_cost}
+\end{figure}
+%%COMPACT-END%%
+
+%%COMPACT-BEGIN%%
+\begin{figure}[t]
+\centering
+\includegraphics[width=\figw]{plots/c24_anticollapse_arms}
+\caption{Anti-collapse arms at both skews, from zero because the finding is
+that none of them collapses. Values are printed: the arms span 0.044, all of it
+the balanced sampler, and the diversity term does nothing.}
+\label{fig:c_anticollapse}
+\end{figure}
+%%COMPACT-END%%
+
+%%COMPACT-BEGIN%%
+\begin{figure}[t]
+\centering
+\includegraphics[width=\figw]{plots/c25_seed_floor}
+\caption{Every single-architecture matched-setting arm: bars are 3-seed means,
+whiskers the observed seed range. The cold and concat arms are the same runs.
+The ranges overlap, so no arm clears the spread.}
+\label{fig:c_seed_floor}
+\end{figure}
+%%COMPACT-END%%
+
+
 Table~\ref{tab:standard_suite} closes the remaining gaps without mixing
-supports, with an identical client partition per cell. The note correction rewrote text
-only --- crops, labels and split are untouched --- so the corrected splitter
-still realizes label TV 0.451 against 0.265 at $\alpha=0.1$. Federation beats local-only training for all
-five architectures ($+$0.124 to $+$0.229), and nothing saturates: the
-sweep spans 0.431--0.561, so the ordering is architectural rather than the
-note-leakage ceiling the previous corpus imposed. No aggregator dominates ---
-FedProx leads on concat and attention fusion (0.560 against 0.531 on concat),
-FedAvg on image-only and cross-attention, FedBN on text --- while SCAFFOLD is unstable
-everywhere (0.130--0.294) and strictly worst in four of five. Communication
-spans $3.5\times$, 18.9 to 67.2\,MiB per client-round, so image-only
-reaches 0.513 macro F1 at roughly a third the uplink of either fusion.
-Warm start does not survive training out: it leads on two of three seeds but
-loses the mean by 0.006. The anti-collapse and fusion-variant ablations
-remain single-architecture.
+supports. The note correction rewrote text only, so the corrected splitter
+still realizes label TV 0.451 against 0.265 at $\alpha=0.1$. Federation beats local-only training for all five architectures ($+$0.124 to
+$+$0.229), and the ordering is architectural rather than the note-leakage
+ceiling the previous corpus imposed. No aggregator dominates --- FedProx leads on
+both fusion variants, FedAvg on image-only and cross-attention, FedBN on text
+--- while SCAFFOLD is unstable everywhere (0.130--0.294). Communication
+spans $3.5\times$, 18.9 to 67.2\,MiB per client-round, so image-only reaches
+0.513 macro F1 at roughly a third the uplink of either fusion
+(Fig.~\ref{fig:c_cost}).
+Two arms report nothing, shown rather than asserted: the anti-collapse
+components move the mean by at most 0.044 (Fig.~\ref{fig:c_anticollapse}), and
+warm start leads on two of three seeds but loses the mean by 0.006, with the
+fusion variants inside the same seed spread (Fig.~\ref{fig:c_seed_floor}).
+Neither is claimed necessary.
 
 %% generated by experiments/make_all_systems_table.py -- do not hand-edit
 
@@ -895,6 +924,29 @@ $\alpha=1$. Every system in a cell trains on the identical client partition.}
 %%TRIM-END%%
 
 
+%%COMPACT-BEGIN%%
+\begin{figure}[t]
+\centering
+\includegraphics[width=\figw]{plots/c14_round_curves}
+\caption{Rounds against performance for the frozen-encoder systems at
+$\alpha{=}1$ (three seeds $\times$ six client counts). Fusion leads at every
+round: 0.775 against 0.628 text and 0.559 image.}
+\label{fig:c_round_curves}
+\end{figure}
+%%COMPACT-END%%
+
+%%COMPACT-BEGIN%%
+\begin{figure}[t]
+\centering
+\includegraphics[width=\figw]{plots/c15_client_scaling}
+\caption{The same systems against client count. Fusion leads at every count,
+0.734--0.799 against 0.587--0.689 for text.}
+\label{fig:c_client_scaling}
+\end{figure}
+%%COMPACT-END%%
+
+
+
 %% STALE -- DO NOT RESTORE AS-IS: predates the note-leakage
 %% correction (caption asserts 1.0); regenerate the plot
 %% from current data and rewrite the caption first.
@@ -916,15 +968,16 @@ result.}
 %%TRIM-END%%
 
 
-Federated evidence previously covered one architecture. Table~\ref{tab:all_systems_fed} extends it to the frozen-encoder systems.
-A closed-form ridge head has no gradients for FedAvg to average, so those
-systems are federated here as linear probes --- frozen encoder, SGD head ---
-which is not the same estimator as the centralized head. Within this protocol fusion leads at both skews (0.723 against 0.607 for
+Table~\ref{tab:all_systems_fed} extends the federated evidence beyond one
+architecture. A closed-form ridge head has no gradients for FedAvg to average,
+so these systems are federated as linear probes --- frozen encoder, SGD head ---
+which is not the centralized estimator. Within this protocol fusion leads at both skews (0.723 against 0.607 for
 text and 0.508 for image at $\alpha=0.1$; 0.775, 0.628 and 0.559 at
 $\alpha=1$) and takes the largest federation gain over local-only training in
-both cells ($+0.406$ and $+0.411$). The lead holds across the client sweep:
-at $\alpha=1$ fusion spans 0.734--0.799 from $K=2$ to 50, above text
-(0.587--0.689) at every count (Fig.~\ref{fig:c_client_scaling}). Combining the
+both cells ($+0.406$ and $+0.411$), and it holds at every round
+(Fig.~\ref{fig:c_round_curves}) and every client count: at $\alpha=1$ fusion
+spans 0.734--0.799 from $K=2$ to 50, above text (0.587--0.689) throughout
+(Fig.~\ref{fig:c_client_scaling}). Combining the
 branches therefore helps most exactly where partitioning is most severe. Client partitions remain simulated.
 
 %%TRIM-BEGIN%% restore by deleting this line and the matching TRIM-END
@@ -943,7 +996,7 @@ system (left), plus three-seed warm-start FedAvg scaling (right).}
 %%TRIM-END%%
 
 
-\subsection{Standard Same-Checkpoint Ablation}
+\subsection{Same-Checkpoint Ablation and Image-Only Gains}
 
 %%TRIM-BEGIN%% restore by deleting this line and the matching TRIM-END
 \iffalse
@@ -977,16 +1030,10 @@ Routed fusion   & \textbf{0.8133} & 61/75 & 0.6679 & --\\
 %%TRIM-END%%
 
 
-Both branches carry evidence and neither dominates: the image is not the
-accessory the previous corpus made it look, and unimodally it leads this test
-0.6400 against 0.2400. Section~\ref{sec:modality_inertness} and
-Table~\ref{tab:corruption} quantify both ablations. Two limits apply: notes are
-templated, so every note-side number is an upper bound, and the routing family
-was refined on this partition.
-
-\subsection{Raising Image-Only Accuracy}
-
-A validation-selected test-time-augmentation search over 25 view/scale
+Both branches carry evidence and neither dominates: unimodally the image leads
+this test 0.6400 against 0.2400, and Section~\ref{sec:modality_inertness}
+quantifies both ablations. Notes are templated, so every note-side number is an
+upper bound, and the routing family was refined on this partition. A validation-selected test-time-augmentation search over 25 view/scale
 candidates reaches 74.32\% validation accuracy (macro F1 0.6854) with the
 base, tight-crop and context-crop views, and 64.00\% on the locked test (macro F1 0.5532).
 This is an inference-time ensemble over one backbone, not a stronger encoder;
@@ -1074,36 +1121,33 @@ Image only: ViT-Base/16 & 768 & 0.733 & 0.615 & 0.667 & 0.577 & 0.733 & 0.615 & 
 
 Tables~\ref{tab:unimodal_cent_fed} and~\ref{tab:multimodal_cent_fed} place a
 classical feature baseline, five frozen text encoders, five frozen vision
-encoders, and their fusions on the same 222/74/75 crop--note support, each
-scored centrally and again under FedAvg. Reading them in that order answers two
-separate questions: what each modality is worth on its own, and what combining
-them adds.
+encoders and their fusions on the same 222/74/75 support, scored centrally and
+again under FedAvg.
 
 \textbf{Unimodal.} With complete notes the image branch leads the text branch: ViT-Base reaches
 0.733 against 0.640 for the best text encoder, BERT-small. Federating costs
 little on either side (0.733 to 0.667; 0.640 to 0.582), so the modality
 separates these systems, not the deployment mode. The classical rows locate
-where pretraining earns its place: decisive on images (0.440 for colour
-histograms with HOG against 0.733) and absent on text, where TF-IDF with a
-linear SVM ties the best transformer at 0.640. Neither branch is close to the
-ceiling, so the comparison between them is informative rather than saturated.
+where pretraining earns its place: decisive on images (0.440 against 0.733) and
+absent on text, where TF-IDF with a linear SVM ties the best transformer at
+0.640. Neither branch is near the
+ceiling, so the comparison is informative rather than saturated.
 
 \textbf{Multimodal.} Fusion beats both parents outright, and does so at complete notes:
 ViT-Base with BERT-small reaches 0.800 against 0.733 for the best image-only
-encoder and 0.640 for the best text-only encoder. All five ViT-Base $+$ BERT rows clear the
-best unimodal system at complete notes (lowest 0.747 against 0.733), so the gain
-is not one lucky pairing; the classical TF-IDF with colour/HOG fusion does not,
-placing the gain in the pretrained encoders rather than in concatenation. The advantage widens as notes degrade, because only the text
-branch degrades: at 75\% deletion text falls to 0.373 while fusion holds 0.787
-and the image branch is unmoved at 0.733 by construction. Federation preserves
+encoder and 0.640 for the best text-only encoder. All five ViT-Base$+$BERT rows clear the best
+unimodal system (lowest 0.747 against 0.733), so the gain is not one lucky
+pairing; the classical TF-IDF with colour/HOG fusion does not,
+placing the gain in the pretrained encoders rather than in concatenation. The
+advantage widens as notes degrade: at 75\% deletion text falls to 0.373 while
+fusion holds 0.787 and the image branch is unmoved by construction. Federation preserves
 the ordering rather than creating it, and its cost falls as the note thins ---
 0.800 to 0.667 at complete notes, 0.787 to 0.716 at 75\% deletion.
 
-Across the table every ViT-Base pairing stays above the best text-only system at
-every sparsity (0.373 at 75\% deletion), but which partner is best does not hold:
-BERT-small leads at complete notes, BERT-mini at 75\%, and the spread across the
-five widens from 0.053 to 0.187. The evidence supports fusion over its parents,
-not a choice of text encoder.
+Every ViT-Base pairing stays above the best text-only system at every sparsity,
+but which partner is best does not: BERT-small leads at complete notes,
+BERT-mini at 75\%, and the spread across the five widens from 0.053 to 0.187.
+The evidence supports fusion over its parents, not a choice of text encoder.
 
 \subsection{Robustness: Skew, Dropout, Stragglers and Poisoning}
 \label{sec:robustness}
@@ -1126,11 +1170,10 @@ $\alpha{=}0.01$, and under a pathological partition giving each client a
 single class, fused macro-F1 stays in 0.741--0.776 --- its worst setting above
 the best setting of either parent (0.617 text, 0.660 image). Dropout is
 flatter still: 70\% of clients failing to report each round leaves the fused
-system at 0.773 against 0.772 with none. The image branch is the
-limiting case, returning per-seed-identical scores across $\alpha{=}0.5$, 1 and 10
-and again across $\alpha{=}0.05$, 0.01 and the pathological split: a convex probe
-reaches the same solution whatever the partition, so skew changes the path
-(round 5: 0.435 against 0.420) and not the destination.
+system at 0.773 against 0.772 with none. The image branch is the limiting case: a convex
+probe returns per-seed-identical scores across $\alpha{=}0.5$, 1 and 10 and again
+across $\alpha{=}0.05$, 0.01 and the pathological split, so skew changes the path
+and not the destination.
 
 \textbf{Stragglers cost what dropout does not} (Fig.~\ref{fig:robustness}b). A
 stale update arrives and is averaged in, pulling the model toward an older
@@ -1140,17 +1183,17 @@ round the fused system loses 0.115 (0.772 to 0.657) and the image branch 0.123
 nothing. Discarding a late update beats waiting for it.
 
 \textbf{Poisoning is where plain FedAvg has no defence} (Fig.~\ref{fig:robustness}c). Sign-flipped updates are
-catastrophic at every fraction tested: 10\% malicious clients already take the
-fused system from 0.772 to 0.298, and 30\% to 0.123, with text
-(0.136) and image (0.104) equally destroyed --- the one condition in
-which fusion is not the best of the three, because all three are broken. Label
+catastrophic at every fraction: 10\% malicious clients take the fused system
+from 0.772 to 0.298 and 30\% to 0.123, with text (0.136) and image (0.104)
+equally destroyed --- the one condition in which fusion is not best, because all
+three are broken. Label
 flip degrades gradually instead (0.658, 0.611, 0.539 at 10/20/30\%) and
 Gaussian noise sits between them. Coordinate-wise median recovers the outlier
-attacks (sign flip to 0.613, 0.543, 0.420; Gaussian to 0.564 at 30\%) but not label
-flip, which is within noise at 10--20\% and worse at 30\% (0.510 against 0.539): a
-label-flipped update is a well-formed gradient step toward the wrong target, not an
-outlier in parameter space. The median also costs 0.057 with nobody attacking, so it
-is a trade, not a free defence. Nothing here is Byzantine-tolerant.
+attacks (sign flip to 0.613, 0.543, 0.420) but not label flip, which is worse at
+30\% (0.510 against 0.539): a label-flipped update is a well-formed gradient step
+toward the wrong target, not an outlier in parameter space. The median also costs
+0.057 with nobody attacking, so it is a trade, not a free defence. Nothing here
+is Byzantine-tolerant.
 
 
 
@@ -1194,26 +1237,25 @@ against 72.97\% and 0.5980 for the candidate. On test the candidate
 predicts 2 more crops, but the 11-versus-9 discordance is not
 significant (McNemar $p=0.82$) and the two macro-F1 values differ by
 0.0014. On 75 crops the support does not separate them, so the
-selection rule decides and the test column is reported rather than ranked;
-earlier screens ran on different supports and license within-panel ranking only.
-
-\subsection{Cross-Modal Analysis and Evidence Boundary}
-
-Mean reliability is 0.263 text/0.737 image --- the retrained gate is
-image-dominant --- and mismatching the note costs only 2.67 accuracy
-points and 0.0187 F1. Exact cross-modal recall@1 is only 1.33\%, while class-level
-recall@1 is 0.600/0.613, indicating class organization rather than crop identity.
+selection rule decides and the test column is reported rather than ranked. The
+enhanced gate gains eight correct crops over the direct image path and the
+router 15, mainly in blight and looper; two leaf-hopper crops are too few to
+carry a claim.
 
 \subsection{Missing-Modality and Corruption Probes}
 \label{sec:modality_inertness}
 
+Mismatching the note costs only 2.67 accuracy points and 0.0187 F1, and exact
+cross-modal recall@1 is 1.33\% against class-level 0.600/0.613: the embedding is
+organized by class, not by crop identity.
 
 
 
-The mismatch result above shows dependence on the note; it does not show whether
-the image is used at all. We therefore evaluate the retained checkpoint on the
-locked 75-crop test under graded corruption of each modality and under two full
-image ablations, comparing predictions crop-by-crop against the clean run.
+
+The mismatch result shows dependence on the note, not whether the image is used
+at all. We evaluate the retained checkpoint on the locked 75-crop test under
+graded corruption of each modality and two full image ablations, comparing
+predictions crop-by-crop against the clean run.
 
 \textbf{Both branches are load-bearing.} Table~\ref{tab:corruption} reports the
 sweep. Deleting every attended text token costs 0.226 macro F1 and moves
@@ -1222,16 +1264,15 @@ and moves 61. The image now carries more of the decision than the note,
 reversing the previous corpus, but neither branch is inert. The reliability gate
 does not track this: mean $w_t$ is 0.263 on clean input and rises to 0.361
 under complete text deletion and 0.380 under complete image noise, so it
-weights a destroyed modality more rather than less. No ordering of modalities or
-architectures is advanced from a single 75-crop support.
+weights a destroyed modality more rather than less.
 
 \textbf{Ablation strength determines the verdict.} Additive Gaussian noise at
 $\sigma{=}0.35$ leaves leaf and lesion plainly visible and moves 25 of 75
 predictions, whereas zeroing the image moves 49 and replacing it with uniform
 noise moves 61. An earlier 30-pair proxy screen used the Gaussian setting alone
 and read the visual branch as inert; that reading does not survive genuine
-removal on the locked support. Evidence that a branch is unused therefore
-requires an ablation that removes it rather than one that degrades it.
+removal. Evidence that a branch is unused requires an ablation that removes it,
+not one that degrades it.
 
 %% generated by experiments/make_corruption_table.py -- do not hand-edit
 
@@ -1265,24 +1306,6 @@ Image uniform noise & \textbf{0.2800} & 0.0875 & \textbf{61/75}\\
 \bottomrule
 \end{tabular}
 \end{table}
-
-%%COMPACT-BEGIN%%
-%%TRIM-BEGIN%% restore by deleting this line and the matching TRIM-END
-%% Caption and plot REGENERATED from current data (was: "Text overtakes fusion
-%% at round 33", which is false -- fusion leads at all 50 rounds). Safe to restore,
-%% but it needs ~110pt: it does not fit without dropping another float.
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.92\linewidth]{plots/c14_round_curves}
-\caption{Per-round convergence at $\alpha{=}1$ (three seeds $\times$ six client
-counts). Fusion leads at every round: 0.775 against 0.628 text, 0.559 image.}
-\label{fig:c_round_curves}
-\end{figure}
-
-%%TRIM-END%%
-
-%%COMPACT-END%%
 
 \subsection{Architecture Component Ablation}
 \label{sec:architecture_ablation}
@@ -1378,11 +1401,10 @@ caterpillars is the weak row, losing queries to blight, rust and mosquito
 bug, whose damage vocabulary it shares.
 
 Three limits apply. The corpus is template-composed, so base and queries share
-sentence vocabulary even though no observation is shared --- visible in
-the score distribution as uniformly high similarity --- and these are
-upper bounds relative to free-form notes. The fusion re-ranker, the OBB overlay
-and the agronomic correctness of the advice remain unevaluated. This is a
-retrieval result, not evidence that the treatment is right.
+sentence vocabulary even though no observation is shared, and these are upper
+bounds relative to free-form notes. The fusion re-ranker, the OBB overlay and
+the agronomic correctness of the advice remain unevaluated: this is a retrieval
+result, not evidence that the treatment is right.
 
 %%TRIM-BEGIN%% restore by deleting this line and the matching TRIM-END
 \iffalse
@@ -1404,13 +1426,6 @@ retrieval result, not evidence that the treatment is right.
 \end{figure}
 %%COMPACT-END%%
 
-\subsection{Reproducibility Manifest}
-
-The updated bundle records data identity, checkpoint state, every federated
-round, and each realized client partition. It separates mechanically verified controls from properties outside
-the evidence.
-Deterministic grouping, strict reload, and validation-only adaptation are
-reproducible; external estate transfer is not inferred from them.
 
 %%TRIM-BEGIN%% restore by deleting this line and the matching TRIM-END
 \iffalse
@@ -1445,7 +1460,6 @@ Matched FL baselines & 4 aggregators + local-only & completed; no errors \\
 \fi
 %%TRIM-END%%
 
-\subsection{Class-Level Error Accounting}
 
 %%TRIM-BEGIN%% restore by deleting this line and the matching TRIM-END
 \iffalse
@@ -1464,18 +1478,16 @@ leaf-hopper crops fall into looper except for one the enhanced gate recovers.}
 \fi
 %%TRIM-END%%
 
-The enhanced gate gains eight correct crops and the exploratory router gains 15,
-mainly in blight and looper; two leaf-hopper examples remain too few for a stable
-claim.
+\subsection{Reproducibility and Threats to Validity}
 
-\subsection{Threats to Validity}
-
-The locked test is small (38 sources, 75 crops, two leaf-hopper crops), and
+The released bundle records data identity, checkpoint state, every federated
+round and each realized client partition; deterministic grouping, strict reload
+and validation-only adaptation are reproducible, but external estate transfer is
+not inferred from them. The locked test is small (38 sources, 75 crops, two leaf-hopper crops), and
 selection on 74 validation crops can overfit. The central checkpoint has one
 seed; FL seeds vary only client partitions, and clients are simulated.
 DistilBERT is a PLM rather than a generative LLM. The corruption probe is one
-seeded realization per severity on 75 crops and carries no interval, and the
-reliability weights it reports are one checkpoint's. The robustness sweep
+seeded realization per severity and carries no interval. The robustness sweep
 federates linear probes on frozen features, so its invariances belong to that
 estimator and not to the deep model. Deployment requires multi-estate data,
 independent notes, rare-class coverage, and repeated end-to-end training.
