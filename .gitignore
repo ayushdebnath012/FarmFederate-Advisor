@@ -57,8 +57,10 @@ farmfederate_colab_run.zip
 farmfederate_results*.zip
 overleaf_final*.zip
 
-# Reference papers kept locally only (copyrighted, ~122 MB)
+# Reference papers kept locally only (copyrighted)
 references/
+Related works/
+Tea Literature/
 
 # macOS Finder metadata
 .DS_Store
