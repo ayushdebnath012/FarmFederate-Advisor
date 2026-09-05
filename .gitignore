@@ -62,3 +62,7 @@ references/
 
 # macOS Finder metadata
 .DS_Store
+
+# Overleaf build scratch and stale compiled output (removed 2026-09-06)
+overleaf_final/tmp/
+overleaf_final/output/
