@@ -1,0 +1,92 @@
+[
+  {
+    "figure_file": "leaf_blight.jpg",
+    "class_id": 0,
+    "class_name": "LEAF_BLIGHT",
+    "source_image": "Real Dataset/images/388_jpg.rf.5eae3b30e4994eb8766bb267981125a1.jpg",
+    "source_sha256": "bc7c97499a5a4489d6f65f604276c6a14a8b8261630831f1a854c9bea15aabbb",
+    "annotation_file": "Real Dataset/labels/388_jpg.rf.5eae3b30e4994eb8766bb267981125a1.txt",
+    "box_index_zero_based": 3,
+    "crop_bounds_pixels": [
+      0,
+      0,
+      731.982113,
+      625.9368992544057
+    ],
+    "padding": "0.10 times source width and height, as in TeaOBBDataset._crop",
+    "note_source": "tea_results/annotation/annotations.csv",
+    "selection": "Illustrative visual selection; no model scores used."
+  },
+  {
+    "figure_file": "leaf_hoppers.jpg",
+    "class_id": 1,
+    "class_name": "LEAF_HOPPERS",
+    "source_image": "Real Dataset/images/80_jpg.rf.57f0b5175a4aa0b217b5fa8f69962546.jpg",
+    "source_sha256": "e2179fec8a76adbc6586effa9cf33f6c9e9aec61e3932609f1522fdf77e55afc",
+    "annotation_file": "Real Dataset/labels/80_jpg.rf.57f0b5175a4aa0b217b5fa8f69962546.txt",
+    "box_index_zero_based": 0,
+    "crop_bounds_pixels": [
+      0,
+      216.6,
+      880.4,
+      803.4
+    ],
+    "padding": "0.10 times source width and height, as in TeaOBBDataset._crop",
+    "note_source": "tea_results/annotation/annotations.csv",
+    "selection": "Illustrative visual selection; no model scores used."
+  },
+  {
+    "figure_file": "leaf_rust.jpg",
+    "class_id": 2,
+    "class_name": "LEAF_RUST",
+    "source_image": "Real Dataset/images/100_jpg.rf.14fa87ff511c6790858ccbc03bf10be6.jpg",
+    "source_sha256": "dc0aa56a404d3e7e9f1e34894c1874237816a6151bb4d9f66ae39011af144d40",
+    "annotation_file": "Real Dataset/labels/100_jpg.rf.14fa87ff511c6790858ccbc03bf10be6.txt",
+    "box_index_zero_based": 1,
+    "crop_bounds_pixels": [
+      0,
+      194.13333300000002,
+      932.8337154161363,
+      748.4432387985842
+    ],
+    "padding": "0.10 times source width and height, as in TeaOBBDataset._crop",
+    "note_source": "tea_results/annotation/annotations.csv",
+    "selection": "Illustrative visual selection; no model scores used."
+  },
+  {
+    "figure_file": "looper_caterpillars.jpg",
+    "class_id": 3,
+    "class_name": "LOOPER_CATERPILLARS",
+    "source_image": "Real Dataset/images/520_jpg.rf.ebd7c142286cf0b3139636e76c4234f1.jpg",
+    "source_sha256": "0f5ad508824e43ba0bb4c8522d454cfb8d439676991dea772a1ad7a8e10ca75f",
+    "annotation_file": "Real Dataset/labels/520_jpg.rf.ebd7c142286cf0b3139636e76c4234f1.txt",
+    "box_index_zero_based": 0,
+    "crop_bounds_pixels": [
+      595.6,
+      325.60000000000014,
+      1024,
+      733.4000000000002
+    ],
+    "padding": "0.10 times source width and height, as in TeaOBBDataset._crop",
+    "note_source": "tea_results/annotation/annotations.csv",
+    "selection": "Illustrative visual selection; no model scores used."
+  },
+  {
+    "figure_file": "mosquito_bug.jpg",
+    "class_id": 4,
+    "class_name": "MOSQUITO_BUG",
+    "source_image": "Real Dataset/images/IMG_20250318_152151_jpg.rf.08b8e00fd0b43aad09c825e2f6c94db0.jpg",
+    "source_sha256": "d37eeb3823ab74ef7cde73a778ad0ce467a27c7183c38159810b623bafe6a147",
+    "annotation_file": "Real Dataset/labels/IMG_20250318_152151_jpg.rf.08b8e00fd0b43aad09c825e2f6c94db0.txt",
+    "box_index_zero_based": 0,
+    "crop_bounds_pixels": [
+      307.2498288292071,
+      0,
+      1024,
+      598.0883302872976
+    ],
+    "padding": "0.10 times source width and height, as in TeaOBBDataset._crop",
+    "note_source": "tea_results/annotation/annotations.csv",
+    "selection": "Illustrative visual selection; no model scores used."
+  }
+]
