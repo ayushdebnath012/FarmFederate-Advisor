@@ -1,0 +1,18 @@
+\begin{table}[t]
+\caption{Weather-modality ablation on the tea corpus, mean $\pm$ standard
+deviation over five seeds. The crop-to-station-day assignment is synthetic and
+label-independent, so weather carries no information about the target; the arms
+are statistically indistinguishable and the seed spread exceeds every difference
+between them.}
+\label{tab:weather_ablation}
+\centering\footnotesize
+\begin{tabular}{lcc}
+\toprule
+Metric & Text$+$image & Text$+$image$+$weather\\
+\midrule
+Validation $F_1$ (macro) & $0.693 \pm 0.079$ & $0.703 \pm 0.066$\\
+Federated $F_1$ (macro) & $0.573 \pm 0.070$ & $0.576 \pm 0.097$\\
+Test $F_1$ (macro) & $0.570 \pm 0.080$ & $0.575 \pm 0.034$\\
+\bottomrule
+\end{tabular}
+\end{table}
