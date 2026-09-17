@@ -468,8 +468,23 @@ def build_weather_logs(max_per: int = 2000) -> List[Tuple[str, List[float], List
 
 # ----------------- HF loading helpers (TEXT) -----------------
 def _load_ds(name, split=None, streaming=False):
+    """
+    Load a dataset, accepting a list of candidate repo ids. Hugging Face has moved
+    several canonical datasets under namespaces (ag_news -> fancyzhx/ag_news), and a
+    bare id now raises "Repository id must be 'namespace/name'", so callers pass every
+    id the dataset has been published under and the first that resolves wins.
+    """
     if not HAS_DATASETS:
         raise RuntimeError("The `datasets` library is not installed.")
+    if isinstance(name, (list, tuple)):
+        last = None
+        for cand in name:
+            try:
+                return _load_ds(cand, split=split, streaming=streaming)
+            except Exception as e:
+                last = e
+                print(f"[Mix] {cand} unavailable: {str(e)[:90]}")
+        raise last if last else RuntimeError("no candidate dataset id resolved")
     dlconf = DownloadConfig(max_retries=3)
     token = os.environ.get("HF_TOKEN") or os.environ.get("HUGGING_FACE_HUB_TOKEN")
     kw = {"streaming": streaming, "download_config": dlconf}
@@ -538,28 +553,45 @@ def build_gardian_stream(max_per: int = 2000) -> List[str]:
     return texts
 
 
+# field pairs argilla/farming has used across revisions, newest first
+_ARGILLA_FIELDS = [
+    ("instruction", "response"),
+    ("evolved_questions", "domain_expert_answer"),
+    ("question", "answer"),
+    ("prompt", "completion"),
+]
+
+
+def _argilla_text(rec: dict) -> str:
+    """Question+answer text from a record, whichever field names this revision uses."""
+    for q_key, a_key in _ARGILLA_FIELDS:
+        if q_key in rec or a_key in rec:
+            q = str(rec.get(q_key, "") or "").strip()
+            a = str(rec.get(a_key, "") or "").strip()
+            if q or a:
+                return f"{q} {a}".strip()
+    # last resort: the longest free-text fields on the record
+    vals = [str(v).strip() for k, v in rec.items()
+            if isinstance(v, str) and k != "id" and len(str(v).strip()) > 40]
+    return " ".join(vals[:2]).strip()
+
+
 def build_argilla_stream(max_per: int = 2000) -> List[str]:
     ds = _load_ds("argilla/farming")
+    splits = ds if isinstance(ds, dict) else {"train": ds}
     texts = []
-    seen = 0
-    if isinstance(ds, dict):
-        for sp in ds:
-            for r in ds[sp]:
-                q = str(r.get("evolved_questions", "")).strip()
-                a = str(r.get("domain_expert_answer", "")).strip()
-                raw = (q + " " + a).strip()
-                if raw and _lang_ok(raw):
-                    texts.append(_norm(raw))
-                    seen += 1
-                    if seen >= max_per:
-                        break
-            if seen >= max_per:
-                break
+    for sp in splits:
+        for r in splits[sp]:
+            raw = _argilla_text(dict(r))
+            if raw and _lang_ok(raw):
+                texts.append(_norm(raw))
+                if len(texts) >= max_per:
+                    return texts
     return texts
 
 
 def build_agnews_agri(max_per: int = 2000) -> List[str]:
-    train = _load_ds("ag_news", split="train", streaming=True)
+    train = _load_ds(["fancyzhx/ag_news", "ag_news"], split="train", streaming=True)
     texts = []
     seen = 0
     for r in train:
