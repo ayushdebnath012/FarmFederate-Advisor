@@ -230,7 +230,7 @@ extracts its axis-aligned envelope, adds 10\% of the source width/height as
 context on each side, clips to image bounds, and resizes to $224\times224$.
 This yields 371 crops: leaf blight (129), leaf hoppers (9), leaf rust (67),
 looper caterpillars (102), and mosquito bug (64), using raw IDs 0--4.
-The acquisition rig is documented in Figure~\ref{fig:capture_rig}, but capture
+The acquisition rig is documented in Figure~\ref{fig:dataset_examples}f--h, but capture
 dates, the handset model and sensor specification, and independent expert
 adjudication are not recorded in the supplied bundle. Figure~\ref{fig:dataset_examples} shows one
 real annotated crop per class; its manifest preserves source filenames,
@@ -240,11 +240,11 @@ confirmatory diagnoses.
 \textbf{Acquisition rig.} Photographs were captured by a fixed, self-contained
 station rather than handheld, which is what makes the corpus internally
 consistent in scale and viewpoint. An Android handset is sealed in a weather
-enclosure with a power bank (Figure~\ref{fig:capture_rig}c) and clamped to a
-horizontal arm on a ground-staked pole (Figure~\ref{fig:capture_rig}a). The pole
+enclosure with a power bank (Figure~\ref{fig:dataset_examples}f--hc) and clamped to a
+horizontal arm on a ground-staked pole (Figure~\ref{fig:dataset_examples}f--ha). The pole
 stands $106$\,cm, the arm extends $62$\,cm over the row, and the camera sits
 $11$\,cm above a mean canopy height of $95$\,cm, giving a consistent nadir view
-of the plucking table (Figure~\ref{fig:capture_rig}b). Because the geometry is
+of the plucking table (Figure~\ref{fig:dataset_examples}f--hb). Because the geometry is
 fixed, apparent lesion size is comparable across photographs, and the $10\%$
 context padding applied to each box corresponds to a roughly constant ground
 area. The enclosure is unpowered from mains and needs no network, so the same
@@ -252,27 +252,7 @@ rig transfers to an estate without infrastructure --- the deployment assumption
 the federated setting is meant to model. The rig does not record capture time,
 which is why no date is available for any crop.
 
-\begin{figure}[t]
-\centering
-\begin{subfigure}[b]{0.30\linewidth}
-\centering\includegraphics[width=\linewidth,height=1.25\linewidth,keepaspectratio]{setup/rig_field.jpg}
-\caption{Deployed in the row.}
-\end{subfigure}\hfill
-\begin{subfigure}[b]{0.33\linewidth}
-\centering\includegraphics[width=\linewidth,height=1.25\linewidth,keepaspectratio]{setup/rig_side.jpg}
-\caption{Side geometry.}
-\end{subfigure}\hfill
-\begin{subfigure}[b]{0.33\linewidth}
-\centering\includegraphics[width=\linewidth,height=1.25\linewidth,keepaspectratio]{setup/rig_top.jpg}
-\caption{Enclosure interior.}
-\end{subfigure}
-\caption{Capture rig used to collect the corpus. (a) The staked pole and arm in
-the tea row. (b) A $106$\,cm pole with a $62$\,cm arm places the camera
-$11$\,cm above the $95$\,cm mean canopy. (c) An Android handset and power bank
-inside the weather enclosure. The fixed geometry keeps scale and viewpoint
-comparable across photographs; no capture time is logged.}
-\label{fig:capture_rig}
-\end{figure}
+
 
 \begin{figure*}[t]
 \centering
@@ -296,7 +276,28 @@ comparable across photographs; no capture time is logged.}
 \centering\includegraphics[width=\linewidth,height=0.85\linewidth,keepaspectratio]{dataset_examples/mosquito_bug.jpg}
 \caption{Mosquito bug ($n=64$).}
 \end{subfigure}
-\caption{One actual annotated crop per class; $n$ is the corpus crop count. Source OBB labels and 10\% context padding are preserved. Natural backgrounds and overlapping damage patterns complicate recognition; no external or generated images are shown.}
+
+\vspace{2pt}
+\begin{subfigure}[b]{0.19\textwidth}
+\centering\includegraphics[width=\linewidth,height=0.85\linewidth,keepaspectratio]{setup/rig_field.jpg}
+\caption{Rig in the row.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.28\textwidth}
+\centering\includegraphics[width=\linewidth,height=0.85\linewidth,keepaspectratio]{setup/rig_side.jpg}
+\caption{Side geometry.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.28\textwidth}
+\centering\includegraphics[width=\linewidth,height=0.85\linewidth,keepaspectratio]{setup/rig_top.jpg}
+\caption{Enclosure interior.}
+\end{subfigure}
+\caption{Top: one actual annotated crop per class; $n$ is the corpus crop count.
+Source OBB labels and 10\% context padding are preserved. Natural backgrounds and
+overlapping damage patterns complicate recognition; no external or generated
+images are shown. Bottom: the capture rig --- (f) deployed in the tea row, (g) a
+$106$\,cm pole with a $62$\,cm arm placing the camera $11$\,cm above a $95$\,cm
+mean canopy, (h) the Android handset and power bank inside the weather enclosure.
+The fixed mount keeps scale and viewpoint comparable across photographs; no
+capture time is logged.}
 \label{fig:dataset_examples}
 \end{figure*}
 
@@ -431,6 +432,9 @@ The checkpoint trains in PyTorch for at most 15 AdamW epochs
 (batch 16, peak $10^{-4}$). Two cached augmentations per training crop remain
 views of 222 crops, not new samples.
 
+% Trimmed for the page limit: the image-only inference study is not needed
+% for the multimodal argument and nothing outside it references its labels.
+\iffalse
 \subsection{Enhanced Image-Only Inference}
 
 
@@ -582,6 +586,8 @@ as a diagnostic ceiling.
 \label{fig:c_visual_ladder}
 \end{figure}
 %%COMPACT-END%%
+
+\fi
 
 \subsection{Reliability-Aware Sparse-Note Rule}
 
@@ -1350,79 +1356,56 @@ Image uniform noise & \textbf{0.2800} & 0.0875 & \textbf{61/75}\\
 \end{tabular}
 \end{table}
 
-\subsection{A Third Modality That Carries No Signal}
+\subsection{Fusing Text, Image and Weather}
 \label{sec:weather_probe}
 
-The reliability router is meant to express how much each modality is worth on a
-given example. Sections~\ref{sec:variants} and the missing-modality probes test
-it with two informative inputs; this subsection tests the complementary case,
-where a modality is known in advance to be worthless, so the correct behaviour
-is known by construction.
+Field diagnosis is rarely made from a leaf alone: a scout reads the canopy
+against the weather that produced it. We therefore extend the fusion to three
+modalities, adding daily observations from the AMFU Kharagpur station
+(IMD 42893) beside the note and the photograph. A small multilayer perceptron
+embeds a $19$-dimensional standardized vector of temperature, humidity, rainfall
+and its accumulations, rainless-spell length, vapour pressure deficit,
+evaporation, soil temperature and sunshine; the router widens to
+$r_t+r_v+r_w=1$ and the head gains one block.
 
-\textbf{Construction.} We attach daily observations from the AMFU Kharagpur
-station (IMD 42893), the observatory nearest the garden, as a third input: a
-19-dimensional standardized vector of temperature, humidity, rainfall and its
-7- and 30-day accumulations, rainless-spell length, vapour pressure deficit,
-evaporation, soil temperature and sunshine hours. A small multilayer perceptron
-embeds it to the fusion width, the router widens to
-$r_t+r_v+r_w=1$, and the fusion head gains one block. Because the corpus records
-no capture date (Section~\ref{sec:dataset}), no observation can honestly be
-joined to a photograph. Each crop is therefore assigned a station day by hashing
-its (photograph, box index) pair --- \emph{independently of its label}. We verify
-the independence rather than assert it: per-class mean weather agrees to within
-$0.28\,^{\circ}$C and $0.43$\,h of sunshine, and the share of crops whose
-assigned day is high-risk for their own class is $12.1\%$ against a $12.0\%$
-base rate. The modality is noise with respect to the target, by construction and
-by measurement.
+The corpus records no capture date (Section~\ref{sec:dataset}), so each crop is
+assigned a station day by hashing its (photograph, box index) pair
+\emph{independently of its label}. We verify that independence: per-class mean
+weather agrees to within $0.28\,^{\circ}$C and $0.43$\,h of sunshine, and the
+share of crops whose assigned day is high-risk for their own class is $12.1\%$
+against a $12.0\%$ base rate. The third modality is uninformative by
+construction, which turns this into a test of the router with a known answer.
 
-\textbf{Accuracy is unchanged, and seed spread dominates.}
-Table~\ref{tab:weather_ablation} reports five seeds per arm. Every difference is
-at most a tenth of the pooled standard deviation: $+0.011$ on validation,
-$+0.005$ on test, $+0.003$ federated. The standard deviation across seeds
-($0.07$--$0.08$ macro $F_1$) is an order of magnitude larger than any gap
-between the arms, and the sign of the difference changes from seed to seed
-(Figure~\ref{fig:weather_ablation}a). A single-seed comparison on this corpus
-can therefore report a gain or a loss of several points from noise alone, which
-is a caution that applies to the small-corpus tables elsewhere in this paper as
-much as to this one.
-
-\textbf{The router does not reject it.} The informative result is
-Figure~\ref{fig:weather_ablation}b. Averaged over seeds the gate assigns
-$0.16\pm0.03$ of its mass to weather, rather than the zero that an ideal
-reliability estimate would give a modality containing nothing. The gate is
-trained only through the classification objective, so nothing pushes an
-uninformative input's weight to zero as long as the fusion head can compensate;
-the learned weights are a statement about optimization, not a calibrated measure
-of evidence. They should therefore be read as diagnostics to inspect rather than
-as trustworthy per-modality reliabilities.
-
-\begin{table}[t]
-\caption{Weather-modality ablation on the tea corpus, mean $\pm$ standard
-deviation over five seeds. The crop-to-station-day assignment is synthetic and
-label-independent, so weather carries no information about the target; the arms
-are statistically indistinguishable and the seed spread exceeds every difference
-between them.}
-\label{tab:weather_ablation}
-\centering\footnotesize
-\begin{tabular}{lcc}
-\toprule
-Metric & Text$+$image & Text$+$image$+$weather\\
-\midrule
-Validation $F_1$ (macro) & $0.693 \pm 0.079$ & $0.703 \pm 0.066$\\
-Federated $F_1$ (macro) & $0.573 \pm 0.070$ & $0.576 \pm 0.097$\\
-Test $F_1$ (macro) & $0.570 \pm 0.080$ & $0.575 \pm 0.034$\\
-\bottomrule
-\end{tabular}
-\end{table}
+Figure~\ref{fig:weather_ablation} reports five seeds per arm. Accuracy is
+unchanged, as it should be, and the spread across seeds is an order of magnitude
+larger than any gap between the arms --- a single-seed comparison on $371$ crops
+can move several points from noise alone. The informative result is that the
+gate still assigns $0.16\pm0.03$ of its mass to the useless input rather than
+the zero an ideal reliability estimate would give: nothing in the classification
+objective drives such a weight to zero while the fusion head can compensate, so
+the learned weights are diagnostics to inspect, not calibrated evidence.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\linewidth]{plots/weather_ablation.png}
-\caption{Weather-modality probe over five seeds. (a) Paired runs; grey lines
-join the two arms for one seed, the square marks the mean with one standard
-deviation. The arms overlap and the sign of the difference flips across seeds.
-(b) Mean reliability mass per modality in the weather arm: the router gives
-$0.16$ to an input that is provably uninformative.}
+\includegraphics[width=0.99\linewidth]{plots/weather_ablation.png}
+\footnotesize
+\setlength\tabcolsep{3.5pt}
+\begin{tabular}{lcc}
+\toprule
+Macro $F_1$ & Text$+$image & $+$weather\\
+\midrule
+Validation & $0.693 \pm 0.079$ & $0.703 \pm 0.066$\\
+Federated  & $0.573 \pm 0.070$ & $0.576 \pm 0.097$\\
+Test       & $0.570 \pm 0.080$ & $0.575 \pm 0.034$\\
+\bottomrule
+\end{tabular}
+\caption{Adding weather as a third modality, five seeds per arm. (a) Paired
+runs; grey lines join the arms for one seed, squares mark mean $\pm$ one
+standard deviation. (b) Mean reliability mass per modality. Table: mean $\pm$
+s.d.; every difference is at most a tenth of the pooled standard deviation while
+the seed spread is $0.07$--$0.08$, so the arms are indistinguishable --- as they
+must be, the assignment being label-independent. The router nonetheless gives
+$0.16$ of its mass to the uninformative input.}
 \label{fig:weather_ablation}
 \end{figure}
 
