@@ -470,10 +470,18 @@ class MultiModalDataset(Dataset):
     """
 
     def __init__(self, obb_ds: TeaOBBDataset, text_df: pd.DataFrame,
-                 max_length: int = 128, seed: int = 42):
+                 max_length: int = 128, seed: int = 42, weather_map=None):
+        """
+        `weather_map`: optional backend.tea_weather_mapping.WeatherMap. When given,
+        each item carries a `weather_features` vector for a station day assigned to
+        that crop. The assignment is synthetic and label-independent (the corpus has
+        no capture dates), so the feature is noise with respect to the label -- see
+        that module's docstring. Default None leaves every existing run unchanged.
+        """
         self.obb_ds     = obb_ds
         self.max_length = max_length
         self.seed       = seed
+        self.weather_map = weather_map
         self.exact_text: Dict[Tuple[str, int], str] = {}
         # Build per-class text pools
         self.text_pool: Dict[int, List[str]] = {i: [] for i in range(NUM_CLASSES)}
@@ -516,6 +524,10 @@ class MultiModalDataset(Dataset):
                              padding="max_length", truncation=True, return_tensors="pt")
         item["input_ids"]      = enc["input_ids"].squeeze(0)
         item["attention_mask"] = enc["attention_mask"].squeeze(0)
+        if self.weather_map is not None:
+            item["weather_features"] = torch.tensor(
+                self.weather_map.features_for(sample_id), dtype=torch.float32
+            )
         return item
 
     @property
