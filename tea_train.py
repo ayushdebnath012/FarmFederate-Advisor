@@ -1424,6 +1424,11 @@ def evaluate(
             "text": float(weights[:, 0].mean()),
             "image": float(weights[:, 1].mean()),
         }
+        # With the weather modality on, the router emits a third weight. Without
+        # this the reported weights silently fail to sum to 1 and the mass given
+        # to weather is invisible.
+        if weights.shape[1] > 2:
+            metrics["mean_modality_weights"]["weather"] = float(weights[:, 2].mean())
     if collect_features and text_features:
         metrics["_text_features"] = torch.cat(text_features).numpy()
         metrics["_vision_features"] = torch.cat(vision_features).numpy()
