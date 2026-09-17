@@ -31,6 +31,7 @@ from torch.utils.data import Dataset, DataLoader, WeightedRandomSampler
 from transformers import get_linear_schedule_with_warmup
 
 from datasets_loader import ISSUE_LABELS, NUM_LABELS
+from weather_data import WEATHER_DIM
 
 SEED = 123
 random.seed(SEED)
@@ -44,7 +45,8 @@ if torch.cuda.is_available():
 class MultiModalDataset(Dataset):
     """
     Each item: {input_ids, attention_mask, pixel_values, labels, raw_text}
-    - `df_text`: DataFrame with columns ["text", "labels"]
+    plus `weather_features` [WEATHER_DIM] when df_text has a "weather" column.
+    - `df_text`: DataFrame with columns ["text", "labels"] (+ optional "weather")
     - `tokenizer`: HF tokenizer for text encoder
     - `image_processor`: HF image processor for ViT
     - `image_ds`: optional HF dataset with column "image" (PIL-like)
@@ -57,6 +59,7 @@ class MultiModalDataset(Dataset):
         self.im_proc = image_processor
         self.image_ds = image_ds
         self.max_len = max_len
+        self.has_weather = "weather" in self.df.columns and self.df["weather"].notna().all()
 
         # build a dummy image tensor once (3x224x224)
         from PIL import Image
@@ -91,13 +94,22 @@ class MultiModalDataset(Dataset):
         for k in row["labels"]:
             if 0 <= k < NUM_LABELS:
                 labels[k] = 1.0
-        return {
+        item = {
             "input_ids": enc["input_ids"].squeeze(0),
             "attention_mask": enc["attention_mask"].squeeze(0),
             "pixel_values": self._get_pixels(i),
             "labels": labels,
             "raw_text": text,
         }
+        if self.has_weather:
+            item["weather_features"] = torch.tensor(row["weather"], dtype=torch.float32)
+        return item
+
+
+def weather_batch(batch: Dict, device: str):
+    """The optional weather tensor of a batch, moved to `device` (None when absent)."""
+    w = batch.get("weather_features")
+    return None if w is None else w.to(device)
 
 
 # ------------- Class balancing & loss -------------
@@ -248,6 +260,7 @@ def train_one_client(
                     input_ids=input_ids,
                     attention_mask=attention_mask,
                     pixel_values=pixel_values,
+                    weather_features=weather_batch(batch, device),
                 )
                 logits = outputs.logits if hasattr(outputs, "logits") else outputs
                 loss = loss_fn(logits, labels) / max(1, grad_accum)
@@ -276,6 +289,7 @@ def train_one_client(
                 input_ids=input_ids,
                 attention_mask=attention_mask,
                 pixel_values=pixel_values,
+                weather_features=weather_batch(batch, device),
             )
             logits = outputs.logits if hasattr(outputs, "logits") else outputs
             loss = loss_fn(logits, labels)
@@ -283,8 +297,10 @@ def train_one_client(
     val_loss /= max(1, len(val_ds))
 
     # only return CPU state_dict to reduce memory
+    # keep_vars=True keeps the Parameter objects so requires_grad reflects trainability;
+    # a plain state_dict() is detached and the filter used to return an empty dict
     state_dict_cpu = {k: v.detach().cpu()
-                      for k, v in model.state_dict().items()
+                      for k, v in model.state_dict(keep_vars=True).items()
                       if v.requires_grad}
 
     return state_dict_cpu, total_loss / max(1, step_count), val_loss
@@ -583,7 +599,8 @@ def evaluate_model(model, dataloader, device="cuda"):
             outputs = model(
                 input_ids=input_ids,
                 attention_mask=attention_mask,
-                pixel_values=pixel_values
+                pixel_values=pixel_values,
+                weather_features=weather_batch(batch, device),
             )
             
             logits = outputs.logits if hasattr(outputs, 'logits') else outputs

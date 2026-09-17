@@ -40,6 +40,35 @@ The former nested `data_final/data_final/` bundle was an exact duplicate and has
 been consolidated into `data_final/`. The augmented, studio, and other dataset
 collections remain separate because they serve different experiments.
 
+## Weather modality (AMFU Kharagpur station data)
+
+`Weather data/` holds the IMD-style daily observation workbook of the AMFU
+Kharagpur observatory (station 42893; 08:30 and 17:30 IST readings, Jan 2024 –
+Aug 2026). `backend/weather_data.py` parses it into one record per day (cached at
+`backend/data/weather/kgp_42893_daily.csv`), derives rain accumulations, rainless
+spells, VPD, heat-day counts and a bucket-model soil-moisture proxy, and exposes
+the day three ways to the crop-stress multimodal model in `backend/`:
+
+- **Text**: every training sample's `SENSORS:` line is derived from a real day and
+  followed by a `WEATHER (...)` line; a `weather` corpus source adds farmer logs
+  written from the observed conditions.
+- **Features**: a 19-d station vector (`WEATHER_FEATURES`) feeds a weather branch in
+  `MultiModalModel` (a token in the cross-attention key/values plus a gated
+  residual). Checkpoints trained without it still load.
+- **Labels**: agromet-rule risk labels (`weather_risk_labels`) are merged with the
+  keyword weak labels of the paired log.
+
+```sh
+cd backend
+python multimodal_train.py --weather-mode full        # text + features + rule labels
+python multimodal_train.py --weather-mode text-only   # ablation: no numeric branch
+python multimodal_train.py --weather-mode none        # legacy synthetic sensors
+FARMFED_WEATHER_MODE=full python train_fed_multimodal.py
+```
+
+`FARMFED_WEATHER_XLSX=<path>` points at a different workbook; `scripts/remote_train.sh`
+runs the same commands on the IIT GPU box through serveo.
+
 ## Current paper
 
 The primary manuscript is [overleaf_final/main.tex](overleaf_final/main.tex), with

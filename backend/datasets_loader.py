@@ -9,6 +9,13 @@ Text sources (downloaded via Hugging Face `datasets`):
     - argilla/farming
     - ag_news (agri-filtered)
     - synthetic local "LocalMini" agri log-style data
+    - "weather": logs grounded in real AMFU Kharagpur (IMD 42893) daily observations
+
+Weather (see weather_data.py): when the KGP workbook is available, every fused
+sample carries a real observed day (SENSORS line derived from it + a WEATHER line),
+a numeric feature vector for the model's weather branch (column "weather"), and
+agromet-rule risk labels merged into the weak labels. Control with
+FARMFED_WEATHER_MODE = full | text-only | none and FARMFED_WEATHER_XLSX = <path>.
 
 Image sources (Hugging Face datasets, all auto-downloaded if available):
     - BrandonFors/Plant-Diseases-PlantVillage-Dataset  (PlantVillage mirror)
@@ -42,6 +49,14 @@ try:
     HAS_DATASETS = True
 except Exception:
     HAS_DATASETS = False
+
+from weather_data import (
+    WeatherSampler,
+    load_kgp_weather,
+    weather_risk_labels,
+    WEATHER_DIM,
+    WEATHER_FEATURES,
+)
 
 # ----------------- core labels -----------------
 ISSUE_LABELS = ["water_stress", "nutrient_def", "pest_risk", "disease_risk", "heat_stress"]
@@ -110,8 +125,18 @@ def is_ag_context(s: str) -> bool:
     return bool(AG_CONTEXT.search(s))
 
 
+_MACHINE_LINE = re.compile(r"^\s*(SENSORS|WEATHER)\b[^\n]*$", re.I | re.M)
+
+
+def strip_machine_lines(text: str) -> str:
+    """Drop SENSORS:/WEATHER(...) lines so keyword labelling only reads the human log."""
+    return _MACHINE_LINE.sub("", str(text)).strip()
+
+
 def weak_labels(text: str) -> List[int]:
-    t = text.lower()
+    # keyword rules must not fire on the sensor/weather lines ("soil_moisture=..." used to
+    # match the "moisture" keyword and tag every fused row as water_stress)
+    t = strip_machine_lines(text).lower()
     if not is_ag_context(t):
         return []
     labs = set()
@@ -140,8 +165,77 @@ def weak_labels(text: str) -> List[int]:
     return [LABEL_TO_ID[x] for x in sorted(labs)]
 
 
+# ----------------- weather modality (real station data) -----------------
+WEATHER_MODES = ("full", "text-only", "none")
+_WEATHER: Dict[str, object] = {"mode": None, "sampler": None}
+
+
+def configure_weather(mode: Optional[str] = None, xlsx_path: Optional[str] = None) -> Optional[WeatherSampler]:
+    """
+    mode: "full" (WEATHER text + numeric features + rule labels), "text-only"
+    (no numeric features), or "none" (legacy Gaussian sensors). Defaults to
+    FARMFED_WEATHER_MODE, else "full" when the workbook/cache is found.
+    """
+    mode = (mode or os.environ.get("FARMFED_WEATHER_MODE") or "full").strip().lower()
+    if mode not in WEATHER_MODES:
+        raise ValueError(f"FARMFED_WEATHER_MODE must be one of {WEATHER_MODES}, got {mode!r}")
+    sampler = None
+    if mode != "none":
+        try:
+            sampler = WeatherSampler(load_kgp_weather(xlsx_path), seed=SEED)
+            print(f"[Weather] {len(sampler)} observed days loaded (mode={mode}); "
+                  f"rule-label support: {sampler.label_support()}")
+        except Exception as e:  # keep the legacy path usable without the workbook
+            print(f"[Weather] unavailable ({e}); falling back to synthetic sensors.")
+            mode = "none"
+    _WEATHER["mode"], _WEATHER["sampler"] = mode, sampler
+    return sampler
+
+
+def weather_mode() -> str:
+    if _WEATHER["mode"] is None:
+        configure_weather()
+    return _WEATHER["mode"]
+
+
+def weather_sampler() -> Optional[WeatherSampler]:
+    if _WEATHER["mode"] is None:
+        configure_weather()
+    return _WEATHER["sampler"]
+
+
+def sample_sensor_context(prefer_labels: Optional[List[int]] = None):
+    """
+    (sensor_text, weather_features | None, rule_label_ids). With weather data the
+    sensor line is derived from a real day (label-aware 70% of the time so a heat
+    log tends to be paired with a hot day); otherwise the legacy Gaussian simulator.
+    """
+    sampler = weather_sampler()
+    if sampler is None:
+        return simulate_sensor_summary(), None, []
+    text, feat, labs = sampler.sensor_text(prefer_labels)
+    if weather_mode() == "text-only":
+        feat = None
+    return text, feat, labs
+
+
+def merge_labels(*label_lists) -> List[int]:
+    out = set()
+    for labs in label_lists:
+        out.update(int(k) for k in (labs or []))
+    return sorted(out)
+
+
 # ----------------- synthetic sensors + fuse -----------------
 def simulate_sensor_summary() -> str:
+    """Legacy Gaussian sensor line; grounded in a real observed day when weather data is on."""
+    sampler = weather_sampler()
+    if sampler is not None:
+        return sampler.sensor_text()[0]
+    return _simulate_sensor_summary_synthetic()
+
+
+def _simulate_sensor_summary_synthetic() -> str:
     soil_m = round(np.clip(np.random.normal(30, 6), 10, 50), 1)
     soil_ph = round(np.clip(np.random.normal(6.5, 0.4), 5.5, 7.5), 1)
     temp = round(np.clip(np.random.normal(29, 4), 18, 40), 1)
@@ -241,44 +335,135 @@ def _maybe_read_mqtt(mqtt_csv: str) -> List[str]:
     return []
 
 
-def build_localmini(max_samples: int = 0, mqtt_csv: str = "", extra_csv: str = "") -> pd.DataFrame:
-    mqtt_msgs = _maybe_read_mqtt(mqtt_csv)
-    texts = list(LOCAL_BASE) + make_balanced_local(300, 600)
+def _weather_phrase(r) -> str:
+    """Pick the WEATHERS phrase that matches an observed day (falls back to random)."""
+    rain, dry = float(r.get("rain_mm", 0) or 0), int(r.get("rainless_days", 0) or 0)
+    tmax, rh_pm, sun = float(r.get("tmax", 30) or 30), float(r.get("rh_pm", 60) or 60), float(r.get("sunshine_hours", 6) or 6)
+    if rain >= 20:
+        return "sudden heavy rain"
+    if tmax >= 38:
+        return "a heatwave"
+    if dry >= 7:
+        return "no rainfall for a week"
+    if sun < 3:
+        return "two cloudy days"
+    if tmax >= 35 and rh_pm < 40:
+        return "a hot, dry wind"
+    return random.choice(WEATHERS)
 
-    # synthetic sensor+log samples
+
+def build_localmini(max_samples: int = 0, mqtt_csv: str = "", extra_csv: str = "") -> pd.DataFrame:
+    """
+    Raw (unfused) local logs with columns ["text", "day"]; build_text_corpus_mix attaches
+    the SENSORS/WEATHER lines and MQTT. When station data is on, the templated logs read
+    their in-text numbers from a real day and pin that day (column "day") so the fused
+    sample is internally consistent.
+    """
+    sampler = weather_sampler()
+    rows: List[Tuple[str, Optional[int]]] = [(t, None) for t in list(LOCAL_BASE) + make_balanced_local(300, 600)]
+
+    # templated symptom logs with in-text sensor readings
     for _ in range(2000):
+        day = None
+        if sampler is not None:
+            day = sampler.sample_index()
+            r = sampler.df.iloc[day]
+            fields = dict(
+                temp=round(float(r.get("db_pm") if not pd.isna(r.get("db_pm")) else r["tmean"]) + np.random.normal(0, 0.5), 1),
+                hum=int(np.clip(float(r["rh_mean"]) + np.random.normal(0, 3), 15, 100)),
+                vpd=round(float(np.clip(r["vpd_kpa"] + np.random.normal(0, 0.05), 0.1, 5)), 1),
+                sm=round(float(np.clip(10 + 0.4 * r["soil_moisture_pct"] + np.random.normal(0, 1.5), 2, 60)), 1),
+                weather=_weather_phrase(r),
+            )
+        else:
+            fields = dict(
+                temp=round(np.clip(np.random.normal(32, 4), 15, 45), 1),
+                hum=int(np.clip(np.random.normal(55, 15), 15, 95)),
+                vpd=round(np.clip(np.random.normal(1.8, 0.7), 0.2, 4.0), 1),
+                sm=round(np.clip(np.random.normal(20, 7), 2, 60), 1),
+                weather=random.choice(WEATHERS),
+            )
         s = random.choice(TEMPLATES).format(
             symptom=random.choice(SYMPTOMS),
             crop=random.choice(CROPS),
-            temp=round(np.clip(np.random.normal(32, 4), 15, 45), 1),
-            hum=int(np.clip(np.random.normal(55, 15), 15, 95)),
-            vpd=round(np.clip(np.random.normal(1.8, 0.7), 0.2, 4.0), 1),
-            sm=round(np.clip(np.random.normal(20, 7), 2, 60), 1),
             ph=round(np.clip(np.random.normal(6.5, 0.6), 4.5, 8.5), 1),
-            weather=random.choice(WEATHERS),
+            **fields,
         )
-        sensor = simulate_sensor_summary()
-        mqtt = random.choice(mqtt_msgs) if mqtt_msgs and random.random() < 0.4 else ""
-        texts.append(fuse_text(sensor, s, mqtt))
+        rows.append((s, day))
 
     # extra CSV of farmer queries (optional)
     if extra_csv and os.path.exists(extra_csv):
         df_extra = pd.read_csv(extra_csv)
-        for t in df_extra.get("text", pd.Series(dtype=str)).astype(str).tolist():
-            sensor = simulate_sensor_summary()
-            mqtt = random.choice(mqtt_msgs) if mqtt_msgs and random.random() < 0.5 else ""
-            texts.append(fuse_text(sensor, t, mqtt))
+        rows.extend((t, None) for t in df_extra.get("text", pd.Series(dtype=str)).astype(str).tolist())
 
-    rows = []
-    for t in texts:
-        labs = weak_labels(t)
-        if labs:
-            rows.append((_norm(t), labs))
-    df = pd.DataFrame(rows, columns=["text", "labels"])
-
+    df = pd.DataFrame([(_norm(t), d) for t, d in rows if weak_labels(t)], columns=["text", "day"])
     if max_samples and len(df) > max_samples:
         df = df.sample(max_samples, random_state=SEED).reset_index(drop=True)
     return df
+
+
+# ----------------- weather-grounded logs -----------------
+# one template family per rule label; wording carries the matching keyword so the
+# weak labeller and the agromet rule agree on these rows
+WEATHER_LOG_TEMPLATES = {
+    "heat_stress": [
+        "Afternoon temperature reached {tmax}°C (third day above 36°C); {crop} canopy shows sun scorch and leaf burn by 2 pm.",
+        "Heatwave conditions at Kharagpur, max {tmax}°C with evening humidity {rh_pm}%; {crop} flowers dropping, leaf edges crisping.",
+        "Hot westerly wind, {tmax}°C at the station; {crop} seedlings show thermal stress and blistering on exposed leaves.",
+    ],
+    "water_stress": [
+        "No effective rain for {dry} days and pan evaporation {evap} mm/day; topsoil dry and cracking, {crop} wilting at midday.",
+        "Rainless spell of {dry} days with VPD {vpd} kPa; {crop} leaves droop after noon and recover only at night, irrigation overdue.",
+        "Soil moisture low after {dry} days without rain, Tmax {tmax}°C; {crop} field shows drought symptoms and hard crust.",
+    ],
+    "disease_risk": [
+        "{rain} mm rain overnight with morning humidity {rh_am}%; leaf spot lesions and blight spreading in the lower {crop} canopy.",
+        "Persistent leaf wetness, {rain7} mm rain this week; rust pustules and powdery mildew noticed on {crop} rows.",
+        "Humid mornings ({rh_am}% RH) after showers, temperatures {tmean}°C; fungal lesions with yellow halos on {crop} leaves.",
+    ],
+    "pest_risk": [
+        "Warm settled weather after the rains ({tmean}°C, RH {rh_mean}%); aphid and whitefly counts rising on sticky traps in {crop}.",
+        "{dry} rainless days at {tmean}°C; thrips and mites building up on {crop}, sticky residue and honeydew under leaves.",
+        "Sunny spell ({sun} h sunshine) and mild nights; stem borer moths in the light trap, chewed margins on {crop} leaves.",
+    ],
+    "nutrient_def": [
+        "{rain7} mm rain this week has leached nitrogen from the {crop} beds; older leaves show interveinal chlorosis.",
+        "Waterlogging after {rain30} mm rain in 30 days; {crop} leaves pale yellow, leaf color chart score low, likely N deficiency.",
+        "Heavy monsoon rain ({rain7} mm/week) washed out top-dressed fertilizer; {crop} older leaves yellowing from the tips.",
+    ],
+}
+
+
+def build_weather_logs(max_per: int = 2000) -> List[Tuple[str, List[float], List[int]]]:
+    """
+    Farmer-style logs written from real observed days, one per active rule label per day.
+    Returns (raw_log, weather_features, rule_label_ids); the mixer fuses the matching
+    SENSORS/WEATHER lines itself so text, features and labels describe the same day.
+    """
+    sampler = weather_sampler()
+    if sampler is None:
+        raise RuntimeError("weather data not available")
+    rows = []
+    for i in range(len(sampler)):
+        r = sampler.df.iloc[i]
+        f = lambda k, nd=0: ("n/a" if pd.isna(r.get(k)) else f"{float(r[k]):.{nd}f}")
+        fields = dict(
+            crop=random.choice(CROPS), tmax=f("tmax", 1), tmean=f("tmean", 1), rh_am=f("rh_am"),
+            rh_pm=f("rh_pm"), rh_mean=f("rh_mean"), rain=f("rain_mm", 1), rain7=f("rain_7d"),
+            rain30=f("rain_30d"), dry=int(r.get("rainless_days", 0) or 0), evap=f("evaporation", 1),
+            vpd=f("vpd_kpa", 1), sun=f("sunshine_hours", 1),
+        )
+        for k in sampler.rule_labels[i]:
+            tpl = random.choice(WEATHER_LOG_TEMPLATES[ISSUE_LABELS[k]])
+            rows.append((i, tpl.format(**fields)))
+    random.shuffle(rows)
+    if max_per and len(rows) > max_per:
+        rows = rows[:max_per]
+    out = []
+    for i, log in rows:
+        feat = None if weather_mode() == "text-only" else sampler.features[i]
+        out.append((log, i, feat))
+    return out
 
 
 # ----------------- HF loading helpers (TEXT) -----------------
@@ -394,20 +579,28 @@ def build_agnews_agri(max_per: int = 2000) -> List[str]:
 
 # ----------------- MIX builder for text -----------------
 def build_text_corpus_mix(
-    mix_sources: str = "gardian,argilla,agnews,localmini",
+    mix_sources: str = "gardian,argilla,agnews,localmini,weather",
     max_per_source: int = 2000,
     max_samples: int = 0,
     mqtt_csv: str = "",
     extra_csv: str = "",
 ) -> pd.DataFrame:
+    """
+    Returns columns ["text", "labels"] plus "weather" (list[float], length WEATHER_DIM)
+    when the weather modality is on in "full" mode. Labels = keyword weak labels of the
+    log  U  agromet-rule labels of the paired observed day.
+    """
     sources = [s.strip().lower() for s in mix_sources.split(",") if s.strip()]
-    pool: List[Tuple[str, str]] = []
+    sampler = weather_sampler()
+    mqtt_msgs = _maybe_read_mqtt(mqtt_csv)
+    # (source, raw_text, fixed_weather_day_index | None)
+    pool: List[Tuple[str, str, Optional[int]]] = []
 
     def _try(name: str, fn):
         print(f"[Mix] loading {name} (<= {max_per_source}) ...")
         try:
             texts = fn(max_per_source)
-            pool.extend([(name, t) for t in texts])
+            pool.extend([(name, t, None) for t in texts])
             print(f"[Mix] {name} added {len(texts)} rows")
         except Exception as e:
             print(f"[Mix] {name} skipped: {e}")
@@ -420,32 +613,49 @@ def build_text_corpus_mix(
         _try("agnews", build_agnews_agri)
     if "localmini" in sources:
         df_local = build_localmini(max_per_source, mqtt_csv, extra_csv)
-        for t, labs in df_local[["text", "labels"]].itertuples(index=False):
-            pool.append(("localmini", t))
+        for t, day in df_local[["text", "day"]].itertuples(index=False):
+            pool.append(("localmini", t, None if pd.isna(day) else int(day)))
+    if "weather" in sources:
+        if sampler is None:
+            print("[Mix] weather skipped: no station data")
+        else:
+            wl = build_weather_logs(max_per_source)
+            pool.extend([("weather", log, day) for log, day, _ in wl])
+            print(f"[Mix] weather added {len(wl)} rows")
 
     # deduplicate by text hash
     seen = set()
-    dedup: List[Tuple[str, str]] = []
-    for src, txt in pool:
+    dedup: List[Tuple[str, str, Optional[int]]] = []
+    for src, txt, day in pool:
         h = hashlib.sha1(_norm(txt).encode("utf-8", "ignore")).hexdigest()
         if h not in seen:
             seen.add(h)
-            dedup.append((src, _norm(txt)))
+            dedup.append((src, _norm(txt), day))
 
+    use_features = sampler is not None and weather_mode() == "full"
     rows = []
-    for src, raw in dedup:
-        sensor = simulate_sensor_summary()
-        text = fuse_text(sensor, raw)
-        labs = weak_labels(text)
+    for src, raw, day in dedup:
+        kw_labs = weak_labels(raw)
+        if sampler is None:
+            sensor, feat, w_labs = simulate_sensor_summary(), None, []
+        elif day is not None:  # weather-grounded log: keep its own day
+            sensor = sampler.sensor_text_for(day)
+            feat, w_labs = sampler.features[day], sampler.rule_labels[day]
+        else:
+            sensor, feat, w_labs = sample_sensor_context(prefer_labels=kw_labs)
+        mqtt = random.choice(mqtt_msgs) if (mqtt_msgs and src == "localmini" and random.random() < 0.4) else ""
+        text = fuse_text(sensor, raw, mqtt)
+        labs = merge_labels(kw_labs, w_labs)
         if labs:
-            rows.append((text, labs, src))
-    df = pd.DataFrame(rows, columns=["text", "labels", "source"])
+            rows.append((text, labs, src, None if feat is None else [float(x) for x in feat]))
+    df = pd.DataFrame(rows, columns=["text", "labels", "source", "weather"])
     print("[Mix] source breakdown:")
     print(df["source"].value_counts())
 
     if max_samples and len(df) > max_samples:
         df = df.sample(max_samples, random_state=SEED).reset_index(drop=True)
-    return df[["text", "labels"]]
+    cols = ["text", "labels"] + (["weather"] if use_features else [])
+    return df[cols]
 
 
 # ----------------- Image datasets (PlantVillage + others via HF) -----------------

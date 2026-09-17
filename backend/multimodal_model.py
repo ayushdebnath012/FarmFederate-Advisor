@@ -8,6 +8,10 @@ Research paper enhancements:
 - Text encoder: roberta-base with attention pooling
 - Image encoder: google/vit-base-patch16-224-in21k with spatial features
 - Cross-modal attention mechanism for better fusion
+- Optional weather branch: station observations (weather_data.WEATHER_FEATURES) are
+  projected to a 512-d token that joins the cross-attention key/values and enters the
+  fused vector through a zero-initialised tanh gate, so checkpoints trained without
+  weather load unchanged and weather-free inference is bit-identical to before
 - Multi-scale feature extraction
 - Projection to 512-d embeddings, cross-attention → fusion → MLP → 5 labels
 - Uncertainty estimation via Monte Carlo dropout
@@ -18,7 +22,8 @@ This file provides:
  - alias MultimodalClassifier -> MultiModalModel for compatibility
  - .text_encoder, .vision_encoder attributes (used by PEFT / adapter loading)
  - .classifier attribute (used by server fallback)
- - forward(...) accepts image=None (text-only), returns object with .logits and .attention_weights
+ - forward(...) accepts image=None (text-only) and weather_features=None,
+   returns object with .logits and .attention_weights
  - helper methods: forward_text_image(...), predict(...), get_uncertainty(...)
 """
 
@@ -31,6 +36,8 @@ from types import SimpleNamespace
 
 from transformers import AutoModel, AutoTokenizer
 from transformers import ViTModel, AutoImageProcessor
+
+from weather_data import WEATHER_DIM
 
 ISSUE_LABELS = ["water_stress", "nutrient_def", "pest_risk", "disease_risk", "heat_stress"]
 NUM_LABELS = len(ISSUE_LABELS)
@@ -80,6 +87,7 @@ class MultiModalModel(nn.Module):
         freeze_backbones: bool = False,
         use_cross_attention: bool = True,
         dropout: float = 0.1,
+        weather_dim: int = WEATHER_DIM,
     ):
         """
         Args
@@ -88,6 +96,7 @@ class MultiModalModel(nn.Module):
         - freeze_backbones: if True, freeze encoder weights (useful for LoRA)
         - use_cross_attention: if True, use cross-modal attention fusion
         - dropout: dropout rate for fusion layers
+        - weather_dim: size of the station-weather feature vector (0 disables the branch)
         """
         super().__init__()
 
@@ -119,6 +128,20 @@ class MultiModalModel(nn.Module):
             nn.LayerNorm(self.projection_dim),
             nn.Dropout(dropout)
         )
+
+        # ----- weather branch (station observations -> one 512-d token) -----
+        self.weather_dim = weather_dim
+        if weather_dim > 0:
+            self.weather_proj = nn.Sequential(
+                nn.Linear(weather_dim, 128),
+                nn.GELU(),
+                nn.Linear(128, self.projection_dim),
+                nn.LayerNorm(self.projection_dim),
+                nn.Dropout(dropout),
+            )
+            # tanh(0) = 0: the residual path starts silent; weather still reaches the
+            # fused vector through cross-attention from the first step
+            self.weather_gate = nn.Parameter(torch.zeros(1))
 
         # ----- cross-modal attention -----
         if self.use_cross_attention:
@@ -178,6 +201,10 @@ class MultiModalModel(nn.Module):
             i_cls = i_out.last_hidden_state[:, 0, :]
         return i_cls
 
+    def get_weather_features(self, weather_features: torch.Tensor) -> torch.Tensor:
+        """Project a [B, weather_dim] station vector to [B, 512]."""
+        return self.weather_proj(weather_features.float())
+
     def forward(
         self,
         input_ids: torch.Tensor,
@@ -185,6 +212,7 @@ class MultiModalModel(nn.Module):
         pixel_values: Optional[torch.Tensor] = None,
         return_attention: bool = False,
         return_features: bool = False,
+        weather_features: Optional[torch.Tensor] = None,
     ) -> SimpleNamespace:
         """
         Enhanced forward with cross-modal attention and attention weights.
@@ -194,6 +222,7 @@ class MultiModalModel(nn.Module):
           attention_mask: [B, L]
           pixel_values: [B, 3, H, W] or None (text-only)
           return_attention: if True, return attention weights
+          weather_features: [B, weather_dim] or None (no weather context)
 
         Returns:
           SimpleNamespace with attributes:
@@ -215,14 +244,22 @@ class MultiModalModel(nn.Module):
             device = t_feat.device
             i_feat = torch.zeros_like(t_feat, device=device)  # [B, 1, 512]
 
+        # Weather token (optional third modality)
+        w_feat = None
+        if weather_features is not None and self.weather_dim > 0:
+            w_feat = self.get_weather_features(weather_features).unsqueeze(1)  # [B, 1, 512]
+
         attention_weights = {}
         
         # Cross-modal attention fusion
         if self.use_cross_attention:
-            # Text attending to image
-            t_attended, attn_t2i = self.cross_attn_t2i(t_feat, i_feat)  # [B, 1, 512]
-            # Image attending to text
-            i_attended, attn_i2t = self.cross_attn_i2t(i_feat, t_feat)  # [B, 1, 512]
+            # each modality attends over the other one plus the weather token when present
+            kv_for_text = i_feat if w_feat is None else torch.cat([i_feat, w_feat], dim=1)
+            kv_for_image = t_feat if w_feat is None else torch.cat([t_feat, w_feat], dim=1)
+            # Text attending to image (+weather)
+            t_attended, attn_t2i = self.cross_attn_t2i(t_feat, kv_for_text)  # [B, 1, 512]
+            # Image attending to text (+weather)
+            i_attended, attn_i2t = self.cross_attn_i2t(i_feat, kv_for_image)  # [B, 1, 512]
             
             if return_attention:
                 attention_weights["text_to_image"] = attn_t2i
@@ -241,6 +278,8 @@ class MultiModalModel(nn.Module):
 
         # Fusion and classification
         fused = self.fusion(fused_input)  # [B, 512]  — h_f used by RAG query builder
+        if w_feat is not None:
+            fused = fused + torch.tanh(self.weather_gate) * w_feat.squeeze(1)
         logits = self.classifier(fused)  # [B, num_labels]
 
         result = SimpleNamespace(logits=logits)
@@ -257,19 +296,23 @@ class MultiModalModel(nn.Module):
         input_ids: torch.Tensor,
         attention_mask: torch.Tensor,
         image: Optional[torch.Tensor] = None,
+        weather_features: Optional[torch.Tensor] = None,
     ) -> SimpleNamespace:
         """
         Same as forward but matches server naming used in fallback attempts.
         Accepts `image` (not pixel_values) for convenience.
         """
-        return self.forward(input_ids=input_ids, attention_mask=attention_mask, pixel_values=image)
+        return self.forward(input_ids=input_ids, attention_mask=attention_mask, pixel_values=image,
+                            weather_features=weather_features)
 
     # convenience predict wrapper (tokenize outside typically)
-    def predict(self, input_ids: torch.Tensor, attention_mask: torch.Tensor, image: Optional[torch.Tensor] = None) -> torch.Tensor:
+    def predict(self, input_ids: torch.Tensor, attention_mask: torch.Tensor, image: Optional[torch.Tensor] = None,
+                weather_features: Optional[torch.Tensor] = None) -> torch.Tensor:
         """
         Return logits Tensor [B, num_labels] directly (no namespace).
         """
-        out = self.forward(input_ids=input_ids, attention_mask=attention_mask, pixel_values=image)
+        out = self.forward(input_ids=input_ids, attention_mask=attention_mask, pixel_values=image,
+                           weather_features=weather_features)
         return out.logits
     
     def get_uncertainty(
@@ -277,7 +320,8 @@ class MultiModalModel(nn.Module):
         input_ids: torch.Tensor,
         attention_mask: torch.Tensor,
         pixel_values: Optional[torch.Tensor] = None,
-        n_samples: int = 10
+        n_samples: int = 10,
+        weather_features: Optional[torch.Tensor] = None,
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         Estimate uncertainty using Monte Carlo dropout.
@@ -296,7 +340,7 @@ class MultiModalModel(nn.Module):
         logits_list = []
         with torch.no_grad():
             for _ in range(n_samples):
-                out = self.forward(input_ids, attention_mask, pixel_values)
+                out = self.forward(input_ids, attention_mask, pixel_values, weather_features=weather_features)
                 logits_list.append(out.logits)
         
         logits_stack = torch.stack(logits_list, dim=0)  # [n_samples, B, num_labels]
