@@ -13,6 +13,7 @@ from contextlib import asynccontextmanager
 
 from PIL import Image
 import numpy as np
+import pandas as pd
 import torch
 from torch import nn
 import torch.nn.functional as F
@@ -37,6 +38,18 @@ except ImportError:
     except ImportError:
         HAVE_MODEL_MANAGER = False
         ModelManager = None
+
+# --- import weather advisory (inference-time context; never a training signal) ---
+try:
+    import tea_weather_advisory as TEA_WEATHER
+    HAVE_WEATHER = True
+except Exception:
+    try:
+        from . import tea_weather_advisory as TEA_WEATHER
+        HAVE_WEATHER = True
+    except Exception:
+        HAVE_WEATHER = False
+        TEA_WEATHER = None
 
 # ============================================================================
 # LIGHTWEIGHT MODEL CLASSES (from FarmFederate_Colab_Complete.py)
@@ -556,6 +569,49 @@ async def get_latest_sensors():
         import re
         snake = {re.sub(r'(?<!^)(?=[A-Z])', '_', k).lower(): v for k, v in data.items()}
         return JSONResponse(snake)
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+
+@app.get("/weather/latest")
+async def get_latest_weather(date: Optional[str] = None):
+    """
+    Real AMFU Kharagpur (IMD 42893) observation plus weather-only risk for the five
+    tea classes. This replaces the prototype's demonstration sensor cards with
+    measured station data. It is advisory context only: it never reaches the model.
+    """
+    if not HAVE_WEATHER:
+        return JSONResponse({"error": "weather data unavailable"}, status_code=503)
+    try:
+        row = TEA_WEATHER.latest_observation() if date is None else TEA_WEATHER.weather_for_date(date)
+        if row is None:
+            return JSONResponse({"error": f"no station observation for {date}"}, status_code=404)
+        return JSONResponse({
+            "station": f"{TEA_WEATHER.STATION_NAME} (IMD {TEA_WEATHER.STATION_ID})",
+            "date": str(row["date"])[:10],
+            "observation": TEA_WEATHER.observation_line(row),
+            "measurements": {
+                k: (None if pd.isna(row.get(k)) else float(row.get(k)))
+                for k in ("tmax", "tmin", "tmean", "rh_am", "rh_pm", "rain_mm",
+                          "rain_7d", "rainless_days", "sunshine_hours", "vpd_kpa")
+            },
+            "class_risk": TEA_WEATHER.risk_table(date),
+            "caveat": "Advisory context from station observations; not a model input.",
+        })
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+
+@app.get("/weather/advisory")
+async def get_weather_advisory(tea_class: str, date: Optional[str] = None,
+                               confidence: Optional[float] = None):
+    """Weather-conditioned advice for a predicted tea class on a given date."""
+    if not HAVE_WEATHER:
+        return JSONResponse({"error": "weather data unavailable"}, status_code=503)
+    try:
+        return JSONResponse(TEA_WEATHER.advise(tea_class, date, confidence))
+    except ValueError as e:
+        return JSONResponse({"error": str(e)}, status_code=400)
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
 
