@@ -90,3 +90,72 @@ def test_manifest_file_is_labelled_synthetic():
         pytest.skip("manifest not built")
     head = p.read_text()[:300].upper()
     assert "SYNTHETIC" in head and "NOT CAPTURE PROVENANCE" in head
+
+
+# ---------------------------------------------------------------------------
+# Weather as a third modality in the LEAF model
+# ---------------------------------------------------------------------------
+def _tea_model(**kw):
+    import tea_train as T
+    defaults = dict(max_seq_len=32, pretrained_vision=False, vision_backbone="lightweight")
+    defaults.update(kw)
+    return T.MultiModalClassifier(**defaults)
+
+
+def _batch(b=4, seq=32, w=None):
+    import torch
+    out = dict(
+        input_ids=torch.randint(1, 30000, (b, seq)),
+        attention_mask=torch.ones(b, seq, dtype=torch.long),
+        pixel_values=torch.randn(b, 3, 224, 224),
+        labels=torch.randint(0, 5, (b,)),
+    )
+    if w:
+        out["weather_features"] = torch.randn(b, w)
+    return out
+
+
+def test_weather_off_leaves_the_reported_architecture_unchanged():
+    pytest.importorskip("torch")
+    sys.path.insert(0, str(REPO))
+    m = _tea_model()
+    assert m.use_weather is False
+    assert m.n_modalities == 2 and m.n_blocks == 6
+    assert not hasattr(m, "w_enc") and not hasattr(m, "weather_head")
+    out = m(**_batch())
+    assert out["modality_weights"].shape[-1] == 2
+    assert out["weather_logits"] is None
+    assert "weather_auxiliary" not in out["loss_components"]
+
+
+def test_weather_on_adds_a_third_routed_modality():
+    torch = pytest.importorskip("torch")
+    sys.path.insert(0, str(REPO))
+    m = _tea_model(use_weather=True, weather_dim=wd.WEATHER_DIM)
+    assert m.n_modalities == 3 and m.n_blocks == 7
+    out = m(**_batch(w=wd.WEATHER_DIM))
+    assert out["modality_weights"].shape[-1] == 3
+    # reliability weights remain a distribution over the present modalities
+    assert torch.allclose(out["modality_weights"].sum(-1), torch.ones(4), atol=1e-5)
+    assert out["weather_logits"].shape == (4, 5)
+    assert "weather_auxiliary" in out["loss_components"]
+    out["loss"].backward()
+    assert m.w_enc[1].weight.grad.abs().sum().item() > 0
+
+
+def test_missing_weather_vector_is_routed_around():
+    torch = pytest.importorskip("torch")
+    sys.path.insert(0, str(REPO))
+    m = _tea_model(use_weather=True, weather_dim=wd.WEATHER_DIM)
+    out = m(**_batch())  # weather enabled but no vector supplied
+    assert float(out["modality_weights"][:, 2].abs().max()) < 1e-6
+
+
+def test_two_wide_modality_mask_from_existing_callers_is_padded():
+    torch = pytest.importorskip("torch")
+    sys.path.insert(0, str(REPO))
+    m = _tea_model(use_weather=True, weather_dim=wd.WEATHER_DIM)
+    b = _batch(w=wd.WEATHER_DIM)
+    b["modality_mask"] = torch.tensor([0.0, 1.0]).expand(4, -1)  # vision-warmup style
+    out = m(**b)
+    assert out["modality_weights"].shape[-1] == 3

@@ -262,6 +262,12 @@ class Config:
     sanitize_target_derived_text: bool = True
     leakage_token_min_count: int = 3
     leakage_token_purity: float = 0.95
+    # Weather as a third modality. The corpus has no capture dates, so the
+    # crop -> station-day assignment is synthetic and label-independent; see
+    # backend/tea_weather_mapping.py. Off by default.
+    use_weather: bool = False
+    weather_seed: int = 42
+    weather_months: str = ""
     cross_modal_analysis: bool = True
 
     # Google Drive
@@ -546,11 +552,13 @@ class CachedMultiModalDataset(Dataset):
     """Text, labels, and frozen spatial vision features held in memory."""
 
     def __init__(self, input_ids, attention_mask, labels_tensor,
-                 vision_feature_maps, primary_labels, pairing_coverage):
+                 vision_feature_maps, primary_labels, pairing_coverage,
+                 weather_features=None):
         self.input_ids = input_ids
         self.attention_mask = attention_mask
         self.labels_tensor = labels_tensor
         self.vision_feature_maps = vision_feature_maps
+        self.weather_features = weather_features
         self._labels = list(primary_labels)
         self._pairing_coverage = float(pairing_coverage)
 
@@ -558,12 +566,15 @@ class CachedMultiModalDataset(Dataset):
         return len(self._labels)
 
     def __getitem__(self, idx):
-        return {
+        item = {
             "input_ids": self.input_ids[idx],
             "attention_mask": self.attention_mask[idx],
             "labels": self.labels_tensor[idx],
             "vision_feature_map": self.vision_feature_maps[idx].float(),
         }
+        if self.weather_features is not None:
+            item["weather_features"] = self.weather_features[idx].float()
+        return item
 
     @property
     def labels(self):
@@ -587,7 +598,7 @@ def cache_frozen_vision_features(
         raise ValueError("Caching requires a frozen vision backbone")
     if num_views < 1:
         raise ValueError("num_views must be at least 1")
-    ids, masks, labels, features = [], [], [], []
+    ids, masks, labels, features, weather = [], [], [], [], []
     model.eval()
     for view_idx in range(num_views):
         # Torchvision random augmentations use torch's RNG. A per-view seed
@@ -609,9 +620,12 @@ def cache_frozen_vision_features(
             masks.append(batch["attention_mask"].cpu())
             labels.append(batch["labels"].cpu())
             features.append(feature_map.cpu().to(torch.float16))
+            if "weather_features" in batch:
+                weather.append(batch["weather_features"].cpu())
     return CachedMultiModalDataset(
         torch.cat(ids), torch.cat(masks), torch.cat(labels), torch.cat(features),
         list(dataset.labels) * num_views, dataset.pairing_coverage,
+        weather_features=torch.cat(weather) if weather else None,
     )
 
 
@@ -820,6 +834,7 @@ class MultiModalClassifier(nn.Module):
         finetune_vision_last_stage=False,
         text_auxiliary_weight=0.20,
         vision_auxiliary_weight=1.25,
+        weather_auxiliary_weight=0.10,
         alignment_weight=0.05,
         expert_residual_weight=2.0,
         text_confidence_guard=None,
@@ -829,8 +844,15 @@ class MultiModalClassifier(nn.Module):
         use_reliability_gate=True,
         use_interaction_features=True,
         text_layers=2,
+        # Weather is a third modality: a station-observation vector per crop.
+        # Default off, so the reported two-modality model is untouched.
+        use_weather=False,
+        weather_dim=0,
     ):
         super().__init__()
+        self.use_weather = bool(use_weather) and int(weather_dim) > 0
+        self.weather_dim = int(weather_dim) if self.use_weather else 0
+        self.n_modalities = 3 if self.use_weather else 2
         self.use_cross_attention = use_cross_attention
         self.use_reliability_gate = use_reliability_gate
         self.use_interaction_features = use_interaction_features
@@ -850,6 +872,7 @@ class MultiModalClassifier(nn.Module):
             raise ValueError("Image-only and text-only probabilities must sum to <= 1")
         self.text_auxiliary_weight = text_auxiliary_weight
         self.vision_auxiliary_weight = vision_auxiliary_weight
+        self.weather_auxiliary_weight = weather_auxiliary_weight
         self.alignment_weight = alignment_weight
         self.expert_residual_weight = expert_residual_weight
         self.text_confidence_guard = text_confidence_guard
@@ -932,15 +955,30 @@ class MultiModalClassifier(nn.Module):
 
         # Reliability weights are observable and are masked when a modality is absent.
         self.reliability = nn.Sequential(
-            nn.LayerNorm(fusion_dim * 2),
-            nn.Linear(fusion_dim * 2, 128),
+            nn.LayerNorm(fusion_dim * self.n_modalities),
+            nn.Linear(fusion_dim * self.n_modalities, 128),
             nn.GELU(),
-            nn.Linear(128, 2),
+            nn.Linear(128, self.n_modalities),
         )
+
+        # Weather encoder: a small MLP over the standardized station vector.
+        # It has no spatial or token structure, so it joins the fusion as one
+        # pooled summary and as a reliability-weighted expert, not via attention.
+        if self.use_weather:
+            self.w_enc = nn.Sequential(
+                nn.LayerNorm(self.weather_dim),
+                nn.Linear(self.weather_dim, 128),
+                nn.GELU(),
+                nn.Dropout(dropout * 0.5),
+                nn.Linear(128, fusion_dim),
+            )
+            self.w_norm = nn.LayerNorm(fusion_dim)
+            self.weather_head = nn.Linear(fusion_dim, num_labels)
 
         # 6 blocks: weighted parents, both cross summaries, |diff|, product.
         # Dropping the interaction terms removes the last two blocks.
-        interaction_dim = fusion_dim * (6 if use_interaction_features else 4) + 2
+        self.n_blocks = (6 if use_interaction_features else 4) + (1 if self.use_weather else 0)
+        interaction_dim = fusion_dim * self.n_blocks + self.n_modalities
         self.head = nn.Sequential(
             nn.LayerNorm(interaction_dim),
             nn.Linear(interaction_dim, 512),
@@ -999,6 +1037,10 @@ class MultiModalClassifier(nn.Module):
         sequence = self.v_norm(sequence)
         return sequence, sequence.mean(dim=1)
 
+    def encode_weather(self, weather_features):
+        """Standardized station vector -> one pooled fusion-dim summary."""
+        return self.w_norm(self.w_enc(weather_features.float()))
+
     def _apply_modality_dropout(self, mask: torch.Tensor) -> torch.Tensor:
         if (
             not self.training
@@ -1007,6 +1049,9 @@ class MultiModalClassifier(nn.Module):
             return mask
         draw = torch.rand(mask.size(0), device=mask.device)
         dropped = mask.clone()
+        # Only the two field modalities are dropped. A station reading is always
+        # available for a date, so weather presence is never sampled away, and
+        # "both missing" is judged on text/vision alone.
         # Dropping text produces image-only examples; this is intentionally
         # more frequent because the visual branch is the harder modality.
         dropped[draw < self.image_only_probability, 0] = 0.0
@@ -1018,7 +1063,7 @@ class MultiModalClassifier(nn.Module):
             ),
             1,
         ] = 0.0
-        both_missing = dropped.sum(dim=1) == 0
+        both_missing = dropped[:, :2].sum(dim=1) == 0
         dropped[both_missing] = mask[both_missing]
         return dropped
 
@@ -1043,6 +1088,7 @@ class MultiModalClassifier(nn.Module):
         labels=None,
         modality_mask=None,
         vision_feature_map=None,
+        weather_features=None,
     ):
         text_sequence, text_base = self.encode_text(input_ids, attention_mask)
         vision_sequence, vision_base = self.encode_vision(
@@ -1072,18 +1118,41 @@ class MultiModalClassifier(nn.Module):
             text_cross = self.t_cross_norm(text_base)
             vision_cross = self.v_cross_norm(vision_base)
 
+        # Weather branch. When enabled but a batch carries no vector, the
+        # modality is simply marked absent and the router routes around it.
+        weather_base = None
+        weather_present_flag = False
+        if self.use_weather:
+            if weather_features is None:
+                weather_base = text_base.new_zeros(text_base.shape)
+            else:
+                weather_base = self.encode_weather(weather_features)
+                weather_present_flag = True
+
         if modality_mask is None:
             modality_mask = torch.ones(
-                input_ids.size(0), 2, device=input_ids.device, dtype=text_base.dtype
+                input_ids.size(0), self.n_modalities,
+                device=input_ids.device, dtype=text_base.dtype,
             )
+            if self.use_weather and not weather_present_flag:
+                modality_mask[:, 2] = 0.0
         else:
             modality_mask = modality_mask.to(device=input_ids.device, dtype=text_base.dtype)
+            if modality_mask.size(-1) < self.n_modalities:
+                # Callers written for two modalities pass a 2-wide mask; weather
+                # presence is appended from whether a vector actually arrived.
+                pad = modality_mask.new_full(
+                    (modality_mask.size(0), self.n_modalities - modality_mask.size(-1)),
+                    1.0 if weather_present_flag else 0.0,
+                )
+                modality_mask = torch.cat([modality_mask, pad], dim=-1)
         modality_mask = self._apply_modality_dropout(modality_mask)
 
         if self.use_reliability_gate:
-            reliability_logits = self.reliability(
-                torch.cat([text_base, vision_base], dim=-1)
-            )
+            reliability_parts = [text_base, vision_base]
+            if self.use_weather:
+                reliability_parts.append(weather_base)
+            reliability_logits = self.reliability(torch.cat(reliability_parts, dim=-1))
         else:
             # Ablation: fixed equal weighting, still masked for absent modalities.
             reliability_logits = torch.zeros_like(modality_mask)
@@ -1104,6 +1173,11 @@ class MultiModalClassifier(nn.Module):
                 torch.abs(text_cross - vision_cross),
                 text_cross * vision_cross,
             ]
+        weather_logits = None
+        weather_present = None
+        if self.use_weather:
+            weather_present = modality_mask[:, 2:3]
+            blocks.append(weather_base * weather_present * modality_weights[:, 2:3])
         fused_features = torch.cat(blocks + [modality_mask], dim=-1)
         fusion_logits = self.head(fused_features)
         text_logits = self.text_head(text_base)
@@ -1112,6 +1186,11 @@ class MultiModalClassifier(nn.Module):
             modality_weights[:, 0:1] * text_logits * text_present
             + modality_weights[:, 1:2] * vision_logits * vision_present
         )
+        if self.use_weather:
+            weather_logits = self.weather_head(weather_base)
+            expert_logits = expert_logits + (
+                modality_weights[:, 2:3] * weather_logits * weather_present
+            )
         logits = fusion_logits + self.expert_residual_weight * expert_logits
 
         # Safe fusion: when the text-only path is already confidently decisive,
@@ -1120,18 +1199,14 @@ class MultiModalClassifier(nn.Module):
         text_only_logits = None
         if not self.training and self.text_confidence_guard is not None:
             zeros = torch.zeros_like(text_base)
+            guard_mask = torch.zeros(
+                self.n_modalities, device=text_base.device, dtype=text_base.dtype
+            )
+            guard_mask[0] = 1.0
             text_only_features = torch.cat(
-                [
-                    text_base,
-                    zeros,
-                    zeros,
-                    zeros,
-                    zeros,
-                    zeros,
-                    torch.tensor(
-                        [1.0, 0.0], device=text_base.device, dtype=text_base.dtype
-                    ).expand(text_base.size(0), -1),
-                ],
+                [text_base]
+                + [zeros] * (self.n_blocks - 1)
+                + [guard_mask.expand(text_base.size(0), -1)],
                 dim=-1,
             )
             text_only_logits = (
@@ -1190,6 +1265,10 @@ class MultiModalClassifier(nn.Module):
                 "vision_auxiliary": vision_loss.detach(),
                 "alignment": alignment.detach(),
             }
+            if self.use_weather and weather_logits is not None:
+                weather_loss = modality_loss(weather_logits, weather_present)
+                loss = loss + self.weather_auxiliary_weight * weather_loss
+                loss_components["weather_auxiliary"] = weather_loss.detach()
 
         return {
             "loss": loss,
@@ -1197,6 +1276,7 @@ class MultiModalClassifier(nn.Module):
             "fusion_logits": fusion_logits,
             "text_logits": text_logits,
             "vision_logits": vision_logits,
+            "weather_logits": weather_logits,
             "text_only_logits": text_only_logits,
             "text_features": text_base,
             "vision_features": vision_base,
@@ -1291,7 +1371,8 @@ def evaluate(
                             attention_mask=batch["attention_mask"],
                             pixel_values=batch.get("pixel_values"),
                             modality_mask=modality_mask,
-                            vision_feature_map=batch.get("vision_feature_map"))
+                            vision_feature_map=batch.get("vision_feature_map"),
+                            weather_features=batch.get("weather_features"))
                 if "modality_weights" in out:
                     modality_weights.append(out["modality_weights"].cpu())
                 if collect_features:
@@ -1508,7 +1589,8 @@ def train_model(model, train_loader, val_loader, cfg: Config,
                                 pixel_values=batch.get("pixel_values"),
                                 labels=batch["labels"],
                                 modality_mask=modality_mask,
-                                vision_feature_map=batch.get("vision_feature_map"))
+                                vision_feature_map=batch.get("vision_feature_map"),
+                                weather_features=batch.get("weather_features"))
                 div  = div_fn(out["logits"])
                 loss = (out["loss"] + div) / accum
 
@@ -1688,6 +1770,7 @@ def run_federated(model_cls, model_kwargs: Dict, train_ds, val_loader,
                         pixel_values=batch.get("pixel_values"),
                         labels=batch["labels"],
                         vision_feature_map=batch.get("vision_feature_map"),
+                        weather_features=batch.get("weather_features"),
                     )
                 loss = out["loss"] + div_fn(out["logits"])
                 loss.backward()
@@ -2794,10 +2877,42 @@ def run(cfg: Config):
         i_val_load = DataLoader(val_obb,   batch_size=cfg.batch_size, num_workers=0)
         i_test_load = DataLoader(test_obb, batch_size=cfg.batch_size, num_workers=0)
 
-        mm_trn_ds  = MultiModalDataset(train_obb, text_trn, cfg.max_seq_len, cfg.seed)
-        mm_val_ds  = MultiModalDataset(val_obb,   text_val, cfg.max_seq_len, cfg.seed)
+        weather_map = None
+        weather_dim = 0
+        if cfg.use_weather:
+            import sys as _sys
+            _sys.path.insert(0, str(Path(__file__).resolve().parent / "backend"))
+            from tea_weather_mapping import WeatherMap
+            months = [int(m) for m in str(cfg.weather_months).split(",") if m.strip()] or None
+            weather_map = WeatherMap(seed=cfg.weather_seed, months=months)
+            weather_dim = weather_map.dim
+            print(
+                f"  Weather modality ON: {len(weather_map.pool)} station days, "
+                f"dim={weather_dim}, seed={cfg.weather_seed}"
+            )
+            print(
+                "  NOTE: crop -> date assignment is SYNTHETIC and label-independent "
+                "(no capture dates exist), so weather is noise w.r.t. the label."
+            )
+            data_audit["weather_modality"] = {
+                "enabled": True,
+                "synthetic_assignment": True,
+                "label_independent": True,
+                "station": "AMFU Kharagpur (IMD 42893)",
+                "station_days": int(len(weather_map.pool)),
+                "feature_dim": int(weather_dim),
+                "seed": int(cfg.weather_seed),
+                "months": cfg.weather_months or "all",
+            }
+        else:
+            data_audit["weather_modality"] = {"enabled": False}
+
+        mm_trn_ds  = MultiModalDataset(train_obb, text_trn, cfg.max_seq_len, cfg.seed,
+                                       weather_map=weather_map)
+        mm_val_ds  = MultiModalDataset(val_obb,   text_val, cfg.max_seq_len, cfg.seed,
+                                       weather_map=weather_map)
         mm_test_ds = MultiModalDataset(
-            test_obb, text_test, cfg.max_seq_len, cfg.seed
+            test_obb, text_test, cfg.max_seq_len, cfg.seed, weather_map=weather_map
         )
         print(
             f"  Exact pair coverage: train={mm_trn_ds.pairing_coverage:.1%}, "
@@ -2891,6 +3006,8 @@ def run(cfg: Config):
             "vision_auxiliary_weight": cfg.vision_auxiliary_weight,
             "alignment_weight": cfg.alignment_weight,
             "text_confidence_guard": cfg.text_confidence_guard,
+            "use_weather": bool(cfg.use_weather),
+            "weather_dim": int(weather_dim),
         }
         vlm = MultiModalClassifier(**vlm_kwargs).to(device)
         if cfg.resume_checkpoint:
@@ -3055,6 +3172,19 @@ def parse_args():
                    help="2 epochs, 2 rounds — smoke test only")
     p.add_argument("--no_amp",      action="store_true")
     p.add_argument(
+        "--use_weather",
+        action="store_true",
+        help=(
+            "Add station weather as a third modality. The crop->date assignment is "
+            "synthetic and label-independent (the corpus has no capture dates), so "
+            "this is an architecture/ablation switch, not a source of real signal."
+        ),
+    )
+    p.add_argument("--weather_seed", type=int, default=42,
+                   help="Seed for the synthetic crop->station-day assignment")
+    p.add_argument("--weather_months", default="",
+                   help="Comma-separated months to draw station days from (default: all)")
+    p.add_argument(
         "--multimodal_only",
         action="store_true",
         help="Train the cross-modal model without separate text/image baselines",
@@ -3194,6 +3324,9 @@ if __name__ == "__main__":
         text_confidence_guard = args.text_confidence_guard,
         sanitize_target_derived_text = not args.no_text_sanitization,
         cross_modal_analysis = not args.no_cross_modal_analysis,
+        use_weather = args.use_weather,
+        weather_seed = args.weather_seed,
+        weather_months = args.weather_months,
         use_gdrive  = args.gdrive,
         gdrive_dir  = args.gdrive_dir,
     )
@@ -3207,6 +3340,7 @@ if __name__ == "__main__":
     print(f"  Fed rounds  : {cfg.fed_rounds}")
     print(f"  Clients     : {cfg.num_clients}")
     print(f"  Device      : {cfg.device}")
+    print(f"  Weather     : {'ON (synthetic, label-independent)' if cfg.use_weather else 'off'}")
     if cfg.gdrive_base:
         print(f"  GDrive      : {cfg.gdrive_base}")
     run(cfg)
